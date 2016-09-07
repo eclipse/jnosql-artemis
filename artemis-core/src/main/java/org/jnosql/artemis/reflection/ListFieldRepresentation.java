@@ -22,7 +22,7 @@ public class ListFieldRepresentation extends DefaultFieldRepresentation {
         if (FieldType.LIST.equals(type)) {
             return (T) this;
         }
-        throw new IllegalStateException("The SetFieldRepresentation just can convert to type List");
+        throw new IllegalStateException("The ListFieldRepresentation just can convert to type List");
     }
 
     @Override

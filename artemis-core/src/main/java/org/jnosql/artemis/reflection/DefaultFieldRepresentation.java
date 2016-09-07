@@ -1,38 +1,15 @@
 package org.jnosql.artemis.reflection;
 
 
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Objects;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class DefaultFieldRepresentation implements FieldRepresentation {
+public class DefaultFieldRepresentation extends AbstractFieldRepresentation {
 
-    protected final FieldType type;
-
-    protected final Field field;
-
-    protected final String name;
 
     DefaultFieldRepresentation(FieldType type, Field field, String name) {
-        this.type = type;
-        this.field = field;
-        this.name = name;
-    }
-
-    @Override
-    public FieldType getType() {
-        return type;
-    }
-
-    @Override
-    public Field getField() {
-        return field;
-    }
-
-    @Override
-    public String getName() {
-        return name;
+        super(type, field, name);
     }
 
     @Override
@@ -40,7 +17,7 @@ public class DefaultFieldRepresentation implements FieldRepresentation {
         if (FieldType.DEFAULT.equals(type)) {
             return (T) this;
         }
-        throw new IllegalStateException("The DefaulFieldRepresentation just can convert to type Default");
+        throw new IllegalStateException("The DefaultFieldRepresentation just can convert to type DEFAULT");
     }
 
     @Override
@@ -51,7 +28,7 @@ public class DefaultFieldRepresentation implements FieldRepresentation {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        DefaultFieldRepresentation that = (DefaultFieldRepresentation) o;
+        AbstractFieldRepresentation that = (AbstractFieldRepresentation) o;
         return type == that.type &&
                 Objects.equals(field, that.field) &&
                 Objects.equals(name, that.name);
