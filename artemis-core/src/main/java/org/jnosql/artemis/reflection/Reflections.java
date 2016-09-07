@@ -8,7 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @ApplicationScoped
-public class ReflectionUtil {
+public class Reflections {
 
     /**
      * Return The Object from the Field.
@@ -21,7 +21,7 @@ public class ReflectionUtil {
         try {
             return field.get(object);
         } catch (Exception exception) {
-            Logger.getLogger(ReflectionUtil.class.getName()).log(Level.SEVERE, null, exception);
+            Logger.getLogger(Reflections.class.getName()).log(Level.SEVERE, null, exception);
         }
         return null;
     }
@@ -39,7 +39,7 @@ public class ReflectionUtil {
             field.set(object, value);
 
         } catch (Exception exception) {
-            Logger.getLogger(ReflectionUtil.class.getName()).log(Level.SEVERE, null, exception);
+            Logger.getLogger(Reflections.class.getName()).log(Level.SEVERE, null, exception);
             return false;
         }
         return true;
@@ -54,7 +54,7 @@ public class ReflectionUtil {
         try {
             return clazz.newInstance();
         } catch (Exception exception) {
-            Logger.getLogger(ReflectionUtil.class.getName()).log(Level.SEVERE, null, exception);
+            Logger.getLogger(Reflections.class.getName()).log(Level.SEVERE, null, exception);
             return null;
         }
     }
