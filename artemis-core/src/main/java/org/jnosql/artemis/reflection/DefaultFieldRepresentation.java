@@ -36,6 +36,14 @@ public class DefaultFieldRepresentation implements FieldRepresentation {
     }
 
     @Override
+    public <T extends FieldRepresentation> T cast(FieldType type) throws IllegalStateException {
+        if (FieldType.DEFAULT.equals(type)) {
+            return (T) this;
+        }
+        throw new IllegalStateException("The DefaulFieldRepresentation just can convert to type Default");
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
