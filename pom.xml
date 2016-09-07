@@ -42,7 +42,7 @@
     </properties>
 
     <modules>
-        <module>artemis-api</module>
+        <module>artemis-core</module>
     </modules>
 
     <dependencies>
