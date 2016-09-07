@@ -8,11 +8,11 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class DefaultFieldRepresentation implements FieldRepresentation {
 
-    private final FieldType type;
+    protected final FieldType type;
 
-    private final Field field;
+    protected final Field field;
 
-    private final String name;
+    protected final String name;
 
     DefaultFieldRepresentation(FieldType type, Field field, String name) {
         this.type = type;
