@@ -2,9 +2,10 @@ package org.jnosql.artemis.reflection;
 
 
 import java.lang.reflect.Field;
+import java.util.Objects;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class SetFieldRepresentation extends DefaultFieldRepresentation {
+public class SetFieldRepresentation extends AbstractFieldRepresentation {
 
     private final Class valueClass;
 
@@ -23,6 +24,26 @@ public class SetFieldRepresentation extends DefaultFieldRepresentation {
             return (T) this;
         }
         throw new IllegalStateException("The SetFieldRepresentation just can convert to type Set");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SetFieldRepresentation that = (SetFieldRepresentation) o;
+        return type == that.type &&
+                Objects.equals(field, that.field) &&
+                Objects.equals(valueClass, that.valueClass) &&
+                Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, field, name, valueClass);
     }
 
     @Override

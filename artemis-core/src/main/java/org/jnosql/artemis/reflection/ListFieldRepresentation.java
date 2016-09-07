@@ -2,9 +2,10 @@ package org.jnosql.artemis.reflection;
 
 
 import java.lang.reflect.Field;
+import java.util.Objects;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class ListFieldRepresentation extends DefaultFieldRepresentation {
+public class ListFieldRepresentation extends AbstractFieldRepresentation {
 
     private final Class valueClass;
 
@@ -23,6 +24,26 @@ public class ListFieldRepresentation extends DefaultFieldRepresentation {
             return (T) this;
         }
         throw new IllegalStateException("The ListFieldRepresentation just can convert to type List");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ListFieldRepresentation that = (ListFieldRepresentation) o;
+        return type == that.type &&
+                Objects.equals(field, that.field) &&
+                Objects.equals(valueClass, that.valueClass) &&
+                Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, field, name, valueClass);
     }
 
     @Override
