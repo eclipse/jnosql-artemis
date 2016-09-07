@@ -15,14 +15,11 @@ public class ClassRepresentation implements Serializable {
 
     private final List<FieldRepresentation> fields;
 
-    private final boolean indexed;
-
-    ClassRepresentation(String name, List<String> fieldsName, Class<?> classInstance, List<FieldRepresentation> fields, boolean indexed) {
+    ClassRepresentation(String name, List<String> fieldsName, Class<?> classInstance, List<FieldRepresentation> fields) {
         this.name = name;
         this.fieldsName = fieldsName;
         this.classInstance = classInstance;
         this.fields = fields;
-        this.indexed = indexed;
     }
 
     public String getName() {
@@ -41,10 +38,6 @@ public class ClassRepresentation implements Serializable {
         return fields;
     }
 
-    public boolean isIndexed() {
-        return indexed;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -54,8 +47,7 @@ public class ClassRepresentation implements Serializable {
             return false;
         }
         ClassRepresentation that = (ClassRepresentation) o;
-        return indexed == that.indexed &&
-                Objects.equals(name, that.name) &&
+        return  Objects.equals(name, that.name) &&
                 Objects.equals(fieldsName, that.fieldsName) &&
                 Objects.equals(classInstance, that.classInstance) &&
                 Objects.equals(fields, that.fields);
@@ -63,7 +55,7 @@ public class ClassRepresentation implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, fieldsName, classInstance, fields, indexed);
+        return Objects.hash(name, fieldsName, classInstance, fields);
     }
 
     @Override
@@ -73,7 +65,6 @@ public class ClassRepresentation implements Serializable {
                 .append("fieldsName", fieldsName)
                 .append("classInstance", classInstance)
                 .append("fields", fields)
-                .append("indexed", indexed)
                 .toString();
     }
 }
