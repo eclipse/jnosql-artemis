@@ -21,10 +21,12 @@ public class Actor extends Person {
         this.movieRating = movieRating;
     }
 
-    Actor() {
+    public Actor() {
     }
 
     public static ActorBuilder actorBuilder() {
         return new ActorBuilder();
     }
+
+
 }

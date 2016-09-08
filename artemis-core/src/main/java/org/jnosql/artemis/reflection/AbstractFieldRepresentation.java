@@ -2,6 +2,7 @@ package org.jnosql.artemis.reflection;
 
 import java.lang.reflect.Field;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.jnosql.diana.api.Value;
 
 abstract class AbstractFieldRepresentation implements FieldRepresentation {
 
@@ -39,5 +40,9 @@ abstract class AbstractFieldRepresentation implements FieldRepresentation {
                 .append("field", field)
                 .append("name", name)
                 .toString();
+    }
+
+    public Object getValue(Value value, Reflections reflections) {
+        return value.get(field.getType());
     }
 }

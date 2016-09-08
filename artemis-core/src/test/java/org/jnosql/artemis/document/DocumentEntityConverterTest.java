@@ -2,6 +2,7 @@ package org.jnosql.artemis.document;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.stream.Stream;
 import javax.inject.Inject;
 import org.hamcrest.Matchers;
 import org.jnosql.artemis.WeldJUnit4Runner;
@@ -10,6 +11,7 @@ import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCollectionEntity;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,11 +27,25 @@ public class DocumentEntityConverterTest {
 
     @Inject
     private ClassRepresentations classRepresentations;
+    private Document[] documents;
+
+    private Actor actor = Actor.actorBuilder().withAge(10)
+            .withId(12)
+            .withName("Otavio")
+            .withPhones(Arrays.asList("234", "2342"))
+            .withMovieCharacter(Collections.singletonMap("JavaZone", "Jedi"))
+            .withMovierRating(Collections.singletonMap("JavaZone", 10))
+            .build();
 
     @Before
     public void init() {
         classRepresentations.load(Person.class);
         classRepresentations.load(Actor.class);
+
+        documents = new Document[]{Document.of("_id", 12L),
+                Document.of("age", 10), Document.of("name", "Otavio"), Document.of("phones", Arrays.asList("234", "2342"))
+                , Document.of("movieCharacter", Collections.singletonMap("JavaZone", "Jedi"))
+                , Document.of("movieRating", Collections.singletonMap("JavaZone", 10))};
     }
 
     @Test
@@ -51,23 +67,23 @@ public class DocumentEntityConverterTest {
     @Test
     public void shouldConvertActorToDocument() {
 
-        Actor actor = Actor.actorBuilder().withAge(10)
-                .withId(12)
-                .withName("Otavio")
-                .withPhones(Arrays.asList("234", "2342"))
-                .withMovieCharacter(Collections.singletonMap("JavaZone", "Jedi"))
-                .withMovierRating(Collections.singletonMap("JavaZone", 10))
-                .build();
 
         DocumentCollectionEntity entity = converter.toDocument(actor);
         assertEquals("Actor", entity.getName());
         assertEquals(6, entity.size());
-        Document[] documents = {Document.of("_id", 12L),
-                Document.of("age", 10), Document.of("name", "Otavio"), Document.of("phones", Arrays.asList("234", "2342"))
-                , Document.of("movieCharacter", Collections.singletonMap("JavaZone", "Jedi"))
-                , Document.of("movieRating", Collections.singletonMap("JavaZone", 10))};
+
 
         assertThat(entity.getDocuments(), containsInAnyOrder(documents));
+    }
+
+    @Test
+    public void shouldConvertDocumentToActor() {
+        DocumentCollectionEntity entity = DocumentCollectionEntity.of("Actor");
+        Stream.of(documents).forEach(entity::add);
+
+        Actor actor = converter.toEntity(Actor.class, entity);
+        Assert.assertNotNull(actor);
+
 
     }
 }

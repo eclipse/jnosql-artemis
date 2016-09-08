@@ -62,7 +62,7 @@ public class Reflections {
      * @param clazz the class to create object
      * @return the new instance that class
      */
-    public Object newInstance(Class<?> clazz) {
+    public <T> T newInstance(Class<T> clazz) {
         try {
             return clazz.newInstance();
         } catch (Exception exception) {

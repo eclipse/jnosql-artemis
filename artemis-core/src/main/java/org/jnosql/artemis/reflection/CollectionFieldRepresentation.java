@@ -2,9 +2,12 @@ package org.jnosql.artemis.reflection;
 
 
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.jnosql.diana.api.Value;
 
 public class CollectionFieldRepresentation extends AbstractFieldRepresentation {
 
@@ -25,6 +28,15 @@ public class CollectionFieldRepresentation extends AbstractFieldRepresentation {
             return (T) this;
         }
         throw new IllegalStateException("The CollectionFieldRepresentation just can convert to type Collection");
+    }
+
+    @Override
+    public Object getValue(Value value, Reflections reflections) {
+        Class<?> classType = field.getType();
+        if (classType.equals(Set.class)) {
+            return value.getSet(valueClass);
+        }
+        return value.getList(valueClass);
     }
 
     @Override
