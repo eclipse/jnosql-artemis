@@ -28,7 +28,7 @@ public class ReflectionsTest {
     public void shouldListFields() {
 
         Assert.assertEquals(4, reflections.getFields(Person.class).size());
-        Assert.assertEquals(5, reflections.getFields(Actor.class).size());
+        Assert.assertEquals(6, reflections.getFields(Actor.class).size());
 
     }
 
