@@ -29,7 +29,12 @@ public class ClassRepresentations {
     }
 
     public ClassRepresentation get(Class classEntity) {
-        return representations.get(classEntity.getName());
+        ClassRepresentation classRepresentation = representations.get(classEntity.getName());
+        if (classRepresentation == null) {
+            load(classEntity);
+            return this.get(classEntity);
+        }
+        return classRepresentation;
     }
 
     @Override

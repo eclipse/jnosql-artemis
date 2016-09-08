@@ -10,4 +10,7 @@ public class Actor extends Person {
 
     @Column
     private Map<String, String> movieCharacter;
+
+    @Column
+    private Map<String, Integer> movierRating;
 }

@@ -32,6 +32,8 @@ class ClassConverter {
                 .withField(field).withType(fieldType);
         switch (fieldType) {
             case COLLECTION:
+            case SET:
+            case LIST:
                 ParameterizedType genericType = (ParameterizedType) field.getGenericType();
                 return builder.withValueClass((Class<?>) genericType.getActualTypeArguments()[0]).buildCollection();
             case MAP:

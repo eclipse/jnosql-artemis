@@ -43,14 +43,6 @@ public class FieldRepresentationBuilder {
         return new DefaultFieldRepresentation(type, field, name);
     }
 
-    public ListFieldRepresentation buildList() {
-        return new ListFieldRepresentation(type, field, name, valueClass);
-    }
-
-    public SetFieldRepresentation buildSet() {
-        return new SetFieldRepresentation(type, field, name, valueClass);
-    }
-
     public MapFieldRepresentation buildMap() {
         return new MapFieldRepresentation(type, field, name, valueClass, keyClass);
     }

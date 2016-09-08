@@ -35,8 +35,8 @@ public class ClassConverterTest {
 
         assertEquals("Actor", classRepresentation.getName());
         assertEquals(Actor.class, classRepresentation.getClassInstance());
-        assertEquals(5, classRepresentation.getFields().size());
-        assertThat(classRepresentation.getFieldsName(), containsInAnyOrder("_id", "name", "age", "phones", "movieCharacter"));
+        assertEquals(6, classRepresentation.getFields().size());
+        assertThat(classRepresentation.getFieldsName(), containsInAnyOrder("_id", "name", "age", "phones", "movieCharacter", "movierRating"));
 
     }
 
