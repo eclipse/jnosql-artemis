@@ -1,21 +1,20 @@
 package org.jnosql.artemis.model;
 
 
-import java.util.List;
 import java.util.Set;
+import org.jnosql.artemis.Column;
 import org.jnosql.artemis.Entity;
-import org.jnosql.artemis.Field;
 
 @Entity("movie")
 public class Movie {
 
-    @Field
+    @Column
     private String name;
 
-    @Field
+    @Column
     private long year;
 
-    @Field
+    @Column
     private Set<String> races;
 
 

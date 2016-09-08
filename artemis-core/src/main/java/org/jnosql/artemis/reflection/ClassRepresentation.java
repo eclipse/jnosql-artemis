@@ -47,7 +47,7 @@ public class ClassRepresentation implements Serializable {
             return false;
         }
         ClassRepresentation that = (ClassRepresentation) o;
-        return  Objects.equals(name, that.name) &&
+        return Objects.equals(name, that.name) &&
                 Objects.equals(fieldsName, that.fieldsName) &&
                 Objects.equals(classInstance, that.classInstance) &&
                 Objects.equals(fields, that.fields);
@@ -66,5 +66,9 @@ public class ClassRepresentation implements Serializable {
                 .append("classInstance", classInstance)
                 .append("fields", fields)
                 .toString();
+    }
+
+    public static ClassRepresentationBuilder builder() {
+        return new ClassRepresentationBuilder();
     }
 }

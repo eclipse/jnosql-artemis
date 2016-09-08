@@ -1,6 +1,10 @@
 package org.jnosql.artemis.reflection;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.enterprise.context.ApplicationScoped;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -8,13 +12,15 @@ import java.lang.reflect.ParameterizedType;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
+import org.jnosql.artemis.Column;
 import org.jnosql.artemis.Entity;
+import org.jnosql.artemis.MappedSuperclass;
 
 @ApplicationScoped
 public class Reflections {
 
     /**
-     * Return The Object from the Field.
+     * Return The Object from the Column.
      *
      * @param object the object
      * @param field  the field to return object
@@ -66,7 +72,7 @@ public class Reflections {
     }
 
     /**
-     * Find the Field from the name field.
+     * Find the Column from the name field.
      *
      * @param string the name of field
      * @param clazz  the class
@@ -147,6 +153,23 @@ public class Reflections {
                 .map(Entity::value)
                 .filter(StringUtils::isNotBlank)
                 .orElse(classEntity.getSimpleName());
+    }
+
+    public List<Field> getFields(Class classEntity) {
+
+        List<Field> fields = new ArrayList<>();
+
+        if (isMappedSuperclass(classEntity)) {
+            fields.addAll(getFields(classEntity.getSuperclass()));
+        }
+        Stream.of(classEntity.getDeclaredFields())
+                .filter(f -> f.getAnnotation(Column.class) != null)
+                .forEach(fields::add);
+        return fields;
+    }
+
+    public boolean isMappedSuperclass(Class<?> class1) {
+        return class1.getSuperclass().getAnnotation(MappedSuperclass.class) != null;
     }
 
 }

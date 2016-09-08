@@ -1,15 +1,17 @@
 package org.jnosql.artemis.reflection;
 
+import java.util.Collections;
 import java.util.List;
 
-class ClassRepresentationBuilder {
+public class ClassRepresentationBuilder {
+
     private String name;
 
-    private List<String> fieldsName;
+    private List<String> fieldsName = Collections.emptyList();
 
     private Class<?> classInstance;
 
-    private List<FieldRepresentation> fields;
+    private List<FieldRepresentation> fields = Collections.emptyList();
 
     public ClassRepresentationBuilder withName(String name) {
         this.name = name;

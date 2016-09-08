@@ -2,23 +2,27 @@ package org.jnosql.artemis.model;
 
 
 import java.util.List;
+import org.jnosql.artemis.Column;
 import org.jnosql.artemis.Entity;
-import org.jnosql.artemis.Field;
+import org.jnosql.artemis.MappedSuperclass;
 
 @Entity
+@MappedSuperclass
 public class Person {
 
-    @Field("_id")
+    @Column("_id")
     private long id;
 
-    @Field
+    @Column
     private String name;
 
-    @Field
+    @Column
     private int age;
 
-    @Field
+    @Column
     private List<String> phones;
+
+    private String ignore;
 
 
 }

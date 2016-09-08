@@ -10,6 +10,10 @@ public class ClassRepresentations {
     private Reflections reflections;
 
     public ClassRepresentation create(Class entityClass) {
-        return null;
+        String entityName = reflections.getEntityName(entityClass);
+
+        return ClassRepresentation.builder().withName(entityName)
+                .withClassInstance(entityClass)
+                .build();
     }
 }

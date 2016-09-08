@@ -1,7 +1,10 @@
 package org.jnosql.artemis.reflection;
 
+import java.lang.reflect.Field;
+import java.util.List;
 import javax.inject.Inject;
 import org.jnosql.artemis.WeldJUnit4Runner;
+import org.jnosql.artemis.model.Actor;
 import org.jnosql.artemis.model.Movie;
 import org.jnosql.artemis.model.Person;
 import org.junit.Assert;
@@ -22,6 +25,14 @@ public class ReflectionsTest {
     public void shouldReturnsEntityName() {
         Assert.assertEquals("Person", reflections.getEntityName(Person.class));
         Assert.assertEquals("movie", reflections.getEntityName(Movie.class));
+    }
+
+    @Test
+    public void shouldListFields() {
+
+        Assert.assertEquals(4, reflections.getFields(Person.class).size());
+        Assert.assertEquals(5, reflections.getFields(Actor.class).size());
+
     }
 
 }
