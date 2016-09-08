@@ -4,6 +4,7 @@ package org.jnosql.artemis.reflection;
 import java.lang.reflect.Field;
 import java.util.Objects;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class CollectionFieldRepresentation extends AbstractFieldRepresentation {
 
@@ -48,7 +49,7 @@ public class CollectionFieldRepresentation extends AbstractFieldRepresentation {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
+        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE)
                 .append("type", type)
                 .append("field", field)
                 .append("name", name)
