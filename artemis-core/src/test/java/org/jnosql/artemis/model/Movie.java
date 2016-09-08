@@ -15,7 +15,7 @@ public class Movie {
     private long year;
 
     @Column
-    private Set<String> races;
+    private Set<String> actors;
 
 
 }
