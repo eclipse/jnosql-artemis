@@ -13,4 +13,8 @@ public interface FieldRepresentation extends Serializable {
     String getName();
 
     <T extends FieldRepresentation> T cast(FieldType type) throws IllegalStateException;
+
+    static FieldRepresentationBuilder builder() {
+        return new FieldRepresentationBuilder();
+    }
 }

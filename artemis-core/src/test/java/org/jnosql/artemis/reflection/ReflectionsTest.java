@@ -1,7 +1,6 @@
 package org.jnosql.artemis.reflection;
 
 import java.lang.reflect.Field;
-import java.util.List;
 import javax.inject.Inject;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Actor;
@@ -10,8 +9,6 @@ import org.jnosql.artemis.model.Person;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.*;
 
 
 @RunWith(WeldJUnit4Runner.class)
@@ -34,7 +31,7 @@ public class ReflectionsTest {
         Assert.assertEquals(5, reflections.getFields(Actor.class).size());
 
     }
-    
+
     @Test
     public void shouldReturnColumnName() throws NoSuchFieldException {
         Field phones = Person.class.getDeclaredField("phones");
