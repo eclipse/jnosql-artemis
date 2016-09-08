@@ -24,6 +24,14 @@ public class Actor extends Person {
     public Actor() {
     }
 
+    public Map<String, String> getMovieCharacter() {
+        return movieCharacter;
+    }
+
+    public Map<String, Integer> getMovieRating() {
+        return movieRating;
+    }
+
     public static ActorBuilder actorBuilder() {
         return new ActorBuilder();
     }

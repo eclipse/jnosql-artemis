@@ -82,7 +82,12 @@ public class DocumentEntityConverterTest {
         Stream.of(documents).forEach(entity::add);
 
         Actor actor = converter.toEntity(Actor.class, entity);
-        Assert.assertNotNull(actor);
+        assertNotNull(actor);
+        assertEquals(10, actor.getAge());
+        assertEquals(12L, actor.getId());
+        assertEquals(Arrays.asList("234", "2342"), actor.getPhones());
+        assertEquals(Collections.singletonMap("JavaZone", "Jedi"), actor.getMovieCharacter());
+        assertEquals(Collections.singletonMap("JavaZone", 10), actor.getMovieRating());
 
 
     }
