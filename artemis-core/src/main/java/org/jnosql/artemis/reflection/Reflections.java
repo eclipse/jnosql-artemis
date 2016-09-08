@@ -26,7 +26,7 @@ public class Reflections {
      * @param field  the field to return object
      * @return - the field value in Object
      */
-    public Object getMethod(Object object, Field field) {
+    public Object getValue(Object object, Field field) {
 
         try {
             return field.get(object);
@@ -44,7 +44,7 @@ public class Reflections {
      * @param value  the value to object
      * @return - if the operation was execute with success
      */
-    public boolean setMethod(Object object, Field field, Object value) {
+    public boolean setValue(Object object, Field field, Object value) {
         try {
 
             field.set(object, value);

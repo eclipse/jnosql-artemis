@@ -3,7 +3,7 @@ package org.jnosql.artemis.reflection;
 import java.util.Collections;
 import java.util.List;
 
-public class ClassRepresentationBuilder {
+class ClassRepresentationBuilder {
 
     private String name;
 

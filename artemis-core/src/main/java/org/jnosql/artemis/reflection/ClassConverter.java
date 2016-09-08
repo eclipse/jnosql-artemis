@@ -27,6 +27,7 @@ class ClassConverter {
 
     private FieldRepresentation to(Field field) {
         FieldType fieldType = FieldType.of(field);
+        reflections.makeAccessible(field);
         String columnName = reflections.getColumnName(field);
         FieldRepresentationBuilder builder = FieldRepresentation.builder().withName(columnName)
                 .withField(field).withType(fieldType);
