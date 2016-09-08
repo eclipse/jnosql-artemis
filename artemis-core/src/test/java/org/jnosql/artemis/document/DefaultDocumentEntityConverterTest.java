@@ -4,14 +4,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Stream;
 import javax.inject.Inject;
-import org.hamcrest.Matchers;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Actor;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCollectionEntity;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,10 +18,10 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.*;
 
 @RunWith(WeldJUnit4Runner.class)
-public class DocumentEntityConverterTest {
+public class DefaultDocumentEntityConverterTest {
 
     @Inject
-    private DocumentEntityConverter converter;
+    private DefaultDocumentEntityConverter converter;
 
     @Inject
     private ClassRepresentations classRepresentations;
