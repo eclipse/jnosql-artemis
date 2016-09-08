@@ -39,14 +39,24 @@ public class DocumentEntityConverter {
     public <T> T toEntity(Class<T> entityClass, DocumentCollectionEntity entity) {
         ClassRepresentation representation = classRepresentations.get(entityClass);
         T instance = reflections.newInstance(entityClass);
+        return convertEntity(entity, representation, (T) instance);
+
+
+    }
+
+    public <T> T toEntity(DocumentCollectionEntity entity) {
+        ClassRepresentation representation = classRepresentations.findByName(entity.getName());
+        T instance = reflections.newInstance((Class<T>) representation.getClassInstance());
+        return convertEntity(entity, representation, instance);
+    }
+
+    private <T> T convertEntity(DocumentCollectionEntity entity, ClassRepresentation representation, T instance) {
         Map<String, FieldRepresentation> fieldsGroupByName = representation.getFieldsGroupByName();
         fieldsGroupByName.keySet().stream()
                 .filter(k -> entity.find(k).isPresent())
                 .forEach(feedObject(instance, entity, fieldsGroupByName));
 
         return instance;
-
-
     }
 
     private <T> Consumer<String> feedObject(T instance, DocumentCollectionEntity entity, Map<String, FieldRepresentation> fieldsGroupByName) {

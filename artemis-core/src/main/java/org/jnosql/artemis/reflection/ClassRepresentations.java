@@ -8,6 +8,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.apache.commons.lang3.exception.CloneFailedException;
 
 @ApplicationScoped
 public class ClassRepresentations {
@@ -37,10 +38,19 @@ public class ClassRepresentations {
         return classRepresentation;
     }
 
+    public ClassRepresentation findByName(String name) {
+        return representations.keySet().stream()
+                .map(k -> representations.get(k))
+                .filter(r -> r.getName().equals(name)).findFirst()
+                .orElseThrow(() -> new ClassInformationNotFoundException("There is not entity found with the name: " + name));
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE)
                 .append("representations", representations)
                 .toString();
     }
+
+
 }
