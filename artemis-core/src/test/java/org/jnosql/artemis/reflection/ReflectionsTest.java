@@ -2,6 +2,9 @@ package org.jnosql.artemis.reflection;
 
 import javax.inject.Inject;
 import org.jnosql.artemis.WeldJUnit4Runner;
+import org.jnosql.artemis.model.Movie;
+import org.jnosql.artemis.model.Person;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -16,8 +19,9 @@ public class ReflectionsTest {
     private Reflections reflections;
 
     @Test
-    public void init() {
-        System.out.println(reflections);
+    public void shouldReturnsEntityName() {
+        Assert.assertEquals("Person", reflections.getEntityName(Person.class));
+        Assert.assertEquals("movie", reflections.getEntityName(Movie.class));
     }
 
 }
