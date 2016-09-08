@@ -34,5 +34,14 @@ public class ReflectionsTest {
         Assert.assertEquals(5, reflections.getFields(Actor.class).size());
 
     }
+    
+    @Test
+    public void shouldReturnColumnName() throws NoSuchFieldException {
+        Field phones = Person.class.getDeclaredField("phones");
+        Field id = Person.class.getDeclaredField("id");
+
+        Assert.assertEquals("phones", reflections.getColumnName(phones));
+        Assert.assertEquals("_id", reflections.getColumnName(id));
+    }
 
 }

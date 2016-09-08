@@ -172,4 +172,11 @@ public class Reflections {
         return class1.getSuperclass().getAnnotation(MappedSuperclass.class) != null;
     }
 
+    public String getColumnName(Field field) {
+        return Optional.ofNullable((Column) field.getAnnotation(Column.class))
+                .map(Column::value)
+                .filter(StringUtils::isNotBlank)
+                .orElse(field.getName());
+    }
+
 }
