@@ -13,6 +13,7 @@ import org.jnosql.diana.api.document.DocumentCollectionEntity;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
 import org.jnosql.diana.api.document.DocumentQuery;
 
+@DocumentCRUDInterceptor
 class DefaultDocumentCrudOperation implements DocumentCrudOperation {
 
 
