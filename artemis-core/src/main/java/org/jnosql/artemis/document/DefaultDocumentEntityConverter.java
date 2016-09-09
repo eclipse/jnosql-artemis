@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
@@ -15,7 +14,6 @@ import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.document.DocumentCollectionEntity;
 
 @ApplicationScoped
-@Default
 class DefaultDocumentEntityConverter implements DocumentEntityConverter {
 
     @Inject

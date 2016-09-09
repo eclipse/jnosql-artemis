@@ -47,7 +47,7 @@ public class Person {
         return ignore;
     }
 
-    Person() {
+    public Person() {
     }
 
     Person(long id, String name, int age, List<String> phones, String ignore) {

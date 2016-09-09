@@ -15,11 +15,17 @@ import org.jnosql.diana.api.document.DocumentQuery;
 
 class DefaultDocumentCrudOperation implements DocumentCrudOperation {
 
-    @Inject
+
     private DocumentEntityConverter converter;
 
-    @Inject
+
     private Instance<DocumentCollectionManager> manager;
+
+    @Inject
+    DefaultDocumentCrudOperation(DocumentEntityConverter converter, Instance<DocumentCollectionManager> manager) {
+        this.converter = converter;
+        this.manager = manager;
+    }
 
     @Override
     public <T> T save(T entity) throws NullPointerException {
@@ -126,7 +132,7 @@ class DefaultDocumentCrudOperation implements DocumentCrudOperation {
 
     @Override
     public <T> void nativeQueryAsync(String query, Consumer<List<T>> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException {
-        manager.get().nativeQueryAsync(query,  es -> {
+        manager.get().nativeQueryAsync(query, es -> {
             Function<DocumentCollectionEntity, T> function = e -> converter.toEntity(e);
             callBack.accept(es.stream().map(function).collect(Collectors.toList()));
         });
