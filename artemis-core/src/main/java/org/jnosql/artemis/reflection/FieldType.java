@@ -19,7 +19,6 @@ public enum FieldType {
      * <li>Set</li>
      * <li>Map</li>
      * <li>Collection</li>
-     * <li>EMBEDDED</li>
      * </ul>.
      *
      * @param field - the field with annotation
