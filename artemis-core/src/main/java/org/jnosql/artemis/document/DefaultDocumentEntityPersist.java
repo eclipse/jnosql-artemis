@@ -6,7 +6,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jnosql.diana.api.document.DocumentCollectionEntity;
 
-public class DefaultDocumentEntityPersist implements DocumentEntityPrePersist, DocumentEntityPosPersist {
+public class DefaultDocumentEntityPersist implements DocumentEntityPrePersist, DocumentEntityPostPersist {
 
     private final DocumentCollectionEntity entity;
 
