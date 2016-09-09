@@ -17,7 +17,8 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 
 @RunWith(WeldJUnit4Runner.class)
@@ -71,4 +72,5 @@ public class DefaultDocumentCrudOperationTest {
         assertEquals("Person", value.getName());
         assertThat(value.getDocuments(), Matchers.containsInAnyOrder(documents));
     }
+
 }
