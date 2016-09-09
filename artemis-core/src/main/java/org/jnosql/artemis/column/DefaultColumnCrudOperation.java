@@ -21,24 +21,24 @@ class DefaultColumnCrudOperation implements ColumnCrudOperation{
 
     private final Instance<ColumnFamilyManager> manager;
 
-    private final ColumnPersistManager documentPersistManager;
+    private final ColumnPersistManager columnPersistManager;
 
     @Inject
-    DefaultColumnCrudOperation(ColumnEntityConverter converter, Instance<ColumnFamilyManager> manager, ColumnPersistManager documentPersistManager) {
+    DefaultColumnCrudOperation(ColumnEntityConverter converter, Instance<ColumnFamilyManager> manager, ColumnPersistManager columnPersistManager) {
         this.converter = converter;
         this.manager = manager;
-        this.documentPersistManager = documentPersistManager;
+        this.columnPersistManager = columnPersistManager;
     }
 
     @Override
     public <T> T save(T entity) throws NullPointerException {
-        documentPersistManager.firePreEntity(entity);
+        columnPersistManager.firePreEntity(entity);
         ColumnFamilyEntity document = converter.toColumn(Objects.requireNonNull(entity, "entity is required"));
-        documentPersistManager.firePreDocument(document);
+        columnPersistManager.firePreDocument(document);
         ColumnFamilyEntity documentCollection = manager.get().save(document);
-        documentPersistManager.firePostDocument(documentCollection);
+        columnPersistManager.firePostDocument(documentCollection);
         T entityUpdated = converter.toEntity((Class<T>) entity.getClass(), documentCollection);
-        documentPersistManager.firePostEntity(entityUpdated);
+        columnPersistManager.firePostEntity(entityUpdated);
         return entityUpdated;
     }
 
@@ -49,13 +49,13 @@ class DefaultColumnCrudOperation implements ColumnCrudOperation{
 
     @Override
     public <T> T save(T entity, TTL ttl) {
-        documentPersistManager.firePreEntity(entity);
+        columnPersistManager.firePreEntity(entity);
         ColumnFamilyEntity document = converter.toColumn(Objects.requireNonNull(entity, "entity is required"));
-        documentPersistManager.firePreDocument(document);
+        columnPersistManager.firePreDocument(document);
         ColumnFamilyEntity documentCollection = manager.get().save(document, ttl);
-        documentPersistManager.firePostDocument(documentCollection);
+        columnPersistManager.firePostDocument(documentCollection);
         T entityUpdated = converter.toEntity((Class<T>) entity.getClass(), documentCollection);
-        documentPersistManager.firePostEntity(entityUpdated);
+        columnPersistManager.firePostEntity(entityUpdated);
         return entityUpdated;
     }
 
@@ -89,13 +89,13 @@ class DefaultColumnCrudOperation implements ColumnCrudOperation{
 
     @Override
     public <T> T update(T entity) {
-        documentPersistManager.firePreEntity(entity);
+        columnPersistManager.firePreEntity(entity);
         ColumnFamilyEntity document = converter.toColumn(Objects.requireNonNull(entity, "entity is required"));
-        documentPersistManager.firePreDocument(document);
+        columnPersistManager.firePreDocument(document);
         ColumnFamilyEntity documentCollection = manager.get().update(document);
-        documentPersistManager.firePostDocument(documentCollection);
+        columnPersistManager.firePostDocument(documentCollection);
         T entityUpdated = converter.toEntity((Class<T>) entity.getClass(), documentCollection);
-        documentPersistManager.firePostEntity(entityUpdated);
+        columnPersistManager.firePostEntity(entityUpdated);
         return entityUpdated;
     }
 
