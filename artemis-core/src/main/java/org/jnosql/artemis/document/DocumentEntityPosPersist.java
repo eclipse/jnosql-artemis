@@ -1,9 +1,16 @@
 package org.jnosql.artemis.document;
 
 
+import java.util.Objects;
+import org.jnosql.diana.api.document.DocumentCollectionEntity;
+
 public interface DocumentEntityPosPersist {
 
-    Object getValue();
+    DocumentCollectionEntity getEntity();
 
-    <T> T cast();
+    static DocumentEntityPosPersist of(DocumentCollectionEntity entity) throws NullPointerException {
+        Objects.requireNonNull(entity, "Entity is required");
+        return new DefaultDocumentEntityPersist(entity);
+    }
+
 }
