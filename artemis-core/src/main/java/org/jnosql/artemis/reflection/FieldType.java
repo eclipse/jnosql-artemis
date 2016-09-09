@@ -5,13 +5,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.jnosql.artemis.Embedded;
 
 /**
  * enum that contains kinds of annotations to fields on java.
  */
 public enum FieldType {
-    LIST, SET, MAP, COLLECTION, DEFAULT, EMBEDDED;
+    LIST, SET, MAP, COLLECTION, DEFAULT;
 
     /**
      * find you the kind of annotation on field and then define a enum type, follow the sequences:
@@ -40,9 +39,6 @@ public enum FieldType {
             return MAP;
         }
 
-        if (field.getAnnotation(Embedded.class) != null) {
-            return EMBEDDED;
-        }
         return DEFAULT;
     }
 
