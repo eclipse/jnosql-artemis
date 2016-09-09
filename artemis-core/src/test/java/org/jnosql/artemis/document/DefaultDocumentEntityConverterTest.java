@@ -37,8 +37,6 @@ public class DefaultDocumentEntityConverterTest {
 
     @Before
     public void init() {
-        classRepresentations.load(Person.class);
-        classRepresentations.load(Actor.class);
 
         documents = new Document[]{Document.of("_id", 12L),
                 Document.of("age", 10), Document.of("name", "Otavio"), Document.of("phones", Arrays.asList("234", "2342"))

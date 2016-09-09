@@ -41,8 +41,6 @@ public class DefaultColumnEntityConverterTest {
 
     @Before
     public void init() {
-        classRepresentations.load(Person.class);
-        classRepresentations.load(Actor.class);
 
         columns = new Column[]{Column.of("_id", 12L),
                 Column.of("age", 10), Column.of("name", "Otavio"),

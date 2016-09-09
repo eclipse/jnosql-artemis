@@ -24,7 +24,7 @@ public class ClassRepresentations {
     ClassRepresentations() {
     }
 
-    public void load(Class classEntity) {
+    void load(Class classEntity) {
         ClassRepresentation classRepresentation = classConverter.create(classEntity);
         REPRESENTATIONS.put(classEntity.getName(), classRepresentation);
     }
