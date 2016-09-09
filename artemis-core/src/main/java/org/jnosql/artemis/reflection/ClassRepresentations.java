@@ -41,7 +41,7 @@ public class ClassRepresentations {
     public ClassRepresentation findByName(String name) {
         return REPRESENTATIONS.keySet().stream()
                 .map(k -> REPRESENTATIONS.get(k))
-                .filter(r -> r.getName().equals(name)).findFirst()
+                .filter(r -> r.getName().equalsIgnoreCase(name)).findFirst()
                 .orElseThrow(() -> new ClassInformationNotFoundException("There is not entity found with the name: " + name));
     }
 
