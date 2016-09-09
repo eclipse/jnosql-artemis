@@ -15,6 +15,7 @@ import org.jnosql.diana.api.column.ColumnFamilyManager;
 import org.jnosql.diana.api.column.ColumnQuery;
 
 @ApplicationScoped
+@ColumnCRUDInterceptor
 class DefaultColumnCrudOperation implements ColumnCrudOperation{
 
     private final ColumnEntityConverter converter;

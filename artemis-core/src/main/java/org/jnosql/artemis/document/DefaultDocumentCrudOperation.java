@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
@@ -13,6 +14,7 @@ import org.jnosql.diana.api.document.DocumentCollectionEntity;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
 import org.jnosql.diana.api.document.DocumentQuery;
 
+@ApplicationScoped
 @DocumentCRUDInterceptor
 class DefaultDocumentCrudOperation implements DocumentCrudOperation {
 
