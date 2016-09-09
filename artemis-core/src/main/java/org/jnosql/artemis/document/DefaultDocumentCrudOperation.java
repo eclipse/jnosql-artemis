@@ -17,21 +17,29 @@ import org.jnosql.diana.api.document.DocumentQuery;
 class DefaultDocumentCrudOperation implements DocumentCrudOperation {
 
 
-    private DocumentEntityConverter converter;
+    private final DocumentEntityConverter converter;
 
+    private final Instance<DocumentCollectionManager> manager;
 
-    private Instance<DocumentCollectionManager> manager;
+    private final DocumentPersistManager documentPersistManager;
 
     @Inject
-    DefaultDocumentCrudOperation(DocumentEntityConverter converter, Instance<DocumentCollectionManager> manager) {
+    DefaultDocumentCrudOperation(DocumentEntityConverter converter, Instance<DocumentCollectionManager> manager, DocumentPersistManager documentPersistManager) {
         this.converter = converter;
         this.manager = manager;
+        this.documentPersistManager = documentPersistManager;
     }
 
     @Override
     public <T> T save(T entity) throws NullPointerException {
-        DocumentCollectionEntity documentCollection = manager.get().save(converter.toDocument(Objects.requireNonNull(entity, "entity is required")));
-        return converter.toEntity((Class<T>) entity.getClass(), documentCollection);
+        documentPersistManager.firePreEntity(entity);
+        DocumentCollectionEntity document = converter.toDocument(Objects.requireNonNull(entity, "entity is required"));
+        documentPersistManager.firePreDocument(document);
+        DocumentCollectionEntity documentCollection = manager.get().save(document);
+        documentPersistManager.firePostDocument(documentCollection);
+        T entityUpdated = converter.toEntity((Class<T>) entity.getClass(), documentCollection);
+        documentPersistManager.firePostEntity(entityUpdated);
+        return entityUpdated;
     }
 
     @Override
@@ -41,8 +49,14 @@ class DefaultDocumentCrudOperation implements DocumentCrudOperation {
 
     @Override
     public <T> T save(T entity, TTL ttl) {
-        DocumentCollectionEntity documentCollection = manager.get().save(converter.toDocument(Objects.requireNonNull(entity, "entity is required")), ttl);
-        return converter.toEntity((Class<T>) entity.getClass(), documentCollection);
+        documentPersistManager.firePreEntity(entity);
+        DocumentCollectionEntity document = converter.toDocument(Objects.requireNonNull(entity, "entity is required"));
+        documentPersistManager.firePreDocument(document);
+        DocumentCollectionEntity documentCollection = manager.get().save(document, ttl);
+        documentPersistManager.firePostDocument(documentCollection);
+        T entityUpdated = converter.toEntity((Class<T>) entity.getClass(), documentCollection);
+        documentPersistManager.firePostEntity(entityUpdated);
+        return entityUpdated;
     }
 
     @Override
@@ -75,8 +89,14 @@ class DefaultDocumentCrudOperation implements DocumentCrudOperation {
 
     @Override
     public <T> T update(T entity) {
-        DocumentCollectionEntity documentCollection = manager.get().update(converter.toDocument(Objects.requireNonNull(entity, "entity is required")));
-        return converter.toEntity((Class<T>) entity.getClass(), documentCollection);
+        documentPersistManager.firePreEntity(entity);
+        DocumentCollectionEntity document = converter.toDocument(Objects.requireNonNull(entity, "entity is required"));
+        documentPersistManager.firePreDocument(document);
+        DocumentCollectionEntity documentCollection = manager.get().update(document);
+        documentPersistManager.firePostDocument(documentCollection);
+        T entityUpdated = converter.toEntity((Class<T>) entity.getClass(), documentCollection);
+        documentPersistManager.firePostEntity(entityUpdated);
+        return entityUpdated;
     }
 
     @Override

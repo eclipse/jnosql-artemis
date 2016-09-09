@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import org.hamcrest.Matchers;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.diana.api.document.Document;
@@ -18,7 +17,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.verify;
 
 
 @RunWith(WeldJUnit4Runner.class)
@@ -48,13 +47,16 @@ public class DefaultDocumentCrudOperationTest {
 
     private ArgumentCaptor<DocumentCollectionEntity> captor;
 
+    private DocumentPersistManager documentPersistManager;
+
     @Before
     public void setUp() {
         managerMock = Mockito.mock(DocumentCollectionManager.class);
+        documentPersistManager = Mockito.mock(DocumentPersistManager.class);
         captor = ArgumentCaptor.forClass(DocumentCollectionEntity.class);
         Instance<DocumentCollectionManager> instance = Mockito.mock(Instance.class);
         Mockito.when(instance.get()).thenReturn(managerMock);
-        this.subject = new DefaultDocumentCrudOperation(converter, instance);
+        this.subject = new DefaultDocumentCrudOperation(converter, instance, documentPersistManager);
     }
 
     @Test
@@ -67,10 +69,14 @@ public class DefaultDocumentCrudOperationTest {
                 .thenReturn(document);
 
         subject.save(this.person);
-        Mockito.verify(managerMock).save(captor.capture());
+        verify(managerMock).save(captor.capture());
+        verify(documentPersistManager).firePostEntity(Mockito.any(Person.class));
+        verify(documentPersistManager).firePreEntity(Mockito.any(Person.class));
+        verify(documentPersistManager).firePreDocument(Mockito.any(DocumentCollectionEntity.class));
+        verify(documentPersistManager).firePostDocument(Mockito.any(DocumentCollectionEntity.class));
         DocumentCollectionEntity value = captor.getValue();
         assertEquals("Person", value.getName());
-        assertThat(value.getDocuments(), Matchers.containsInAnyOrder(documents));
+        assertEquals(4, value.getDocuments().size());
     }
 
 }
