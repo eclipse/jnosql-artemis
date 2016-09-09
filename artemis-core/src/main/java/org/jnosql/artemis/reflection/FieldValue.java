@@ -1,6 +1,7 @@
 package org.jnosql.artemis.reflection;
 
 
+import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.document.Document;
 
 public final class FieldValue {
@@ -29,6 +30,10 @@ public final class FieldValue {
 
     public Document toDocument() {
         return Document.of(field.getName(), value);
+    }
+
+    public Column toColumn() {
+        return Column.of(field.getName(), value);
     }
 
 }
