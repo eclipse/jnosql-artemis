@@ -28,6 +28,7 @@ public class DefaultColumnEntityConverterTest {
 
     @Inject
     private ClassRepresentations classRepresentations;
+
     private Column[] columns;
 
     private Actor actor = Actor.actorBuilder().withAge(10)

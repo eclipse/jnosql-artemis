@@ -10,8 +10,16 @@ import javax.inject.Inject;
 @ApplicationScoped
 class ClassConverter {
 
-    @Inject
+
     private Reflections reflections;
+
+    @Inject
+    ClassConverter(Reflections reflections) {
+        this.reflections = reflections;
+    }
+
+    ClassConverter() {
+    }
 
     public ClassRepresentation create(Class entityClass) {
         String entityName = reflections.getEntityName(entityClass);

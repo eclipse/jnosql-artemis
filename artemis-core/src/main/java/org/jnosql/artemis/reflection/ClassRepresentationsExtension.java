@@ -7,7 +7,6 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
-import javax.inject.Inject;
 import org.jnosql.artemis.Entity;
 
 @ApplicationScoped
@@ -16,8 +15,15 @@ public class ClassRepresentationsExtension implements Extension {
     private static final Logger LOGGER = Logger.getLogger(ClassRepresentationsExtension.class.getName());
 
 
-    @Inject
-    private ClassRepresentations classRepresentations;
+    private static final ClassRepresentations CLASS_REPRESENTATIONS;
+
+
+    static {
+        ClassConverter classConverter = new ClassConverter(new Reflections());
+        CLASS_REPRESENTATIONS = new ClassRepresentations(classConverter);
+    }
+
+
 
     public <T> void initializePropertyLoading(final @Observes ProcessAnnotatedType<T> target) {
 
@@ -27,7 +33,7 @@ public class ClassRepresentationsExtension implements Extension {
         }
         Class<T> javaClass = target.getAnnotatedType().getJavaClass();
         LOGGER.info("scanning type: "  + javaClass.getName());
-        classRepresentations.load(javaClass);
+        CLASS_REPRESENTATIONS.load(javaClass);
     }
 
 }
