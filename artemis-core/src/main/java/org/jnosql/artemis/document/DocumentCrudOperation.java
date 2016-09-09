@@ -18,7 +18,7 @@ public interface DocumentCrudOperation {
 
 
     /**
-     * Saves document collection entity
+     * Saves entity
      *
      * @param entity entity to be saved
      * @return the entity saved
@@ -36,7 +36,7 @@ public interface DocumentCrudOperation {
     <T> void saveAsync(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException;
 
     /**
-     * Saves document collection entity with time to live
+     * Saves entity with time to live
      *
      * @param entity entity to be saved
      * @param ttl    the time to live
@@ -55,7 +55,7 @@ public interface DocumentCrudOperation {
     <T> void saveAsync(T entity, TTL ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException;
 
     /**
-     * Saves documents collection entity, by default it's just run for each saving using
+     * Saves entity, by default it's just run for each saving using
      * {@link DocumentCollectionManager#save(DocumentCollectionEntity)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
