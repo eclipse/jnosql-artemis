@@ -197,7 +197,6 @@
         <module name="DeclarationOrder"/>
         <!--module name="MultipleStringLiterals"/-->
         <module name="OneStatementPerLine"/>
-        <module name="Indentation"/>
         <module name="ModifierOrder"/>
         <module name="RedundantModifier"/>
     </module>
