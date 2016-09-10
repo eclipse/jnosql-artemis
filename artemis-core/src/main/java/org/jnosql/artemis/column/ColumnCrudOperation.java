@@ -30,9 +30,6 @@ import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.TTL;
 import org.jnosql.diana.api.column.ColumnFamilyEntity;
 import org.jnosql.diana.api.column.ColumnQuery;
-import org.jnosql.diana.api.document.DocumentCollectionEntity;
-import org.jnosql.diana.api.document.DocumentCollectionManager;
-
 /**
  * This interface that represents the common operation between an entity and {@link ColumnFamilyEntity}
  */
@@ -77,7 +74,7 @@ public interface ColumnCrudOperation {
 
     /**
      * Saves entity, by default it's just run for each saving using
-     * {@link DocumentCollectionManager#save(DocumentCollectionEntity)},
+     * {@link ColumnCrudOperation#save(T)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -91,7 +88,7 @@ public interface ColumnCrudOperation {
 
     /**
      * Saves entities asynchronously, by default it's just run for each saving using
-     * {@link DocumentCollectionManager#saveAsync(DocumentCollectionEntity)},
+     * {@link ColumnCrudOperation#saveAsync(T)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -105,7 +102,7 @@ public interface ColumnCrudOperation {
 
     /**
      * Saves documents collection entity with time to live, by default it's just run for each saving using
-     * {@link DocumentCollectionManager#save(DocumentCollectionEntity, TTL)},
+     * {@link ColumnCrudOperation#save(T, TTL)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -121,7 +118,7 @@ public interface ColumnCrudOperation {
 
     /**
      * Saves entities asynchronously with time to live, by default it's just run for each saving using
-     * {@link DocumentCollectionManager#saveAsync(DocumentCollectionEntity, TTL)},
+     * {@link ColumnCrudOperation#saveAsync(T, TTL)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -218,7 +215,7 @@ public interface ColumnCrudOperation {
             UnsupportedOperationException;
 
     /**
-     * Finds {@link DocumentCollectionEntity} from query
+     * Finds {@link T} from query
      *
      * @param query - query to figure out entities
      * @return entities found by query
@@ -247,7 +244,7 @@ public interface ColumnCrudOperation {
     }
 
     /**
-     * Finds {@link DocumentCollectionEntity} from query asynchronously
+     * Finds {@link T} from query asynchronously
      *
      * @param query    query to find entities
      * @param callBack the callback, when the process is finished will call this instance returning

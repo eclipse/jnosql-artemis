@@ -20,10 +20,7 @@ package org.jnosql.artemis.reflection;
 
 
 import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jnosql.diana.api.Value;
