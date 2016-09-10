@@ -28,8 +28,6 @@ import java.util.stream.StreamSupport;
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
 import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.TTL;
-import org.jnosql.diana.api.document.DocumentCollectionEntity;
-import org.jnosql.diana.api.document.DocumentCollectionManager;
 import org.jnosql.diana.api.document.DocumentQuery;
 
 /**
@@ -77,7 +75,7 @@ public interface DocumentCrudOperation {
 
     /**
      * Saves entity, by default it's just run for each saving using
-     * {@link DocumentCollectionManager#save(DocumentCollectionEntity)},
+     * {@link DocumentCrudOperation#save(T)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -91,7 +89,7 @@ public interface DocumentCrudOperation {
 
     /**
      * Saves entities asynchronously, by default it's just run for each saving using
-     * {@link DocumentCollectionManager#saveAsync(DocumentCollectionEntity)},
+     * {@link DocumentCrudOperation#saveAsync(T)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -105,7 +103,7 @@ public interface DocumentCrudOperation {
 
     /**
      * Saves documents collection entity with time to live, by default it's just run for each saving using
-     * {@link DocumentCollectionManager#save(DocumentCollectionEntity, TTL)},
+     * {@link DocumentCrudOperation#save(T, TTL)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -121,7 +119,7 @@ public interface DocumentCrudOperation {
 
     /**
      * Saves entities asynchronously with time to live, by default it's just run for each saving using
-     * {@link DocumentCollectionManager#saveAsync(DocumentCollectionEntity, TTL)},
+     * {@link DocumentCrudOperation#saveAsync(T, TTL)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -218,7 +216,7 @@ public interface DocumentCrudOperation {
             UnsupportedOperationException;
 
     /**
-     * Finds {@link DocumentCollectionEntity} from query
+     * Finds {@link T} from query
      *
      * @param query - query to figure out entities
      * @return entities found by query
@@ -247,7 +245,7 @@ public interface DocumentCrudOperation {
     }
 
     /**
-     * Finds {@link DocumentCollectionEntity} from query asynchronously
+     * Finds {@link T} from query asynchronously
      *
      * @param query    query to find entities
      * @param callBack the callback, when the process is finished will call this instance returning

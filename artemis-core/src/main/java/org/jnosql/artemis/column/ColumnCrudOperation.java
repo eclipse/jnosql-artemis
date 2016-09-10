@@ -28,10 +28,9 @@ import java.util.stream.StreamSupport;
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
 import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.TTL;
-import org.jnosql.diana.api.column.ColumnFamilyEntity;
 import org.jnosql.diana.api.column.ColumnQuery;
 /**
- * This interface that represents the common operation between an entity and {@link ColumnFamilyEntity}
+ * This interface that represents the common operation between an entity and {@link org.jnosql.diana.api.column.ColumnFamilyEntity}
  */
 public interface ColumnCrudOperation {
 
