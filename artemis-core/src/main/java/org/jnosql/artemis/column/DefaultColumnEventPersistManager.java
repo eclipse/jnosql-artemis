@@ -9,7 +9,7 @@ import org.jnosql.artemis.EntityPrePersist;
 import org.jnosql.diana.api.column.ColumnFamilyEntity;
 
 @ApplicationScoped
-class DefaultColumnPersistManager implements ColumnPersistManager {
+class DefaultColumnEventPersistManager implements ColumnEventPersistManager {
     @Inject
     private Event<ColumnEntityPrePersist> documentEntityPrePersistEvent;
 

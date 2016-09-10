@@ -3,7 +3,7 @@ package org.jnosql.artemis.column;
 
 import org.jnosql.diana.api.column.ColumnFamilyEntity;
 
-public interface ColumnPersistManager {
+public interface ColumnEventPersistManager {
 
     void firePreDocument(ColumnFamilyEntity entity);
 

@@ -46,16 +46,16 @@ public class DefaultColumnCrudOperationTest {
 
     private ArgumentCaptor<ColumnFamilyEntity> captor;
 
-    private ColumnPersistManager columnPersistManager;
+    private ColumnEventPersistManager columnEventPersistManager;
 
     @Before
     public void setUp() {
         managerMock = Mockito.mock(ColumnFamilyManager.class);
-        columnPersistManager = Mockito.mock(ColumnPersistManager.class);
+        columnEventPersistManager = Mockito.mock(ColumnEventPersistManager.class);
         captor = ArgumentCaptor.forClass(ColumnFamilyEntity.class);
         Instance<ColumnFamilyManager> instance = Mockito.mock(Instance.class);
         Mockito.when(instance.get()).thenReturn(managerMock);
-        this.subject = new DefaultColumnCrudOperation(converter, instance, columnPersistManager);
+        this.subject = new DefaultColumnCrudOperation(converter, instance, columnEventPersistManager);
     }
 
     @Test
@@ -69,10 +69,10 @@ public class DefaultColumnCrudOperationTest {
 
         subject.save(this.person);
         verify(managerMock).save(captor.capture());
-        verify(columnPersistManager).firePostEntity(Mockito.any(Person.class));
-        verify(columnPersistManager).firePreEntity(Mockito.any(Person.class));
-        verify(columnPersistManager).firePreDocument(Mockito.any(ColumnFamilyEntity.class));
-        verify(columnPersistManager).firePostDocument(Mockito.any(ColumnFamilyEntity.class));
+        verify(columnEventPersistManager).firePostEntity(Mockito.any(Person.class));
+        verify(columnEventPersistManager).firePreEntity(Mockito.any(Person.class));
+        verify(columnEventPersistManager).firePreDocument(Mockito.any(ColumnFamilyEntity.class));
+        verify(columnEventPersistManager).firePostDocument(Mockito.any(ColumnFamilyEntity.class));
         ColumnFamilyEntity value = captor.getValue();
         assertEquals("Person", value.getName());
         assertEquals(4, value.getColumns().size());
