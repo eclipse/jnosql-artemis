@@ -71,7 +71,7 @@ public class ClassRepresentations {
      *
      * @param name the name to find ah {@link ClassRepresentation} instance
      * @return the {@link ClassRepresentation} from name
-     * @throws ClassNotFoundException when the class is not loaded
+     * @throws ClassInformationNotFoundException when the class is not loaded
      */
     public ClassRepresentation findByName(String name) throws ClassInformationNotFoundException {
         return REPRESENTATIONS.keySet().stream()

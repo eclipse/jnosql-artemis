@@ -29,6 +29,7 @@ import org.jnosql.diana.api.ExecuteAsyncQueryException;
 import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.TTL;
 import org.jnosql.diana.api.column.ColumnQuery;
+
 /**
  * This interface that represents the common operation between an entity and {@link org.jnosql.diana.api.column.ColumnFamilyEntity}
  */
@@ -38,6 +39,7 @@ public interface ColumnCrudOperation {
      * Saves entity
      *
      * @param entity entity to be saved
+     * @param <T>    the instance type
      * @return the entity saved
      * @throws NullPointerException when document is null
      */
@@ -47,6 +49,7 @@ public interface ColumnCrudOperation {
      * Saves an entity asynchronously
      *
      * @param entity entity to be saved
+     * @param <T>    the instance type
      * @throws ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to save asynchronous
      */
@@ -57,6 +60,7 @@ public interface ColumnCrudOperation {
      *
      * @param entity entity to be saved
      * @param ttl    the time to live
+     * @param <T>    the instance type
      * @return the entity saved
      */
     <T> T save(T entity, TTL ttl);
@@ -66,6 +70,7 @@ public interface ColumnCrudOperation {
      *
      * @param entity entity to be saved
      * @param ttl    the time to live
+     * @param <T>    the instance type
      * @throws ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to save asynchronous
      */
@@ -73,10 +78,11 @@ public interface ColumnCrudOperation {
 
     /**
      * Saves entity, by default it's just run for each saving using
-     * {@link ColumnCrudOperation#save(T)},
+     * {@link ColumnCrudOperation#save(Object)}},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
+     * @param <T>      the instance type
      * @return the entity saved
      * @throws NullPointerException when entities is null
      */
@@ -87,10 +93,11 @@ public interface ColumnCrudOperation {
 
     /**
      * Saves entities asynchronously, by default it's just run for each saving using
-     * {@link ColumnCrudOperation#saveAsync(T)},
+     * {@link ColumnCrudOperation#saveAsync(Object)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
+     * @param <T>      the instance type
      * @throws ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to save asynchronous
      */
@@ -101,10 +108,11 @@ public interface ColumnCrudOperation {
 
     /**
      * Saves documents collection entity with time to live, by default it's just run for each saving using
-     * {@link ColumnCrudOperation#save(T, TTL)},
+     * {@link ColumnCrudOperation#save(Object, TTL)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
+     * @param <T>      the instance type
      * @param ttl      time to live
      * @return the entity saved
      * @throws NullPointerException when entities is null
@@ -117,11 +125,12 @@ public interface ColumnCrudOperation {
 
     /**
      * Saves entities asynchronously with time to live, by default it's just run for each saving using
-     * {@link ColumnCrudOperation#saveAsync(T, TTL)},
+     * {@link ColumnCrudOperation#saveAsync(Object, TTL)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
      * @param ttl      time to live
+     * @param <T>      the instance type
      * @throws ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to save asynchronous
      */
@@ -137,6 +146,7 @@ public interface ColumnCrudOperation {
      * @param entity   entity to be saved
      * @param callBack the callback, when the process is finished will call this instance returning
      *                 the saved entity within parameters
+     * @param <T>      the instance type
      * @throws ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to save asynchronous
      */
@@ -150,6 +160,7 @@ public interface ColumnCrudOperation {
      * @param ttl      time to live
      * @param callBack the callback, when the process is finished will call this instance returning
      *                 the saved entity within parameters
+     * @param <T>      the instance type
      * @throws ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to save asynchronous
      */
@@ -160,6 +171,7 @@ public interface ColumnCrudOperation {
      * Updates a entity
      *
      * @param entity entity to be updated
+     * @param <T>    the instance type
      * @return the entity updated
      */
     <T> T update(T entity);
@@ -168,6 +180,7 @@ public interface ColumnCrudOperation {
      * Updates an entity asynchronously
      *
      * @param entity entity to be updated
+     * @param <T>    the instance type
      * @throws ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to save asynchronous
      */
@@ -179,6 +192,7 @@ public interface ColumnCrudOperation {
      * @param entity   entity to be updated
      * @param callBack the callback, when the process is finished will call this instance returning
      *                 the updated entity within parametersa
+     * @param <T>      the instance type
      * @throws ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to save asynchronous
      */
@@ -217,6 +231,7 @@ public interface ColumnCrudOperation {
      * Finds {@link T} from query
      *
      * @param query - query to figure out entities
+     * @param <T>   the instance type
      * @return entities found by query
      * @throws NullPointerException when query is null
      */
@@ -226,6 +241,7 @@ public interface ColumnCrudOperation {
      * Returns a single entity from query
      *
      * @param query - query to figure out entities
+     * @param <T>   the instance type
      * @return an entity on {@link Optional} or {@link Optional#empty()} when the result is not found.
      * @throws NonUniqueResultException when the result has more than 1 entity
      * @throws NullPointerException     when query is null
@@ -246,6 +262,7 @@ public interface ColumnCrudOperation {
      * Finds {@link T} from query asynchronously
      *
      * @param query    query to find entities
+     * @param <T>      the instance type
      * @param callBack the callback, when the process is finished will call this instance returning
      *                 the result of query within parameters
      * @throws ExecuteAsyncQueryException    when there is a async error
@@ -258,6 +275,7 @@ public interface ColumnCrudOperation {
      * Executes a native query from database, this query may be difference between kind of database.
      *
      * @param query query to be executed
+     * @param <T>   the instance type
      * @return the result of query
      * @throws UnsupportedOperationException when the database does not have support to run native query
      */
@@ -270,6 +288,7 @@ public interface ColumnCrudOperation {
      * @param query    query to be executed
      * @param callBack the callback, when the process is finished will call this instance returning
      *                 the result of query within parameters
+     * @param <T>      the instance type
      * @throws ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to run native query async.
      */

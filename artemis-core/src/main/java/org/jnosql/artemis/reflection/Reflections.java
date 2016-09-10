@@ -80,6 +80,7 @@ public class Reflections {
      * Create new instance of this class.
      *
      * @param clazz the class to create object
+     * @param <T>   the instance type
      * @return the new instance that class
      */
     public <T> T newInstance(Class<T> clazz) {

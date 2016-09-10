@@ -40,6 +40,7 @@ public interface DocumentCrudOperation {
      * Saves entity
      *
      * @param entity entity to be saved
+     * @param <T>    the instance type
      * @return the entity saved
      * @throws NullPointerException when document is null
      */
@@ -49,6 +50,7 @@ public interface DocumentCrudOperation {
      * Saves an entity asynchronously
      *
      * @param entity entity to be saved
+     * @param <T>    the instance type
      * @throws ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to save asynchronous
      */
@@ -58,6 +60,7 @@ public interface DocumentCrudOperation {
      * Saves entity with time to live
      *
      * @param entity entity to be saved
+     * @param <T>    the instance type
      * @param ttl    the time to live
      * @return the entity saved
      */
@@ -67,6 +70,7 @@ public interface DocumentCrudOperation {
      * Saves an entity asynchronously with time to live
      *
      * @param entity entity to be saved
+     * @param <T>    the instance type
      * @param ttl    the time to live
      * @throws ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to save asynchronous
@@ -75,24 +79,26 @@ public interface DocumentCrudOperation {
 
     /**
      * Saves entity, by default it's just run for each saving using
-     * {@link DocumentCrudOperation#save(T)},
+     * {@link DocumentCrudOperation#save(Object)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
+     * @param <T>      the instance type
      * @return the entity saved
      * @throws NullPointerException when entities is null
      */
-     default <T> Iterable<T> save(Iterable<T> entities) throws NullPointerException {
+    default <T> Iterable<T> save(Iterable<T> entities) throws NullPointerException {
         Objects.requireNonNull(entities, "entities is required");
         return StreamSupport.stream(entities.spliterator(), false).map(this::save).collect(Collectors.toList());
     }
 
     /**
      * Saves entities asynchronously, by default it's just run for each saving using
-     * {@link DocumentCrudOperation#saveAsync(T)},
+     * {@link DocumentCrudOperation#saveAsync(Object)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
+     * @param <T>      the instance type
      * @throws ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to save asynchronous
      */
@@ -103,10 +109,11 @@ public interface DocumentCrudOperation {
 
     /**
      * Saves documents collection entity with time to live, by default it's just run for each saving using
-     * {@link DocumentCrudOperation#save(T, TTL)},
+     * {@link DocumentCrudOperation#save(Object, TTL)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
+     * @param <T>      the instance type
      * @param ttl      time to live
      * @return the entity saved
      * @throws NullPointerException when entities is null
@@ -119,10 +126,11 @@ public interface DocumentCrudOperation {
 
     /**
      * Saves entities asynchronously with time to live, by default it's just run for each saving using
-     * {@link DocumentCrudOperation#saveAsync(T, TTL)},
+     * {@link DocumentCrudOperation#saveAsync(Object, TTL)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
+     * @param <T>      the instance type
      * @param ttl      time to live
      * @throws ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to save asynchronous
@@ -139,6 +147,7 @@ public interface DocumentCrudOperation {
      * @param entity   entity to be saved
      * @param callBack the callback, when the process is finished will call this instance returning
      *                 the saved entity within parameters
+     * @param <T>      the instance type
      * @throws ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to save asynchronous
      */
@@ -152,6 +161,7 @@ public interface DocumentCrudOperation {
      * @param ttl      time to live
      * @param callBack the callback, when the process is finished will call this instance returning
      *                 the saved entity within parameters
+     * @param <T>      the instance type
      * @throws ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to save asynchronous
      */
@@ -162,6 +172,7 @@ public interface DocumentCrudOperation {
      * Updates a entity
      *
      * @param entity entity to be updated
+     *               @param <T>      the instance type
      * @return the entity updated
      */
     <T> T update(T entity);
@@ -170,6 +181,7 @@ public interface DocumentCrudOperation {
      * Updates an entity asynchronously
      *
      * @param entity entity to be updated
+     * @param <T>    the instance type
      * @throws ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to save asynchronous
      */
@@ -181,6 +193,7 @@ public interface DocumentCrudOperation {
      * @param entity   entity to be updated
      * @param callBack the callback, when the process is finished will call this instance returning
      *                 the updated entity within parametersa
+     * @param <T>      the instance type
      * @throws ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to save asynchronous
      */
@@ -192,7 +205,7 @@ public interface DocumentCrudOperation {
      *
      * @param query query to delete an entity
      */
-     void delete(DocumentQuery query);
+    void delete(DocumentQuery query);
 
     /**
      * Deletes an entity asynchronously
@@ -219,6 +232,7 @@ public interface DocumentCrudOperation {
      * Finds {@link T} from query
      *
      * @param query - query to figure out entities
+     * @param <T>   the instance type
      * @return entities found by query
      * @throws NullPointerException when query is null
      */
@@ -228,11 +242,12 @@ public interface DocumentCrudOperation {
      * Returns a single entity from query
      *
      * @param query - query to figure out entities
+     * @param <T>   the instance type
      * @return an entity on {@link Optional} or {@link Optional#empty()} when the result is not found.
      * @throws NonUniqueResultException when the result has more than 1 entity
-     * @throws NullPointerException  when query is null
+     * @throws NullPointerException     when query is null
      */
-    default<T>  Optional<T> singleResult(DocumentQuery query) throws NonUniqueResultException {
+    default <T> Optional<T> singleResult(DocumentQuery query) throws NonUniqueResultException {
         List<T> entities = find(query);
         if (entities.isEmpty()) {
             return Optional.empty();
@@ -248,6 +263,7 @@ public interface DocumentCrudOperation {
      * Finds {@link T} from query asynchronously
      *
      * @param query    query to find entities
+     * @param <T>      the instance type
      * @param callBack the callback, when the process is finished will call this instance returning
      *                 the result of query within parameters
      * @throws ExecuteAsyncQueryException    when there is a async error
@@ -260,6 +276,7 @@ public interface DocumentCrudOperation {
      * Executes a native query from database, this query may be difference between kind of database.
      *
      * @param query query to be executed
+     * @param <T>   the instance type
      * @return the result of query
      * @throws UnsupportedOperationException when the database does not have support to run native query
      */
@@ -270,6 +287,7 @@ public interface DocumentCrudOperation {
      * asynchronously.
      *
      * @param query    query to be executed
+     * @param <T>      the instance type
      * @param callBack the callback, when the process is finished will call this instance returning
      *                 the result of query within parameters
      * @throws ExecuteAsyncQueryException    when there is a async error

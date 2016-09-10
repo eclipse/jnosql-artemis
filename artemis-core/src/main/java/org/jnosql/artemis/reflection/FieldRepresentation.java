@@ -47,7 +47,7 @@ public interface FieldRepresentation extends Serializable {
      * Returns the name of the field that can be eiher the field name
      * or {@link org.jnosql.artemis.Column#value()}
      *
-     * @return
+     * @return the name
      */
     String getName();
 
