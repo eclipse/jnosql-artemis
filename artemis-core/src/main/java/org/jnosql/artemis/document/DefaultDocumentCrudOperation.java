@@ -44,24 +44,24 @@ class DefaultDocumentCrudOperation implements DocumentCrudOperation {
 
     private final Instance<DocumentCollectionManager> manager;
 
-    private final DocumentPersistManager documentPersistManager;
+    private final DocumentEventPersistManager documentEventPersistManager;
 
     @Inject
-    DefaultDocumentCrudOperation(DocumentEntityConverter converter, Instance<DocumentCollectionManager> manager, DocumentPersistManager documentPersistManager) {
+    DefaultDocumentCrudOperation(DocumentEntityConverter converter, Instance<DocumentCollectionManager> manager, DocumentEventPersistManager documentEventPersistManager) {
         this.converter = converter;
         this.manager = manager;
-        this.documentPersistManager = documentPersistManager;
+        this.documentEventPersistManager = documentEventPersistManager;
     }
 
     @Override
     public <T> T save(T entity) throws NullPointerException {
-        documentPersistManager.firePreEntity(entity);
+        documentEventPersistManager.firePreEntity(entity);
         DocumentCollectionEntity document = converter.toDocument(Objects.requireNonNull(entity, "entity is required"));
-        documentPersistManager.firePreDocument(document);
+        documentEventPersistManager.firePreDocument(document);
         DocumentCollectionEntity documentCollection = manager.get().save(document);
-        documentPersistManager.firePostDocument(documentCollection);
+        documentEventPersistManager.firePostDocument(documentCollection);
         T entityUpdated = converter.toEntity((Class<T>) entity.getClass(), documentCollection);
-        documentPersistManager.firePostEntity(entityUpdated);
+        documentEventPersistManager.firePostEntity(entityUpdated);
         return entityUpdated;
     }
 
@@ -72,13 +72,13 @@ class DefaultDocumentCrudOperation implements DocumentCrudOperation {
 
     @Override
     public <T> T save(T entity, TTL ttl) {
-        documentPersistManager.firePreEntity(entity);
+        documentEventPersistManager.firePreEntity(entity);
         DocumentCollectionEntity document = converter.toDocument(Objects.requireNonNull(entity, "entity is required"));
-        documentPersistManager.firePreDocument(document);
+        documentEventPersistManager.firePreDocument(document);
         DocumentCollectionEntity documentCollection = manager.get().save(document, ttl);
-        documentPersistManager.firePostDocument(documentCollection);
+        documentEventPersistManager.firePostDocument(documentCollection);
         T entityUpdated = converter.toEntity((Class<T>) entity.getClass(), documentCollection);
-        documentPersistManager.firePostEntity(entityUpdated);
+        documentEventPersistManager.firePostEntity(entityUpdated);
         return entityUpdated;
     }
 
@@ -112,13 +112,13 @@ class DefaultDocumentCrudOperation implements DocumentCrudOperation {
 
     @Override
     public <T> T update(T entity) {
-        documentPersistManager.firePreEntity(entity);
+        documentEventPersistManager.firePreEntity(entity);
         DocumentCollectionEntity document = converter.toDocument(Objects.requireNonNull(entity, "entity is required"));
-        documentPersistManager.firePreDocument(document);
+        documentEventPersistManager.firePreDocument(document);
         DocumentCollectionEntity documentCollection = manager.get().update(document);
-        documentPersistManager.firePostDocument(documentCollection);
+        documentEventPersistManager.firePostDocument(documentCollection);
         T entityUpdated = converter.toEntity((Class<T>) entity.getClass(), documentCollection);
-        documentPersistManager.firePostEntity(entityUpdated);
+        documentEventPersistManager.firePostEntity(entityUpdated);
         return entityUpdated;
     }
 

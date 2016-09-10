@@ -3,7 +3,7 @@ package org.jnosql.artemis.document;
 
 import org.jnosql.diana.api.document.DocumentCollectionEntity;
 
-public interface DocumentPersistManager {
+public interface DocumentEventPersistManager {
 
     void firePreDocument(DocumentCollectionEntity entity);
 

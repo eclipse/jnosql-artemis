@@ -27,10 +27,10 @@ import org.jnosql.artemis.EntityPrePersist;
 import org.jnosql.diana.api.document.DocumentCollectionEntity;
 
 /**
- * The default implementation of {@link DocumentPersistManager}
+ * The default implementation of {@link DocumentEventPersistManager}
  */
 @ApplicationScoped
-class DefaultDocumentPersistManager implements DocumentPersistManager {
+class DefaultDocumentEventPersistManager implements DocumentEventPersistManager {
 
     @Inject
     private Event<DocumentEntityPrePersist> documentEntityPrePersistEvent;

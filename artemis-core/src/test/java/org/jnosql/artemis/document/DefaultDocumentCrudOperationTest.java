@@ -47,16 +47,16 @@ public class DefaultDocumentCrudOperationTest {
 
     private ArgumentCaptor<DocumentCollectionEntity> captor;
 
-    private DocumentPersistManager documentPersistManager;
+    private DocumentEventPersistManager documentEventPersistManager;
 
     @Before
     public void setUp() {
         managerMock = Mockito.mock(DocumentCollectionManager.class);
-        documentPersistManager = Mockito.mock(DocumentPersistManager.class);
+        documentEventPersistManager = Mockito.mock(DocumentEventPersistManager.class);
         captor = ArgumentCaptor.forClass(DocumentCollectionEntity.class);
         Instance<DocumentCollectionManager> instance = Mockito.mock(Instance.class);
         Mockito.when(instance.get()).thenReturn(managerMock);
-        this.subject = new DefaultDocumentCrudOperation(converter, instance, documentPersistManager);
+        this.subject = new DefaultDocumentCrudOperation(converter, instance, documentEventPersistManager);
     }
 
     @Test
@@ -70,10 +70,10 @@ public class DefaultDocumentCrudOperationTest {
 
         subject.save(this.person);
         verify(managerMock).save(captor.capture());
-        verify(documentPersistManager).firePostEntity(Mockito.any(Person.class));
-        verify(documentPersistManager).firePreEntity(Mockito.any(Person.class));
-        verify(documentPersistManager).firePreDocument(Mockito.any(DocumentCollectionEntity.class));
-        verify(documentPersistManager).firePostDocument(Mockito.any(DocumentCollectionEntity.class));
+        verify(documentEventPersistManager).firePostEntity(Mockito.any(Person.class));
+        verify(documentEventPersistManager).firePreEntity(Mockito.any(Person.class));
+        verify(documentEventPersistManager).firePreDocument(Mockito.any(DocumentCollectionEntity.class));
+        verify(documentEventPersistManager).firePostDocument(Mockito.any(DocumentCollectionEntity.class));
         DocumentCollectionEntity value = captor.getValue();
         assertEquals("Person", value.getName());
         assertEquals(4, value.getDocuments().size());
