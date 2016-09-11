@@ -19,30 +19,31 @@
 package org.jnosql.artemis.reflection;
 
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jnosql.artemis.Entity;
 
 /**
- * This class is a CDI extension to load all class that has {@link Entity} annotation
+ * This class is a CDI extension to load all class that has {@link Entity} annotation.
+ * This extension will load all Classes and put in a map.
+ * Where the key is {@link Class#getName()} and the value is {@link ClassRepresentation}
  */
 @ApplicationScoped
 public class ClassRepresentationsExtension implements Extension {
 
     private static final Logger LOGGER = Logger.getLogger(ClassRepresentationsExtension.class.getName());
 
+    private final ClassConverter classConverter = new ClassConverter(new Reflections());
 
-    private static final ClassRepresentations CLASS_REPRESENTATIONS;
-
-
-    static {
-        ClassConverter classConverter = new ClassConverter(new Reflections());
-        CLASS_REPRESENTATIONS = new ClassRepresentations(classConverter);
-    }
+    private final Map<String, ClassRepresentation> representations = new ConcurrentHashMap<>();
 
 
     /**
@@ -59,7 +60,23 @@ public class ClassRepresentationsExtension implements Extension {
         }
         Class<T> javaClass = target.getAnnotatedType().getJavaClass();
         LOGGER.info("scanning type: " + javaClass.getName());
-        CLASS_REPRESENTATIONS.load(javaClass);
+        ClassRepresentation classRepresentation = classConverter.create(javaClass);
+        representations.put(classRepresentation.getName(), classRepresentation);
     }
 
+
+    /**
+     * Returns the representations loaded in CDI startup
+     * @return the class loaded
+     */
+    public Map<String, ClassRepresentation> getRepresentations() {
+        return representations;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
+                .append("representations", representations)
+                .toString();
+    }
 }

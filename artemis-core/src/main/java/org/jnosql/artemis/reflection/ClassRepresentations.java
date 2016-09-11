@@ -32,14 +32,15 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @ApplicationScoped
 public class ClassRepresentations {
 
-    private static final Map<String, ClassRepresentation> REPRESENTATIONS = new ConcurrentHashMap<>();
+    private Map<String, ClassRepresentation> representations = new ConcurrentHashMap<>();
 
 
     private ClassConverter classConverter;
 
     @Inject
-    ClassRepresentations(ClassConverter classConverter) {
+    ClassRepresentations(ClassConverter classConverter, ClassRepresentationsExtension extension) {
         this.classConverter = classConverter;
+        representations.putAll(extension.getRepresentations());
     }
 
     ClassRepresentations() {
@@ -47,7 +48,7 @@ public class ClassRepresentations {
 
     void load(Class classEntity) {
         ClassRepresentation classRepresentation = classConverter.create(classEntity);
-        REPRESENTATIONS.put(classEntity.getName(), classRepresentation);
+        representations.put(classEntity.getName(), classRepresentation);
     }
 
     /**
@@ -58,7 +59,7 @@ public class ClassRepresentations {
      * @return the class representation
      */
     public ClassRepresentation get(Class classEntity) {
-        ClassRepresentation classRepresentation = REPRESENTATIONS.get(classEntity.getName());
+        ClassRepresentation classRepresentation = representations.get(classEntity.getName());
         if (classRepresentation == null) {
             load(classEntity);
             return this.get(classEntity);
@@ -74,8 +75,8 @@ public class ClassRepresentations {
      * @throws ClassInformationNotFoundException when the class is not loaded
      */
     public ClassRepresentation findByName(String name) throws ClassInformationNotFoundException {
-        return REPRESENTATIONS.keySet().stream()
-                .map(k -> REPRESENTATIONS.get(k))
+        return representations.keySet().stream()
+                .map(k -> representations.get(k))
                 .filter(r -> r.getName().equalsIgnoreCase(name)).findFirst()
                 .orElseThrow(() -> new ClassInformationNotFoundException("There is not entity found with the name: " + name));
     }
@@ -83,7 +84,7 @@ public class ClassRepresentations {
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE)
-                .append("REPRESENTATIONS", REPRESENTATIONS)
+                .append("REPRESENTATIONS", representations)
                 .toString();
     }
 
