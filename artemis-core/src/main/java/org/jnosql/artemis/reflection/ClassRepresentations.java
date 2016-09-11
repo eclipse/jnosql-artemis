@@ -19,39 +19,10 @@
 package org.jnosql.artemis.reflection;
 
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-
 /**
  * This class contains all the class in cached way to be used inside artemis.
  */
-@ApplicationScoped
-public class ClassRepresentations {
-
-    private Map<String, ClassRepresentation> representations;
-
-
-    @Inject
-    private ClassConverter classConverter;
-
-    @Inject
-    private ClassRepresentationsExtension extension;
-
-    @PostConstruct
-    public void init() {
-        representations = new ConcurrentHashMap<>();
-        representations.putAll(extension.getRepresentations());
-    }
-
-    void load(Class classEntity) {
-        ClassRepresentation classRepresentation = classConverter.create(classEntity);
-        representations.put(classEntity.getName(), classRepresentation);
-    }
+public interface ClassRepresentations {
 
     /**
      * Find a class in the cached way and return in a class representation,
@@ -59,15 +30,9 @@ public class ClassRepresentations {
      *
      * @param classEntity the class of entity
      * @return the class representation
+     * @throws NullPointerException whend class entity is null
      */
-    public ClassRepresentation get(Class classEntity) {
-        ClassRepresentation classRepresentation = representations.get(classEntity.getName());
-        if (classRepresentation == null) {
-            load(classEntity);
-            return this.get(classEntity);
-        }
-        return classRepresentation;
-    }
+    ClassRepresentation get(Class classEntity) throws NullPointerException;
 
     /**
      * Returns the {@link ClassRepresentation} instance from {@link ClassRepresentation#getName()} in ignore case
@@ -76,19 +41,6 @@ public class ClassRepresentations {
      * @return the {@link ClassRepresentation} from name
      * @throws ClassInformationNotFoundException when the class is not loaded
      */
-    public ClassRepresentation findByName(String name) throws ClassInformationNotFoundException {
-        return representations.keySet().stream()
-                .map(k -> representations.get(k))
-                .filter(r -> r.getName().equalsIgnoreCase(name)).findFirst()
-                .orElseThrow(() -> new ClassInformationNotFoundException("There is not entity found with the name: " + name));
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE)
-                .append("REPRESENTATIONS", representations)
-                .toString();
-    }
-
+    ClassRepresentation findByName(String name) throws ClassInformationNotFoundException;
 
 }
