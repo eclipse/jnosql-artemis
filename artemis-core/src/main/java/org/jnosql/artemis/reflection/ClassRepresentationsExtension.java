@@ -67,6 +67,7 @@ public class ClassRepresentationsExtension implements Extension {
 
     /**
      * Returns the representations loaded in CDI startup
+     *
      * @return the class loaded
      */
     public Map<String, ClassRepresentation> getRepresentations() {
@@ -76,6 +77,7 @@ public class ClassRepresentationsExtension implements Extension {
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
+                .append("representations-size", representations.size())
                 .append("representations", representations)
                 .toString();
     }

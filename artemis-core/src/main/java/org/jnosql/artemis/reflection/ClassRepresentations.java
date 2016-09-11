@@ -21,6 +21,7 @@ package org.jnosql.artemis.reflection;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -32,18 +33,19 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @ApplicationScoped
 public class ClassRepresentations {
 
-    private Map<String, ClassRepresentation> representations = new ConcurrentHashMap<>();
+    private Map<String, ClassRepresentation> representations;
 
 
+    @Inject
     private ClassConverter classConverter;
 
     @Inject
-    ClassRepresentations(ClassConverter classConverter, ClassRepresentationsExtension extension) {
-        this.classConverter = classConverter;
-        representations.putAll(extension.getRepresentations());
-    }
+    private ClassRepresentationsExtension extension;
 
-    ClassRepresentations() {
+    @PostConstruct
+    public void init() {
+        representations = new ConcurrentHashMap<>();
+        representations.putAll(extension.getRepresentations());
     }
 
     void load(Class classEntity) {
