@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
 import org.jnosql.diana.api.TTL;
 import org.jnosql.diana.api.column.ColumnFamilyEntity;
@@ -39,17 +40,20 @@ import org.jnosql.diana.api.column.ColumnQuery;
 @ColumnCRUDInterceptor
 class DefaultColumnCrudOperation implements ColumnCrudOperation {
 
-    private final ColumnEntityConverter converter;
+    private ColumnEntityConverter converter;
 
-    private final Instance<ColumnFamilyManager> manager;
+    private Instance<ColumnFamilyManager> manager;
 
-    private final ColumnEventPersistManager columnEventPersistManager;
+    private ColumnEventPersistManager columnEventPersistManager;
 
     @Inject
     DefaultColumnCrudOperation(ColumnEntityConverter converter, Instance<ColumnFamilyManager> manager, ColumnEventPersistManager columnEventPersistManager) {
         this.converter = converter;
         this.manager = manager;
         this.columnEventPersistManager = columnEventPersistManager;
+    }
+
+    DefaultColumnCrudOperation() {
     }
 
     @Override

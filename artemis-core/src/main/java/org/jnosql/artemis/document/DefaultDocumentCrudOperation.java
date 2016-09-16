@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
 import org.jnosql.diana.api.TTL;
 import org.jnosql.diana.api.document.DocumentCollectionEntity;
@@ -40,17 +41,21 @@ import org.jnosql.diana.api.document.DocumentQuery;
 class DefaultDocumentCrudOperation implements DocumentCrudOperation {
 
 
-    private final DocumentEntityConverter converter;
+    private DocumentEntityConverter converter;
 
-    private final Instance<DocumentCollectionManager> manager;
+    private Instance<DocumentCollectionManager> manager;
 
-    private final DocumentEventPersistManager documentEventPersistManager;
+    private DocumentEventPersistManager documentEventPersistManager;
+
 
     @Inject
     DefaultDocumentCrudOperation(DocumentEntityConverter converter, Instance<DocumentCollectionManager> manager, DocumentEventPersistManager documentEventPersistManager) {
         this.converter = converter;
         this.manager = manager;
         this.documentEventPersistManager = documentEventPersistManager;
+    }
+
+    DefaultDocumentCrudOperation() {
     }
 
     @Override
