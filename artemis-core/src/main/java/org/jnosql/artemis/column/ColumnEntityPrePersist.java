@@ -19,20 +19,21 @@
 package org.jnosql.artemis.column;
 
 
+import org.jnosql.diana.api.column.ColumnEntity;
+
 import java.util.Objects;
-import org.jnosql.diana.api.column.ColumnFamilyEntity;
 
 /**
- * The interface represents the model before the {@link ColumnFamilyEntity} be saved that  event will fired.
+ * The interface represents the model before the {@link ColumnEntity} be saved that  event will fired.
  */
 public interface ColumnEntityPrePersist {
 
     /**
-     * The {@link ColumnFamilyEntity}  before be saved
+     * The {@link ColumnEntity}  before be saved
      *
-     * @return the {@link ColumnFamilyEntity} instance
+     * @return the {@link ColumnEntity} instance
      */
-    ColumnFamilyEntity getEntity();
+    ColumnEntity getEntity();
 
     /**
      * Creates the {@link ColumnEntityPrePersist} instance
@@ -41,7 +42,7 @@ public interface ColumnEntityPrePersist {
      * @return {@link ColumnEntityPrePersist} instance
      * @throws NullPointerException when the entity is null
      */
-    static ColumnEntityPrePersist of(ColumnFamilyEntity entity) throws NullPointerException {
+    static ColumnEntityPrePersist of(ColumnEntity entity) throws NullPointerException {
         Objects.requireNonNull(entity, "Entity is required");
         return new DefaultColumnEntityPersist(entity);
     }

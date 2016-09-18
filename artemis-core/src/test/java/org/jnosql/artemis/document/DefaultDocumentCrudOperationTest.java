@@ -18,21 +18,23 @@
  */
 package org.jnosql.artemis.document;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.diana.api.document.Document;
-import org.jnosql.diana.api.document.DocumentCollectionEntity;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
+import org.jnosql.diana.api.document.DocumentEntity;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
@@ -63,7 +65,7 @@ public class DefaultDocumentCrudOperationTest {
 
     private DefaultDocumentCrudOperation subject;
 
-    private ArgumentCaptor<DocumentCollectionEntity> captor;
+    private ArgumentCaptor<DocumentEntity> captor;
 
     private DocumentEventPersistManager documentEventPersistManager;
 
@@ -71,7 +73,7 @@ public class DefaultDocumentCrudOperationTest {
     public void setUp() {
         managerMock = Mockito.mock(DocumentCollectionManager.class);
         documentEventPersistManager = Mockito.mock(DocumentEventPersistManager.class);
-        captor = ArgumentCaptor.forClass(DocumentCollectionEntity.class);
+        captor = ArgumentCaptor.forClass(DocumentEntity.class);
         Instance<DocumentCollectionManager> instance = Mockito.mock(Instance.class);
         Mockito.when(instance.get()).thenReturn(managerMock);
         this.subject = new DefaultDocumentCrudOperation(converter, instance, documentEventPersistManager);
@@ -79,20 +81,20 @@ public class DefaultDocumentCrudOperationTest {
 
     @Test
     public void shouldSave() {
-        DocumentCollectionEntity document = DocumentCollectionEntity.of("Person");
+        DocumentEntity document = DocumentEntity.of("Person");
         document.addAll(Stream.of(documents).collect(Collectors.toList()));
 
         Mockito.when(managerMock
-                .save(Mockito.any(DocumentCollectionEntity.class)))
+                .save(Mockito.any(DocumentEntity.class)))
                 .thenReturn(document);
 
         subject.save(this.person);
         verify(managerMock).save(captor.capture());
         verify(documentEventPersistManager).firePostEntity(Mockito.any(Person.class));
         verify(documentEventPersistManager).firePreEntity(Mockito.any(Person.class));
-        verify(documentEventPersistManager).firePreDocument(Mockito.any(DocumentCollectionEntity.class));
-        verify(documentEventPersistManager).firePostDocument(Mockito.any(DocumentCollectionEntity.class));
-        DocumentCollectionEntity value = captor.getValue();
+        verify(documentEventPersistManager).firePreDocument(Mockito.any(DocumentEntity.class));
+        verify(documentEventPersistManager).firePostDocument(Mockito.any(DocumentEntity.class));
+        DocumentEntity value = captor.getValue();
         assertEquals("Person", value.getName());
         assertEquals(4, value.getDocuments().size());
     }

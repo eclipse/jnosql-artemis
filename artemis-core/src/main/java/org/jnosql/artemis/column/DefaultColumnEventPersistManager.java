@@ -19,12 +19,13 @@
 package org.jnosql.artemis.column;
 
 
+import org.jnosql.artemis.EntityPostPersit;
+import org.jnosql.artemis.EntityPrePersist;
+import org.jnosql.diana.api.column.ColumnEntity;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import org.jnosql.artemis.EntityPostPersit;
-import org.jnosql.artemis.EntityPrePersist;
-import org.jnosql.diana.api.column.ColumnFamilyEntity;
 
 /**
  * The default implementation of {@link ColumnEventPersistManager}
@@ -44,12 +45,12 @@ class DefaultColumnEventPersistManager implements ColumnEventPersistManager {
     private Event<EntityPostPersit> entityPostPersitEvent;
 
     @Override
-    public void firePreDocument(ColumnFamilyEntity entity) {
+    public void firePreDocument(ColumnEntity entity) {
         documentEntityPrePersistEvent.fire(ColumnEntityPrePersist.of(entity));
     }
 
     @Override
-    public void firePostDocument(ColumnFamilyEntity entity) {
+    public void firePostDocument(ColumnEntity entity) {
         documentEntityPostPersistEvent.fire(ColumnEntityPostPersist.of(entity));
     }
 

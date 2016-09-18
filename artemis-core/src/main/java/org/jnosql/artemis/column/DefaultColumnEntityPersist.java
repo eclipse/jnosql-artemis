@@ -19,24 +19,25 @@
 package org.jnosql.artemis.column;
 
 
-import java.util.Objects;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.jnosql.diana.api.column.ColumnFamilyEntity;
+import org.jnosql.diana.api.column.ColumnEntity;
+
+import java.util.Objects;
 
 /**
  * The default implementation to represents either {@link ColumnEntityPostPersist} and {@link ColumnEntityPrePersist}
  */
 class DefaultColumnEntityPersist implements ColumnEntityPostPersist, ColumnEntityPrePersist {
 
-    private final ColumnFamilyEntity entity;
+    private final ColumnEntity entity;
 
-    DefaultColumnEntityPersist(ColumnFamilyEntity entity) {
+    DefaultColumnEntityPersist(ColumnEntity entity) {
         this.entity = entity;
     }
 
     @Override
-    public ColumnFamilyEntity getEntity() {
+    public ColumnEntity getEntity() {
         return entity;
     }
 

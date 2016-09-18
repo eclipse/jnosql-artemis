@@ -18,24 +18,23 @@
  */
 package org.jnosql.artemis.column;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.stream.Stream;
-import javax.inject.Inject;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Actor;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.column.Column;
-import org.jnosql.diana.api.column.ColumnFamilyEntity;
+import org.jnosql.diana.api.column.ColumnEntity;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.stream.Stream;
+
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 @RunWith(WeldJUnit4Runner.class)
 public class DefaultColumnEntityConverterTest {
@@ -75,7 +74,7 @@ public class DefaultColumnEntityConverterTest {
                 .withName("Otavio")
                 .withPhones(Arrays.asList("234", "2342")).build();
 
-        ColumnFamilyEntity entity = converter.toColumn(person);
+        ColumnEntity entity = converter.toColumn(person);
         assertEquals("Person", entity.getName());
         assertEquals(4, entity.size());
         /*Assert.assertThat(entity.getColumns(), containsInAnyOrder(Document.of("_id", 12L),
@@ -87,7 +86,7 @@ public class DefaultColumnEntityConverterTest {
     public void shouldConvertActorToDocument() {
 
 
-        ColumnFamilyEntity entity = converter.toColumn(actor);
+        ColumnEntity entity = converter.toColumn(actor);
         assertEquals("Actor", entity.getName());
         assertEquals(6, entity.size());
 
@@ -97,7 +96,7 @@ public class DefaultColumnEntityConverterTest {
 
     @Test
     public void shouldConvertDocumentToActor() {
-        ColumnFamilyEntity entity = ColumnFamilyEntity.of("Actor");
+        ColumnEntity entity = ColumnEntity.of("Actor");
         Stream.of(columns).forEach(entity::add);
 
         Actor actor = converter.toEntity(Actor.class, entity);
@@ -111,7 +110,7 @@ public class DefaultColumnEntityConverterTest {
 
     @Test
     public void shouldConvertDocumentToActorFromEntity() {
-        ColumnFamilyEntity entity = ColumnFamilyEntity.of("Actor");
+        ColumnEntity entity = ColumnEntity.of("Actor");
         Stream.of(columns).forEach(entity::add);
 
         Actor actor = converter.toEntity(entity);

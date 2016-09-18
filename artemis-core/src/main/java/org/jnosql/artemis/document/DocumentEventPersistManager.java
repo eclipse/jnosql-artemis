@@ -19,7 +19,7 @@
 package org.jnosql.artemis.document;
 
 
-import org.jnosql.diana.api.document.DocumentCollectionEntity;
+import org.jnosql.diana.api.document.DocumentEntity;
 
 /**
  * This interface represent the manager of events. When an entity be either saved or updated an event will be fired. This order gonna be:
@@ -35,14 +35,14 @@ public interface DocumentEventPersistManager {
      *
      * @param entity the entity
      */
-    void firePreDocument(DocumentCollectionEntity entity);
+    void firePreDocument(DocumentEntity entity);
 
     /**
      * Fire an event after the response from communication layer
      *
      * @param entity the entity
      */
-    void firePostDocument(DocumentCollectionEntity entity);
+    void firePostDocument(DocumentEntity entity);
 
     /**
      * Fire an event once the method is called
@@ -53,7 +53,7 @@ public interface DocumentEventPersistManager {
     <T> void firePreEntity(T entity);
 
     /**
-     * Fire an event after convert the {@link DocumentCollectionEntity},
+     * Fire an event after convert the {@link DocumentEntity},
      * from database response, to Entity.
      *
      * @param entity the entity
