@@ -18,20 +18,20 @@
  */
 package org.jnosql.artemis.column;
 
+import org.jnosql.diana.api.ExecuteAsyncQueryException;
+import org.jnosql.diana.api.TTL;
+import org.jnosql.diana.api.column.ColumnEntity;
+import org.jnosql.diana.api.column.ColumnFamilyManager;
+import org.jnosql.diana.api.column.ColumnQuery;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-
-import org.jnosql.diana.api.ExecuteAsyncQueryException;
-import org.jnosql.diana.api.TTL;
-import org.jnosql.diana.api.column.ColumnFamilyEntity;
-import org.jnosql.diana.api.column.ColumnFamilyManager;
-import org.jnosql.diana.api.column.ColumnQuery;
 
 /**
  * The default implementation of {@link ColumnCrudOperation}
@@ -59,9 +59,9 @@ class DefaultColumnCrudOperation implements ColumnCrudOperation {
     @Override
     public <T> T save(T entity) throws NullPointerException {
         columnEventPersistManager.firePreEntity(entity);
-        ColumnFamilyEntity document = converter.toColumn(Objects.requireNonNull(entity, "entity is required"));
+        ColumnEntity document = converter.toColumn(Objects.requireNonNull(entity, "entity is required"));
         columnEventPersistManager.firePreDocument(document);
-        ColumnFamilyEntity documentCollection = manager.get().save(document);
+        ColumnEntity documentCollection = manager.get().save(document);
         columnEventPersistManager.firePostDocument(documentCollection);
         T entityUpdated = converter.toEntity((Class<T>) entity.getClass(), documentCollection);
         columnEventPersistManager.firePostEntity(entityUpdated);
@@ -76,9 +76,9 @@ class DefaultColumnCrudOperation implements ColumnCrudOperation {
     @Override
     public <T> T save(T entity, TTL ttl) {
         columnEventPersistManager.firePreEntity(entity);
-        ColumnFamilyEntity document = converter.toColumn(Objects.requireNonNull(entity, "entity is required"));
+        ColumnEntity document = converter.toColumn(Objects.requireNonNull(entity, "entity is required"));
         columnEventPersistManager.firePreDocument(document);
-        ColumnFamilyEntity documentCollection = manager.get().save(document, ttl);
+        ColumnEntity documentCollection = manager.get().save(document, ttl);
         columnEventPersistManager.firePostDocument(documentCollection);
         T entityUpdated = converter.toEntity((Class<T>) entity.getClass(), documentCollection);
         columnEventPersistManager.firePostEntity(entityUpdated);
@@ -116,9 +116,9 @@ class DefaultColumnCrudOperation implements ColumnCrudOperation {
     @Override
     public <T> T update(T entity) {
         columnEventPersistManager.firePreEntity(entity);
-        ColumnFamilyEntity document = converter.toColumn(Objects.requireNonNull(entity, "entity is required"));
+        ColumnEntity document = converter.toColumn(Objects.requireNonNull(entity, "entity is required"));
         columnEventPersistManager.firePreDocument(document);
-        ColumnFamilyEntity documentCollection = manager.get().update(document);
+        ColumnEntity documentCollection = manager.get().update(document);
         columnEventPersistManager.firePostDocument(documentCollection);
         T entityUpdated = converter.toEntity((Class<T>) entity.getClass(), documentCollection);
         columnEventPersistManager.firePostEntity(entityUpdated);
@@ -157,14 +157,14 @@ class DefaultColumnCrudOperation implements ColumnCrudOperation {
 
     @Override
     public <T> List<T> find(ColumnQuery query) throws NullPointerException {
-        List<ColumnFamilyEntity> entities = manager.get().find(query);
-        Function<ColumnFamilyEntity, T> function = e -> converter.toEntity(e);
+        List<ColumnEntity> entities = manager.get().find(query);
+        Function<ColumnEntity, T> function = e -> converter.toEntity(e);
         return entities.stream().map(function).collect(Collectors.toList());
     }
 
     @Override
     public <T> void findAsync(ColumnQuery query, Consumer<List<T>> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException {
-        Function<ColumnFamilyEntity, T> function = e -> converter.toEntity(e);
+        Function<ColumnEntity, T> function = e -> converter.toEntity(e);
         manager.get().findAsync(query, es -> {
             callBack.accept(es.stream().map(function).collect(Collectors.toList()));
         });
@@ -172,15 +172,15 @@ class DefaultColumnCrudOperation implements ColumnCrudOperation {
 
     @Override
     public <T> List<T> nativeQuery(String query) throws UnsupportedOperationException {
-        List<ColumnFamilyEntity> entities = manager.get().nativeQuery(query);
-        Function<ColumnFamilyEntity, T> function = e -> converter.toEntity(e);
+        List<ColumnEntity> entities = manager.get().nativeQuery(query);
+        Function<ColumnEntity, T> function = e -> converter.toEntity(e);
         return entities.stream().map(function).collect(Collectors.toList());
     }
 
     @Override
     public <T> void nativeQueryAsync(String query, Consumer<List<T>> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException {
         manager.get().nativeQueryAsync(query, es -> {
-            Function<ColumnFamilyEntity, T> function = e -> converter.toEntity(e);
+            Function<ColumnEntity, T> function = e -> converter.toEntity(e);
             callBack.accept(es.stream().map(function).collect(Collectors.toList()));
         });
     }

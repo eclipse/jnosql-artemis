@@ -19,12 +19,13 @@
 package org.jnosql.artemis.document;
 
 
+import org.jnosql.artemis.EntityPostPersit;
+import org.jnosql.artemis.EntityPrePersist;
+import org.jnosql.diana.api.document.DocumentEntity;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import org.jnosql.artemis.EntityPostPersit;
-import org.jnosql.artemis.EntityPrePersist;
-import org.jnosql.diana.api.document.DocumentCollectionEntity;
 
 /**
  * The default implementation of {@link DocumentEventPersistManager}
@@ -45,12 +46,12 @@ class DefaultDocumentEventPersistManager implements DocumentEventPersistManager 
     private Event<EntityPostPersit> entityPostPersitEvent;
 
     @Override
-    public void firePreDocument(DocumentCollectionEntity entity) {
+    public void firePreDocument(DocumentEntity entity) {
         documentEntityPrePersistEvent.fire(DocumentEntityPrePersist.of(entity));
     }
 
     @Override
-    public void firePostDocument(DocumentCollectionEntity entity) {
+    public void firePostDocument(DocumentEntity entity) {
         documentEntityPostPersistEvent.fire(DocumentEntityPostPersist.of(entity));
     }
 

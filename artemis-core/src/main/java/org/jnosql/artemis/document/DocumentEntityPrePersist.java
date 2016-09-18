@@ -19,8 +19,9 @@
 package org.jnosql.artemis.document;
 
 
+import org.jnosql.diana.api.document.DocumentEntity;
+
 import java.util.Objects;
-import org.jnosql.diana.api.document.DocumentCollectionEntity;
 
 /**
  * The interface represents the model before the DocumentCollectionEntity be saved that  event will fired.
@@ -28,11 +29,11 @@ import org.jnosql.diana.api.document.DocumentCollectionEntity;
 public interface DocumentEntityPrePersist {
 
     /**
-     * The {@link DocumentCollectionEntity}  before be saved
+     * The {@link DocumentEntity}  before be saved
      *
-     * @return the {@link DocumentCollectionEntity} instance
+     * @return the {@link DocumentEntity} instance
      */
-    DocumentCollectionEntity getEntity();
+    DocumentEntity getEntity();
 
     /**
      * Creates the {@link DocumentEntityPrePersist} instance
@@ -41,7 +42,7 @@ public interface DocumentEntityPrePersist {
      * @return {@link DocumentEntityPrePersist} instance
      * @throws NullPointerException when the entity is null
      */
-    static DocumentEntityPrePersist of(DocumentCollectionEntity entity) throws NullPointerException {
+    static DocumentEntityPrePersist of(DocumentEntity entity) throws NullPointerException {
         Objects.requireNonNull(entity, "Entity is required");
         return new DefaultDocumentEntityPersist(entity);
     }

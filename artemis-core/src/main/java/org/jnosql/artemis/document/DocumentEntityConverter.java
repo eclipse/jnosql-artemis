@@ -18,38 +18,38 @@
  */
 package org.jnosql.artemis.document;
 
-import org.jnosql.diana.api.document.DocumentCollectionEntity;
+import org.jnosql.diana.api.document.DocumentEntity;
 
 /**
- * This interface represents the converter between an entity and the {@link DocumentCollectionEntity}
+ * This interface represents the converter between an entity and the {@link DocumentEntity}
  */
 public interface DocumentEntityConverter {
 
     /**
-     * Converts the instance entity to {@link DocumentCollectionEntity}
+     * Converts the instance entity to {@link DocumentEntity}
      *
      * @param entityInstance the instnace
-     * @return a {@link DocumentCollectionEntity} instance
+     * @return a {@link DocumentEntity} instance
      */
-    DocumentCollectionEntity toDocument(Object entityInstance);
+    DocumentEntity toDocument(Object entityInstance);
 
     /**
-     * Converts a {@link DocumentCollectionEntity} to entity
+     * Converts a {@link DocumentEntity} to entity
      *
      * @param entityClass the entity class
-     * @param entity      the {@link DocumentCollectionEntity} to be converted
+     * @param entity      the {@link DocumentEntity} to be converted
      * @param <T>         the entity type
-     * @return the instance from {@link DocumentCollectionEntity}
+     * @return the instance from {@link DocumentEntity}
      */
-    <T> T toEntity(Class<T> entityClass, DocumentCollectionEntity entity);
+    <T> T toEntity(Class<T> entityClass, DocumentEntity entity);
 
     /**
-     * Similar to {@link DocumentEntityConverter#toEntity(Class, DocumentCollectionEntity)}, but
-     * search the instance type from {@link DocumentCollectionEntity#getName()}
+     * Similar to {@link DocumentEntityConverter#toEntity(Class, DocumentEntity)}, but
+     * search the instance type from {@link DocumentEntity#getName()}
      *
-     * @param entity the {@link DocumentCollectionEntity} to be converted
+     * @param entity the {@link DocumentEntity} to be converted
      * @param <T>    the entity type
-     * @return the instance from {@link DocumentCollectionEntity}
+     * @return the instance from {@link DocumentEntity}
      */
-    <T> T toEntity(DocumentCollectionEntity entity);
+    <T> T toEntity(DocumentEntity entity);
 }

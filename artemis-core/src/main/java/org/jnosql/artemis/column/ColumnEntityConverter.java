@@ -18,39 +18,39 @@
  */
 package org.jnosql.artemis.column;
 
-import org.jnosql.diana.api.column.ColumnFamilyEntity;
+import org.jnosql.diana.api.column.ColumnEntity;
 
 
 /**
- * This interface represents the converter between an entity and the {@link ColumnFamilyEntity}
+ * This interface represents the converter between an entity and the {@link ColumnEntity}
  */
 public interface ColumnEntityConverter {
 
     /**
-     * Converts the instance entity to {@link ColumnFamilyEntity}
+     * Converts the instance entity to {@link ColumnEntity}
      *
      * @param entityInstance the instnace
-     * @return a {@link ColumnFamilyEntity} instance
+     * @return a {@link ColumnEntity} instance
      */
-    ColumnFamilyEntity toColumn(Object entityInstance);
+    ColumnEntity toColumn(Object entityInstance);
 
     /**
-     * Converts a {@link ColumnFamilyEntity} to entity
+     * Converts a {@link ColumnEntity} to entity
      *
      * @param entityClass the entity class
-     * @param entity      the {@link ColumnFamilyEntity} to be converted
+     * @param entity      the {@link ColumnEntity} to be converted
      * @param <T>         the entity type
-     * @return the instance from {@link ColumnFamilyEntity}
+     * @return the instance from {@link ColumnEntity}
      */
-    <T> T toEntity(Class<T> entityClass, ColumnFamilyEntity entity);
+    <T> T toEntity(Class<T> entityClass, ColumnEntity entity);
 
     /**
-     * Similar to {@link ColumnEntityConverter#toEntity(Class, ColumnFamilyEntity)}, but
-     * search the instance type from {@link ColumnFamilyEntity#getName()}
+     * Similar to {@link ColumnEntityConverter#toEntity(Class, ColumnEntity)}, but
+     * search the instance type from {@link ColumnEntity#getName()}
      *
-     * @param entity the {@link ColumnFamilyEntity} to be converted
+     * @param entity the {@link ColumnEntity} to be converted
      * @param <T>    the entity type
-     * @return the instance from {@link ColumnFamilyEntity}
+     * @return the instance from {@link ColumnEntity}
      */
-    <T> T toEntity(ColumnFamilyEntity entity);
+    <T> T toEntity(ColumnEntity entity);
 }

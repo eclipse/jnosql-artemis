@@ -19,24 +19,25 @@
 package org.jnosql.artemis.document;
 
 
-import java.util.Objects;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.jnosql.diana.api.document.DocumentCollectionEntity;
+import org.jnosql.diana.api.document.DocumentEntity;
+
+import java.util.Objects;
 
 /**
  * The default implementation to represents either {@link DocumentEntityPrePersist} and {@link DocumentEntityPostPersist}
  */
 class DefaultDocumentEntityPersist implements DocumentEntityPrePersist, DocumentEntityPostPersist {
 
-    private final DocumentCollectionEntity entity;
+    private final DocumentEntity entity;
 
-    DefaultDocumentEntityPersist(DocumentCollectionEntity entity) {
+    DefaultDocumentEntityPersist(DocumentEntity entity) {
         this.entity = entity;
     }
 
     @Override
-    public DocumentCollectionEntity getEntity() {
+    public DocumentEntity getEntity() {
         return entity;
     }
 

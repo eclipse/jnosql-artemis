@@ -18,19 +18,20 @@
  */
 package org.jnosql.artemis.document;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.stream.Stream;
-import javax.inject.Inject;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Actor;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.document.Document;
-import org.jnosql.diana.api.document.DocumentCollectionEntity;
+import org.jnosql.diana.api.document.DocumentEntity;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.*;
@@ -70,7 +71,7 @@ public class DefaultDocumentEntityConverterTest {
                 .withName("Otavio")
                 .withPhones(Arrays.asList("234", "2342")).build();
 
-        DocumentCollectionEntity entity = converter.toDocument(person);
+        DocumentEntity entity = converter.toDocument(person);
         assertEquals("Person", entity.getName());
         assertEquals(4, entity.size());
         assertThat(entity.getDocuments(), containsInAnyOrder(Document.of("_id", 12L),
@@ -82,7 +83,7 @@ public class DefaultDocumentEntityConverterTest {
     public void shouldConvertActorToDocument() {
 
 
-        DocumentCollectionEntity entity = converter.toDocument(actor);
+        DocumentEntity entity = converter.toDocument(actor);
         assertEquals("Actor", entity.getName());
         assertEquals(6, entity.size());
 
@@ -92,7 +93,7 @@ public class DefaultDocumentEntityConverterTest {
 
     @Test
     public void shouldConvertDocumentToActor() {
-        DocumentCollectionEntity entity = DocumentCollectionEntity.of("Actor");
+        DocumentEntity entity = DocumentEntity.of("Actor");
         Stream.of(documents).forEach(entity::add);
 
         Actor actor = converter.toEntity(Actor.class, entity);
@@ -106,7 +107,7 @@ public class DefaultDocumentEntityConverterTest {
 
     @Test
     public void shouldConvertDocumentToActorFromEntity() {
-        DocumentCollectionEntity entity = DocumentCollectionEntity.of("Actor");
+        DocumentEntity entity = DocumentEntity.of("Actor");
         Stream.of(documents).forEach(entity::add);
 
         Actor actor = converter.toEntity(entity);

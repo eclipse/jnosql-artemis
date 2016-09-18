@@ -19,18 +19,15 @@
 package org.jnosql.artemis.column;
 
 
+import org.jnosql.artemis.reflection.*;
+import org.jnosql.diana.api.Value;
+import org.jnosql.diana.api.column.ColumnEntity;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import org.jnosql.artemis.reflection.ClassRepresentation;
-import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.artemis.reflection.FieldRepresentation;
-import org.jnosql.artemis.reflection.FieldValue;
-import org.jnosql.artemis.reflection.Reflections;
-import org.jnosql.diana.api.Value;
-import org.jnosql.diana.api.column.ColumnFamilyEntity;
 
 /**
  * The default implementation to {@link ColumnEntityConverter}
@@ -45,10 +42,10 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
     private Reflections reflections;
 
     @Override
-    public ColumnFamilyEntity toColumn(Object entityInstance) {
+    public ColumnEntity toColumn(Object entityInstance) {
         Objects.requireNonNull(entityInstance, "Object is required");
         ClassRepresentation representation = classRepresentations.get(entityInstance.getClass());
-        ColumnFamilyEntity entity = ColumnFamilyEntity.of(representation.getName());
+        ColumnEntity entity = ColumnEntity.of(representation.getName());
         representation.getFields().stream()
                 .map(f -> to(f, entityInstance))
                 .filter(FieldValue::isNotEmpty)
@@ -58,14 +55,14 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
     }
 
     @Override
-    public <T> T toEntity(Class<T> entityClass, ColumnFamilyEntity entity) {
+    public <T> T toEntity(Class<T> entityClass, ColumnEntity entity) {
         ClassRepresentation representation = classRepresentations.get(entityClass);
         T instance = reflections.newInstance(entityClass);
         return convertEntity(entity, representation, (T) instance);
     }
 
     @Override
-    public <T> T toEntity(ColumnFamilyEntity entity) {
+    public <T> T toEntity(ColumnEntity entity) {
         ClassRepresentation representation = classRepresentations.findByName(entity.getName());
         T instance = reflections.newInstance((Class<T>) representation.getClassInstance());
         return convertEntity(entity, representation, instance);
@@ -76,7 +73,7 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
         return new FieldValue(value, field);
     }
 
-    private <T> Consumer<String> feedObject(T instance, ColumnFamilyEntity entity, Map<String, FieldRepresentation> fieldsGroupByName) {
+    private <T> Consumer<String> feedObject(T instance, ColumnEntity entity, Map<String, FieldRepresentation> fieldsGroupByName) {
         return k -> {
             Value value = entity.find(k).get().getValue();
             FieldRepresentation field = fieldsGroupByName.get(k);
@@ -84,7 +81,7 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
         };
     }
 
-    private <T> T convertEntity(ColumnFamilyEntity entity, ClassRepresentation representation, T instance) {
+    private <T> T convertEntity(ColumnEntity entity, ClassRepresentation representation, T instance) {
         Map<String, FieldRepresentation> fieldsGroupByName = representation.getFieldsGroupByName();
         fieldsGroupByName.keySet().stream()
                 .filter(k -> entity.find(k).isPresent())

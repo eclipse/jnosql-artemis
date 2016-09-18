@@ -18,21 +18,22 @@
  */
 package org.jnosql.artemis.column;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.diana.api.column.Column;
-import org.jnosql.diana.api.column.ColumnFamilyEntity;
+import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
@@ -62,7 +63,7 @@ public class DefaultColumnCrudOperationTest {
 
     private DefaultColumnCrudOperation subject;
 
-    private ArgumentCaptor<ColumnFamilyEntity> captor;
+    private ArgumentCaptor<ColumnEntity> captor;
 
     private ColumnEventPersistManager columnEventPersistManager;
 
@@ -70,7 +71,7 @@ public class DefaultColumnCrudOperationTest {
     public void setUp() {
         managerMock = Mockito.mock(ColumnFamilyManager.class);
         columnEventPersistManager = Mockito.mock(ColumnEventPersistManager.class);
-        captor = ArgumentCaptor.forClass(ColumnFamilyEntity.class);
+        captor = ArgumentCaptor.forClass(ColumnEntity.class);
         Instance<ColumnFamilyManager> instance = Mockito.mock(Instance.class);
         Mockito.when(instance.get()).thenReturn(managerMock);
         this.subject = new DefaultColumnCrudOperation(converter, instance, columnEventPersistManager);
@@ -78,20 +79,20 @@ public class DefaultColumnCrudOperationTest {
 
     @Test
     public void shouldSave() {
-        ColumnFamilyEntity document = ColumnFamilyEntity.of("Person");
+        ColumnEntity document = ColumnEntity.of("Person");
         document.addAll(Stream.of(columns).collect(Collectors.toList()));
 
         Mockito.when(managerMock
-                .save(Mockito.any(ColumnFamilyEntity.class)))
+                .save(Mockito.any(ColumnEntity.class)))
                 .thenReturn(document);
 
         subject.save(this.person);
         verify(managerMock).save(captor.capture());
         verify(columnEventPersistManager).firePostEntity(Mockito.any(Person.class));
         verify(columnEventPersistManager).firePreEntity(Mockito.any(Person.class));
-        verify(columnEventPersistManager).firePreDocument(Mockito.any(ColumnFamilyEntity.class));
-        verify(columnEventPersistManager).firePostDocument(Mockito.any(ColumnFamilyEntity.class));
-        ColumnFamilyEntity value = captor.getValue();
+        verify(columnEventPersistManager).firePreDocument(Mockito.any(ColumnEntity.class));
+        verify(columnEventPersistManager).firePostDocument(Mockito.any(ColumnEntity.class));
+        ColumnEntity value = captor.getValue();
         assertEquals("Person", value.getName());
         assertEquals(4, value.getColumns().size());
     }

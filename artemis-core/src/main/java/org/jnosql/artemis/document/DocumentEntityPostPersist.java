@@ -19,19 +19,20 @@
 package org.jnosql.artemis.document;
 
 
+import org.jnosql.diana.api.document.DocumentEntity;
+
 import java.util.Objects;
-import org.jnosql.diana.api.document.DocumentCollectionEntity;
 
 /**
  * The interface represents the model when the DocumentCollectionEntity be saved that  event will fired.
  */
 public interface DocumentEntityPostPersist {
     /**
-     * The {@link DocumentCollectionEntity}  after be saved
+     * The {@link DocumentEntity}  after be saved
      *
-     * @return the {@link DocumentCollectionEntity} instance
+     * @return the {@link DocumentEntity} instance
      */
-    DocumentCollectionEntity getEntity();
+    DocumentEntity getEntity();
 
     /**
      * Creates the {@link DocumentEntityPostPersist} instance
@@ -40,7 +41,7 @@ public interface DocumentEntityPostPersist {
      * @return {@link DocumentEntityPostPersist} instance
      * @throws NullPointerException when the entity is null
      */
-    static DocumentEntityPostPersist of(DocumentCollectionEntity entity) throws NullPointerException {
+    static DocumentEntityPostPersist of(DocumentEntity entity) throws NullPointerException {
         Objects.requireNonNull(entity, "Entity is required");
         return new DefaultDocumentEntityPersist(entity);
     }
