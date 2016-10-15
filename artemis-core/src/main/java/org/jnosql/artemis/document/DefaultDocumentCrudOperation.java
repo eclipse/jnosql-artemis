@@ -167,9 +167,7 @@ class DefaultDocumentCrudOperation implements DocumentCrudOperation {
     @Override
     public <T> void findAsync(DocumentQuery query, Consumer<List<T>> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException {
         Function<DocumentEntity, T> function = e -> converter.toEntity(e);
-        manager.get().findAsync(query, es -> {
-            callBack.accept(es.stream().map(function).collect(Collectors.toList()));
-        });
+        manager.get().findAsync(query, es -> callBack.accept(es.stream().map(function).collect(Collectors.toList())));
     }
 
 }

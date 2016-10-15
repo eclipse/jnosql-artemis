@@ -61,7 +61,7 @@ class ClassConverter {
             case SET:
             case LIST:
             case MAP:
-                builder.withTypeSupplier(() -> field.getGenericType());
+                builder.withTypeSupplier(field::getGenericType);
                 return builder.buildGeneric();
             default:
                 return builder.buildDefault();

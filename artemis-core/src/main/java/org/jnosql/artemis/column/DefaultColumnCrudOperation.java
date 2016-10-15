@@ -165,9 +165,7 @@ class DefaultColumnCrudOperation implements ColumnCrudOperation {
     @Override
     public <T> void findAsync(ColumnQuery query, Consumer<List<T>> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException {
         Function<ColumnEntity, T> function = e -> converter.toEntity(e);
-        manager.get().findAsync(query, es -> {
-            callBack.accept(es.stream().map(function).collect(Collectors.toList()));
-        });
+        manager.get().findAsync(query, es -> callBack.accept(es.stream().map(function).collect(Collectors.toList())));
     }
 
 }
