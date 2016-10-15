@@ -64,6 +64,7 @@ class DefaultDocumentEntityConverter implements DocumentEntityConverter {
 
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T toEntity(DocumentEntity entity) {
         ClassRepresentation representation = classRepresentations.findByName(entity.getName());

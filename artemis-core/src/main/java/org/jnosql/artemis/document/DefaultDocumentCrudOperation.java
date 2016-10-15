@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 /**
  * The default implementation of {@link DocumentCrudOperation}
  */
+@SuppressWarnings("unchecked")
 @ApplicationScoped
 @DocumentCRUDInterceptor
 class DefaultDocumentCrudOperation implements DocumentCrudOperation {

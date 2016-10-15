@@ -67,6 +67,7 @@ public class DefaultColumnCrudOperationTest {
 
     private ColumnEventPersistManager columnEventPersistManager;
 
+    @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
         managerMock = Mockito.mock(ColumnFamilyManager.class);

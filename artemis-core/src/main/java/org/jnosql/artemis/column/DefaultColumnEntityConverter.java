@@ -61,6 +61,7 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
         return convertEntity(entity, representation, instance);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T toEntity(ColumnEntity entity) {
         ClassRepresentation representation = classRepresentations.findByName(entity.getName());

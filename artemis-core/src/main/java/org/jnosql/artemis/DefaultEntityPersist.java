@@ -39,6 +39,7 @@ class DefaultEntityPersist implements EntityPrePersist, EntityPostPersit {
         return value;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T cast() {
         return (T) value;

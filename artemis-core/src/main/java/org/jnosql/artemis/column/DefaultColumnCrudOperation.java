@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 /**
  * The default implementation of {@link ColumnCrudOperation}
  */
+@SuppressWarnings("unchecked")
 @ApplicationScoped
 @ColumnCRUDInterceptor
 class DefaultColumnCrudOperation implements ColumnCrudOperation {

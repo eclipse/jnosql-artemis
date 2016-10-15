@@ -68,6 +68,7 @@ public class DefaultDocumentCrudOperationTest {
 
     private DocumentEventPersistManager documentEventPersistManager;
 
+    @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
         managerMock = Mockito.mock(DocumentCollectionManager.class);
