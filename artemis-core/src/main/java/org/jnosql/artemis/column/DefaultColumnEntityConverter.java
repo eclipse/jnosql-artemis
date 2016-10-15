@@ -58,7 +58,7 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
     public <T> T toEntity(Class<T> entityClass, ColumnEntity entity) {
         ClassRepresentation representation = classRepresentations.get(entityClass);
         T instance = reflections.newInstance(entityClass);
-        return convertEntity(entity, representation, (T) instance);
+        return convertEntity(entity, representation, instance);
     }
 
     @Override

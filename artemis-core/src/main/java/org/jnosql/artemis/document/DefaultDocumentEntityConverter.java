@@ -59,7 +59,7 @@ class DefaultDocumentEntityConverter implements DocumentEntityConverter {
     public <T> T toEntity(Class<T> entityClass, DocumentEntity entity) {
         ClassRepresentation representation = classRepresentations.get(entityClass);
         T instance = reflections.newInstance(entityClass);
-        return convertEntity(entity, representation, (T) instance);
+        return convertEntity(entity, representation, instance);
 
 
     }

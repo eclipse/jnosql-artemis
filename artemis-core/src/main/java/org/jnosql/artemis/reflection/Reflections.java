@@ -194,7 +194,7 @@ public class Reflections {
     }
 
     public String getColumnName(Field field) {
-        return Optional.ofNullable((Column) field.getAnnotation(Column.class))
+        return Optional.ofNullable(field.getAnnotation(Column.class))
                 .map(Column::value)
                 .filter(StringUtils::isNotBlank)
                 .orElse(field.getName());
