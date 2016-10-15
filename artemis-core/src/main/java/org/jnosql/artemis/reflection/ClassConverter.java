@@ -18,12 +18,11 @@
  */
 package org.jnosql.artemis.reflection;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.util.List;
-import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 class ClassConverter {
@@ -61,12 +60,9 @@ class ClassConverter {
             case COLLECTION:
             case SET:
             case LIST:
-                ParameterizedType genericType = (ParameterizedType) field.getGenericType();
-                return builder.withValueClass((Class<?>) genericType.getActualTypeArguments()[0]).buildCollection();
             case MAP:
-                ParameterizedType type = (ParameterizedType) field.getGenericType();
-                return builder.withValueClass((Class<?>) type.getActualTypeArguments()[1])
-                        .withKeyClass((Class<?>) type.getActualTypeArguments()[0]).buildMap();
+                builder.withTypeSupplier(() -> field.getGenericType());
+                return builder.buildGeneric();
             default:
                 return builder.buildDefault();
 

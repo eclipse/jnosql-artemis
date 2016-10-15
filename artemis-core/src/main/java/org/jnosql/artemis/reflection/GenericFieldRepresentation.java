@@ -19,36 +19,26 @@
 package org.jnosql.artemis.reflection;
 
 
-import java.lang.reflect.Field;
-import java.util.Objects;
-import java.util.Set;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.jnosql.diana.api.TypeSupplier;
 import org.jnosql.diana.api.Value;
 
-/**
- * Represents {@link FieldRepresentation} to field that implements {@link java.util.Collection}
- */
-public class CollectionFieldRepresentation extends AbstractFieldRepresentation {
+import java.lang.reflect.Field;
+import java.util.Objects;
 
-    private final Class valueClass;
+public class GenericFieldRepresentation extends AbstractFieldRepresentation {
 
-    CollectionFieldRepresentation(FieldType type, Field field, String name, Class valueClass) {
+    private final TypeSupplier<?> typeSupplier;
+
+    GenericFieldRepresentation(FieldType type, Field field, String name, TypeSupplier<?> typeSupplier) {
         super(type, field, name);
-        this.valueClass = valueClass;
-    }
-
-    public Class getValueClass() {
-        return valueClass;
+        this.typeSupplier = typeSupplier;
     }
 
     @Override
     public Object getValue(Value value, Reflections reflections) {
-        Class<?> classType = field.getType();
-        if (classType.equals(Set.class)) {
-            return value.getSet(valueClass);
-        }
-        return value.getList(valueClass);
+        return value.get(typeSupplier);
     }
 
     @Override
@@ -59,16 +49,16 @@ public class CollectionFieldRepresentation extends AbstractFieldRepresentation {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        CollectionFieldRepresentation that = (CollectionFieldRepresentation) o;
+        GenericFieldRepresentation that = (GenericFieldRepresentation) o;
         return type == that.type &&
                 Objects.equals(field, that.field) &&
-                Objects.equals(valueClass, that.valueClass) &&
+                Objects.equals(typeSupplier, that.typeSupplier) &&
                 Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, field, name, valueClass);
+        return Objects.hash(type, field, name, typeSupplier);
     }
 
     @Override
@@ -77,7 +67,7 @@ public class CollectionFieldRepresentation extends AbstractFieldRepresentation {
                 .append("type", type)
                 .append("field", field)
                 .append("name", name)
-                .append("valueClass", valueClass)
+                .append("typeSupplier", typeSupplier)
                 .toString();
     }
 }

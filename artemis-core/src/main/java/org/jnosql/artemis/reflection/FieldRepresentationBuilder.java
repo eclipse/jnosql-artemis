@@ -18,6 +18,8 @@
  */
 package org.jnosql.artemis.reflection;
 
+import org.jnosql.diana.api.TypeSupplier;
+
 import java.lang.reflect.Field;
 
 class FieldRepresentationBuilder {
@@ -28,9 +30,7 @@ class FieldRepresentationBuilder {
 
     private String name;
 
-    private Class valueClass;
-
-    private Class keyClass;
+    private TypeSupplier<?> typeSupplier;
 
     public FieldRepresentationBuilder withType(FieldType type) {
         this.type = type;
@@ -47,13 +47,8 @@ class FieldRepresentationBuilder {
         return this;
     }
 
-    public FieldRepresentationBuilder withValueClass(Class valueClass) {
-        this.valueClass = valueClass;
-        return this;
-    }
-
-    public FieldRepresentationBuilder withKeyClass(Class keyClass) {
-        this.keyClass = keyClass;
+    public FieldRepresentationBuilder withTypeSupplier(TypeSupplier<?> typeSupplier) {
+        this.typeSupplier = typeSupplier;
         return this;
     }
 
@@ -61,11 +56,8 @@ class FieldRepresentationBuilder {
         return new DefaultFieldRepresentation(type, field, name);
     }
 
-    public MapFieldRepresentation buildMap() {
-        return new MapFieldRepresentation(type, field, name, valueClass, keyClass);
+    public GenericFieldRepresentation buildGeneric() {
+        return new GenericFieldRepresentation(type, field, name, typeSupplier);
     }
 
-    public CollectionFieldRepresentation buildCollection() {
-        return new CollectionFieldRepresentation(type, field, name, valueClass);
-    }
 }

@@ -19,7 +19,6 @@
 package org.jnosql.artemis.column;
 
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
-import org.jnosql.diana.api.TTL;
 import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
 import org.jnosql.diana.api.column.ColumnQuery;
@@ -27,6 +26,7 @@ import org.jnosql.diana.api.column.ColumnQuery;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -74,7 +74,7 @@ class DefaultColumnCrudOperation implements ColumnCrudOperation {
     }
 
     @Override
-    public <T> T save(T entity, TTL ttl) {
+    public <T> T save(T entity, Duration ttl) {
         columnEventPersistManager.firePreEntity(entity);
         ColumnEntity document = converter.toColumn(Objects.requireNonNull(entity, "entity is required"));
         columnEventPersistManager.firePreDocument(document);
@@ -86,7 +86,7 @@ class DefaultColumnCrudOperation implements ColumnCrudOperation {
     }
 
     @Override
-    public <T> void saveAsync(T entity, TTL ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException {
+    public <T> void saveAsync(T entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException {
         Objects.requireNonNull(entity, "entity is required");
         Objects.requireNonNull(ttl, "ttl is required");
         manager.get().saveAsync(converter.toColumn(entity), ttl);
@@ -103,7 +103,7 @@ class DefaultColumnCrudOperation implements ColumnCrudOperation {
     }
 
     @Override
-    public <T> void saveAsync(T entity, TTL ttl, Consumer<T> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException {
+    public <T> void saveAsync(T entity, Duration ttl, Consumer<T> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException {
         Objects.requireNonNull(entity, "entity is required");
         Objects.requireNonNull(ttl, "ttl is required");
         manager.get().saveAsync(converter.toColumn(entity), ttl,
@@ -170,18 +170,4 @@ class DefaultColumnCrudOperation implements ColumnCrudOperation {
         });
     }
 
-    @Override
-    public <T> List<T> nativeQuery(String query) throws UnsupportedOperationException {
-        List<ColumnEntity> entities = manager.get().nativeQuery(query);
-        Function<ColumnEntity, T> function = e -> converter.toEntity(e);
-        return entities.stream().map(function).collect(Collectors.toList());
-    }
-
-    @Override
-    public <T> void nativeQueryAsync(String query, Consumer<List<T>> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException {
-        manager.get().nativeQueryAsync(query, es -> {
-            Function<ColumnEntity, T> function = e -> converter.toEntity(e);
-            callBack.accept(es.stream().map(function).collect(Collectors.toList()));
-        });
-    }
 }

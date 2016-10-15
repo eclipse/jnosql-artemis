@@ -19,16 +19,17 @@
 package org.jnosql.artemis.document;
 
 
+import org.jnosql.diana.api.ExecuteAsyncQueryException;
+import org.jnosql.diana.api.NonUniqueResultException;
+import org.jnosql.diana.api.document.DocumentQuery;
+
+import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-import org.jnosql.diana.api.ExecuteAsyncQueryException;
-import org.jnosql.diana.api.NonUniqueResultException;
-import org.jnosql.diana.api.TTL;
-import org.jnosql.diana.api.document.DocumentQuery;
 
 /**
  * This interface that represents the common operation between an entity and DocumentCollectionEntity
@@ -64,7 +65,7 @@ public interface DocumentCrudOperation {
      * @param ttl    the time to live
      * @return the entity saved
      */
-    <T> T save(T entity, TTL ttl);
+    <T> T save(T entity, Duration ttl);
 
     /**
      * Saves an entity asynchronously with time to live
@@ -75,7 +76,7 @@ public interface DocumentCrudOperation {
      * @throws ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to save asynchronous
      */
-    <T> void saveAsync(T entity, TTL ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException;
+    <T> void saveAsync(T entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException;
 
     /**
      * Saves entity, by default it's just run for each saving using
@@ -109,7 +110,7 @@ public interface DocumentCrudOperation {
 
     /**
      * Saves documents collection entity with time to live, by default it's just run for each saving using
-     * {@link DocumentCrudOperation#save(Object, TTL)},
+     * {@link DocumentCrudOperation#save(Object, Duration)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -118,7 +119,7 @@ public interface DocumentCrudOperation {
      * @return the entity saved
      * @throws NullPointerException when entities is null
      */
-    default <T> Iterable<T> save(Iterable<T> entities, TTL ttl) throws NullPointerException {
+    default <T> Iterable<T> save(Iterable<T> entities, Duration ttl) throws NullPointerException {
         Objects.requireNonNull(entities, "entities is required");
         Objects.requireNonNull(ttl, "ttl is required");
         return StreamSupport.stream(entities.spliterator(), false).map(d -> save(d, ttl)).collect(Collectors.toList());
@@ -126,7 +127,7 @@ public interface DocumentCrudOperation {
 
     /**
      * Saves entities asynchronously with time to live, by default it's just run for each saving using
-     * {@link DocumentCrudOperation#saveAsync(Object, TTL)},
+     * {@link DocumentCrudOperation#saveAsync(Object, Duration)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -135,7 +136,7 @@ public interface DocumentCrudOperation {
      * @throws ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to save asynchronous
      */
-    default <T> void saveAsync(Iterable<T> entities, TTL ttl) {
+    default <T> void saveAsync(Iterable<T> entities, Duration ttl) {
         Objects.requireNonNull(entities, "entities is required");
         Objects.requireNonNull(ttl, "ttl is required");
         StreamSupport.stream(entities.spliterator(), false).forEach(d -> saveAsync(d, ttl));
@@ -165,7 +166,7 @@ public interface DocumentCrudOperation {
      * @throws ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to save asynchronous
      */
-    <T> void saveAsync(T entity, TTL ttl, Consumer<T> callBack) throws
+    <T> void saveAsync(T entity, Duration ttl, Consumer<T> callBack) throws
             ExecuteAsyncQueryException, UnsupportedOperationException;
 
     /**
@@ -270,30 +271,6 @@ public interface DocumentCrudOperation {
      * @throws UnsupportedOperationException when the database does not have support to save asynchronous
      */
     <T> void findAsync(DocumentQuery query, Consumer<List<T>> callBack) throws
-            ExecuteAsyncQueryException, UnsupportedOperationException;
-
-    /**
-     * Executes a native query from database, this query may be difference between kind of database.
-     *
-     * @param query query to be executed
-     * @param <T>   the instance type
-     * @return the result of query
-     * @throws UnsupportedOperationException when the database does not have support to run native query
-     */
-    <T> List<T> nativeQuery(String query) throws UnsupportedOperationException;
-
-    /**
-     * Executes a native query from database, this query may be difference between kind of database and run it
-     * asynchronously.
-     *
-     * @param query    query to be executed
-     * @param <T>      the instance type
-     * @param callBack the callback, when the process is finished will call this instance returning
-     *                 the result of query within parameters
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to run native query async.
-     */
-    <T> void nativeQueryAsync(String query, Consumer<List<T>> callBack) throws
             ExecuteAsyncQueryException, UnsupportedOperationException;
 
 }

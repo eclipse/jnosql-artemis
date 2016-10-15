@@ -19,7 +19,6 @@
 package org.jnosql.artemis.document;
 
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
-import org.jnosql.diana.api.TTL;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
 import org.jnosql.diana.api.document.DocumentEntity;
 import org.jnosql.diana.api.document.DocumentQuery;
@@ -27,6 +26,7 @@ import org.jnosql.diana.api.document.DocumentQuery;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -76,7 +76,7 @@ class DefaultDocumentCrudOperation implements DocumentCrudOperation {
     }
 
     @Override
-    public <T> T save(T entity, TTL ttl) {
+    public <T> T save(T entity, Duration ttl) {
         documentEventPersistManager.firePreEntity(entity);
         DocumentEntity document = converter.toDocument(Objects.requireNonNull(entity, "entity is required"));
         documentEventPersistManager.firePreDocument(document);
@@ -88,7 +88,7 @@ class DefaultDocumentCrudOperation implements DocumentCrudOperation {
     }
 
     @Override
-    public <T> void saveAsync(T entity, TTL ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException {
+    public <T> void saveAsync(T entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException {
         Objects.requireNonNull(entity, "entity is required");
         Objects.requireNonNull(ttl, "ttl is required");
         manager.get().saveAsync(converter.toDocument(entity), ttl);
@@ -105,7 +105,7 @@ class DefaultDocumentCrudOperation implements DocumentCrudOperation {
     }
 
     @Override
-    public <T> void saveAsync(T entity, TTL ttl, Consumer<T> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException {
+    public <T> void saveAsync(T entity, Duration ttl, Consumer<T> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException {
         Objects.requireNonNull(entity, "entity is required");
         Objects.requireNonNull(ttl, "ttl is required");
         manager.get().saveAsync(converter.toDocument(entity), ttl,
@@ -172,18 +172,4 @@ class DefaultDocumentCrudOperation implements DocumentCrudOperation {
         });
     }
 
-    @Override
-    public <T> List<T> nativeQuery(String query) throws UnsupportedOperationException {
-        List<DocumentEntity> entities = manager.get().nativeQuery(query);
-        Function<DocumentEntity, T> function = e -> converter.toEntity(e);
-        return entities.stream().map(function).collect(Collectors.toList());
-    }
-
-    @Override
-    public <T> void nativeQueryAsync(String query, Consumer<List<T>> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException {
-        manager.get().nativeQueryAsync(query, es -> {
-            Function<DocumentEntity, T> function = e -> converter.toEntity(e);
-            callBack.accept(es.stream().map(function).collect(Collectors.toList()));
-        });
-    }
 }
