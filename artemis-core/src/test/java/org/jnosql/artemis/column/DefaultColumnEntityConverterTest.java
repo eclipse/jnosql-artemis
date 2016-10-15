@@ -48,9 +48,9 @@ public class DefaultColumnEntityConverterTest {
 
     private Column[] columns;
 
-    private Actor actor = Actor.actorBuilder().withAge(10)
-            .withId(12)
-            .withName("Otavio")
+    private Actor actor = Actor.actorBuilder().withAge()
+            .withId()
+            .withName()
             .withPhones(Arrays.asList("234", "2342"))
             .withMovieCharacter(Collections.singletonMap("JavaZone", "Jedi"))
             .withMovierRating(Collections.singletonMap("JavaZone", 10))
@@ -69,7 +69,7 @@ public class DefaultColumnEntityConverterTest {
     @Test
     public void shouldConvertPersonToDocument() {
 
-        Person person = Person.builder().withAge(10)
+        Person person = Person.builder().withAge()
                 .withId(12)
                 .withName("Otavio")
                 .withPhones(Arrays.asList("234", "2342")).build();

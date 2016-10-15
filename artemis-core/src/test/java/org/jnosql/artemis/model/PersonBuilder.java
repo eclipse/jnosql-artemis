@@ -37,8 +37,8 @@ public class PersonBuilder {
         return this;
     }
 
-    public PersonBuilder withAge(int age) {
-        this.age = age;
+    public PersonBuilder withAge() {
+        this.age = 10;
         return this;
     }
 
@@ -47,8 +47,8 @@ public class PersonBuilder {
         return this;
     }
 
-    public PersonBuilder withIgnore(String ignore) {
-        this.ignore = ignore;
+    public PersonBuilder withIgnore() {
+        this.ignore = "Just Ignore";
         return this;
     }
 

@@ -43,11 +43,11 @@ import static org.mockito.Mockito.verify;
 public class DefaultDocumentCrudOperationTest {
 
     private Person person = Person.builder().
-            withAge(10).
+            withAge().
             withPhones(Arrays.asList("234", "432")).
             withName("Name")
             .withId(19)
-            .withIgnore("Just Ignore").build();
+            .withIgnore().build();
 
     private Document[] documents = new Document[]{
             Document.of("age", 10),

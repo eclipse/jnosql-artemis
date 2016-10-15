@@ -33,18 +33,18 @@ public class ActorBuilder {
     ActorBuilder() {
     }
 
-    public ActorBuilder withId(long id) {
-        this.id = id;
+    public ActorBuilder withId() {
+        this.id = (long) 12;
         return this;
     }
 
-    public ActorBuilder withName(String name) {
-        this.name = name;
+    public ActorBuilder withName() {
+        this.name = "Otavio";
         return this;
     }
 
-    public ActorBuilder withAge(int age) {
-        this.age = age;
+    public ActorBuilder withAge() {
+        this.age = 10;
         return this;
     }
 
