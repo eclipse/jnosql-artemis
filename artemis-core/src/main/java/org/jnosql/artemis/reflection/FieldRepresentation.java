@@ -56,10 +56,9 @@ public interface FieldRepresentation extends Serializable {
      * Returns the object from the field type
      *
      * @param value       the value {@link Value}
-     * @param reflections the entity to do reflection
      * @return the instance from the field type
      */
-    Object getValue(Value value, Reflections reflections);
+    Object getValue(Value value);
 
     /**
      * Creates the FieldRepresentationBuilder

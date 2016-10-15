@@ -64,7 +64,7 @@ abstract class AbstractFieldRepresentation implements FieldRepresentation {
                 .toString();
     }
 
-    public Object getValue(Value value, Reflections reflections) {
+    public Object getValue(Value value) {
         return value.get(field.getType());
     }
 }

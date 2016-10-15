@@ -37,7 +37,7 @@ public class GenericFieldRepresentation extends AbstractFieldRepresentation {
     }
 
     @Override
-    public Object getValue(Value value, Reflections reflections) {
+    public Object getValue(Value value) {
         return value.get(typeSupplier);
     }
 
