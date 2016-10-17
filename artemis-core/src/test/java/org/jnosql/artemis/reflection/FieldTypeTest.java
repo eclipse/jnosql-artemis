@@ -19,6 +19,7 @@
 package org.jnosql.artemis.reflection;
 
 import org.jnosql.artemis.model.Actor;
+import org.jnosql.artemis.model.Director;
 import org.jnosql.artemis.model.Movie;
 import org.jnosql.artemis.model.Person;
 import org.junit.Assert;
@@ -52,6 +53,13 @@ public class FieldTypeTest {
     public void shouldReturnDefault() throws NoSuchFieldException {
         Field field = Person.class.getDeclaredField("name");
         Assert.assertEquals(FieldType.DEFAULT, FieldType.of(field));
+    }
+
+
+    @Test
+    public void shouldReturnEmbedded() throws NoSuchFieldException{
+        Field field = Director.class.getDeclaredField("movie");
+        Assert.assertEquals(FieldType.EMBEDDED, FieldType.of(field));
     }
 
 }

@@ -18,6 +18,8 @@
  */
 package org.jnosql.artemis.reflection;
 
+import org.jnosql.artemis.Entity;
+
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
@@ -26,15 +28,14 @@ import java.util.Map;
  * enum that contains kinds of annotations to fields on java.
  */
 public enum FieldType {
-    MAP, COLLECTION, DEFAULT;
+    EMBEDDED, MAP, COLLECTION, DEFAULT;
 
     /**
      * find you the kind of annotation on field and then define a enum type, follow the sequences:
      * <ul>
-     * <li>List</li>
-     * <li>Set</li>
-     * <li>Map</li>
      * <li>Collection</li>
+     * <li>Map</li>
+     * <li>embedded</li>
      * </ul>.
      *
      * @param field - the field with annotation
@@ -46,6 +47,9 @@ public enum FieldType {
         }
         if (Map.class.isAssignableFrom(field.getType())) {
             return MAP;
+        }
+        if (field.getType().isAnnotationPresent(Entity.class)) {
+            return EMBEDDED;
         }
 
         return DEFAULT;

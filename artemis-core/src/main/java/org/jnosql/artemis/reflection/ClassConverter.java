@@ -61,6 +61,8 @@ class ClassConverter {
             case MAP:
                 builder.withTypeSupplier(field::getGenericType);
                 return builder.buildGeneric();
+            case EMBEDDED:
+                return builder.withEntityName(reflections.getEntityName(field.getType())).buildEmedded();
             default:
                 return builder.buildDefault();
 

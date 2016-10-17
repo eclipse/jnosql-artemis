@@ -30,6 +30,8 @@ class FieldRepresentationBuilder {
 
     private String name;
 
+    private String entityName;
+
     private TypeSupplier<?> typeSupplier;
 
     public FieldRepresentationBuilder withType(FieldType type) {
@@ -52,12 +54,21 @@ class FieldRepresentationBuilder {
         return this;
     }
 
+    public FieldRepresentationBuilder withEntityName(String entityName) {
+        this.entityName = entityName;
+        return this;
+    }
+
     public DefaultFieldRepresentation buildDefault() {
         return new DefaultFieldRepresentation(type, field, name);
     }
 
     public GenericFieldRepresentation buildGeneric() {
         return new GenericFieldRepresentation(type, field, name, typeSupplier);
+    }
+
+    public EmbeddedFieldRepresentation buildEmedded() {
+        return new EmbeddedFieldRepresentation(type, field, name, entityName);
     }
 
 }
