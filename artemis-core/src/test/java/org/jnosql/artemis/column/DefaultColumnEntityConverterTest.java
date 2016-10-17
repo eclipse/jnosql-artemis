@@ -27,6 +27,8 @@ import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnEntity;
+import org.jnosql.diana.api.document.Document;
+import org.jnosql.diana.api.document.DocumentEntity;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,6 +39,7 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static java.util.Collections.singleton;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.*;
 
@@ -171,6 +174,28 @@ public class DefaultColumnEntityConverterTest {
         assertEquals(director.getAge(), director1.getAge());
         assertEquals(director.getId(), director1.getId());
     }
+
+    @Test
+    public void shouldConvertToEmbeddedClassWhenHasSubColumn2() {
+        Movie movie = new Movie("Matrix", 2012, singleton("Actor"));
+        Director director = Director.builderDiretor().withAge(12)
+                .withId(12)
+                .withName("Otavio")
+                .withPhones(Arrays.asList("234", "2342")).withMovie(movie).build();
+
+        ColumnEntity entity = converter.toColumn(director);
+        entity.remove("movie");
+        entity.add(Column.of("title", "Matrix"));
+        entity.add(Column.of("year", 2012));
+        entity.add(Column.of("actors", singleton("Actor")));
+        Director director1 = converter.toEntity(entity);
+
+        assertEquals(movie, director1.getMovie());
+        assertEquals(director.getName(), director1.getName());
+        assertEquals(director.getAge(), director1.getAge());
+        assertEquals(director.getId(), director1.getId());
+    }
+
 
     private Object getValue(Optional<Column> document) {
         return document.map(Column::getValue).map(Value::get).orElse(null);

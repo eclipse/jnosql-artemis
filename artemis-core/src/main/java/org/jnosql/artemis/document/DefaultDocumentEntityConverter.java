@@ -36,6 +36,8 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import static org.jnosql.artemis.reflection.FieldType.EMBEDDED;
+
 /**
  * The default implementation of {@link DocumentEntityConverter}
  */
@@ -85,7 +87,7 @@ class DefaultDocumentEntityConverter implements DocumentEntityConverter {
         Predicate<String> existField = k -> entity.find(k).isPresent();
 
         fieldsGroupByName.keySet().stream()
-                .filter(existField.or(k -> FieldType.EMBEDDED.equals(fieldsGroupByName.get(k).getType())))
+                .filter(existField.or(k -> EMBEDDED.equals(fieldsGroupByName.get(k).getType())))
                 .forEach(feedObject(instance, entity, fieldsGroupByName));
 
         return instance;
@@ -96,7 +98,7 @@ class DefaultDocumentEntityConverter implements DocumentEntityConverter {
             Optional<Document> document = entity.find(k);
 
             FieldRepresentation field = fieldsGroupByName.get(k);
-            if (FieldType.EMBEDDED.equals(field.getType())) {
+            if (EMBEDDED.equals(field.getType())) {
                 setEmbeddedField(instance, entity, document, field);
             } else {
                 setSingleField(instance, document, field);

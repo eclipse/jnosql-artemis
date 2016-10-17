@@ -21,13 +21,20 @@ package org.jnosql.artemis.column;
 
 import org.jnosql.artemis.reflection.*;
 import org.jnosql.diana.api.Value;
+import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnEntity;
+import org.jnosql.diana.api.document.Document;
+import org.jnosql.diana.api.document.DocumentEntity;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
+
+import static org.jnosql.artemis.reflection.FieldType.EMBEDDED;
 
 /**
  * The default implementation to {@link ColumnEntityConverter}
@@ -76,12 +83,12 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
 
     private <T> Consumer<String> feedObject(T instance, ColumnEntity entity, Map<String, FieldRepresentation> fieldsGroupByName) {
         return k -> {
-            Value value = entity.find(k).get().getValue();
+            Optional<Column> column = entity.find(k);
             FieldRepresentation field = fieldsGroupByName.get(k);
-            if (FieldType.EMBEDDED.equals(field.getType())) {
-                ColumnEntity columnEntity = value.get(ColumnEntity.class);
-                reflections.setValue(instance, field.getField(), toEntity(columnEntity));
+            if (EMBEDDED.equals(field.getType())) {
+                setEmbeddedField(instance, entity, column, field);
             } else {
+                Value value = column.get().getValue();
                 reflections.setValue(instance, field.getField(), field.getValue(value));
             }
         };
@@ -89,10 +96,22 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
 
     private <T> T convertEntity(ColumnEntity entity, ClassRepresentation representation, T instance) {
         Map<String, FieldRepresentation> fieldsGroupByName = representation.getFieldsGroupByName();
+        Predicate<String> existField = k -> entity.find(k).isPresent();
         fieldsGroupByName.keySet().stream()
-                .filter(k -> entity.find(k).isPresent())
+                .filter(existField.or(k -> EMBEDDED.equals(fieldsGroupByName.get(k).getType())))
                 .forEach(feedObject(instance, entity, fieldsGroupByName));
 
         return instance;
     }
+
+    private <T> void setEmbeddedField(T instance, ColumnEntity entity, Optional<Column> column, FieldRepresentation field) {
+        if (column.isPresent()) {
+            Value value = column.get().getValue();
+            ColumnEntity columnEntity = value.get(ColumnEntity.class);
+            reflections.setValue(instance, field.getField(), toEntity(columnEntity));
+        } else {
+            reflections.setValue(instance, field.getField(), toEntity(field.getField().getType(), entity));
+        }
+    }
+
 }
