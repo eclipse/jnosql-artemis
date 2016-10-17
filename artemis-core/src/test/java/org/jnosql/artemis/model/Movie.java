@@ -19,7 +19,9 @@
 package org.jnosql.artemis.model;
 
 
+import java.util.Objects;
 import java.util.Set;
+
 import org.jnosql.artemis.Column;
 import org.jnosql.artemis.Entity;
 
@@ -54,6 +56,25 @@ public class Movie {
 
     public Set<String> getActors() {
         return actors;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Movie movie = (Movie) o;
+        return year == movie.year &&
+                Objects.equals(name, movie.name) &&
+                Objects.equals(actors, movie.actors);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, year, actors);
     }
 
     @Override

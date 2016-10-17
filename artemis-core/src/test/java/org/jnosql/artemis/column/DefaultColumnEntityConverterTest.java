@@ -28,6 +28,7 @@ import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.document.Document;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -132,7 +133,7 @@ public class DefaultColumnEntityConverterTest {
     @Test
     public void shouldConvertDirectorToColumn() {
 
-        Movie movie = new Movie("Matriz", 2012, Collections.singleton("Actor"));
+        Movie movie = new Movie("Matrix", 2012, Collections.singleton("Actor"));
         Director director = Director.builderDiretor().withAge(12)
                 .withId(12)
                 .withName("Otavio")
@@ -155,6 +156,23 @@ public class DefaultColumnEntityConverterTest {
         assertEquals(movie.getActors(), getValue(subColumn.find("actors")));
 
 
+    }
+
+    @Test
+    public void shouldConvertToEmbeddedClassWhenHasSubColumn() {
+        Movie movie = new Movie("Matrix", 2012, Collections.singleton("Actor"));
+        Director director = Director.builderDiretor().withAge(12)
+                .withId(12)
+                .withName("Otavio")
+                .withPhones(Arrays.asList("234", "2342")).withMovie(movie).build();
+
+        ColumnEntity entity = converter.toColumn(director);
+        Director director1 = converter.toEntity(entity);
+
+        assertEquals(movie, director1.getMovie());
+        assertEquals(director.getName(), director1.getName());
+        assertEquals(director.getAge(), director1.getAge());
+        assertEquals(director.getId(), director1.getId());
     }
 
     private Object getValue(Optional<Column> document) {

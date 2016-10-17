@@ -23,6 +23,7 @@ import org.jnosql.artemis.Column;
 import org.jnosql.artemis.Entity;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Director extends Person {
@@ -37,6 +38,23 @@ public class Director extends Person {
     public Director(long id, String name, int age, List<String> phones, String ignore, Movie movie) {
         super(id, name, age, phones, ignore);
         this.movie = movie;
+    }
+
+    public Movie getMovie() {
+        return movie;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Director director = (Director) o;
+        return Objects.equals(movie, director.movie);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(movie);
     }
 
     public static DirectorBuilder builderDiretor() {

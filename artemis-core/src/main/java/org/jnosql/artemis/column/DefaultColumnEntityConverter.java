@@ -78,7 +78,12 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
         return k -> {
             Value value = entity.find(k).get().getValue();
             FieldRepresentation field = fieldsGroupByName.get(k);
-            reflections.setValue(instance, field.getField(), field.getValue(value));
+            if (FieldType.EMBEDDED.equals(field.getType())) {
+                ColumnEntity columnEntity = value.get(ColumnEntity.class);
+                reflections.setValue(instance, field.getField(), toEntity(columnEntity));
+            } else {
+                reflections.setValue(instance, field.getField(), field.getValue(value));
+            }
         };
     }
 
