@@ -29,7 +29,7 @@ import org.jnosql.artemis.Entity;
 public class Movie {
 
     @Column
-    private String name;
+    private String title;
 
     @Column
     private long year;
@@ -40,14 +40,14 @@ public class Movie {
     public Movie() {
     }
 
-    public Movie(String name, long year, Set<String> actors) {
-        this.name = name;
+    public Movie(String title, long year, Set<String> actors) {
+        this.title = title;
         this.year = year;
         this.actors = actors;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
     public long getYear() {
@@ -68,19 +68,19 @@ public class Movie {
         }
         Movie movie = (Movie) o;
         return year == movie.year &&
-                Objects.equals(name, movie.name) &&
+                Objects.equals(title, movie.title) &&
                 Objects.equals(actors, movie.actors);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, year, actors);
+        return Objects.hash(title, year, actors);
     }
 
     @Override
     public String toString() {
         return "Movie{" +
-                "name='" + name + '\'' +
+                "title='" + title + '\'' +
                 ", year=" + year +
                 ", actors=" + actors +
                 '}';

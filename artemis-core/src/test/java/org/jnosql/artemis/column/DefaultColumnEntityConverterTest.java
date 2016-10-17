@@ -27,10 +27,7 @@ import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnEntity;
-import org.jnosql.diana.api.document.Document;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -151,7 +148,7 @@ public class DefaultColumnEntityConverterTest {
 
         assertEquals(3, subColumn.size());
         assertEquals("movie", subColumn.getName());
-        assertEquals(movie.getName(), getValue(subColumn.find("name")));
+        assertEquals(movie.getTitle(), getValue(subColumn.find("title")));
         assertEquals(movie.getYear(), getValue(subColumn.find("year")));
         assertEquals(movie.getActors(), getValue(subColumn.find("actors")));
 
