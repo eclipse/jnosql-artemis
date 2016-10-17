@@ -18,7 +18,12 @@
  */
 package org.jnosql.artemis.document;
 
-import org.jnosql.artemis.reflection.*;
+import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.FieldType;
+import org.jnosql.artemis.reflection.FieldValue;
+import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.document.DocumentEntity;
 
@@ -85,7 +90,12 @@ class DefaultDocumentEntityConverter implements DocumentEntityConverter {
         return k -> {
             Value value = entity.find(k).get().getValue();
             FieldRepresentation field = fieldsGroupByName.get(k);
-            reflections.setValue(instance, field.getField(), field.getValue(value));
+            if (FieldType.EMBEDDED.equals(field.getType())) {
+                DocumentEntity columnEntity = value.get(DocumentEntity.class);
+                reflections.setValue(instance, field.getField(), toEntity(columnEntity));
+            } else {
+                reflections.setValue(instance, field.getField(), field.getValue(value));
+            }
         };
     }
 

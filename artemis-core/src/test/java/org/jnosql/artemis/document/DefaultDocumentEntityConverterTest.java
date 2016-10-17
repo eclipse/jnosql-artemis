@@ -25,6 +25,7 @@ import org.jnosql.artemis.model.Movie;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.Value;
+import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentEntity;
 import org.junit.Before;
@@ -152,6 +153,25 @@ public class DefaultDocumentEntityConverterTest {
 
 
     }
+
+
+    @Test
+    public void shouldConvertToEmbeddedClassWhenHasSubColumn() {
+        Movie movie = new Movie("Matrix", 2012, Collections.singleton("Actor"));
+        Director director = Director.builderDiretor().withAge(12)
+                .withId(12)
+                .withName("Otavio")
+                .withPhones(Arrays.asList("234", "2342")).withMovie(movie).build();
+
+        DocumentEntity entity = converter.toDocument(director);
+        Director director1 = converter.toEntity(entity);
+
+        assertEquals(movie, director1.getMovie());
+        assertEquals(director.getName(), director1.getName());
+        assertEquals(director.getAge(), director1.getAge());
+        assertEquals(director.getId(), director1.getId());
+    }
+
 
     private Object getValue(Optional<Document> document) {
         return document.map(Document::getValue).map(Value::get).orElse(null);
