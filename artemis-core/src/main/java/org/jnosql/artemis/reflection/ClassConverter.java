@@ -58,8 +58,6 @@ class ClassConverter {
                 .withField(field).withType(fieldType);
         switch (fieldType) {
             case COLLECTION:
-            case SET:
-            case LIST:
             case MAP:
                 builder.withTypeSupplier(field::getGenericType);
                 return builder.buildGeneric();

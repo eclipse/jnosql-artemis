@@ -20,15 +20,13 @@ package org.jnosql.artemis.reflection;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * enum that contains kinds of annotations to fields on java.
  */
 public enum FieldType {
-    LIST, SET, MAP, COLLECTION, DEFAULT;
+    MAP, COLLECTION, DEFAULT;
 
     /**
      * find you the kind of annotation on field and then define a enum type, follow the sequences:
@@ -43,12 +41,6 @@ public enum FieldType {
      * @return the type
      */
     public static FieldType of(Field field) {
-        if (List.class.isAssignableFrom(field.getType())) {
-            return LIST;
-        }
-        if (Set.class.isAssignableFrom(field.getType())) {
-            return SET;
-        }
         if (Collection.class.isAssignableFrom(field.getType())) {
             return COLLECTION;
         }

@@ -20,17 +20,23 @@ package org.jnosql.artemis.column;
 
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Actor;
+import org.jnosql.artemis.model.Director;
+import org.jnosql.artemis.model.Movie;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnEntity;
+import org.jnosql.diana.api.document.Document;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -120,6 +126,34 @@ public class DefaultColumnEntityConverterTest {
         assertEquals(Arrays.asList("234", "2342"), actor.getPhones());
         assertEquals(Collections.singletonMap("JavaZone", "Jedi"), actor.getMovieCharacter());
         assertEquals(Collections.singletonMap("JavaZone", 10), actor.getMovieRating());
+    }
+
+
+    @Test
+    @Ignore
+    public void shouldConvertDirectorToDocument() {
+
+        Movie movie = new Movie("Matriz", 2012, Collections.singleton("Actor"));
+        Director director = Director.builderDiretor().withAge(12)
+                .withId(12)
+                .withName("Otavio")
+                .withPhones(Arrays.asList("234", "2342")).withMovie(movie).build();
+
+        ColumnEntity entity = converter.toColumn(director);
+        assertEquals(5, entity.size());
+
+        assertEquals(getValue(entity.find("name")), director.getName());
+        assertEquals(getValue(entity.find("age")), director.getAge());
+        assertEquals(getValue(entity.find("_id")), director.getId());
+        assertEquals(getValue(entity.find("phones")), director.getPhones());
+
+        Column subColumn = (Column) getValue(entity.find("movie"));
+
+
+    }
+
+    private Object getValue(Optional<Column> document) {
+        return document.map(Column::getValue).map(Value::get).orElse(null);
     }
 
 }

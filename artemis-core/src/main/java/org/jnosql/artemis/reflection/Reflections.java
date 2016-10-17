@@ -18,6 +18,12 @@
  */
 package org.jnosql.artemis.reflection;
 
+import org.apache.commons.lang3.StringUtils;
+import org.jnosql.artemis.Column;
+import org.jnosql.artemis.Entity;
+import org.jnosql.artemis.MappedSuperclass;
+
+import javax.enterprise.context.ApplicationScoped;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -27,11 +33,6 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
-import javax.enterprise.context.ApplicationScoped;
-import org.apache.commons.lang3.StringUtils;
-import org.jnosql.artemis.Column;
-import org.jnosql.artemis.Entity;
-import org.jnosql.artemis.MappedSuperclass;
 
 /**
  * Utilitarian class to reflection

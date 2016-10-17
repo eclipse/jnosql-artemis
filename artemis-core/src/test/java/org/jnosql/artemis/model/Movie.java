@@ -35,5 +35,21 @@ public class Movie {
     @Column
     private Set<String> actors;
 
+    public Movie() {
+    }
 
+    public Movie(String name, long year, Set<String> actors) {
+        this.name = name;
+        this.year = year;
+        this.actors = actors;
+    }
+
+    @Override
+    public String toString() {
+        return "Movie{" +
+                "name='" + name + '\'' +
+                ", year=" + year +
+                ", actors=" + actors +
+                '}';
+    }
 }
