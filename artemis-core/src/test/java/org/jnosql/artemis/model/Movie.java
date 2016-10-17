@@ -44,6 +44,18 @@ public class Movie {
         this.actors = actors;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public long getYear() {
+        return year;
+    }
+
+    public Set<String> getActors() {
+        return actors;
+    }
+
     @Override
     public String toString() {
         return "Movie{" +

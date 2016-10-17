@@ -130,7 +130,6 @@ public class DefaultColumnEntityConverterTest {
 
 
     @Test
-    @Ignore
     public void shouldConvertDirectorToDocument() {
 
         Movie movie = new Movie("Matriz", 2012, Collections.singleton("Actor"));
@@ -147,7 +146,13 @@ public class DefaultColumnEntityConverterTest {
         assertEquals(getValue(entity.find("_id")), director.getId());
         assertEquals(getValue(entity.find("phones")), director.getPhones());
 
-        Column subColumn = (Column) getValue(entity.find("movie"));
+        ColumnEntity subColumn = (ColumnEntity) getValue(entity.find("movie"));
+
+        assertEquals(3, subColumn.size());
+        assertEquals("movie", subColumn.getName());
+        assertEquals(movie.getName(), getValue(subColumn.find("name")));
+        assertEquals(movie.getYear(), getValue(subColumn.find("year")));
+        assertEquals(movie.getActors(), getValue(subColumn.find("actors")));
 
 
     }

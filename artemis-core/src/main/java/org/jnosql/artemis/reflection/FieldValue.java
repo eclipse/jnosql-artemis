@@ -19,6 +19,7 @@
 package org.jnosql.artemis.reflection;
 
 
+import org.jnosql.artemis.column.ColumnEntityConverter;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.document.Document;
 
@@ -45,6 +46,7 @@ public final class FieldValue {
 
     /**
      * Returns the instance
+     *
      * @return the instance
      */
     public Object getValue() {
@@ -53,6 +55,7 @@ public final class FieldValue {
 
     /**
      * returns the Field representation
+     *
      * @return the {@link FieldRepresentation} instance
      */
     public FieldRepresentation getField() {
@@ -61,6 +64,7 @@ public final class FieldValue {
 
     /**
      * Returns true if {@link FieldValue#getValue()} is different of null
+     *
      * @return if {@link FieldValue#getValue()} is different of null
      */
     public boolean isNotEmpty() {
@@ -69,6 +73,7 @@ public final class FieldValue {
 
     /**
      * Convert this instance to {@link Document}
+     *
      * @return a {@link Document} instance
      */
     public Document toDocument() {
@@ -77,10 +82,23 @@ public final class FieldValue {
 
     /**
      * Convert this instance to {@link Column}
+     *
+     * @param converter the converter
      * @return a {@link Column} instance
      */
-    public Column toColumn() {
+    public Column toColumn(ColumnEntityConverter converter) {
+
+        if (FieldType.EMBEDDED.equals(getField().getType())) {
+            return Column.of(field.getName(), converter.toColumn(value));
+        }
         return Column.of(field.getName(), value);
     }
 
+    @Override
+    public String toString() {
+        return "FieldValue{" +
+                "value=" + value +
+                ", field=" + field +
+                '}';
+    }
 }

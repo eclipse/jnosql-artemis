@@ -49,7 +49,7 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
         representation.getFields().stream()
                 .map(f -> to(f, entityInstance))
                 .filter(FieldValue::isNotEmpty)
-                .map(FieldValue::toColumn)
+                .map(f -> f.toColumn(this))
                 .forEach(entity::add);
         return entity;
     }
