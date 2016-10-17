@@ -21,6 +21,7 @@ package org.jnosql.artemis.reflection;
 import javax.inject.Inject;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Actor;
+import org.jnosql.artemis.model.Director;
 import org.jnosql.artemis.model.Person;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,6 +56,16 @@ public class ClassConverterTest {
         assertEquals(Actor.class, classRepresentation.getClassInstance());
         assertEquals(6, classRepresentation.getFields().size());
         assertThat(classRepresentation.getFieldsName(), containsInAnyOrder("_id", "name", "age", "phones", "movieCharacter", "movieRating"));
+
+    }
+
+    @Test
+    public void shouldCreateClassRepresentationWithEmbeddedClass() {
+        ClassRepresentation classRepresentation = classConverter.create(Director.class);
+        assertEquals("Director", classRepresentation.getName());
+        assertEquals(Director.class, classRepresentation.getClassInstance());
+        assertEquals(5, classRepresentation.getFields().size());
+        assertThat(classRepresentation.getFieldsName(), containsInAnyOrder("_id", "name", "age", "phones", "movie"));
 
     }
 
