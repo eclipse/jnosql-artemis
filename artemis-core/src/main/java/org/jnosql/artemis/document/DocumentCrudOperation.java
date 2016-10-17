@@ -230,7 +230,7 @@ public interface DocumentCrudOperation {
             UnsupportedOperationException;
 
     /**
-     * Finds {@link T} from query
+     * Finds entities from query
      *
      * @param query - query to figure out entities
      * @param <T>   the instance type
@@ -261,7 +261,7 @@ public interface DocumentCrudOperation {
     }
 
     /**
-     * Finds {@link T} from query asynchronously
+     * Finds entities from query asynchronously
      *
      * @param query    query to find entities
      * @param <T>      the instance type

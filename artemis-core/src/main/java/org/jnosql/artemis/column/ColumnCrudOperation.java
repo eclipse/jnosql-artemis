@@ -229,7 +229,7 @@ public interface ColumnCrudOperation {
             UnsupportedOperationException;
 
     /**
-     * Finds {@link T} from query
+     * Finds entities from query
      *
      * @param query - query to figure out entities
      * @param <T>   the instance type
@@ -260,7 +260,7 @@ public interface ColumnCrudOperation {
     }
 
     /**
-     * Finds {@link T} from query asynchronously
+     * Finds entities from query asynchronously
      *
      * @param query    query to find entities
      * @param <T>      the instance type
