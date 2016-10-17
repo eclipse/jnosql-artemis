@@ -25,13 +25,16 @@ import org.jnosql.artemis.reflection.FieldType;
 import org.jnosql.artemis.reflection.FieldValue;
 import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.Value;
+import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentEntity;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * The default implementation of {@link DocumentEntityConverter}
@@ -79,8 +82,10 @@ class DefaultDocumentEntityConverter implements DocumentEntityConverter {
 
     private <T> T convertEntity(DocumentEntity entity, ClassRepresentation representation, T instance) {
         Map<String, FieldRepresentation> fieldsGroupByName = representation.getFieldsGroupByName();
+        Predicate<String> existField = k -> entity.find(k).isPresent();
+
         fieldsGroupByName.keySet().stream()
-                .filter(k -> entity.find(k).isPresent())
+                .filter(existField.or(k -> FieldType.EMBEDDED.equals(fieldsGroupByName.get(k).getType())))
                 .forEach(feedObject(instance, entity, fieldsGroupByName));
 
         return instance;
@@ -88,15 +93,30 @@ class DefaultDocumentEntityConverter implements DocumentEntityConverter {
 
     private <T> Consumer<String> feedObject(T instance, DocumentEntity entity, Map<String, FieldRepresentation> fieldsGroupByName) {
         return k -> {
-            Value value = entity.find(k).get().getValue();
+            Optional<Document> document = entity.find(k);
+
             FieldRepresentation field = fieldsGroupByName.get(k);
             if (FieldType.EMBEDDED.equals(field.getType())) {
-                DocumentEntity columnEntity = value.get(DocumentEntity.class);
-                reflections.setValue(instance, field.getField(), toEntity(columnEntity));
+                setEmbeddedField(instance, entity, document, field);
             } else {
-                reflections.setValue(instance, field.getField(), field.getValue(value));
+                setSingleField(instance, document, field);
             }
         };
+    }
+
+    private <T> void setSingleField(T instance, Optional<Document> document, FieldRepresentation field) {
+        Value value = document.get().getValue();
+        reflections.setValue(instance, field.getField(), field.getValue(value));
+    }
+
+    private <T> void setEmbeddedField(T instance, DocumentEntity entity, Optional<Document> document, FieldRepresentation field) {
+        if (document.isPresent()) {
+            Value value = document.get().getValue();
+            DocumentEntity columnEntity = value.get(DocumentEntity.class);
+            reflections.setValue(instance, field.getField(), toEntity(columnEntity));
+        } else {
+            reflections.setValue(instance, field.getField(), toEntity(field.getField().getType(), entity));
+        }
     }
 
     private FieldValue to(FieldRepresentation field, Object entityInstance) {

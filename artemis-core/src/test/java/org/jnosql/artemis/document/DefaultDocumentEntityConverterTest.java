@@ -37,6 +37,7 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static java.util.Collections.singleton;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -128,7 +129,7 @@ public class DefaultDocumentEntityConverterTest {
     @Test
     public void shouldConvertDirectorToDocument() {
 
-        Movie movie = new Movie("Matriz", 2012, Collections.singleton("Actor"));
+        Movie movie = new Movie("Matriz", 2012, singleton("Actor"));
         Director director = Director.builderDiretor().withAge(12)
                 .withId(12)
                 .withName("Otavio")
@@ -156,7 +157,7 @@ public class DefaultDocumentEntityConverterTest {
 
     @Test
     public void shouldConvertToEmbeddedClassWhenHasSubColumn() {
-        Movie movie = new Movie("Matrix", 2012, Collections.singleton("Actor"));
+        Movie movie = new Movie("Matrix", 2012, singleton("Actor"));
         Director director = Director.builderDiretor().withAge(12)
                 .withId(12)
                 .withName("Otavio")
@@ -171,6 +172,27 @@ public class DefaultDocumentEntityConverterTest {
         assertEquals(director.getId(), director1.getId());
     }
 
+
+    @Test
+    public void shouldConvertToEmbeddedClassWhenHasSubColumn2() {
+        Movie movie = new Movie("Matrix", 2012, singleton("Actor"));
+        Director director = Director.builderDiretor().withAge(12)
+                .withId(12)
+                .withName("Otavio")
+                .withPhones(Arrays.asList("234", "2342")).withMovie(movie).build();
+
+        DocumentEntity entity = converter.toDocument(director);
+        entity.remove("movie");
+        entity.add(Document.of("title", "Matrix"));
+        entity.add(Document.of("year", 2012));
+        entity.add(Document.of("actors", singleton("Actor")));
+        Director director1 = converter.toEntity(entity);
+
+        assertEquals(movie, director1.getMovie());
+        assertEquals(director.getName(), director1.getName());
+        assertEquals(director.getAge(), director1.getAge());
+        assertEquals(director.getId(), director1.getId());
+    }
 
 
     private Object getValue(Optional<Document> document) {

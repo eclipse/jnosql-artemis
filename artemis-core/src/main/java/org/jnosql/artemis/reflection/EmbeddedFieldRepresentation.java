@@ -34,6 +34,9 @@ public final class EmbeddedFieldRepresentation extends AbstractFieldRepresentati
         this.entityName = entityName;
     }
 
+    public String getEntityName() {
+        return entityName;
+    }
 
     @Override
     public boolean equals(Object o) {
