@@ -20,8 +20,11 @@ package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Actor;
+import org.jnosql.artemis.model.Director;
+import org.jnosql.artemis.model.Movie;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentEntity;
 import org.junit.Before;
@@ -31,10 +34,13 @@ import org.junit.runner.RunWith;
 import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 @RunWith(WeldJUnit4Runner.class)
 public class DefaultDocumentEntityConverterTest {
@@ -118,4 +124,37 @@ public class DefaultDocumentEntityConverterTest {
         assertEquals(Collections.singletonMap("JavaZone", "Jedi"), actor.getMovieCharacter());
         assertEquals(Collections.singletonMap("JavaZone", 10), actor.getMovieRating());
     }
+
+    @Test
+    public void shouldConvertDirectorToDocument() {
+
+        Movie movie = new Movie("Matriz", 2012, Collections.singleton("Actor"));
+        Director director = Director.builderDiretor().withAge(12)
+                .withId(12)
+                .withName("Otavio")
+                .withPhones(Arrays.asList("234", "2342")).withMovie(movie).build();
+
+        DocumentEntity entity = converter.toDocument(director);
+        assertEquals(5, entity.size());
+
+        assertEquals(getValue(entity.find("name")), director.getName());
+        assertEquals(getValue(entity.find("age")), director.getAge());
+        assertEquals(getValue(entity.find("_id")), director.getId());
+        assertEquals(getValue(entity.find("phones")), director.getPhones());
+
+        DocumentEntity subColumn = (DocumentEntity) getValue(entity.find("movie"));
+
+        assertEquals(3, subColumn.size());
+        assertEquals("movie", subColumn.getName());
+        assertEquals(movie.getName(), getValue(subColumn.find("name")));
+        assertEquals(movie.getYear(), getValue(subColumn.find("year")));
+        assertEquals(movie.getActors(), getValue(subColumn.find("actors")));
+
+
+    }
+
+    private Object getValue(Optional<Document> document) {
+        return document.map(Document::getValue).map(Value::get).orElse(null);
+    }
+
 }

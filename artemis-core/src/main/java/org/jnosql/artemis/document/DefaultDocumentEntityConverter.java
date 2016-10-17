@@ -49,7 +49,7 @@ class DefaultDocumentEntityConverter implements DocumentEntityConverter {
         representation.getFields().stream()
                 .map(f -> to(f, entityInstance))
                 .filter(FieldValue::isNotEmpty)
-                .map(FieldValue::toDocument)
+                .map(f -> f.toDocument(this))
                 .forEach(entity::add);
         return entity;
 

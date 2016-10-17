@@ -20,6 +20,7 @@ package org.jnosql.artemis.reflection;
 
 
 import org.jnosql.artemis.column.ColumnEntityConverter;
+import org.jnosql.artemis.document.DocumentEntityConverter;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.document.Document;
 
@@ -74,9 +75,13 @@ public final class FieldValue {
     /**
      * Convert this instance to {@link Document}
      *
+     * @param converter the converter
      * @return a {@link Document} instance
      */
-    public Document toDocument() {
+    public Document toDocument(DocumentEntityConverter converter) {
+        if (FieldType.EMBEDDED.equals(field.getType())) {
+            return Document.of(field.getName(), converter.toDocument(value));
+        }
         return Document.of(field.getName(), value);
     }
 

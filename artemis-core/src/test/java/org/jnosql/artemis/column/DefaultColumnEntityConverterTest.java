@@ -130,7 +130,7 @@ public class DefaultColumnEntityConverterTest {
 
 
     @Test
-    public void shouldConvertDirectorToDocument() {
+    public void shouldConvertDirectorToColumn() {
 
         Movie movie = new Movie("Matriz", 2012, Collections.singleton("Actor"));
         Director director = Director.builderDiretor().withAge(12)
