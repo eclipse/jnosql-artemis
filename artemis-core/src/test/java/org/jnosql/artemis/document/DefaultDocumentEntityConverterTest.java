@@ -142,13 +142,13 @@ public class DefaultDocumentEntityConverterTest {
         assertEquals(getValue(entity.find("_id")), director.getId());
         assertEquals(getValue(entity.find("phones")), director.getPhones());
 
-        DocumentEntity subColumn = (DocumentEntity) getValue(entity.find("movie"));
+        DocumentEntity subdocument = (DocumentEntity) getValue(entity.find("movie"));
 
-        assertEquals(3, subColumn.size());
-        assertEquals("movie", subColumn.getName());
-        assertEquals(movie.getName(), getValue(subColumn.find("name")));
-        assertEquals(movie.getYear(), getValue(subColumn.find("year")));
-        assertEquals(movie.getActors(), getValue(subColumn.find("actors")));
+        assertEquals(3, subdocument.size());
+        assertEquals("movie", subdocument.getName());
+        assertEquals(movie.getName(), getValue(subdocument.find("name")));
+        assertEquals(movie.getYear(), getValue(subdocument.find("year")));
+        assertEquals(movie.getActors(), getValue(subdocument.find("actors")));
 
 
     }
