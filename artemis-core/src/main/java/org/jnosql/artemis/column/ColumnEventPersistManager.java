@@ -27,6 +27,8 @@ import org.jnosql.diana.api.column.ColumnEntity;
  * 2) firePreDocument
  * 3) firePostDocument
  * 4) firePostEntity
+ *
+ * @see {@link ColumnWorkflow}
  */
 public interface ColumnEventPersistManager {
 
