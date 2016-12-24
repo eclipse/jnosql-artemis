@@ -75,7 +75,7 @@ public class DefaultColumnCrudOperationTest {
         captor = ArgumentCaptor.forClass(ColumnEntity.class);
         Instance<ColumnFamilyManager> instance = Mockito.mock(Instance.class);
         Mockito.when(instance.get()).thenReturn(managerMock);
-        this.subject = new DefaultColumnCrudOperation(converter, instance, new ColumnFlow(columnEventPersistManager, converter));
+        this.subject = new DefaultColumnCrudOperation(converter, instance, new DefaultColumnFlow(columnEventPersistManager, converter));
     }
 
     @Test

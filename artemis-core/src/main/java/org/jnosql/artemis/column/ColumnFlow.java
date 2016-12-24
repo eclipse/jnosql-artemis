@@ -21,71 +21,29 @@ package org.jnosql.artemis.column;
 
 import org.jnosql.diana.api.column.ColumnEntity;
 
-import javax.inject.Inject;
-import java.util.Objects;
-import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-class ColumnFlow {
+/**
+ * This implementation defines the workflow to save an Entity on {@link ColumnCrudOperation}.
+ * The default implementation follows:
+ *  <p>{@link ColumnEventPersistManager#firePreEntity(Object)}</p>
+ *  <p>{@link ColumnEntityConverter#toColumn(Object)}</p>
+ *  <p>{@link ColumnEventPersistManager#firePreDocument(ColumnEntity)}</p>
+ *  <p>Database alteration</p>
+ *  <p>{@link ColumnEventPersistManager#firePostDocument(ColumnEntity)}</p>
+ *  <p>{@link ColumnEventPersistManager#firePostEntity(Object)}</p>
+ */
+public interface ColumnFlow {
 
-
-    private ColumnEventPersistManager columnEventPersistManager;
-
-
-    private ColumnEntityConverter converter;
-
-    ColumnFlow() {
-    }
-
-    @Inject
-    ColumnFlow(ColumnEventPersistManager columnEventPersistManager, ColumnEntityConverter converter) {
-        this.columnEventPersistManager = columnEventPersistManager;
-        this.converter = converter;
-    }
-
-    public <T> T flow(T entity, UnaryOperator<ColumnEntity> action) {
-
-        Function<T, T> flow = getFlow(entity, action);
-
-        return flow.apply(entity);
-
-    }
-
-    private <T> Function<T, T> getFlow(T entity, UnaryOperator<ColumnEntity> action) {
-        UnaryOperator<T> validation = t -> Objects.requireNonNull(t, "entity is required");
-
-        UnaryOperator<T> firePreEntity = t -> {
-            columnEventPersistManager.firePreEntity(t);
-            return t;
-        };
-
-        Function<T, ColumnEntity> converterColumn = t -> converter.toColumn(t);
-
-        UnaryOperator<ColumnEntity> firePreDocument = t -> {
-            columnEventPersistManager.firePreDocument(t);
-            return t;
-        };
-
-        UnaryOperator<ColumnEntity> firePostDocument = t -> {
-            columnEventPersistManager.firePostDocument(t);
-            return t;
-        };
-
-        Function<ColumnEntity, T> converterEntity = t -> converter.toEntity((Class<T>) entity.getClass(), t);
-
-        UnaryOperator<T> firePostEntity = t -> {
-            columnEventPersistManager.firePostEntity(t);
-            return t;
-        };
-
-
-        return validation
-                .andThen(firePreEntity)
-                .andThen(converterColumn)
-                .andThen(firePreDocument)
-                .andThen(action)
-                .andThen(firePostDocument)
-                .andThen(converterEntity)
-                .andThen(firePostEntity);
-    }
+    /**
+     * Executes the workflow to do an interaction on a database column family.
+     *
+     * @param entity the entity to be saved
+     * @param action the alteration to be executed on database
+     * @param <T>    the entity type
+     * @return after the workflow the the entity response
+     * @see {@link ColumnCrudOperation#save(Object, java.time.Duration)} {@link ColumnCrudOperation#save(Object)}
+     * {@link ColumnCrudOperation#update(Object)}
+     */
+    <T> T flow(T entity, UnaryOperator<ColumnEntity> action) throws NullPointerException;
 }
