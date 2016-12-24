@@ -76,7 +76,8 @@ public class DefaultDocumentCrudOperationTest {
         captor = ArgumentCaptor.forClass(DocumentEntity.class);
         Instance<DocumentCollectionManager> instance = Mockito.mock(Instance.class);
         Mockito.when(instance.get()).thenReturn(managerMock);
-        this.subject = new DefaultDocumentCrudOperation(converter, instance, documentEventPersistManager);
+        DefaultDocumentWorkflow workflow = new DefaultDocumentWorkflow(documentEventPersistManager, converter);
+        this.subject = new DefaultDocumentCrudOperation(converter, instance, workflow);
     }
 
     @Test

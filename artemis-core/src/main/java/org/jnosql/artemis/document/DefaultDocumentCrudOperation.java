@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 /**
@@ -46,14 +47,14 @@ class DefaultDocumentCrudOperation implements DocumentCrudOperation {
 
     private Instance<DocumentCollectionManager> manager;
 
-    private DocumentEventPersistManager documentEventPersistManager;
+    private DocumentWorkflow workflow;
 
 
     @Inject
-    DefaultDocumentCrudOperation(DocumentEntityConverter converter, Instance<DocumentCollectionManager> manager, DocumentEventPersistManager documentEventPersistManager) {
+    DefaultDocumentCrudOperation(DocumentEntityConverter converter, Instance<DocumentCollectionManager> manager, DocumentWorkflow workflow) {
         this.converter = converter;
         this.manager = manager;
-        this.documentEventPersistManager = documentEventPersistManager;
+        this.workflow = workflow;
     }
 
     DefaultDocumentCrudOperation() {
@@ -61,14 +62,9 @@ class DefaultDocumentCrudOperation implements DocumentCrudOperation {
 
     @Override
     public <T> T save(T entity) throws NullPointerException {
-        documentEventPersistManager.firePreEntity(entity);
-        DocumentEntity document = converter.toDocument(Objects.requireNonNull(entity, "entity is required"));
-        documentEventPersistManager.firePreDocument(document);
-        DocumentEntity documentCollection = manager.get().save(document);
-        documentEventPersistManager.firePostDocument(documentCollection);
-        T entityUpdated = converter.toEntity((Class<T>) entity.getClass(), documentCollection);
-        documentEventPersistManager.firePostEntity(entityUpdated);
-        return entityUpdated;
+
+        UnaryOperator<DocumentEntity> saveAction = e -> manager.get().save(e);
+        return workflow.flow(entity, saveAction);
     }
 
     @Override
@@ -78,14 +74,8 @@ class DefaultDocumentCrudOperation implements DocumentCrudOperation {
 
     @Override
     public <T> T save(T entity, Duration ttl) {
-        documentEventPersistManager.firePreEntity(entity);
-        DocumentEntity document = converter.toDocument(Objects.requireNonNull(entity, "entity is required"));
-        documentEventPersistManager.firePreDocument(document);
-        DocumentEntity documentCollection = manager.get().save(document, ttl);
-        documentEventPersistManager.firePostDocument(documentCollection);
-        T entityUpdated = converter.toEntity((Class<T>) entity.getClass(), documentCollection);
-        documentEventPersistManager.firePostEntity(entityUpdated);
-        return entityUpdated;
+        UnaryOperator<DocumentEntity> saveAction = e -> manager.get().save(e, ttl);
+        return workflow.flow(entity, saveAction);
     }
 
     @Override
@@ -118,14 +108,9 @@ class DefaultDocumentCrudOperation implements DocumentCrudOperation {
 
     @Override
     public <T> T update(T entity) {
-        documentEventPersistManager.firePreEntity(entity);
-        DocumentEntity document = converter.toDocument(Objects.requireNonNull(entity, "entity is required"));
-        documentEventPersistManager.firePreDocument(document);
-        DocumentEntity documentCollection = manager.get().update(document);
-        documentEventPersistManager.firePostDocument(documentCollection);
-        T entityUpdated = converter.toEntity((Class<T>) entity.getClass(), documentCollection);
-        documentEventPersistManager.firePostEntity(entityUpdated);
-        return entityUpdated;
+
+        UnaryOperator<DocumentEntity> saveAction = e -> manager.get().update(e);
+        return workflow.flow(entity, saveAction);
     }
 
     @Override
