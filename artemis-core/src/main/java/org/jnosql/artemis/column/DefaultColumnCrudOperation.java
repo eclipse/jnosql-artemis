@@ -59,8 +59,9 @@ class DefaultColumnCrudOperation implements ColumnCrudOperation {
 
     @Override
     public <T> T save(T entity) throws NullPointerException {
+        Objects.requireNonNull(entity, "entity is required");
         columnEventPersistManager.firePreEntity(entity);
-        ColumnEntity document = converter.toColumn(Objects.requireNonNull(entity, "entity is required"));
+        ColumnEntity document = converter.toColumn(entity);
         columnEventPersistManager.firePreDocument(document);
         ColumnEntity documentCollection = manager.get().save(document);
         columnEventPersistManager.firePostDocument(documentCollection);
