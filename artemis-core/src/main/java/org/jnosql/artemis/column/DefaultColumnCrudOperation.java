@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 /**
@@ -45,13 +46,14 @@ class DefaultColumnCrudOperation implements ColumnCrudOperation {
 
     private Instance<ColumnFamilyManager> manager;
 
-    private ColumnEventPersistManager columnEventPersistManager;
+
+    private ColumnFlow flow;
 
     @Inject
-    DefaultColumnCrudOperation(ColumnEntityConverter converter, Instance<ColumnFamilyManager> manager, ColumnEventPersistManager columnEventPersistManager) {
+    DefaultColumnCrudOperation(ColumnEntityConverter converter, Instance<ColumnFamilyManager> manager, ColumnFlow flow) {
         this.converter = converter;
         this.manager = manager;
-        this.columnEventPersistManager = columnEventPersistManager;
+        this.flow = flow;
     }
 
     DefaultColumnCrudOperation() {
@@ -59,15 +61,9 @@ class DefaultColumnCrudOperation implements ColumnCrudOperation {
 
     @Override
     public <T> T save(T entity) throws NullPointerException {
-        Objects.requireNonNull(entity, "entity is required");
-        columnEventPersistManager.firePreEntity(entity);
-        ColumnEntity document = converter.toColumn(entity);
-        columnEventPersistManager.firePreDocument(document);
-        ColumnEntity documentCollection = manager.get().save(document);
-        columnEventPersistManager.firePostDocument(documentCollection);
-        T entityUpdated = converter.toEntity((Class<T>) entity.getClass(), documentCollection);
-        columnEventPersistManager.firePostEntity(entityUpdated);
-        return entityUpdated;
+
+        UnaryOperator<ColumnEntity> save = e -> manager.get().save(e);
+        return flow.flow(entity, save);
     }
 
     @Override
@@ -77,14 +73,8 @@ class DefaultColumnCrudOperation implements ColumnCrudOperation {
 
     @Override
     public <T> T save(T entity, Duration ttl) {
-        columnEventPersistManager.firePreEntity(entity);
-        ColumnEntity document = converter.toColumn(Objects.requireNonNull(entity, "entity is required"));
-        columnEventPersistManager.firePreDocument(document);
-        ColumnEntity documentCollection = manager.get().save(document, ttl);
-        columnEventPersistManager.firePostDocument(documentCollection);
-        T entityUpdated = converter.toEntity((Class<T>) entity.getClass(), documentCollection);
-        columnEventPersistManager.firePostEntity(entityUpdated);
-        return entityUpdated;
+        UnaryOperator<ColumnEntity> save = e -> manager.get().save(e, ttl);
+        return flow.flow(entity, save);
     }
 
     @Override
@@ -117,14 +107,8 @@ class DefaultColumnCrudOperation implements ColumnCrudOperation {
 
     @Override
     public <T> T update(T entity) {
-        columnEventPersistManager.firePreEntity(entity);
-        ColumnEntity document = converter.toColumn(Objects.requireNonNull(entity, "entity is required"));
-        columnEventPersistManager.firePreDocument(document);
-        ColumnEntity documentCollection = manager.get().update(document);
-        columnEventPersistManager.firePostDocument(documentCollection);
-        T entityUpdated = converter.toEntity((Class<T>) entity.getClass(), documentCollection);
-        columnEventPersistManager.firePostEntity(entityUpdated);
-        return entityUpdated;
+        UnaryOperator<ColumnEntity> save = e -> manager.get().update(e);
+        return flow.flow(entity, save);
     }
 
     @Override
