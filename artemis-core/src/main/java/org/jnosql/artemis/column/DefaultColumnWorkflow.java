@@ -26,7 +26,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-class DefaultColumnFlow implements ColumnFlow {
+class DefaultColumnWorkflow implements ColumnWorkflow {
 
 
     private ColumnEventPersistManager columnEventPersistManager;
@@ -34,11 +34,11 @@ class DefaultColumnFlow implements ColumnFlow {
 
     private ColumnEntityConverter converter;
 
-    DefaultColumnFlow() {
+    DefaultColumnWorkflow() {
     }
 
     @Inject
-    DefaultColumnFlow(ColumnEventPersistManager columnEventPersistManager, ColumnEntityConverter converter) {
+    DefaultColumnWorkflow(ColumnEventPersistManager columnEventPersistManager, ColumnEntityConverter converter) {
         this.columnEventPersistManager = columnEventPersistManager;
         this.converter = converter;
     }

@@ -33,7 +33,7 @@ import java.util.function.UnaryOperator;
  *  <p>{@link ColumnEventPersistManager#firePostDocument(ColumnEntity)}</p>
  *  <p>{@link ColumnEventPersistManager#firePostEntity(Object)}</p>
  */
-public interface ColumnFlow {
+public interface ColumnWorkflow {
 
     /**
      * Executes the workflow to do an interaction on a database column family.

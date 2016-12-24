@@ -24,18 +24,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.function.UnaryOperator;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 
 @RunWith(MockitoJUnitRunner.class)
-public class DefaultColumnFlowTest {
+public class DefaultColumnWorkflowTest {
 
 
     @InjectMocks
-    private DefaultColumnFlow subject;
+    private DefaultColumnWorkflow subject;
 
     @Mock
     private ColumnEventPersistManager columnEventPersistManager;
@@ -48,19 +51,32 @@ public class DefaultColumnFlowTest {
 
     @Before
     public void setUp() {
-        when(converter.toColumn(Mockito.any(Object.class)))
+        when(converter.toColumn(any(Object.class)))
                 .thenReturn(columnEntity);
 
     }
 
-
     @Test(expected = NullPointerException.class)
     public void shouldReturnErrorWhenEntityIsNull() {
-        subject.flow(null, null);
+        UnaryOperator<ColumnEntity> action = t -> t;
+        subject.flow(null, action);
     }
 
+    @Test(expected = NullPointerException.class)
+    public void shouldReturnErrorWhenActionIsNull() {
+        subject.flow("", null);
+    }
 
-    //deve retonar nulo
-    //deve seguir o fluxo
-    //
+    @Test
+    public void shouldFollowWorkflow() {
+        UnaryOperator<ColumnEntity> action = t -> t;
+        subject.flow("entity", action);
+
+        verify(columnEventPersistManager).firePreDocument(any(ColumnEntity.class));
+        verify(columnEventPersistManager).firePostDocument(any(ColumnEntity.class));
+        verify(columnEventPersistManager).firePreEntity(any(ColumnEntity.class));
+        verify(columnEventPersistManager).firePostEntity(any(ColumnEntity.class));
+        verify(converter).toColumn(any(Object.class));
+    }
+
 }

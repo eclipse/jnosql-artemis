@@ -47,10 +47,10 @@ class DefaultColumnCrudOperation implements ColumnCrudOperation {
     private Instance<ColumnFamilyManager> manager;
 
 
-    private ColumnFlow flow;
+    private ColumnWorkflow flow;
 
     @Inject
-    DefaultColumnCrudOperation(ColumnEntityConverter converter, Instance<ColumnFamilyManager> manager, ColumnFlow flow) {
+    DefaultColumnCrudOperation(ColumnEntityConverter converter, Instance<ColumnFamilyManager> manager, ColumnWorkflow flow) {
         this.converter = converter;
         this.manager = manager;
         this.flow = flow;
