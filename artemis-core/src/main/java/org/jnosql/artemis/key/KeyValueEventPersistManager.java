@@ -25,8 +25,8 @@ import org.jnosql.diana.api.key.KeyValueEntity;
 
 /**
  * This interface represent the manager of events. When an entity be either saved or updated an event will be fired. This order gonna be:
- * 1) firePreEntity
- * 2) firePreDocument
+ * 1) firePreKeyValue
+ * 2) firePostKeyValue
  * 3) firePostDocument
  * 4) firePostEntity
  *
@@ -39,14 +39,14 @@ public interface KeyValueEventPersistManager {
      *
      * @param entity the entity
      */
-    void firePreDocument(KeyValueEntity<?> entity);
+    void firePreKeyValue(KeyValueEntity<?> entity);
 
     /**
      * Fire an event after the response from communication layer
      *
      * @param entity the entity
      */
-    void firePostDocument(KeyValueEntity<?> entity);
+    void firePostKeyValue(KeyValueEntity<?> entity);
 
     /**
      * Fire an event once the method is called
