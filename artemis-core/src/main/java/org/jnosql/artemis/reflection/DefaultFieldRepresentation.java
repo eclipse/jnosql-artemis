@@ -21,8 +21,10 @@ package org.jnosql.artemis.reflection;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.jnosql.artemis.Key;
 
 /**
  * Class that represents {@link FieldRepresentation} a default field
@@ -30,8 +32,16 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class DefaultFieldRepresentation extends AbstractFieldRepresentation {
 
 
+    private final boolean key;
+
     DefaultFieldRepresentation(FieldType type, Field field, String name) {
         super(type, field, name);
+        this.key = field.getDeclaredAnnotation(Key.class) != null;
+    }
+
+    @Override
+    public boolean isKey() {
+        return key;
     }
 
     @Override
@@ -48,6 +58,7 @@ public class DefaultFieldRepresentation extends AbstractFieldRepresentation {
                 Objects.equals(name, that.name);
     }
 
+
     @Override
     public int hashCode() {
         return Objects.hash(type, field, name);
@@ -59,6 +70,9 @@ public class DefaultFieldRepresentation extends AbstractFieldRepresentation {
                 .append("type", type)
                 .append("field", field)
                 .append("name", name)
+                .append("key", key)
                 .toString();
     }
+
+
 }

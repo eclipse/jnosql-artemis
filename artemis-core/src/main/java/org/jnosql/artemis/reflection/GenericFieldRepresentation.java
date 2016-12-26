@@ -42,6 +42,11 @@ public class GenericFieldRepresentation extends AbstractFieldRepresentation {
     }
 
     @Override
+    public boolean isKey() {
+        return false;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

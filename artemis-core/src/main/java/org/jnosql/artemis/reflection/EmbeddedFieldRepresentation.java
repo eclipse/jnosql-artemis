@@ -39,6 +39,11 @@ public final class EmbeddedFieldRepresentation extends AbstractFieldRepresentati
     }
 
     @Override
+    public boolean isKey() {
+        return false;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -67,4 +72,6 @@ public final class EmbeddedFieldRepresentation extends AbstractFieldRepresentati
                 .append("entityName", entityName)
                 .toString();
     }
+
+
 }

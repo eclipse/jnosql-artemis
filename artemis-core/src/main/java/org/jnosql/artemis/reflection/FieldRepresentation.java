@@ -61,6 +61,12 @@ public interface FieldRepresentation extends Serializable {
     Object getValue(Value value);
 
     /**
+     * Returns true is the field is annotated with {@link org.jnosql.artemis.Key}
+     * @return true is annotated with {@link org.jnosql.artemis.Key}
+     */
+    boolean isKey();
+
+    /**
      * Creates the FieldRepresentationBuilder
      *
      * @return a new Builder instance

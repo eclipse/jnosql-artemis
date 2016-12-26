@@ -22,14 +22,21 @@ import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Actor;
 import org.jnosql.artemis.model.Director;
 import org.jnosql.artemis.model.Person;
+import org.jnosql.artemis.model.User;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 
+import java.util.List;
+import java.util.function.Predicate;
+
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.jnosql.artemis.reflection.FieldType.DEFAULT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(WeldJUnit4Runner.class)
 public class ClassConverterTest {
@@ -67,6 +74,29 @@ public class ClassConverterTest {
         assertEquals(Director.class, classRepresentation.getClassInstance());
         assertEquals(5, classRepresentation.getFields().size());
         assertThat(classRepresentation.getFieldsName(), containsInAnyOrder("_id", "name", "age", "phones", "movie"));
+
+    }
+
+    @Test
+    public void shouldReturnFalseWhenThereIsNotKey(){
+        ClassRepresentation classRepresentation = classConverter.create(Director.class);
+        boolean allMatch = classRepresentation.getFields().stream().allMatch(f -> !f.isKey());
+        assertTrue(allMatch);
+    }
+
+
+    @Test
+    public void shouldReturnTrueWhenThereIsKey() {
+        ClassRepresentation classRepresentation = classConverter.create(User.class);
+        List<FieldRepresentation> fields = classRepresentation.getFields();
+
+        Predicate<FieldRepresentation> hasKeyAnnotation = f -> f.isKey();
+        assertTrue(fields.stream().anyMatch(hasKeyAnnotation));
+        FieldRepresentation fieldRepresentation = fields.stream().filter(hasKeyAnnotation).findFirst().get();
+        assertEquals("nickname", fieldRepresentation.getName());
+        assertEquals(DEFAULT, fieldRepresentation.getType());
+
+
 
     }
 
