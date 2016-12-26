@@ -19,13 +19,12 @@
 package org.jnosql.artemis.document;
 
 
-import org.jnosql.artemis.column.ColumnCrudOperation;
 import org.jnosql.diana.api.document.DocumentEntity;
 
 import java.util.function.UnaryOperator;
 
 /**
- * This implementation defines the workflow to save an Entity on {@link ColumnCrudOperation}.
+ * This implementation defines the workflow to save an Entity on {@link DocumentCrudOperation}.
  * The default implementation follows:
  *  <p>{@link DocumentEventPersistManager#firePreEntity(Object)}</p>
  *  <p>{@link DocumentEntityConverter#toDocument(Object)}</p>

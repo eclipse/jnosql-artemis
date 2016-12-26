@@ -32,7 +32,8 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
- * This interface that represents the common operation between an entity and {@link org.jnosql.diana.api.column.ColumnEntity}
+ * This interface that represents the common operation between an entity
+ * and {@link org.jnosql.diana.api.column.ColumnEntity}
  */
 public interface ColumnCrudOperation {
 
