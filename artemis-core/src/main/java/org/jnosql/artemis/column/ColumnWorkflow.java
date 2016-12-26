@@ -42,8 +42,8 @@ public interface ColumnWorkflow {
      * @param action the alteration to be executed on database
      * @param <T>    the entity type
      * @return after the workflow the the entity response
-     * @see {@link ColumnCrudOperation#save(Object, java.time.Duration)} {@link ColumnCrudOperation#save(Object)}
-     * {@link ColumnCrudOperation#update(Object)}
+     * @see ColumnCrudOperation#save(Object, java.time.Duration) ColumnCrudOperation#save(Object)
+     * ColumnCrudOperation#update(Object)
      */
     <T> T flow(T entity, UnaryOperator<ColumnEntity> action) throws NullPointerException;
 }

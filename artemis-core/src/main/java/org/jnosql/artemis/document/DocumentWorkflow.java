@@ -42,8 +42,8 @@ public interface DocumentWorkflow {
      * @param action the alteration to be executed on database
      * @param <T>    the entity type
      * @return after the workflow the the entity response
-     * @see {@link DocumentCrudOperation#save(Object, java.time.Duration)} {@link DocumentCrudOperation#save(Object)}
-     * {@link DocumentCrudOperation#update(Object)}
+     * @see DocumentCrudOperation#save(Object, java.time.Duration) DocumentCrudOperation#save(Object)
+     * DocumentCrudOperation#update(Object)
      */
     <T> T flow(T entity, UnaryOperator<DocumentEntity> action) throws NullPointerException;
 }

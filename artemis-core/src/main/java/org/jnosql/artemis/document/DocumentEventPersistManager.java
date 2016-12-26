@@ -28,7 +28,7 @@ import org.jnosql.diana.api.document.DocumentEntity;
  * 3) firePostDocument
  * 4) firePostEntity
  *
- * @see {@link DocumentWorkflow}
+ * @see DocumentWorkflow
  */
 public interface DocumentEventPersistManager {
 

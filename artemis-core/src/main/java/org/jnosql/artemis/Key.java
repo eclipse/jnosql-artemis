@@ -28,7 +28,7 @@ import java.lang.annotation.Target;
  *This isn't a mandatory field,  but when it define this field is a key.
  *  That gonna be used mainly for key-value operations.
  *  To a field be mapped they must have also the {@link Column} annotation.
- *  @see {@link Entity}
+ *  @see Entity
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
