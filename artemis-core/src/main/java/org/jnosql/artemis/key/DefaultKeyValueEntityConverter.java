@@ -65,7 +65,7 @@ class DefaultKeyValueEntityConverter implements KeyValueEntityConverter {
         }
         FieldRepresentation key = getKey(entityClass, classRepresentations.get(entityClass));
         Object keyValue = reflections.getValue(t, key.getField());
-        if (Objects.isNull(keyValue)) {
+        if (Objects.isNull(keyValue) || !keyValue.equals(entity.getKey())) {
             reflections.setValue(t, key.getField(), entity.getKey());
         }
         return t;

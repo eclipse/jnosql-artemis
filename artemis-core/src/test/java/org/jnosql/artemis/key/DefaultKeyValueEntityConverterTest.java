@@ -57,6 +57,46 @@ public class DefaultKeyValueEntityConverterTest {
         KeyValueEntity<String> keyValueEntity = converter.toKeyValue(user);
         assertEquals("nickname", keyValueEntity.getKey());
         assertEquals(user, keyValueEntity.getValue().get());
-
     }
+
+    @Test(expected = NullPointerException.class)
+    public void shouldReturnNPEWhenKeyValueIsNull() {
+        converter.toEntity(User.class, null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void shouldReturnNPEWhenClassIsNull() {
+        converter.toEntity(null, KeyValueEntity.of("user", new User("nickname", "name", 21)));
+    }
+
+    @Test(expected = KeyNotFoundException.class)
+    public void shouldReturnErrorWhenTheKeyIsMissing() {
+        converter.toEntity(Actor.class, KeyValueEntity.of("user", new Actor()));
+    }
+
+    @Test
+    public void shouldConvertToEntity() {
+        User expectedUser = new User("nickname", "name", 21);
+        User user = converter.toEntity(User.class,
+                KeyValueEntity.of("user", expectedUser));
+        assertEquals(expectedUser, user);
+    }
+
+    @Test
+    public void shouldConvertAndFeedTheKeyValue() {
+        User expectedUser = new User("nickname", "name", 21);
+        User user = converter.toEntity(User.class,
+                KeyValueEntity.of("nickname", new User(null, "name", 21)));
+        assertEquals(expectedUser, user);
+    }
+
+    @Test
+    public void shouldConvertAndFeedTheKeyValueIfKeyAndFieldAreDifferent() {
+        User expectedUser = new User("nickname", "name", 21);
+        User user = converter.toEntity(User.class,
+                KeyValueEntity.of("nickname", new User("newName", "name", 21)));
+        assertEquals(expectedUser, user);
+    }
+
+
 }
