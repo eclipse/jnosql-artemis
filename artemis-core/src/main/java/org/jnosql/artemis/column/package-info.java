@@ -18,21 +18,13 @@
  */
 
 /**
- * This package contains all comuns API to artemis.
- * Artemis is a flexible and extensible ORM to connect NoSQL databases. It brings an easy interface to
- * support key-value, column family, document oriented and graph databases using as base Diana in CDI based.
- * The API's focus is on simplicity and ease of use.
- * <ul>
- * <li>CDI Based</li>
- * <li>Diana Based</li>
- * <li>Events to insert, delete, update</li>
- * <li>Supports to Bean Validation</li>
- * <li>ORM Annotation Based</li>
- * <li>Configurable and extensible</li>
- </ul>
- * Developers should only have to know a minimal set of
- * artifacts to work with the solution.
- * The API is built on latest Java 8 features and therefore fit
- * perfectly with the functional features of Java 8.
+ * This package contains all objects to use a Column Family API. This API gonna focus in domain, in other words,
+ * ubiquitous language. A column family is a NoSQL object that contains columns of related data. It is a tuple (pair)
+ * that consists of a key-value pair, where the key is mapped to a value that is a set of columns.
+ * In analogy with relational databases, a column family is as a "table", each key-value pair being a "row".
+ * Each column is a tuple (triplet) consisting of a column name, a value, and a timestamp. In a relational
+ * database table, this data would be grouped together within a table with other non-related data.
+ * Ref: https://en.wikipedia.org/wiki/Column_family
+ *
  */
-package org.jnosql.artemis;
+package org.jnosql.artemis.column;
