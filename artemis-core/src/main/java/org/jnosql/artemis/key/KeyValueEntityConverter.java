@@ -32,8 +32,10 @@ public interface KeyValueEntityConverter {
      *
      * @param entityInstance the instnace
      * @return a {@link DocumentEntity} instance
+     * @throws KeyNotFoundException when the entityInstance hasn't a field with {@link org.jnosql.artemis.Key}
+     * @throws NullPointerException when the entityInstance is null
      */
-    KeyValueEntity<?> toKeyValue(Object entityInstance);
+    <T> KeyValueEntity<T> toKeyValue(Object entityInstance) throws KeyNotFoundException, NullPointerException;
 
     /**
      * Converts a {@link KeyValueEntity} to entity
@@ -42,7 +44,9 @@ public interface KeyValueEntityConverter {
      * @param entity      the {@link KeyValueEntity} to be converted
      * @param <T>         the entity type
      * @return the instance from {@link KeyValueEntity}
+     * @throws KeyNotFoundException when the entityInstance hasn't a field with {@link org.jnosql.artemis.Key}
+     * @throws NullPointerException when the entityInstance is null
      */
-    <T> T toEntity(Class<T> entityClass, KeyValueEntity<?> entity);
+    <T> T toEntity(Class<T> entityClass, KeyValueEntity<?> entity) throws KeyNotFoundException, NullPointerException;
 
 }

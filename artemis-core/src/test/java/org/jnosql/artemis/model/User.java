@@ -18,10 +18,14 @@
  */
 package org.jnosql.artemis.model;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jnosql.artemis.Column;
 import org.jnosql.artemis.Key;
 
 import java.util.Objects;
+
+import static org.apache.commons.lang3.builder.ToStringStyle.SHORT_PREFIX_STYLE;
 
 
 public class User {
@@ -81,5 +85,14 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hashCode(nickname);
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, SHORT_PREFIX_STYLE)
+                .append("nickname", nickname)
+                .append("name", name)
+                .append("age", age)
+                .toString();
     }
 }

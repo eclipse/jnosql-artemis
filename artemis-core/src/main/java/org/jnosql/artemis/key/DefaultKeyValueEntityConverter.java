@@ -29,7 +29,11 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.Objects;
 
+import static java.util.Objects.requireNonNull;
 
+/**
+ * The default implementation of {@link KeyValueEntityConverter}
+ */
 class DefaultKeyValueEntityConverter implements KeyValueEntityConverter {
 
     @Inject
@@ -40,15 +44,14 @@ class DefaultKeyValueEntityConverter implements KeyValueEntityConverter {
 
     @Override
     public KeyValueEntity<?> toKeyValue(Object entityInstance) {
-        Objects.requireNonNull(entityInstance, "Object is required");
+        requireNonNull(entityInstance, "Object is required");
         Class<?> clazz = entityInstance.getClass();
         ClassRepresentation representation = classRepresentations.get(clazz);
 
         FieldRepresentation key = getKey(clazz, representation);
         Object value = reflections.getValue(entityInstance, key.getField());
-        if (Objects.isNull(value)) {
-            throw new IllegalStateException(String.format("The key field %s is required", key.getName()));
-        }
+        requireNonNull(value, String.format("The key field %s is required", key.getName()));
+
         return KeyValueEntity.of(value, entityInstance);
     }
 
