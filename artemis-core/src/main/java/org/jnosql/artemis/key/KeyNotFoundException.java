@@ -18,31 +18,25 @@
  */
 package org.jnosql.artemis.key;
 
-
-import org.jnosql.diana.api.document.DocumentEntity;
-import org.jnosql.diana.api.key.KeyValueEntity;
-
 /**
- * This interface represents the converter between an entity and the {@link KeyValueEntity}
+ * When The Entity is converted to {@link org.jnosql.diana.api.key.KeyValueEntity},
+ * this entity must have a field with {@link org.jnosql.artemis.Key} annotation. If this entity
+ * hasn't this information an exception will be launch.
  */
-public interface KeyValueEntityConverter {
+public class KeyNotFoundException extends RuntimeException {
 
     /**
-     * Converts the instance entity to {@link DocumentEntity}
+     * New exception instance with the exception message
      *
-     * @param entityInstance the instnace
-     * @return a {@link DocumentEntity} instance
+     * @param message the exception message
      */
-    KeyValueEntity<?> toKeyValue(Object entityInstance);
+    public KeyNotFoundException(String message) {
+        super(message);
+    }
 
-    /**
-     * Converts a {@link KeyValueEntity} to entity
-     *
-     * @param entityClass the entity class
-     * @param entity      the {@link KeyValueEntity} to be converted
-     * @param <T>         the entity type
-     * @return the instance from {@link KeyValueEntity}
-     */
-    <T> T toEntity(Class<T> entityClass, KeyValueEntity<?> entity);
 
+    static KeyNotFoundException newInstance(Class<?> clazz) {
+        String message = "The entity " + clazz + " must have a field annoted with @Key";
+        return new KeyNotFoundException(message);
+    }
 }
