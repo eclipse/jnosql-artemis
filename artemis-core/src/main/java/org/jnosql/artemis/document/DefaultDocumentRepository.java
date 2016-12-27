@@ -35,12 +35,12 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 /**
- * The default implementation of {@link DocumentCRUDOperation}
+ * The default implementation of {@link DocumentRepository}
  */
 @SuppressWarnings("unchecked")
 @ApplicationScoped
-@DocumentCRUDInterceptor
-class DefaultDocumentCRUDOperation implements DocumentCRUDOperation {
+@DocumentRepositoryInterceptor
+class DefaultDocumentRepository implements DocumentRepository {
 
 
     private DocumentEntityConverter converter;
@@ -51,13 +51,13 @@ class DefaultDocumentCRUDOperation implements DocumentCRUDOperation {
 
 
     @Inject
-    DefaultDocumentCRUDOperation(DocumentEntityConverter converter, Instance<DocumentCollectionManager> manager, DocumentWorkflow workflow) {
+    DefaultDocumentRepository(DocumentEntityConverter converter, Instance<DocumentCollectionManager> manager, DocumentWorkflow workflow) {
         this.converter = converter;
         this.manager = manager;
         this.workflow = workflow;
     }
 
-    DefaultDocumentCRUDOperation() {
+    DefaultDocumentRepository() {
     }
 
     @Override

@@ -43,7 +43,7 @@ public interface KeyValueWorkflow {
      * @param <T>    the entity type
      * @return after the workflow the the entity response
      * @see KeyValueCRUDOperation#put(Object, java.time.Duration)  {@link KeyValueCRUDOperation#put(Object)}
-     * DocumentCRUDOperation#update(Object)
+     * DocumentRepository#update(Object)
      */
     <T> T flow(T entity, UnaryOperator<KeyValueEntity<?>> action) throws NullPointerException;
 }

@@ -40,7 +40,7 @@ import static org.mockito.Mockito.verify;
 
 
 @RunWith(WeldJUnit4Runner.class)
-public class DefaultDocumentCRUDOperationTest {
+public class DefaultDocumentRepositoryTest {
 
     private Person person = Person.builder().
             withAge().
@@ -62,7 +62,7 @@ public class DefaultDocumentCRUDOperationTest {
 
     private DocumentCollectionManager managerMock;
 
-    private DefaultDocumentCRUDOperation subject;
+    private DefaultDocumentRepository subject;
 
     private ArgumentCaptor<DocumentEntity> captor;
 
@@ -77,7 +77,7 @@ public class DefaultDocumentCRUDOperationTest {
         Instance<DocumentCollectionManager> instance = Mockito.mock(Instance.class);
         Mockito.when(instance.get()).thenReturn(managerMock);
         DefaultDocumentWorkflow workflow = new DefaultDocumentWorkflow(documentEventPersistManager, converter);
-        this.subject = new DefaultDocumentCRUDOperation(converter, instance, workflow);
+        this.subject = new DefaultDocumentRepository(converter, instance, workflow);
     }
 
     @Test

@@ -35,7 +35,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * This interface that represents the common operation between an entity and DocumentCollectionEntity
  */
-public interface DocumentCRUDOperation {
+public interface DocumentRepository {
 
 
     /**
@@ -81,7 +81,7 @@ public interface DocumentCRUDOperation {
 
     /**
      * Saves entity, by default it's just run for each saving using
-     * {@link DocumentCRUDOperation#save(Object)},
+     * {@link DocumentRepository#save(Object)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -96,7 +96,7 @@ public interface DocumentCRUDOperation {
 
     /**
      * Saves entities asynchronously, by default it's just run for each saving using
-     * {@link DocumentCRUDOperation#saveAsync(Object)},
+     * {@link DocumentRepository#saveAsync(Object)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -111,7 +111,7 @@ public interface DocumentCRUDOperation {
 
     /**
      * Saves documents collection entity with time to live, by default it's just run for each saving using
-     * {@link DocumentCRUDOperation#save(Object, Duration)},
+     * {@link DocumentRepository#save(Object, Duration)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -128,7 +128,7 @@ public interface DocumentCRUDOperation {
 
     /**
      * Saves entities asynchronously with time to live, by default it's just run for each saving using
-     * {@link DocumentCRUDOperation#saveAsync(Object, Duration)},
+     * {@link DocumentRepository#saveAsync(Object, Duration)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
