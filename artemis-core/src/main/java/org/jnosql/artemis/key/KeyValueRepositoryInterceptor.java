@@ -19,5 +19,5 @@
 package org.jnosql.artemis.key;
 
 
-public @interface KeyValueCRUDInterceptor {
+public @interface KeyValueRepositoryInterceptor {
 }

@@ -24,7 +24,7 @@ import org.jnosql.diana.api.key.KeyValueEntity;
 import java.util.function.UnaryOperator;
 
 /**
- * This implementation defines the workflow to save an Entity on {@link KeyValueCRUDOperation}.
+ * This implementation defines the workflow to save an Entity on {@link KeyValueRepository}.
  * The default implementation follows:
  *  <p>{@link KeyValueEventPersistManager#firePreEntity(Object)}</p>
  *  <p>{@link KeyValueEntityConverter#toKeyValue(Object)}</p>
@@ -42,7 +42,7 @@ public interface KeyValueWorkflow {
      * @param action the alteration to be executed on database
      * @param <T>    the entity type
      * @return after the workflow the the entity response
-     * @see KeyValueCRUDOperation#put(Object, java.time.Duration)  {@link KeyValueCRUDOperation#put(Object)}
+     * @see KeyValueRepository#put(Object, java.time.Duration)  {@link KeyValueRepository#put(Object)}
      * DocumentRepository#update(Object)
      */
     <T> T flow(T entity, UnaryOperator<KeyValueEntity<?>> action) throws NullPointerException;

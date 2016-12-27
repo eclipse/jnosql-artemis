@@ -32,8 +32,8 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 
-@KeyValueCRUDInterceptor
-class DefaultKeyValueCRUDOperation implements KeyValueCRUDOperation {
+@KeyValueRepositoryInterceptor
+class DefaultKeyValueRepository implements KeyValueRepository {
 
     private KeyValueEntityConverter converter;
 
@@ -43,13 +43,13 @@ class DefaultKeyValueCRUDOperation implements KeyValueCRUDOperation {
     private KeyValueWorkflow flow;
 
     @Inject
-    DefaultKeyValueCRUDOperation(KeyValueEntityConverter converter, Instance<BucketManager> manager, KeyValueWorkflow flow) {
+    DefaultKeyValueRepository(KeyValueEntityConverter converter, Instance<BucketManager> manager, KeyValueWorkflow flow) {
         this.converter = converter;
         this.manager = manager;
         this.flow = flow;
     }
 
-    DefaultKeyValueCRUDOperation() {
+    DefaultKeyValueRepository() {
     }
 
     @Override

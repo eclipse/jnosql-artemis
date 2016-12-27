@@ -35,7 +35,7 @@ import static org.junit.Assert.assertEquals;
 
 
 @RunWith(WeldJUnit4Runner.class)
-public class DefaultKeyValueCRUDOperationTest {
+public class DefaultKeyValueRepositoryTest {
 
     @Inject
     private KeyValueEntityConverter converter;
@@ -47,7 +47,7 @@ public class DefaultKeyValueCRUDOperationTest {
 
     private ArgumentCaptor<KeyValueEntity> captor;
 
-    private KeyValueCRUDOperation subject;
+    private KeyValueRepository subject;
 
 
     @Before
@@ -56,7 +56,7 @@ public class DefaultKeyValueCRUDOperationTest {
         Instance<BucketManager> instance = Mockito.mock(Instance.class);
         Mockito.when(instance.get()).thenReturn(manager);
         captor = ArgumentCaptor.forClass(KeyValueEntity.class);
-        this.subject = new DefaultKeyValueCRUDOperation(converter, instance, flow);
+        this.subject = new DefaultKeyValueRepository(converter, instance, flow);
     }
 
 
