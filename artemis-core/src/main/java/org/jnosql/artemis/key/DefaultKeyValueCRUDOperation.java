@@ -7,6 +7,7 @@ import org.jnosql.diana.api.key.KeyValueEntity;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.time.Duration;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -55,6 +56,7 @@ class DefaultKeyValueCRUDOperation implements KeyValueCRUDOperation {
     public <K, T> Optional<T> get(K key, Class<T> clazz) throws NullPointerException {
         Optional<Value> value = manager.get().get(key);
         return value.map(v -> converter.toEntity(clazz, v))
+                .filter(Objects::nonNull)
                 .map(t -> Optional.ofNullable(t))
                 .orElse(Optional.empty());
     }
@@ -64,6 +66,7 @@ class DefaultKeyValueCRUDOperation implements KeyValueCRUDOperation {
         return StreamSupport.stream(manager.get()
                 .get(keys).spliterator(), false)
                 .map(v -> converter.toEntity(clazz, v))
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
