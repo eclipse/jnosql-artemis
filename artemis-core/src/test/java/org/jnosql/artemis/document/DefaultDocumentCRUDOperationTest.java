@@ -16,13 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jnosql.artemis.column;
+package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Person;
-import org.jnosql.diana.api.column.Column;
-import org.jnosql.diana.api.column.ColumnEntity;
-import org.jnosql.diana.api.column.ColumnFamilyManager;
+import org.jnosql.diana.api.document.Document;
+import org.jnosql.diana.api.document.DocumentCollectionManager;
+import org.jnosql.diana.api.document.DocumentEntity;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,8 +38,9 @@ import java.util.stream.Stream;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 
+
 @RunWith(WeldJUnit4Runner.class)
-public class DefaultColumnCrudOperationTest {
+public class DefaultDocumentCRUDOperationTest {
 
     private Person person = Person.builder().
             withAge().
@@ -48,54 +49,55 @@ public class DefaultColumnCrudOperationTest {
             .withId(19)
             .withIgnore().build();
 
-    private Column[] columns = new Column[]{
-            Column.of("age", 10),
-            Column.of("phones", Arrays.asList("234", "432")),
-            Column.of("name", "Name"),
-            Column.of("id", 19L),
+    private Document[] documents = new Document[]{
+            Document.of("age", 10),
+            Document.of("phones", Arrays.asList("234", "432")),
+            Document.of("name", "Name"),
+            Document.of("id", 19L),
     };
 
 
     @Inject
-    private ColumnEntityConverter converter;
+    private DocumentEntityConverter converter;
 
-    private ColumnFamilyManager managerMock;
+    private DocumentCollectionManager managerMock;
 
-    private DefaultColumnCrudOperation subject;
+    private DefaultDocumentCRUDOperation subject;
 
-    private ArgumentCaptor<ColumnEntity> captor;
+    private ArgumentCaptor<DocumentEntity> captor;
 
-    private ColumnEventPersistManager columnEventPersistManager;
+    private DocumentEventPersistManager documentEventPersistManager;
 
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
-        managerMock = Mockito.mock(ColumnFamilyManager.class);
-        columnEventPersistManager = Mockito.mock(ColumnEventPersistManager.class);
-        captor = ArgumentCaptor.forClass(ColumnEntity.class);
-        Instance<ColumnFamilyManager> instance = Mockito.mock(Instance.class);
+        managerMock = Mockito.mock(DocumentCollectionManager.class);
+        documentEventPersistManager = Mockito.mock(DocumentEventPersistManager.class);
+        captor = ArgumentCaptor.forClass(DocumentEntity.class);
+        Instance<DocumentCollectionManager> instance = Mockito.mock(Instance.class);
         Mockito.when(instance.get()).thenReturn(managerMock);
-        this.subject = new DefaultColumnCrudOperation(converter, instance, new DefaultColumnWorkflow(columnEventPersistManager, converter));
+        DefaultDocumentWorkflow workflow = new DefaultDocumentWorkflow(documentEventPersistManager, converter);
+        this.subject = new DefaultDocumentCRUDOperation(converter, instance, workflow);
     }
 
     @Test
     public void shouldSave() {
-        ColumnEntity document = ColumnEntity.of("Person");
-        document.addAll(Stream.of(columns).collect(Collectors.toList()));
+        DocumentEntity document = DocumentEntity.of("Person");
+        document.addAll(Stream.of(documents).collect(Collectors.toList()));
 
         Mockito.when(managerMock
-                .save(Mockito.any(ColumnEntity.class)))
+                .save(Mockito.any(DocumentEntity.class)))
                 .thenReturn(document);
 
         subject.save(this.person);
         verify(managerMock).save(captor.capture());
-        verify(columnEventPersistManager).firePostEntity(Mockito.any(Person.class));
-        verify(columnEventPersistManager).firePreEntity(Mockito.any(Person.class));
-        verify(columnEventPersistManager).firePreDocument(Mockito.any(ColumnEntity.class));
-        verify(columnEventPersistManager).firePostDocument(Mockito.any(ColumnEntity.class));
-        ColumnEntity value = captor.getValue();
+        verify(documentEventPersistManager).firePostEntity(Mockito.any(Person.class));
+        verify(documentEventPersistManager).firePreEntity(Mockito.any(Person.class));
+        verify(documentEventPersistManager).firePreDocument(Mockito.any(DocumentEntity.class));
+        verify(documentEventPersistManager).firePostDocument(Mockito.any(DocumentEntity.class));
+        DocumentEntity value = captor.getValue();
         assertEquals("Person", value.getName());
-        assertEquals(4, value.getColumns().size());
+        assertEquals(4, value.getDocuments().size());
     }
 
 }

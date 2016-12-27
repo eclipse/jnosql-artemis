@@ -16,12 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jnosql.artemis.column;
+package org.jnosql.artemis.document;
 
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
-import org.jnosql.diana.api.column.ColumnEntity;
-import org.jnosql.diana.api.column.ColumnFamilyManager;
-import org.jnosql.diana.api.column.ColumnQuery;
+import org.jnosql.diana.api.document.DocumentCollectionManager;
+import org.jnosql.diana.api.document.DocumentEntity;
+import org.jnosql.diana.api.document.DocumentQuery;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
@@ -35,59 +35,60 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 /**
- * The default implementation of {@link ColumnCrudOperation}
+ * The default implementation of {@link DocumentCRUDOperation}
  */
 @SuppressWarnings("unchecked")
 @ApplicationScoped
-@ColumnCRUDInterceptor
-class DefaultColumnCrudOperation implements ColumnCrudOperation {
-
-    private ColumnEntityConverter converter;
-
-    private Instance<ColumnFamilyManager> manager;
+@DocumentCRUDInterceptor
+class DefaultDocumentCRUDOperation implements DocumentCRUDOperation {
 
 
-    private ColumnWorkflow flow;
+    private DocumentEntityConverter converter;
+
+    private Instance<DocumentCollectionManager> manager;
+
+    private DocumentWorkflow workflow;
+
 
     @Inject
-    DefaultColumnCrudOperation(ColumnEntityConverter converter, Instance<ColumnFamilyManager> manager, ColumnWorkflow flow) {
+    DefaultDocumentCRUDOperation(DocumentEntityConverter converter, Instance<DocumentCollectionManager> manager, DocumentWorkflow workflow) {
         this.converter = converter;
         this.manager = manager;
-        this.flow = flow;
+        this.workflow = workflow;
     }
 
-    DefaultColumnCrudOperation() {
+    DefaultDocumentCRUDOperation() {
     }
 
     @Override
     public <T> T save(T entity) throws NullPointerException {
 
-        UnaryOperator<ColumnEntity> save = e -> manager.get().save(e);
-        return flow.flow(entity, save);
+        UnaryOperator<DocumentEntity> saveAction = e -> manager.get().save(e);
+        return workflow.flow(entity, saveAction);
     }
 
     @Override
     public <T> void saveAsync(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException {
-        manager.get().saveAsync(converter.toColumn(Objects.requireNonNull(entity, "entity is required")));
+        manager.get().saveAsync(converter.toDocument(Objects.requireNonNull(entity, "entity is required")));
     }
 
     @Override
     public <T> T save(T entity, Duration ttl) {
-        UnaryOperator<ColumnEntity> save = e -> manager.get().save(e, ttl);
-        return flow.flow(entity, save);
+        UnaryOperator<DocumentEntity> saveAction = e -> manager.get().save(e, ttl);
+        return workflow.flow(entity, saveAction);
     }
 
     @Override
     public <T> void saveAsync(T entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException {
         Objects.requireNonNull(entity, "entity is required");
         Objects.requireNonNull(ttl, "ttl is required");
-        manager.get().saveAsync(converter.toColumn(entity), ttl);
+        manager.get().saveAsync(converter.toDocument(entity), ttl);
     }
 
     @Override
     public <T> void saveAsync(T entity, Consumer<T> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException {
         Objects.requireNonNull(entity, "entity is required");
-        manager.get().saveAsync(converter.toColumn(entity),
+        manager.get().saveAsync(converter.toDocument(entity),
                 d -> {
                     T value = converter.toEntity((Class<T>) entity.getClass(), d);
                     callBack.accept(value);
@@ -98,7 +99,7 @@ class DefaultColumnCrudOperation implements ColumnCrudOperation {
     public <T> void saveAsync(T entity, Duration ttl, Consumer<T> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException {
         Objects.requireNonNull(entity, "entity is required");
         Objects.requireNonNull(ttl, "ttl is required");
-        manager.get().saveAsync(converter.toColumn(entity), ttl,
+        manager.get().saveAsync(converter.toDocument(entity), ttl,
                 d -> {
                     T value = converter.toEntity((Class<T>) entity.getClass(), d);
                     callBack.accept(value);
@@ -107,19 +108,20 @@ class DefaultColumnCrudOperation implements ColumnCrudOperation {
 
     @Override
     public <T> T update(T entity) {
-        UnaryOperator<ColumnEntity> save = e -> manager.get().update(e);
-        return flow.flow(entity, save);
+
+        UnaryOperator<DocumentEntity> saveAction = e -> manager.get().update(e);
+        return workflow.flow(entity, saveAction);
     }
 
     @Override
     public <T> void updateAsync(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException {
-        manager.get().updateAsync(converter.toColumn(Objects.requireNonNull(entity, "entity is required")));
+        manager.get().updateAsync(converter.toDocument(Objects.requireNonNull(entity, "entity is required")));
     }
 
     @Override
     public <T> void updateAsync(T entity, Consumer<T> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException {
         Objects.requireNonNull(entity, "entity is required");
-        manager.get().updateAsync(converter.toColumn(entity),
+        manager.get().updateAsync(converter.toDocument(entity),
                 d -> {
                     T value = converter.toEntity((Class<T>) entity.getClass(), d);
                     callBack.accept(value);
@@ -127,30 +129,30 @@ class DefaultColumnCrudOperation implements ColumnCrudOperation {
     }
 
     @Override
-    public void delete(ColumnQuery query) {
+    public void delete(DocumentQuery query) {
         manager.get().delete(query);
     }
 
     @Override
-    public void deleteAsync(ColumnQuery query) throws ExecuteAsyncQueryException, UnsupportedOperationException {
+    public void deleteAsync(DocumentQuery query) throws ExecuteAsyncQueryException, UnsupportedOperationException {
         manager.get().deleteAsync(query);
     }
 
     @Override
-    public void deleteAsync(ColumnQuery query, Consumer<Void> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException {
+    public void deleteAsync(DocumentQuery query, Consumer<Void> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException {
         manager.get().deleteAsync(query, callBack);
     }
 
     @Override
-    public <T> List<T> find(ColumnQuery query) throws NullPointerException {
-        List<ColumnEntity> entities = manager.get().find(query);
-        Function<ColumnEntity, T> function = e -> converter.toEntity(e);
+    public <T> List<T> find(DocumentQuery query) throws NullPointerException {
+        List<DocumentEntity> entities = manager.get().find(query);
+        Function<DocumentEntity, T> function = e -> converter.toEntity(e);
         return entities.stream().map(function).collect(Collectors.toList());
     }
 
     @Override
-    public <T> void findAsync(ColumnQuery query, Consumer<List<T>> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException {
-        Function<ColumnEntity, T> function = e -> converter.toEntity(e);
+    public <T> void findAsync(DocumentQuery query, Consumer<List<T>> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException {
+        Function<DocumentEntity, T> function = e -> converter.toEntity(e);
         manager.get().findAsync(query, es -> callBack.accept(es.stream().map(function).collect(Collectors.toList())));
     }
 

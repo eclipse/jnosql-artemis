@@ -16,12 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jnosql.artemis.column;
+package org.jnosql.artemis.document;
 
 
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
 import org.jnosql.diana.api.NonUniqueResultException;
-import org.jnosql.diana.api.column.ColumnQuery;
+import org.jnosql.diana.api.document.DocumentQuery;
 
 import java.time.Duration;
 import java.util.List;
@@ -32,10 +32,10 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
- * This interface that represents the common operation between an entity
- * and {@link org.jnosql.diana.api.column.ColumnEntity}
+ * This interface that represents the common operation between an entity and DocumentCollectionEntity
  */
-public interface ColumnCrudOperation {
+public interface DocumentCRUDOperation {
+
 
     /**
      * Saves entity
@@ -61,8 +61,8 @@ public interface ColumnCrudOperation {
      * Saves entity with time to live
      *
      * @param entity entity to be saved
-     * @param ttl    the time to live
      * @param <T>    the instance type
+     * @param ttl    the time to live
      * @return the entity saved
      */
     <T> T save(T entity, Duration ttl);
@@ -71,8 +71,8 @@ public interface ColumnCrudOperation {
      * Saves an entity asynchronously with time to live
      *
      * @param entity entity to be saved
-     * @param ttl    the time to live
      * @param <T>    the instance type
+     * @param ttl    the time to live
      * @throws ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to save asynchronous
      */
@@ -80,7 +80,7 @@ public interface ColumnCrudOperation {
 
     /**
      * Saves entity, by default it's just run for each saving using
-     * {@link ColumnCrudOperation#save(Object)}},
+     * {@link DocumentCRUDOperation#save(Object)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -95,7 +95,7 @@ public interface ColumnCrudOperation {
 
     /**
      * Saves entities asynchronously, by default it's just run for each saving using
-     * {@link ColumnCrudOperation#saveAsync(Object)},
+     * {@link DocumentCRUDOperation#saveAsync(Object)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -110,7 +110,7 @@ public interface ColumnCrudOperation {
 
     /**
      * Saves documents collection entity with time to live, by default it's just run for each saving using
-     * {@link ColumnCrudOperation#save(Object, Duration)},
+     * {@link DocumentCRUDOperation#save(Object, Duration)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -127,12 +127,12 @@ public interface ColumnCrudOperation {
 
     /**
      * Saves entities asynchronously with time to live, by default it's just run for each saving using
-     * {@link ColumnCrudOperation#saveAsync(Object, Duration)},
+     * {@link DocumentCRUDOperation#saveAsync(Object, Duration)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
-     * @param ttl      time to live
      * @param <T>      the instance type
+     * @param ttl      time to live
      * @throws ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to save asynchronous
      */
@@ -173,7 +173,7 @@ public interface ColumnCrudOperation {
      * Updates a entity
      *
      * @param entity entity to be updated
-     * @param <T>    the instance type
+     *               @param <T>      the instance type
      * @return the entity updated
      */
     <T> T update(T entity);
@@ -206,7 +206,7 @@ public interface ColumnCrudOperation {
      *
      * @param query query to delete an entity
      */
-    void delete(ColumnQuery query);
+    void delete(DocumentQuery query);
 
     /**
      * Deletes an entity asynchronously
@@ -215,7 +215,7 @@ public interface ColumnCrudOperation {
      * @throws ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to save asynchronous
      */
-    void deleteAsync(ColumnQuery query) throws ExecuteAsyncQueryException, UnsupportedOperationException;
+    void deleteAsync(DocumentQuery query) throws ExecuteAsyncQueryException, UnsupportedOperationException;
 
     /**
      * Deletes an entity asynchronously
@@ -226,7 +226,7 @@ public interface ColumnCrudOperation {
      * @throws ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to delete asynchronous
      */
-    void deleteAsync(ColumnQuery query, Consumer<Void> callBack) throws ExecuteAsyncQueryException,
+    void deleteAsync(DocumentQuery query, Consumer<Void> callBack) throws ExecuteAsyncQueryException,
             UnsupportedOperationException;
 
     /**
@@ -237,7 +237,7 @@ public interface ColumnCrudOperation {
      * @return entities found by query
      * @throws NullPointerException when query is null
      */
-    <T> List<T> find(ColumnQuery query) throws NullPointerException;
+    <T> List<T> find(DocumentQuery query) throws NullPointerException;
 
     /**
      * Returns a single entity from query
@@ -248,7 +248,7 @@ public interface ColumnCrudOperation {
      * @throws NonUniqueResultException when the result has more than 1 entity
      * @throws NullPointerException     when query is null
      */
-    default <T> Optional<T> singleResult(ColumnQuery query) throws NonUniqueResultException {
+    default <T> Optional<T> singleResult(DocumentQuery query) throws NonUniqueResultException {
         List<T> entities = find(query);
         if (entities.isEmpty()) {
             return Optional.empty();
@@ -270,7 +270,7 @@ public interface ColumnCrudOperation {
      * @throws ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to save asynchronous
      */
-    <T> void findAsync(ColumnQuery query, Consumer<List<T>> callBack) throws
+    <T> void findAsync(DocumentQuery query, Consumer<List<T>> callBack) throws
             ExecuteAsyncQueryException, UnsupportedOperationException;
 
 }

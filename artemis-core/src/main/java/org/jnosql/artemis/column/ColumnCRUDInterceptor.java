@@ -28,7 +28,7 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * The interceptor annotation, this annotation must be in any {@link ColumnCrudOperation} implementation
+ * The interceptor annotation, this annotation must be in any {@link ColumnCRUDOperation} implementation
  */
 @Inherited
 @InterceptorBinding
