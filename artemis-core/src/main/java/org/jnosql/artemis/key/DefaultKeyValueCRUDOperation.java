@@ -13,6 +13,8 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+
+@KeyValueCRUDInterceptor
 class DefaultKeyValueCRUDOperation implements KeyValueCRUDOperation {
 
     private KeyValueEntityConverter converter;
