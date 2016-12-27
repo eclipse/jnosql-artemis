@@ -19,253 +19,90 @@
 package org.jnosql.artemis.key;
 
 
-import org.jnosql.artemis.document.DocumentCrudOperation;
-import org.jnosql.diana.api.ExecuteAsyncQueryException;
-import org.jnosql.diana.api.NonUniqueResultException;
-import org.jnosql.diana.api.document.DocumentQuery;
+import org.jnosql.diana.api.Value;
 
 import java.time.Duration;
-import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 public interface KeyValueCRUDOperation {
     /**
-     * Saves entity
+     * Saves the entity
      *
-     * @param entity entity to be saved
-     * @param <T>    the instance type
-     * @return the entity saved
-     * @throws NullPointerException when document is null
+     * @param entity the entity to be save
+     * @param <T>    the entity type
+     * @throws NullPointerException when entity is null
      */
-    <T> T save(T entity) throws NullPointerException;
+    <T> void put(T entity) throws NullPointerException;
 
     /**
-     * Saves an entity asynchronously
+     * Saves the entity with time to live
      *
-     * @param entity entity to be saved
-     * @param <T>    the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
+     * @param entity the entity to be save
+     * @param ttl    the defined time to live
+     * @param <T>    the entity type
+     * @throws NullPointerException          when entity is null
+     * @throws UnsupportedOperationException when expired time is not supported
      */
-    <T> void saveAsync(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException;
+    <T> void put(T entity, Duration ttl) throws NullPointerException, UnsupportedOperationException;
 
     /**
-     * Saves entity with time to live
+     * Saves the {@link Iterable} of entities
      *
-     * @param entity entity to be saved
-     * @param <T>    the instance type
-     * @param ttl    the time to live
-     * @return the entity saved
+     * @param entities keys to be save
+     * @param <T>      the entity type
+     * @throws NullPointerException when the iterable is null
      */
-    <T> T save(T entity, Duration ttl);
+    <T> void put(Iterable<T> entities) throws NullPointerException;
 
     /**
-     * Saves an entity asynchronously with time to live
+     * Saves the {@link Iterable} of entities with a defined time to live
      *
-     * @param entity entity to be saved
-     * @param <T>    the instance type
-     * @param ttl    the time to live
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
+     * @param entities entities to be save
+     * @param ttl      the time to entity expire
+     * @param <T>      the entity type
+     * @throws NullPointerException          when the iterable is null
+     * @throws UnsupportedOperationException when expired time is not supported
      */
-    <T> void saveAsync(T entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException;
+    <T> void put(Iterable<T> entities, Duration ttl) throws NullPointerException, UnsupportedOperationException;
 
     /**
-     * Saves entity, by default it's just run for each saving using
-     * {@link DocumentCrudOperation#save(Object)},
-     * each NoSQL vendor might replace to a more appropriate one.
+     * Finds the Value from a key
      *
-     * @param entities entities to be saved
-     * @param <T>      the instance type
-     * @return the entity saved
-     * @throws NullPointerException when entities is null
+     * @param key the key
+     * @param <K> the key type
+     * @param <T> the entity type
+     * @return the {@link Optional} when is not found will return a {@link Optional#empty()}
+     * @throws NullPointerException when the key is null
      */
-    default <T> Iterable<T> save(Iterable<T> entities) throws NullPointerException {
-        Objects.requireNonNull(entities, "entities is required");
-        return StreamSupport.stream(entities.spliterator(), false).map(this::save).collect(Collectors.toList());
-    }
+    <K, T> Optional<Value> get(K key, Class<T> clazz) throws NullPointerException;
 
     /**
-     * Saves entities asynchronously, by default it's just run for each saving using
-     * {@link DocumentCrudOperation#saveAsync(Object)},
-     * each NoSQL vendor might replace to a more appropriate one.
+     * Finds a list of values from keys
      *
-     * @param entities entities to be saved
-     * @param <T>      the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
+     * @param keys the keys to be used in this query
+     * @param <K>  the key type
+     * @param <T>  the entity type
+     * @return the list of result
+     * @throws NullPointerException when either the keys or the entities values are null
      */
-    default <T> void saveAsync(Iterable<T> entities) throws ExecuteAsyncQueryException, UnsupportedOperationException {
-        Objects.requireNonNull(entities, "entities is required");
-        StreamSupport.stream(entities.spliterator(), false).forEach(this::saveAsync);
-    }
+    <K, T> Iterable<Value> get(Iterable<K> keys, Class<T> clazz) throws NullPointerException;
 
     /**
-     * Saves documents collection entity with time to live, by default it's just run for each saving using
-     * {@link DocumentCrudOperation#save(Object, Duration)},
-     * each NoSQL vendor might replace to a more appropriate one.
+     * Removes an entity from key
      *
-     * @param entities entities to be saved
-     * @param <T>      the instance type
-     * @param ttl      time to live
-     * @return the entity saved
-     * @throws NullPointerException when entities is null
+     * @param key the key bo be used
+     * @param <K> the key type
+     * @throws NullPointerException when the key is null
      */
-    default <T> Iterable<T> save(Iterable<T> entities, Duration ttl) throws NullPointerException {
-        Objects.requireNonNull(entities, "entities is required");
-        Objects.requireNonNull(ttl, "ttl is required");
-        return StreamSupport.stream(entities.spliterator(), false).map(d -> save(d, ttl)).collect(Collectors.toList());
-    }
+    <K> void remove(K key) throws NullPointerException;
 
     /**
-     * Saves entities asynchronously with time to live, by default it's just run for each saving using
-     * {@link DocumentCrudOperation#saveAsync(Object, Duration)},
-     * each NoSQL vendor might replace to a more appropriate one.
+     * Removes entities from keys
      *
-     * @param entities entities to be saved
-     * @param <T>      the instance type
-     * @param ttl      time to live
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
+     * @param keys the keys to be used
+     * @param <K>  the key type
+     * @throws NullPointerException when the key is null
      */
-    default <T> void saveAsync(Iterable<T> entities, Duration ttl) {
-        Objects.requireNonNull(entities, "entities is required");
-        Objects.requireNonNull(ttl, "ttl is required");
-        StreamSupport.stream(entities.spliterator(), false).forEach(d -> saveAsync(d, ttl));
-    }
+    <K> void remove(Iterable<K> keys) throws NullPointerException;
 
-    /**
-     * Saves an entity asynchronously
-     *
-     * @param entity   entity to be saved
-     * @param callBack the callback, when the process is finished will call this instance returning
-     *                 the saved entity within parameters
-     * @param <T>      the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
-     */
-    <T> void saveAsync(T entity, Consumer<T> callBack) throws
-            ExecuteAsyncQueryException, UnsupportedOperationException;
-
-    /**
-     * Saves an entity asynchronously with time to live
-     *
-     * @param entity   entity to be saved
-     * @param ttl      time to live
-     * @param callBack the callback, when the process is finished will call this instance returning
-     *                 the saved entity within parameters
-     * @param <T>      the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
-     */
-    <T> void saveAsync(T entity, Duration ttl, Consumer<T> callBack) throws
-            ExecuteAsyncQueryException, UnsupportedOperationException;
-
-    /**
-     * Updates a entity
-     *
-     * @param entity entity to be updated
-     *               @param <T>      the instance type
-     * @return the entity updated
-     */
-    <T> T update(T entity);
-
-    /**
-     * Updates an entity asynchronously
-     *
-     * @param entity entity to be updated
-     * @param <T>    the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
-     */
-    <T> void updateAsync(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException;
-
-    /**
-     * Updates an entity asynchronously
-     *
-     * @param entity   entity to be updated
-     * @param callBack the callback, when the process is finished will call this instance returning
-     *                 the updated entity within parametersa
-     * @param <T>      the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
-     */
-    <T> void updateAsync(T entity, Consumer<T> callBack) throws
-            ExecuteAsyncQueryException, UnsupportedOperationException;
-
-    /**
-     * Deletes an entity
-     *
-     * @param key query to delete an entity
-     */
-    <K> void delete(K key);
-
-    /**
-     * Deletes an entity asynchronously
-     *
-     * @param query query to delete an entity
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
-     */
-    void deleteAsync(DocumentQuery query) throws ExecuteAsyncQueryException, UnsupportedOperationException;
-
-    /**
-     * Deletes an entity asynchronously
-     *
-     * @param query    query to delete an entity
-     * @param callBack the callback, when the process is finished will call this instance returning
-     *                 the null within parameters
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to delete asynchronous
-     */
-    void deleteAsync(DocumentQuery query, Consumer<Void> callBack) throws ExecuteAsyncQueryException,
-            UnsupportedOperationException;
-
-    /**
-     * Finds entities from query
-     *
-     * @param query - query to figure out entities
-     * @param <T>   the instance type
-     * @return entities found by query
-     * @throws NullPointerException when query is null
-     */
-    <T> List<T> find(DocumentQuery query) throws NullPointerException;
-
-    /**
-     * Returns a single entity from query
-     *
-     * @param query - query to figure out entities
-     * @param <T>   the instance type
-     * @return an entity on {@link Optional} or {@link Optional#empty()} when the result is not found.
-     * @throws NonUniqueResultException when the result has more than 1 entity
-     * @throws NullPointerException     when query is null
-     */
-    default <T> Optional<T> singleResult(DocumentQuery query) throws NonUniqueResultException {
-        List<T> entities = find(query);
-        if (entities.isEmpty()) {
-            return Optional.empty();
-        }
-        if (entities.size() == 1) {
-            return Optional.of(entities.get(0));
-        }
-
-        throw new NonUniqueResultException("The query returns more than one entity, query: " + query);
-    }
-
-    /**
-     * Finds entities from query asynchronously
-     *
-     * @param query    query to find entities
-     * @param <T>      the instance type
-     * @param callBack the callback, when the process is finished will call this instance returning
-     *                 the result of query within parameters
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
-     */
-    <T> void findAsync(DocumentQuery query, Consumer<List<T>> callBack) throws
-            ExecuteAsyncQueryException, UnsupportedOperationException;
 }
