@@ -35,12 +35,12 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 /**
- * The default implementation of {@link ColumnCRUDOperation}
+ * The default implementation of {@link ColumnRepository}
  */
 @SuppressWarnings("unchecked")
 @ApplicationScoped
-@ColumnCRUDInterceptor
-class DefaultColumnCRUDOperation implements ColumnCRUDOperation {
+@ColumnRepositoryInterceptor
+class DefaultColumnRepository implements ColumnRepository {
 
     private ColumnEntityConverter converter;
 
@@ -50,13 +50,13 @@ class DefaultColumnCRUDOperation implements ColumnCRUDOperation {
     private ColumnWorkflow flow;
 
     @Inject
-    DefaultColumnCRUDOperation(ColumnEntityConverter converter, Instance<ColumnFamilyManager> manager, ColumnWorkflow flow) {
+    DefaultColumnRepository(ColumnEntityConverter converter, Instance<ColumnFamilyManager> manager, ColumnWorkflow flow) {
         this.converter = converter;
         this.manager = manager;
         this.flow = flow;
     }
 
-    DefaultColumnCRUDOperation() {
+    DefaultColumnRepository() {
     }
 
     @Override

@@ -39,7 +39,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 
 @RunWith(WeldJUnit4Runner.class)
-public class DefaultColumnCRUDOperationTest {
+public class DefaultColumnRepositoryTest {
 
     private Person person = Person.builder().
             withAge().
@@ -61,7 +61,7 @@ public class DefaultColumnCRUDOperationTest {
 
     private ColumnFamilyManager managerMock;
 
-    private DefaultColumnCRUDOperation subject;
+    private DefaultColumnRepository subject;
 
     private ArgumentCaptor<ColumnEntity> captor;
 
@@ -75,7 +75,7 @@ public class DefaultColumnCRUDOperationTest {
         captor = ArgumentCaptor.forClass(ColumnEntity.class);
         Instance<ColumnFamilyManager> instance = Mockito.mock(Instance.class);
         Mockito.when(instance.get()).thenReturn(managerMock);
-        this.subject = new DefaultColumnCRUDOperation(converter, instance, new DefaultColumnWorkflow(columnEventPersistManager, converter));
+        this.subject = new DefaultColumnRepository(converter, instance, new DefaultColumnWorkflow(columnEventPersistManager, converter));
     }
 
     @Test

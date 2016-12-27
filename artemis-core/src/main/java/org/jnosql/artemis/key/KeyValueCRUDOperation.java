@@ -19,8 +19,6 @@
 package org.jnosql.artemis.key;
 
 
-import org.jnosql.diana.api.Value;
-
 import java.time.Duration;
 import java.util.Objects;
 import java.util.Optional;

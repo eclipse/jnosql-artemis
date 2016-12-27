@@ -35,7 +35,7 @@ import java.util.stream.StreamSupport;
  * This interface that represents the common operation between an entity
  * and {@link org.jnosql.diana.api.column.ColumnEntity}
  */
-public interface ColumnCRUDOperation {
+public interface ColumnRepository {
 
     /**
      * Saves entity
@@ -80,7 +80,7 @@ public interface ColumnCRUDOperation {
 
     /**
      * Saves entity, by default it's just run for each saving using
-     * {@link ColumnCRUDOperation#save(Object)}},
+     * {@link ColumnRepository#save(Object)}},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -95,7 +95,7 @@ public interface ColumnCRUDOperation {
 
     /**
      * Saves entities asynchronously, by default it's just run for each saving using
-     * {@link ColumnCRUDOperation#saveAsync(Object)},
+     * {@link ColumnRepository#saveAsync(Object)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -110,7 +110,7 @@ public interface ColumnCRUDOperation {
 
     /**
      * Saves documents collection entity with time to live, by default it's just run for each saving using
-     * {@link ColumnCRUDOperation#save(Object, Duration)},
+     * {@link ColumnRepository#save(Object, Duration)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -127,7 +127,7 @@ public interface ColumnCRUDOperation {
 
     /**
      * Saves entities asynchronously with time to live, by default it's just run for each saving using
-     * {@link ColumnCRUDOperation#saveAsync(Object, Duration)},
+     * {@link ColumnRepository#saveAsync(Object, Duration)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
