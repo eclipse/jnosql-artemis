@@ -31,6 +31,8 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import static java.util.stream.Collectors.toList;
+
 /**
  * This interface that represents the common operation between an entity and DocumentCollectionEntity
  */
@@ -90,7 +92,7 @@ public interface DocumentCRUDOperation {
      */
     default <T> Iterable<T> save(Iterable<T> entities) throws NullPointerException {
         Objects.requireNonNull(entities, "entities is required");
-        return StreamSupport.stream(entities.spliterator(), false).map(this::save).collect(Collectors.toList());
+        return StreamSupport.stream(entities.spliterator(), false).map(this::save).collect(toList());
     }
 
     /**
@@ -122,7 +124,7 @@ public interface DocumentCRUDOperation {
     default <T> Iterable<T> save(Iterable<T> entities, Duration ttl) throws NullPointerException {
         Objects.requireNonNull(entities, "entities is required");
         Objects.requireNonNull(ttl, "ttl is required");
-        return StreamSupport.stream(entities.spliterator(), false).map(d -> save(d, ttl)).collect(Collectors.toList());
+        return StreamSupport.stream(entities.spliterator(), false).map(d -> save(d, ttl)).collect(toList());
     }
 
     /**

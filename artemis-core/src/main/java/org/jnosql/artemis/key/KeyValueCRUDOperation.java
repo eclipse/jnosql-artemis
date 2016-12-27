@@ -22,7 +22,12 @@ package org.jnosql.artemis.key;
 import org.jnosql.diana.api.Value;
 
 import java.time.Duration;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static java.util.stream.Collectors.toList;
 
 
 /**
@@ -36,7 +41,7 @@ public interface KeyValueCRUDOperation {
      * @param <T>    the entity type
      * @throws NullPointerException when entity is null
      */
-    <T> void put(T entity) throws NullPointerException;
+    <T> T put(T entity) throws NullPointerException;
 
     /**
      * Saves the entity with time to live
@@ -47,7 +52,7 @@ public interface KeyValueCRUDOperation {
      * @throws NullPointerException          when entity is null
      * @throws UnsupportedOperationException when expired time is not supported
      */
-    <T> void put(T entity, Duration ttl) throws NullPointerException, UnsupportedOperationException;
+    <T> T put(T entity, Duration ttl) throws NullPointerException, UnsupportedOperationException;
 
     /**
      * Saves the {@link Iterable} of entities
@@ -56,7 +61,10 @@ public interface KeyValueCRUDOperation {
      * @param <T>      the entity type
      * @throws NullPointerException when the iterable is null
      */
-    <T> void put(Iterable<T> entities) throws NullPointerException;
+    default <T> Iterable<T> put(Iterable<T> entities) throws NullPointerException {
+        Objects.requireNonNull(entities, "entities is required");
+        return StreamSupport.stream(entities.spliterator(), false).map(this::put).collect(Collectors.toList());
+    }
 
     /**
      * Saves the {@link Iterable} of entities with a defined time to live
@@ -67,7 +75,11 @@ public interface KeyValueCRUDOperation {
      * @throws NullPointerException          when the iterable is null
      * @throws UnsupportedOperationException when expired time is not supported
      */
-    <T> void put(Iterable<T> entities, Duration ttl) throws NullPointerException, UnsupportedOperationException;
+    default<T> Iterable<T> put(Iterable<T> entities, Duration ttl) throws NullPointerException, UnsupportedOperationException {
+        Objects.requireNonNull(entities, "entities is required");
+        Objects.requireNonNull(ttl, "ttl is required");
+        return StreamSupport.stream(entities.spliterator(), false).map(d -> put(d, ttl)).collect(toList());
+    }
 
     /**
      * Finds the Value from a key
@@ -78,7 +90,7 @@ public interface KeyValueCRUDOperation {
      * @return the {@link Optional} when is not found will return a {@link Optional#empty()}
      * @throws NullPointerException when the key is null
      */
-    <K, T> Optional<Value> get(K key, Class<T> clazz) throws NullPointerException;
+    <K, T> Optional<T> get(K key, Class<T> clazz) throws NullPointerException;
 
     /**
      * Finds a list of values from keys
@@ -89,7 +101,7 @@ public interface KeyValueCRUDOperation {
      * @return the list of result
      * @throws NullPointerException when either the keys or the entities values are null
      */
-    <K, T> Iterable<Value> get(Iterable<K> keys, Class<T> clazz) throws NullPointerException;
+    <K, T> Iterable<T> get(Iterable<K> keys, Class<T> clazz) throws NullPointerException;
 
     /**
      * Removes an entity from key
