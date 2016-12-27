@@ -30,14 +30,11 @@ import static org.apache.commons.lang3.builder.ToStringStyle.SHORT_PREFIX_STYLE;
 
 public class User {
 
-    @Column
     @Key
     private String nickname;
 
-    @Column
     private String name;
 
-    @Column
     private int age;
 
     public User(String nickname, String name, int age) {

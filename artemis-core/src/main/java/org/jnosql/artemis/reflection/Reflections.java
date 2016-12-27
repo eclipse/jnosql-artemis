@@ -21,6 +21,7 @@ package org.jnosql.artemis.reflection;
 import org.apache.commons.lang3.StringUtils;
 import org.jnosql.artemis.Column;
 import org.jnosql.artemis.Entity;
+import org.jnosql.artemis.Key;
 import org.jnosql.artemis.MappedSuperclass;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -30,6 +31,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -184,8 +186,11 @@ public class Reflections {
         if (isMappedSuperclass(classEntity)) {
             fields.addAll(getFields(classEntity.getSuperclass()));
         }
+        Predicate<Field> hasColumnAnnotation = f -> f.getAnnotation(Column.class) != null;
+        Predicate<Field> hasKeyAnnotation = f -> f.getAnnotation(Key.class) != null;
+
         Stream.of(classEntity.getDeclaredFields())
-                .filter(f -> f.getAnnotation(Column.class) != null)
+                .filter(hasColumnAnnotation.or(hasKeyAnnotation))
                 .forEach(fields::add);
         return fields;
     }
