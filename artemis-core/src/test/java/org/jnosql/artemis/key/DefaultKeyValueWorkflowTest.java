@@ -16,9 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jnosql.artemis.document;
+package org.jnosql.artemis.key;
 
 import org.jnosql.diana.api.document.DocumentEntity;
+import org.jnosql.diana.api.key.KeyValueEntity;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,32 +33,32 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class DefaultDocumentWorkflowTest {
 
+@RunWith(MockitoJUnitRunner.class)
+public class DefaultKeyValueWorkflowTest {
+
+    @Mock
+    private KeyValueEventPersistManager eventPersistManager;
+
+    @Mock
+    private KeyValueEntityConverter converter;
 
     @InjectMocks
-    private DefaultDocumentWorkflow subject;
+    private DefaultKeyValueWorkflow subject;
 
     @Mock
-    private DocumentEventPersistManager columnEventPersistManager;
-
-    @Mock
-    private DocumentEntityConverter converter;
-
-    @Mock
-    private DocumentEntity columnEntity;
+    private KeyValueEntity<Object> keyValueEntity;
 
     @Before
     public void setUp() {
-        when(converter.toDocument(any(Object.class)))
-                .thenReturn(columnEntity);
+        when(converter.toKeyValue(any(Object.class)))
+                .thenReturn(keyValueEntity);
 
     }
 
     @Test(expected = NullPointerException.class)
     public void shouldReturnErrorWhenEntityIsNull() {
-        UnaryOperator<DocumentEntity> action = t -> t;
+        UnaryOperator<KeyValueEntity<?>> action = t -> t;
         subject.flow(null, action);
     }
 
@@ -68,14 +69,13 @@ public class DefaultDocumentWorkflowTest {
 
     @Test
     public void shouldFollowWorkflow() {
-        UnaryOperator<DocumentEntity> action = t -> t;
+        UnaryOperator<KeyValueEntity<?>> action = t -> t;
         subject.flow("entity", action);
 
-        verify(columnEventPersistManager).firePreDocument(any(DocumentEntity.class));
-        verify(columnEventPersistManager).firePostDocument(any(DocumentEntity.class));
-        verify(columnEventPersistManager).firePreEntity(any(DocumentEntity.class));
-        verify(columnEventPersistManager).firePostEntity(any(DocumentEntity.class));
-        verify(converter).toDocument(any(Object.class));
+        verify(eventPersistManager).firePreKeyValue(any(KeyValueEntity.class));
+        verify(eventPersistManager).firePostKeyValue(any(KeyValueEntity.class));
+        verify(eventPersistManager).firePreEntity(any(DocumentEntity.class));
+        verify(eventPersistManager).firePostEntity(any(DocumentEntity.class));
     }
 
 }
