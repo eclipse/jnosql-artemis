@@ -24,6 +24,10 @@ import org.jnosql.diana.api.Value;
 import java.time.Duration;
 import java.util.Optional;
 
+
+/**
+ * This interface that represents the common operation between an entity and KeyValueEntity
+ */
 public interface KeyValueCRUDOperation {
     /**
      * Saves the entity
