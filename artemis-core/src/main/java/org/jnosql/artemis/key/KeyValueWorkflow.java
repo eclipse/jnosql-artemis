@@ -21,7 +21,6 @@ package org.jnosql.artemis.key;
 
 import org.jnosql.diana.api.key.KeyValueEntity;
 
-import java.time.Duration;
 import java.util.function.UnaryOperator;
 
 /**
@@ -43,7 +42,7 @@ public interface KeyValueWorkflow {
      * @param action the alteration to be executed on database
      * @param <T>    the entity type
      * @return after the workflow the the entity response
-     * @see KeyValueCRUDOperation#put(Object, Duration)  {@link KeyValueCRUDOperation#put(Object)}
+     * @see KeyValueCRUDOperation#put(Object, java.time.Duration)  {@link KeyValueCRUDOperation#put(Object)}
      * DocumentCrudOperation#update(Object)
      */
     <T> T flow(T entity, UnaryOperator<KeyValueEntity<?>> action) throws NullPointerException;

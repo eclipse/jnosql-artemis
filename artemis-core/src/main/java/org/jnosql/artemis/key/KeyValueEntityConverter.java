@@ -19,7 +19,6 @@
 package org.jnosql.artemis.key;
 
 
-import org.jnosql.diana.api.document.DocumentEntity;
 import org.jnosql.diana.api.key.KeyValueEntity;
 
 /**
@@ -28,10 +27,10 @@ import org.jnosql.diana.api.key.KeyValueEntity;
 public interface KeyValueEntityConverter {
 
     /**
-     * Converts the instance entity to {@link DocumentEntity}
+     * Converts the instance entity to {@link KeyValueEntity}
      *
      * @param entityInstance the instnace
-     * @return a {@link DocumentEntity} instance
+     * @return a {@link KeyValueEntity} instance
      * @throws KeyNotFoundException when the entityInstance hasn't a field with {@link org.jnosql.artemis.Key}
      * @throws NullPointerException when the entityInstance is null
      */

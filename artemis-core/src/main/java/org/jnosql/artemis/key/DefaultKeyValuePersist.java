@@ -28,7 +28,7 @@ class DefaultKeyValuePersist<T> implements KeyValueEntityPrePersist, KeyValueEnt
 
     private final KeyValueEntity<T> entity;
 
-    public DefaultKeyValuePersist(KeyValueEntity<T> entity) {
+    DefaultKeyValuePersist(KeyValueEntity<T> entity) {
         this.entity = entity;
     }
 

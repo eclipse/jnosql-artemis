@@ -19,8 +19,6 @@
 package org.jnosql.artemis.key;
 
 
-import org.jnosql.artemis.document.DocumentWorkflow;
-import org.jnosql.diana.api.document.DocumentEntity;
 import org.jnosql.diana.api.key.KeyValueEntity;
 
 /**
@@ -30,7 +28,7 @@ import org.jnosql.diana.api.key.KeyValueEntity;
  * 3) firePostDocument
  * 4) firePostEntity
  *
- * @see DocumentWorkflow
+ * @see KeyValueWorkflow
  */
 public interface KeyValueEventPersistManager {
 
@@ -57,7 +55,7 @@ public interface KeyValueEventPersistManager {
     <T> void firePreEntity(T entity);
 
     /**
-     * Fire an event after convert the {@link DocumentEntity},
+     * Fire an event after convert the {@link KeyValueEntity},
      * from database response, to Entity.
      *
      * @param entity the entity
