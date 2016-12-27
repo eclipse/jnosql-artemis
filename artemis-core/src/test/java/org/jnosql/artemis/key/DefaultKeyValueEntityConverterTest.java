@@ -21,6 +21,7 @@ package org.jnosql.artemis.key;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Actor;
 import org.jnosql.artemis.model.User;
+import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.key.KeyValueEntity;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,7 +62,7 @@ public class DefaultKeyValueEntityConverterTest {
 
     @Test(expected = NullPointerException.class)
     public void shouldReturnNPEWhenKeyValueIsNull() {
-        converter.toEntity(User.class, null);
+        converter.toEntity(User.class, (KeyValueEntity<?>) null);
     }
 
     @Test(expected = NullPointerException.class)
@@ -95,6 +96,13 @@ public class DefaultKeyValueEntityConverterTest {
         User expectedUser = new User("nickname", "name", 21);
         User user = converter.toEntity(User.class,
                 KeyValueEntity.of("nickname", new User("newName", "name", 21)));
+        assertEquals(expectedUser, user);
+    }
+
+    @Test
+    public void shouldConvertValueToEntity() {
+        User expectedUser = new User("nickname", "name", 21);
+        User user = converter.toEntity(User.class, Value.of(expectedUser));
         assertEquals(expectedUser, user);
     }
 
