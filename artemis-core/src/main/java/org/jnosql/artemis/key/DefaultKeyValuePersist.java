@@ -24,11 +24,11 @@ import org.jnosql.diana.api.key.KeyValueEntity;
 
 import java.util.Objects;
 
-class DefaultKeyValuePersist<T> implements KeyValueEntityPrePersist, KeyValueEntityPostPersist {
+class DefaultKeyValuePersist implements KeyValueEntityPrePersist, KeyValueEntityPostPersist {
 
-    private final KeyValueEntity<T> entity;
+    private final KeyValueEntity<?> entity;
 
-    DefaultKeyValuePersist(KeyValueEntity<T> entity) {
+    DefaultKeyValuePersist(KeyValueEntity<?> entity) {
         this.entity = entity;
     }
 
@@ -45,7 +45,7 @@ class DefaultKeyValuePersist<T> implements KeyValueEntityPrePersist, KeyValueEnt
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        DefaultKeyValuePersist<?> that = (DefaultKeyValuePersist<?>) o;
+        DefaultKeyValuePersist that = (DefaultKeyValuePersist) o;
         return Objects.equals(entity, that.entity);
     }
 
