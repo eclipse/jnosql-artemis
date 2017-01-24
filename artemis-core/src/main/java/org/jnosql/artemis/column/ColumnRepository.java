@@ -34,6 +34,7 @@ import java.util.stream.StreamSupport;
 /**
  * This interface that represents the common operation between an entity
  * and {@link org.jnosql.diana.api.column.ColumnEntity}
+ * @see org.jnosql.diana.api.column.ColumnFamilyManager
  */
 public interface ColumnRepository {
 
@@ -47,15 +48,7 @@ public interface ColumnRepository {
      */
     <T> T save(T entity) throws NullPointerException;
 
-    /**
-     * Saves an entity asynchronously
-     *
-     * @param entity entity to be saved
-     * @param <T>    the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
-     */
-    <T> void saveAsync(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException;
+
 
     /**
      * Saves entity with time to live
@@ -67,16 +60,7 @@ public interface ColumnRepository {
      */
     <T> T save(T entity, Duration ttl);
 
-    /**
-     * Saves an entity asynchronously with time to live
-     *
-     * @param entity entity to be saved
-     * @param ttl    the time to live
-     * @param <T>    the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
-     */
-    <T> void saveAsync(T entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException;
+
 
     /**
      * Saves entity, by default it's just run for each saving using
@@ -91,21 +75,6 @@ public interface ColumnRepository {
     default <T> Iterable<T> save(Iterable<T> entities) throws NullPointerException {
         Objects.requireNonNull(entities, "entities is required");
         return StreamSupport.stream(entities.spliterator(), false).map(this::save).collect(Collectors.toList());
-    }
-
-    /**
-     * Saves entities asynchronously, by default it's just run for each saving using
-     * {@link ColumnRepository#saveAsync(Object)},
-     * each NoSQL vendor might replace to a more appropriate one.
-     *
-     * @param entities entities to be saved
-     * @param <T>      the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
-     */
-    default <T> void saveAsync(Iterable<T> entities) throws ExecuteAsyncQueryException, UnsupportedOperationException {
-        Objects.requireNonNull(entities, "entities is required");
-        StreamSupport.stream(entities.spliterator(), false).forEach(this::saveAsync);
     }
 
     /**
@@ -125,49 +94,6 @@ public interface ColumnRepository {
         return StreamSupport.stream(entities.spliterator(), false).map(d -> save(d, ttl)).collect(Collectors.toList());
     }
 
-    /**
-     * Saves entities asynchronously with time to live, by default it's just run for each saving using
-     * {@link ColumnRepository#saveAsync(Object, Duration)},
-     * each NoSQL vendor might replace to a more appropriate one.
-     *
-     * @param entities entities to be saved
-     * @param ttl      time to live
-     * @param <T>      the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
-     */
-    default <T> void saveAsync(Iterable<T> entities, Duration ttl) {
-        Objects.requireNonNull(entities, "entities is required");
-        Objects.requireNonNull(ttl, "ttl is required");
-        StreamSupport.stream(entities.spliterator(), false).forEach(d -> saveAsync(d, ttl));
-    }
-
-    /**
-     * Saves an entity asynchronously
-     *
-     * @param entity   entity to be saved
-     * @param callBack the callback, when the process is finished will call this instance returning
-     *                 the saved entity within parameters
-     * @param <T>      the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
-     */
-    <T> void saveAsync(T entity, Consumer<T> callBack) throws
-            ExecuteAsyncQueryException, UnsupportedOperationException;
-
-    /**
-     * Saves an entity asynchronously with time to live
-     *
-     * @param entity   entity to be saved
-     * @param ttl      time to live
-     * @param callBack the callback, when the process is finished will call this instance returning
-     *                 the saved entity within parameters
-     * @param <T>      the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
-     */
-    <T> void saveAsync(T entity, Duration ttl, Consumer<T> callBack) throws
-            ExecuteAsyncQueryException, UnsupportedOperationException;
 
     /**
      * Updates a entity
@@ -178,28 +104,7 @@ public interface ColumnRepository {
      */
     <T> T update(T entity);
 
-    /**
-     * Updates an entity asynchronously
-     *
-     * @param entity entity to be updated
-     * @param <T>    the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
-     */
-    <T> void updateAsync(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException;
 
-    /**
-     * Updates an entity asynchronously
-     *
-     * @param entity   entity to be updated
-     * @param callBack the callback, when the process is finished will call this instance returning
-     *                 the updated entity within parametersa
-     * @param <T>      the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
-     */
-    <T> void updateAsync(T entity, Consumer<T> callBack) throws
-            ExecuteAsyncQueryException, UnsupportedOperationException;
 
     /**
      * Deletes an entity
@@ -208,26 +113,6 @@ public interface ColumnRepository {
      */
     void delete(ColumnQuery query);
 
-    /**
-     * Deletes an entity asynchronously
-     *
-     * @param query query to delete an entity
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
-     */
-    void deleteAsync(ColumnQuery query) throws ExecuteAsyncQueryException, UnsupportedOperationException;
-
-    /**
-     * Deletes an entity asynchronously
-     *
-     * @param query    query to delete an entity
-     * @param callBack the callback, when the process is finished will call this instance returning
-     *                 the null within parameters
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to delete asynchronous
-     */
-    void deleteAsync(ColumnQuery query, Consumer<Void> callBack) throws ExecuteAsyncQueryException,
-            UnsupportedOperationException;
 
     /**
      * Finds entities from query
@@ -259,18 +144,5 @@ public interface ColumnRepository {
 
         throw new NonUniqueResultException("The query returns more than one entity, query: " + query);
     }
-
-    /**
-     * Finds entities from query asynchronously
-     *
-     * @param query    query to find entities
-     * @param <T>      the instance type
-     * @param callBack the callback, when the process is finished will call this instance returning
-     *                 the result of query within parameters
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
-     */
-    <T> void findAsync(ColumnQuery query, Consumer<List<T>> callBack) throws
-            ExecuteAsyncQueryException, UnsupportedOperationException;
 
 }
