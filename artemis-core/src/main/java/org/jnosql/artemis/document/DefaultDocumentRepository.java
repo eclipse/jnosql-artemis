@@ -18,7 +18,6 @@
  */
 package org.jnosql.artemis.document;
 
-import org.jnosql.diana.api.ExecuteAsyncQueryException;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
 import org.jnosql.diana.api.document.DocumentEntity;
 import org.jnosql.diana.api.document.DocumentQuery;
@@ -28,8 +27,6 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.time.Duration;
 import java.util.List;
-import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -67,10 +64,6 @@ class DefaultDocumentRepository implements DocumentRepository {
         return workflow.flow(entity, saveAction);
     }
 
-    @Override
-    public <T> void saveAsync(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException {
-        manager.get().saveAsync(converter.toDocument(Objects.requireNonNull(entity, "entity is required")));
-    }
 
     @Override
     public <T> T save(T entity, Duration ttl) {
@@ -78,33 +71,7 @@ class DefaultDocumentRepository implements DocumentRepository {
         return workflow.flow(entity, saveAction);
     }
 
-    @Override
-    public <T> void saveAsync(T entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException {
-        Objects.requireNonNull(entity, "entity is required");
-        Objects.requireNonNull(ttl, "ttl is required");
-        manager.get().saveAsync(converter.toDocument(entity), ttl);
-    }
 
-    @Override
-    public <T> void saveAsync(T entity, Consumer<T> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException {
-        Objects.requireNonNull(entity, "entity is required");
-        manager.get().saveAsync(converter.toDocument(entity),
-                d -> {
-                    T value = converter.toEntity((Class<T>) entity.getClass(), d);
-                    callBack.accept(value);
-                });
-    }
-
-    @Override
-    public <T> void saveAsync(T entity, Duration ttl, Consumer<T> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException {
-        Objects.requireNonNull(entity, "entity is required");
-        Objects.requireNonNull(ttl, "ttl is required");
-        manager.get().saveAsync(converter.toDocument(entity), ttl,
-                d -> {
-                    T value = converter.toEntity((Class<T>) entity.getClass(), d);
-                    callBack.accept(value);
-                });
-    }
 
     @Override
     public <T> T update(T entity) {
@@ -113,20 +80,7 @@ class DefaultDocumentRepository implements DocumentRepository {
         return workflow.flow(entity, saveAction);
     }
 
-    @Override
-    public <T> void updateAsync(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException {
-        manager.get().updateAsync(converter.toDocument(Objects.requireNonNull(entity, "entity is required")));
-    }
 
-    @Override
-    public <T> void updateAsync(T entity, Consumer<T> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException {
-        Objects.requireNonNull(entity, "entity is required");
-        manager.get().updateAsync(converter.toDocument(entity),
-                d -> {
-                    T value = converter.toEntity((Class<T>) entity.getClass(), d);
-                    callBack.accept(value);
-                });
-    }
 
     @Override
     public void delete(DocumentQuery query) {
@@ -134,26 +88,10 @@ class DefaultDocumentRepository implements DocumentRepository {
     }
 
     @Override
-    public void deleteAsync(DocumentQuery query) throws ExecuteAsyncQueryException, UnsupportedOperationException {
-        manager.get().deleteAsync(query);
-    }
-
-    @Override
-    public void deleteAsync(DocumentQuery query, Consumer<Void> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException {
-        manager.get().deleteAsync(query, callBack);
-    }
-
-    @Override
     public <T> List<T> find(DocumentQuery query) throws NullPointerException {
         List<DocumentEntity> entities = manager.get().find(query);
         Function<DocumentEntity, T> function = e -> converter.toEntity(e);
         return entities.stream().map(function).collect(Collectors.toList());
-    }
-
-    @Override
-    public <T> void findAsync(DocumentQuery query, Consumer<List<T>> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException {
-        Function<DocumentEntity, T> function = e -> converter.toEntity(e);
-        manager.get().findAsync(query, es -> callBack.accept(es.stream().map(function).collect(Collectors.toList())));
     }
 
 }
