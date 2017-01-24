@@ -16,17 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jnosql.artemis.column;
+package org.jnosql.artemis.document;
 
 
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
-import org.jnosql.diana.api.column.ColumnEntity;
-import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
-import org.jnosql.diana.api.column.ColumnQuery;
+import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
+import org.jnosql.diana.api.document.DocumentEntity;
+import org.jnosql.diana.api.document.DocumentQuery;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
 import java.time.Duration;
 import java.util.List;
 import java.util.function.Consumer;
@@ -35,26 +34,16 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
- * The default implementation of {@link ColumnRepositoryAsync}
+ * The default implementation of {@link DocumentRepository}
  */
 @SuppressWarnings("unchecked")
 @ApplicationScoped
-@ColumnRepositoryInterceptor
-class DefaultColumnRepositoryAsync implements ColumnRepositoryAsync {
+@DocumentRepositoryInterceptor
+class DefaultDocumentRepositoryAsync implements DocumentRepositoryAsync {
 
-    private ColumnEntityConverter converter;
+    private DocumentEntityConverter converter;
 
-    private Instance<ColumnFamilyManagerAsync> manager;
-
-
-    @Inject
-    DefaultColumnRepositoryAsync(ColumnEntityConverter converter, Instance<ColumnFamilyManagerAsync> manager) {
-        this.converter = converter;
-        this.manager = manager;
-    }
-
-    DefaultColumnRepositoryAsync() {
-    }
+    private Instance<DocumentCollectionManagerAsync> manager;
 
     @Override
     public <T> void save(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
@@ -72,8 +61,8 @@ class DefaultColumnRepositoryAsync implements ColumnRepositoryAsync {
     public <T> void save(T entity, Consumer<T> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
         requireNonNull(entity, "entity is required");
         requireNonNull(callBack, "callBack is required");
-        Consumer<ColumnEntity> dianaCallBack = c -> callBack.accept((T) converter.toEntity(entity.getClass(), c));
-        manager.get().save(converter.toColumn(entity), dianaCallBack);
+        Consumer<DocumentEntity> dianaCallBack = c -> callBack.accept((T) converter.toEntity(entity.getClass(), c));
+        manager.get().save(converter.toDocument(entity), dianaCallBack);
     }
 
     @Override
@@ -81,8 +70,8 @@ class DefaultColumnRepositoryAsync implements ColumnRepositoryAsync {
         requireNonNull(entity, "entity is required");
         requireNonNull(ttl, "ttl is required");
         requireNonNull(callBack, "callBack is required");
-        Consumer<ColumnEntity> dianaCallBack = c -> callBack.accept((T) converter.toEntity(entity.getClass(), c));
-        manager.get().save(converter.toColumn(entity), ttl, dianaCallBack);
+        Consumer<DocumentEntity> dianaCallBack = c -> callBack.accept((T) converter.toEntity(entity.getClass(), c));
+        manager.get().save(converter.toDocument(entity), ttl, dianaCallBack);
     }
 
     @Override
@@ -96,29 +85,29 @@ class DefaultColumnRepositoryAsync implements ColumnRepositoryAsync {
     public <T> void update(T entity, Consumer<T> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
         requireNonNull(entity, "entity is required");
         requireNonNull(callBack, "callBack is required");
-        Consumer<ColumnEntity> dianaCallBack = c -> callBack.accept((T) converter.toEntity(entity.getClass(), c));
-        manager.get().update(converter.toColumn(entity), dianaCallBack);
+        Consumer<DocumentEntity> dianaCallBack = c -> callBack.accept((T) converter.toEntity(entity.getClass(), c));
+        manager.get().update(converter.toDocument(entity), dianaCallBack);
     }
 
     @Override
-    public void delete(ColumnQuery query) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public void delete(DocumentQuery query) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
         requireNonNull(query, "query is required");
         manager.get().delete(query);
     }
 
     @Override
-    public void delete(ColumnQuery query, Consumer<Void> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public void delete(DocumentQuery query, Consumer<Void> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
         requireNonNull(query, "query is required");
         requireNonNull(callBack, "callBack is required");
         manager.get().delete(query);
     }
 
     @Override
-    public <T> void find(ColumnQuery query, Consumer<List<T>> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public <T> void find(DocumentQuery query, Consumer<List<T>> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
         requireNonNull(query, "query is required");
         requireNonNull(callBack, "callBack is required");
 
-        Consumer<List<ColumnEntity>> dianaCallBack = d -> {
+        Consumer<List<DocumentEntity>> dianaCallBack = d -> {
             callBack.accept(
                     d.stream()
                             .map(converter::toEntity)

@@ -69,7 +69,7 @@ public interface DocumentRepositoryAsync {
      * @throws UnsupportedOperationException when the database does not have support to save asynchronous
      * @throws NullPointerException          when entities is null
      */
-    default <T> void saveAsync(Iterable<T> entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    default <T> void save(Iterable<T> entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
         Objects.requireNonNull(entities, "entities is required");
         StreamSupport.stream(entities.spliterator(), false).forEach(this::save);
     }
@@ -168,7 +168,7 @@ public interface DocumentRepositoryAsync {
      * @throws UnsupportedOperationException when the database does not have support to delete asynchronous
      * @throws NullPointerException          when either query or callback are null
      */
-    void deleteAsync(DocumentQuery query, Consumer<Void> callBack) throws ExecuteAsyncQueryException,
+    void delete(DocumentQuery query, Consumer<Void> callBack) throws ExecuteAsyncQueryException,
             UnsupportedOperationException, NullPointerException;
 
     /**
