@@ -20,6 +20,7 @@ package org.jnosql.artemis.document;
 
 
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
+import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentQuery;
 
 import java.time.Duration;
@@ -155,7 +156,7 @@ public interface DocumentRepositoryAsync {
      * @throws UnsupportedOperationException when the database does not have support to save asynchronous
      * @throws NullPointerException          when query is null
      */
-    void delete(DocumentQuery query) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
+    void delete(DocumentDeleteQuery query) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
 
 
     /**
@@ -168,7 +169,7 @@ public interface DocumentRepositoryAsync {
      * @throws UnsupportedOperationException when the database does not have support to delete asynchronous
      * @throws NullPointerException          when either query or callback are null
      */
-    void delete(DocumentQuery query, Consumer<Void> callBack) throws ExecuteAsyncQueryException,
+    void delete(DocumentDeleteQuery query, Consumer<Void> callBack) throws ExecuteAsyncQueryException,
             UnsupportedOperationException, NullPointerException;
 
     /**

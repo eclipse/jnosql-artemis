@@ -20,6 +20,7 @@ package org.jnosql.artemis.column;
 
 
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
+import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
 import org.jnosql.diana.api.column.ColumnQuery;
@@ -101,13 +102,13 @@ class DefaultColumnRepositoryAsync implements ColumnRepositoryAsync {
     }
 
     @Override
-    public void delete(ColumnQuery query) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public void delete(ColumnDeleteQuery query) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
         requireNonNull(query, "query is required");
         manager.get().delete(query);
     }
 
     @Override
-    public void delete(ColumnQuery query, Consumer<Void> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public void delete(ColumnDeleteQuery query, Consumer<Void> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
         requireNonNull(query, "query is required");
         requireNonNull(callBack, "callBack is required");
         manager.get().delete(query);

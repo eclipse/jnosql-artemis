@@ -20,6 +20,7 @@ package org.jnosql.artemis.column;
 
 
 import org.jnosql.diana.api.NonUniqueResultException;
+import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnQuery;
 
 import java.time.Duration;
@@ -109,7 +110,7 @@ public interface ColumnRepository {
      *
      * @param query query to delete an entity
      */
-    void delete(ColumnQuery query);
+    void delete(ColumnDeleteQuery query);
 
 
     /**

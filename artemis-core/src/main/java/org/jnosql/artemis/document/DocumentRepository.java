@@ -20,6 +20,7 @@ package org.jnosql.artemis.document;
 
 
 import org.jnosql.diana.api.NonUniqueResultException;
+import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentQuery;
 
 import java.time.Duration;
@@ -102,7 +103,7 @@ public interface DocumentRepository {
      *
      * @param query query to delete an entity
      */
-    void delete(DocumentQuery query);
+    void delete(DocumentDeleteQuery query);
 
     /**
      * Finds entities from query

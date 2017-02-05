@@ -18,6 +18,7 @@
  */
 package org.jnosql.artemis.column;
 
+import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
 import org.jnosql.diana.api.column.ColumnQuery;
@@ -83,7 +84,7 @@ class DefaultColumnRepository implements ColumnRepository {
 
 
     @Override
-    public void delete(ColumnQuery query) {
+    public void delete(ColumnDeleteQuery query) {
         Objects.requireNonNull(query, "query is required");
         manager.get().delete(query);
     }

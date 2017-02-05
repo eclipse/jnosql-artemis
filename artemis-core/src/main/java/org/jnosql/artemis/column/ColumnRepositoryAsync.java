@@ -20,6 +20,7 @@ package org.jnosql.artemis.column;
 
 
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
+import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnQuery;
 
 import java.time.Duration;
@@ -156,7 +157,7 @@ public interface ColumnRepositoryAsync {
      * @throws UnsupportedOperationException when the database does not have support to save asynchronous
      * @throws NullPointerException          when query are null
      */
-    void delete(ColumnQuery query) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
+    void delete(ColumnDeleteQuery query) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
 
     /**
      * Deletes an entity asynchronously
@@ -168,7 +169,7 @@ public interface ColumnRepositoryAsync {
      * @throws UnsupportedOperationException when the database does not have support to delete asynchronous
      * @throws NullPointerException          when either query or callback are null
      */
-    void delete(ColumnQuery query, Consumer<Void> callBack) throws ExecuteAsyncQueryException,
+    void delete(ColumnDeleteQuery query, Consumer<Void> callBack) throws ExecuteAsyncQueryException,
             UnsupportedOperationException, NullPointerException;
 
     /**

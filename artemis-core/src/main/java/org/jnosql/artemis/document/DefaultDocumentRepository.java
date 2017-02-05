@@ -19,6 +19,7 @@
 package org.jnosql.artemis.document;
 
 import org.jnosql.diana.api.document.DocumentCollectionManager;
+import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentEntity;
 import org.jnosql.diana.api.document.DocumentQuery;
 
@@ -83,7 +84,7 @@ class DefaultDocumentRepository implements DocumentRepository {
 
 
     @Override
-    public void delete(DocumentQuery query) {
+    public void delete(DocumentDeleteQuery query) {
         manager.get().delete(query);
     }
 

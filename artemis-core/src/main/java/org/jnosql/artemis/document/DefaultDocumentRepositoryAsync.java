@@ -21,6 +21,7 @@ package org.jnosql.artemis.document;
 
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
+import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentEntity;
 import org.jnosql.diana.api.document.DocumentQuery;
 
@@ -90,13 +91,13 @@ class DefaultDocumentRepositoryAsync implements DocumentRepositoryAsync {
     }
 
     @Override
-    public void delete(DocumentQuery query) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public void delete(DocumentDeleteQuery query) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
         requireNonNull(query, "query is required");
         manager.get().delete(query);
     }
 
     @Override
-    public void delete(DocumentQuery query, Consumer<Void> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public void delete(DocumentDeleteQuery query, Consumer<Void> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
         requireNonNull(query, "query is required");
         requireNonNull(callBack, "callBack is required");
         manager.get().delete(query);
