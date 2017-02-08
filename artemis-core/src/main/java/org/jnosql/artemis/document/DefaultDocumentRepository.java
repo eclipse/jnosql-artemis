@@ -19,24 +19,16 @@
 package org.jnosql.artemis.document;
 
 import org.jnosql.diana.api.document.DocumentCollectionManager;
-import org.jnosql.diana.api.document.DocumentDeleteQuery;
-import org.jnosql.diana.api.document.DocumentEntity;
-import org.jnosql.diana.api.document.DocumentQuery;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import java.time.Duration;
-import java.util.List;
-import java.util.function.Function;
-import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 
 /**
  * The default implementation of {@link DocumentRepository}
  */
 @SuppressWarnings("unchecked")
 @DocumentRepositoryInterceptor
-class DefaultDocumentRepository implements DocumentRepository {
+class DefaultDocumentRepository extends AbstractDocumentRepository {
 
 
     private DocumentEntityConverter converter;
@@ -57,40 +49,17 @@ class DefaultDocumentRepository implements DocumentRepository {
     }
 
     @Override
-    public <T> T save(T entity) throws NullPointerException {
-
-        UnaryOperator<DocumentEntity> saveAction = e -> manager.get().save(e);
-        return workflow.flow(entity, saveAction);
-    }
-
-
-    @Override
-    public <T> T save(T entity, Duration ttl) {
-        UnaryOperator<DocumentEntity> saveAction = e -> manager.get().save(e, ttl);
-        return workflow.flow(entity, saveAction);
-    }
-
-
-
-    @Override
-    public <T> T update(T entity) {
-
-        UnaryOperator<DocumentEntity> saveAction = e -> manager.get().update(e);
-        return workflow.flow(entity, saveAction);
-    }
-
-
-
-    @Override
-    public void delete(DocumentDeleteQuery query) {
-        manager.get().delete(query);
+    protected DocumentEntityConverter getConverter() {
+        return converter;
     }
 
     @Override
-    public <T> List<T> find(DocumentQuery query) throws NullPointerException {
-        List<DocumentEntity> entities = manager.get().find(query);
-        Function<DocumentEntity, T> function = e -> converter.toEntity(e);
-        return entities.stream().map(function).collect(Collectors.toList());
+    protected DocumentCollectionManager getManager() {
+        return manager.get();
     }
 
+    @Override
+    protected DocumentWorkflow getWorkflow() {
+        return workflow;
+    }
 }

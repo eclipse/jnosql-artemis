@@ -19,29 +19,20 @@
 package org.jnosql.artemis.document;
 
 
-import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
-
-import javax.enterprise.inject.Instance;
+import org.jnosql.diana.api.document.DocumentCollectionManager;
 
 /**
- * The default implementation of {@link DocumentRepository}
+ * The producer of {@link DocumentRepository}
  */
-@SuppressWarnings("unchecked")
-@DocumentRepositoryInterceptor
-class DefaultDocumentRepositoryAsync extends AbstractDocumentRepositoryAsync {
+public interface DocumentRepositoryProducer {
 
-    private DocumentEntityConverter converter;
+    /**
+     * creates a {@link DocumentRepository}
+     *
+     * @param collectionManager the collectionManager
+     * @return a new instance
+     * @throws NullPointerException when collectionManager is null
+     */
+    DocumentRepository get(DocumentCollectionManager collectionManager) throws NullPointerException;
 
-    private Instance<DocumentCollectionManagerAsync> manager;
-
-
-    @Override
-    protected DocumentEntityConverter getConverter() {
-        return converter;
-    }
-
-    @Override
-    protected DocumentCollectionManagerAsync getManager() {
-        return manager.get();
-    }
 }
