@@ -19,20 +19,10 @@
 package org.jnosql.artemis.column;
 
 
-import org.jnosql.diana.api.ExecuteAsyncQueryException;
-import org.jnosql.diana.api.column.ColumnDeleteQuery;
-import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
-import org.jnosql.diana.api.column.ColumnQuery;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import java.time.Duration;
-import java.util.List;
-import java.util.function.Consumer;
-
-import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 
 /**
  * The default implementation of {@link ColumnRepositoryAsync}
