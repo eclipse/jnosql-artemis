@@ -39,7 +39,7 @@ import static java.util.stream.Collectors.toList;
  */
 @SuppressWarnings("unchecked")
 @ColumnRepositoryInterceptor
-class DefaultColumnRepositoryAsync implements ColumnRepositoryAsync {
+class DefaultColumnRepositoryAsync extends AbstractColumnRepositoryAsync {
 
     private ColumnEntityConverter converter;
 
@@ -55,75 +55,14 @@ class DefaultColumnRepositoryAsync implements ColumnRepositoryAsync {
     DefaultColumnRepositoryAsync() {
     }
 
+
     @Override
-    public <T> void save(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        save(entity, t -> {
-        });
+    protected ColumnEntityConverter getConverter() {
+        return converter;
     }
 
     @Override
-    public <T> void save(T entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        save(entity, ttl, t -> {
-        });
-    }
-
-    @Override
-    public <T> void save(T entity, Consumer<T> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        requireNonNull(entity, "entity is required");
-        requireNonNull(callBack, "callBack is required");
-        Consumer<ColumnEntity> dianaCallBack = c -> callBack.accept((T) converter.toEntity(entity.getClass(), c));
-        manager.get().save(converter.toColumn(entity), dianaCallBack);
-    }
-
-    @Override
-    public <T> void save(T entity, Duration ttl, Consumer<T> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        requireNonNull(entity, "entity is required");
-        requireNonNull(ttl, "ttl is required");
-        requireNonNull(callBack, "callBack is required");
-        Consumer<ColumnEntity> dianaCallBack = c -> callBack.accept((T) converter.toEntity(entity.getClass(), c));
-        manager.get().save(converter.toColumn(entity), ttl, dianaCallBack);
-    }
-
-    @Override
-    public <T> void update(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        requireNonNull(entity, "entity is required");
-        update(entity, t -> {
-        });
-    }
-
-    @Override
-    public <T> void update(T entity, Consumer<T> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        requireNonNull(entity, "entity is required");
-        requireNonNull(callBack, "callBack is required");
-        Consumer<ColumnEntity> dianaCallBack = c -> callBack.accept((T) converter.toEntity(entity.getClass(), c));
-        manager.get().update(converter.toColumn(entity), dianaCallBack);
-    }
-
-    @Override
-    public void delete(ColumnDeleteQuery query) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        requireNonNull(query, "query is required");
-        manager.get().delete(query);
-    }
-
-    @Override
-    public void delete(ColumnDeleteQuery query, Consumer<Void> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        requireNonNull(query, "query is required");
-        requireNonNull(callBack, "callBack is required");
-        manager.get().delete(query);
-    }
-
-    @Override
-    public <T> void find(ColumnQuery query, Consumer<List<T>> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        requireNonNull(query, "query is required");
-        requireNonNull(callBack, "callBack is required");
-
-        Consumer<List<ColumnEntity>> dianaCallBack = d -> {
-            callBack.accept(
-                    d.stream()
-                            .map(converter::toEntity)
-                            .map(o -> (T) o)
-                            .collect(toList()));
-        };
-        manager.get().find(query, dianaCallBack);
+    protected ColumnFamilyManagerAsync getManager() {
+        return manager.get();
     }
 }
