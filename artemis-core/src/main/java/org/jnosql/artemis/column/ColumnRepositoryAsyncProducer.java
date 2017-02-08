@@ -19,7 +19,6 @@
 package org.jnosql.artemis.column;
 
 
-import org.jnosql.diana.api.column.ColumnFamilyManager;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
 
 /**
@@ -30,7 +29,7 @@ import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
 public interface ColumnRepositoryAsyncProducer<T extends ColumnRepositoryAsync> {
 
     /**
-     * creates a {@link ColumnFamilyManager}
+     * creates a {@link ColumnFamilyManagerAsync}
      *
      * @param columnFamilyManager the columnFamilyManager
      * @return a new instance
