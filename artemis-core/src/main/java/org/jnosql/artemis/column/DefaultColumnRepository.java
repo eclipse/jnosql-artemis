@@ -33,6 +33,8 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * The default implementation of {@link ColumnRepository}
  */
@@ -60,7 +62,7 @@ class DefaultColumnRepository implements ColumnRepository {
 
     @Override
     public <T> T save(T entity) throws NullPointerException {
-        Objects.requireNonNull(entity, "entity is required");
+        requireNonNull(entity, "entity is required");
         UnaryOperator<ColumnEntity> save = e -> manager.get().save(e);
         return flow.flow(entity, save);
     }
@@ -68,8 +70,8 @@ class DefaultColumnRepository implements ColumnRepository {
 
     @Override
     public <T> T save(T entity, Duration ttl) {
-        Objects.requireNonNull(entity, "entity is required");
-        Objects.requireNonNull(ttl, "ttl is required");
+        requireNonNull(entity, "entity is required");
+        requireNonNull(ttl, "ttl is required");
         UnaryOperator<ColumnEntity> save = e -> manager.get().save(e, ttl);
         return flow.flow(entity, save);
     }
@@ -77,7 +79,7 @@ class DefaultColumnRepository implements ColumnRepository {
 
     @Override
     public <T> T update(T entity) {
-        Objects.requireNonNull(entity, "entity is required");
+        requireNonNull(entity, "entity is required");
         UnaryOperator<ColumnEntity> save = e -> manager.get().update(e);
         return flow.flow(entity, save);
     }
@@ -85,14 +87,14 @@ class DefaultColumnRepository implements ColumnRepository {
 
     @Override
     public void delete(ColumnDeleteQuery query) {
-        Objects.requireNonNull(query, "query is required");
+        requireNonNull(query, "query is required");
         manager.get().delete(query);
     }
 
 
     @Override
     public <T> List<T> find(ColumnQuery query) throws NullPointerException {
-        Objects.requireNonNull(query, "query is required");
+        requireNonNull(query, "query is required");
         List<ColumnEntity> entities = manager.get().find(query);
         Function<ColumnEntity, T> function = e -> converter.toEntity(e);
         return entities.stream().map(function).collect(Collectors.toList());
