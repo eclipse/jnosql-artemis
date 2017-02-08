@@ -18,27 +18,17 @@
  */
 package org.jnosql.artemis.column;
 
-import org.jnosql.diana.api.column.ColumnDeleteQuery;
-import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
-import org.jnosql.diana.api.column.ColumnQuery;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import java.time.Duration;
-import java.util.List;
-import java.util.function.Function;
-import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * The default implementation of {@link ColumnRepository}
  */
 @SuppressWarnings("unchecked")
 @ColumnRepositoryInterceptor
-class DefaultColumnRepository implements ColumnRepository {
+class DefaultColumnRepository extends AbstractColumnRepository {
 
     private ColumnEntityConverter converter;
 
@@ -57,44 +47,19 @@ class DefaultColumnRepository implements ColumnRepository {
     DefaultColumnRepository() {
     }
 
-    @Override
-    public <T> T save(T entity) throws NullPointerException {
-        requireNonNull(entity, "entity is required");
-        UnaryOperator<ColumnEntity> save = e -> manager.get().save(e);
-        return flow.flow(entity, save);
-    }
-
 
     @Override
-    public <T> T save(T entity, Duration ttl) {
-        requireNonNull(entity, "entity is required");
-        requireNonNull(ttl, "ttl is required");
-        UnaryOperator<ColumnEntity> save = e -> manager.get().save(e, ttl);
-        return flow.flow(entity, save);
+    protected ColumnEntityConverter getConverter() {
+        return converter;
     }
-
 
     @Override
-    public <T> T update(T entity) {
-        requireNonNull(entity, "entity is required");
-        UnaryOperator<ColumnEntity> save = e -> manager.get().update(e);
-        return flow.flow(entity, save);
+    protected ColumnFamilyManager getManager() {
+        return manager.get();
     }
-
 
     @Override
-    public void delete(ColumnDeleteQuery query) {
-        requireNonNull(query, "query is required");
-        manager.get().delete(query);
+    protected ColumnWorkflow getFlow() {
+        return flow;
     }
-
-
-    @Override
-    public <T> List<T> find(ColumnQuery query) throws NullPointerException {
-        requireNonNull(query, "query is required");
-        List<ColumnEntity> entities = manager.get().find(query);
-        Function<ColumnEntity, T> function = e -> converter.toEntity(e);
-        return entities.stream().map(function).collect(Collectors.toList());
-    }
-
 }
