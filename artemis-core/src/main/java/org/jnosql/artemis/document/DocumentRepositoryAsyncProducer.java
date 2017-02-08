@@ -19,15 +19,15 @@
 package org.jnosql.artemis.document;
 
 
-import org.jnosql.diana.api.document.DocumentCollectionManager;
+import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
 
 
 /**
- * The producer of {@link DocumentRepository}
+ * The producer of {@link DocumentRepositoryAsync}
  *
- * @param <T> the DocumentRepository instance
+ * @param <T> the DocumentRepositoryAsync instance
  */
-public interface DocumentRepositoryProducer<T extends DocumentRepository> {
+public interface DocumentRepositoryAsyncProducer<T extends DocumentRepositoryAsync> {
 
     /**
      * creates a {@link DocumentRepository}
@@ -36,6 +36,6 @@ public interface DocumentRepositoryProducer<T extends DocumentRepository> {
      * @return a new instance
      * @throws NullPointerException when collectionManager is null
      */
-    T get(DocumentCollectionManager collectionManager) throws NullPointerException;
+    T get(DocumentCollectionManagerAsync collectionManager) throws NullPointerException;
 
 }
