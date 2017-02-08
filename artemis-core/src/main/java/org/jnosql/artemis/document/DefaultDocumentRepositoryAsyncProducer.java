@@ -3,6 +3,7 @@ package org.jnosql.artemis.document;
 
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
 
+import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 import java.util.Objects;
 
@@ -19,6 +20,8 @@ class DefaultDocumentRepositoryAsyncProducer implements DocumentRepositoryAsyncP
         return new ProducerAbstractDocumentRepositoryAsync(converter, collectionManager);
     }
 
+    @Vetoed
+    @DocumentRepositoryInterceptor
     static class ProducerAbstractDocumentRepositoryAsync extends AbstractDocumentRepositoryAsync {
 
         private DocumentEntityConverter converter;
