@@ -23,7 +23,6 @@ import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentEntity;
 import org.jnosql.diana.api.document.DocumentQuery;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.time.Duration;
@@ -36,7 +35,6 @@ import java.util.stream.Collectors;
  * The default implementation of {@link DocumentRepository}
  */
 @SuppressWarnings("unchecked")
-@ApplicationScoped
 @DocumentRepositoryInterceptor
 class DefaultDocumentRepository implements DocumentRepository {
 

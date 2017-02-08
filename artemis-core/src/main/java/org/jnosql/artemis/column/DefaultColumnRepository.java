@@ -23,12 +23,10 @@ import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
 import org.jnosql.diana.api.column.ColumnQuery;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.time.Duration;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -39,7 +37,6 @@ import static java.util.Objects.requireNonNull;
  * The default implementation of {@link ColumnRepository}
  */
 @SuppressWarnings("unchecked")
-@ApplicationScoped
 @ColumnRepositoryInterceptor
 class DefaultColumnRepository implements ColumnRepository {
 

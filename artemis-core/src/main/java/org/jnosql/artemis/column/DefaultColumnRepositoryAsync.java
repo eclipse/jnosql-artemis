@@ -25,7 +25,6 @@ import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
 import org.jnosql.diana.api.column.ColumnQuery;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.time.Duration;
@@ -39,7 +38,6 @@ import static java.util.stream.Collectors.toList;
  * The default implementation of {@link ColumnRepositoryAsync}
  */
 @SuppressWarnings("unchecked")
-@ApplicationScoped
 @ColumnRepositoryInterceptor
 class DefaultColumnRepositoryAsync implements ColumnRepositoryAsync {
 
