@@ -137,6 +137,22 @@ public interface ColumnRepositoryAsync {
     <T> void update(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
 
     /**
+     * Updates entities asynchronously, by default it's just run for each saving using
+     * {@link ColumnRepository#update(Object)},
+     * each NoSQL vendor might replace to a more appropriate one.
+     *
+     * @param entities entities to be saved
+     * @param <T>      the instance type
+     * @throws ExecuteAsyncQueryException    when there is a async error
+     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
+     * @throws NullPointerException          when entities is null
+     */
+    default <T> void update(Iterable<T> entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+        Objects.requireNonNull(entities, "entities is required");
+        StreamSupport.stream(entities.spliterator(), false).forEach(this::update);
+    }
+
+    /**
      * Updates an entity asynchronously
      *
      * @param entity   entity to be updated
