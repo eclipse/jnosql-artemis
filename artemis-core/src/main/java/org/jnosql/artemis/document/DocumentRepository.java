@@ -100,6 +100,21 @@ public interface DocumentRepository {
     <T> T update(T entity);
 
     /**
+     * Updates entity, by default it's just run for each saving using
+     * {@link DocumentRepository#update(Object)},
+     * each NoSQL vendor might replace to a more appropriate one.
+     *
+     * @param entities entities to be saved
+     * @param <T>      the instance type
+     * @return the entity saved
+     * @throws NullPointerException when entities is null
+     */
+    default <T> Iterable<T> update(Iterable<T> entities) throws NullPointerException {
+        Objects.requireNonNull(entities, "entities is required");
+        return StreamSupport.stream(entities.spliterator(), false).map(this::update).collect(toList());
+    }
+
+    /**
      * Deletes an entity
      *
      * @param query query to delete an entity
