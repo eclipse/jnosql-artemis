@@ -81,6 +81,28 @@ public class DefaultColumnEventPersistManagerTest {
 
     @Test
     public void shouldFirePreEntity() {
+        Jedi jedi = new Jedi();
+        jedi.name = "Luke";
+        subject.firePreEntity(jedi);
+        ArgumentCaptor<EntityPrePersist> captor = ArgumentCaptor.forClass(EntityPrePersist.class);
+        verify(entityPrePersistEvent).fire(captor.capture());
+        EntityPrePersist value = captor.getValue();
+        assertEquals(jedi, value.getValue());
+    }
 
+    @Test
+    public void shouldFirePostEntity() {
+        Jedi jedi = new Jedi();
+        jedi.name = "Luke";
+        subject.firePostEntity(jedi);
+        ArgumentCaptor<EntityPostPersit> captor = ArgumentCaptor.forClass(EntityPostPersit.class);
+        verify(entityPostPersitEvent).fire(captor.capture());
+        EntityPostPersit value = captor.getValue();
+        assertEquals(jedi, value.getValue());
+    }
+
+
+    class Jedi {
+        private String name;
     }
 }
