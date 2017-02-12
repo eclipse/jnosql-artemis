@@ -24,14 +24,14 @@ import java.util.Objects;
 /**
  * When an entity is either saved or updated it's the first event to fire
  */
-public interface EntityPrePersist<T> {
+public interface EntityPrePersist {
 
     /**
      * Return the entity whose gonna be either saved or updated
      *
      * @return Return the entity whose gonna be either save or update
      */
-    T getValue();
+    Object getValue();
 
     /**
      * Created the default implementation of {@link EntityPrePersist}
