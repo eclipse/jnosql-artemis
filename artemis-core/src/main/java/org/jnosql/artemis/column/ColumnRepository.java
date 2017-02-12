@@ -105,6 +105,20 @@ public interface ColumnRepository {
     <T> T update(T entity);
 
 
+    /**
+     * Saves entity, by default it's just run for each saving using
+     * {@link ColumnRepository#update(Object)}},
+     * each NoSQL vendor might replace to a more appropriate one.
+     *
+     * @param entities entities to be updated
+     * @param <T>      the instance type
+     * @return the entity saved
+     * @throws NullPointerException when entities is null
+     */
+    default <T> Iterable<T> update(Iterable<T> entities) throws NullPointerException {
+        Objects.requireNonNull(entities, "entities is required");
+        return StreamSupport.stream(entities.spliterator(), false).map(this::update).collect(Collectors.toList());
+    }
 
     /**
      * Deletes an entity

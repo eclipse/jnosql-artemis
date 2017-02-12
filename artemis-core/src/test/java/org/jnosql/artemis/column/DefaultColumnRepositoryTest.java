@@ -22,6 +22,7 @@ package org.jnosql.artemis.column;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.diana.api.column.Column;
+import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
 import org.junit.Before;
@@ -32,6 +33,7 @@ import org.mockito.Mockito;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -99,4 +101,52 @@ public class DefaultColumnRepositoryTest {
         assertEquals(4, value.getColumns().size());
     }
 
+
+    @Test
+    public void shouldSaveTTL() {
+        ColumnEntity document = ColumnEntity.of("Person");
+        document.addAll(Stream.of(columns).collect(Collectors.toList()));
+
+        Mockito.when(managerMock
+                .save(Mockito.any(ColumnEntity.class),
+                        Mockito.any(Duration.class)))
+                .thenReturn(document);
+
+        subject.save(this.person, Duration.ofHours(2));
+        verify(managerMock).save(captor.capture(), Mockito.eq(Duration.ofHours(2)));
+        verify(columnEventPersistManager).firePostEntity(Mockito.any(Person.class));
+        verify(columnEventPersistManager).firePreEntity(Mockito.any(Person.class));
+        verify(columnEventPersistManager).firePreColumn(Mockito.any(ColumnEntity.class));
+        verify(columnEventPersistManager).firePostColumn(Mockito.any(ColumnEntity.class));
+        ColumnEntity value = captor.getValue();
+        assertEquals("Person", value.getName());
+        assertEquals(4, value.getColumns().size());
+    }
+
+    @Test
+    public void shouldUpdate() {
+        ColumnEntity document = ColumnEntity.of("Person");
+        document.addAll(Stream.of(columns).collect(Collectors.toList()));
+
+        Mockito.when(managerMock
+                .update(Mockito.any(ColumnEntity.class)))
+                .thenReturn(document);
+
+        subject.update(this.person);
+        verify(managerMock).update(captor.capture());
+        verify(columnEventPersistManager).firePostEntity(Mockito.any(Person.class));
+        verify(columnEventPersistManager).firePreEntity(Mockito.any(Person.class));
+        verify(columnEventPersistManager).firePreColumn(Mockito.any(ColumnEntity.class));
+        verify(columnEventPersistManager).firePostColumn(Mockito.any(ColumnEntity.class));
+        ColumnEntity value = captor.getValue();
+        assertEquals("Person", value.getName());
+        assertEquals(4, value.getColumns().size());
+    }
+
+    @Test
+    public void shouldDelete() {
+        ColumnDeleteQuery query = ColumnDeleteQuery.of("delete");
+        subject.delete(query);
+        verify(managerMock).delete(query);
+    }
 }
