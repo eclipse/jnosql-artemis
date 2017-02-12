@@ -92,8 +92,8 @@ public class DefaultColumnRepositoryTest {
         verify(managerMock).save(captor.capture());
         verify(columnEventPersistManager).firePostEntity(Mockito.any(Person.class));
         verify(columnEventPersistManager).firePreEntity(Mockito.any(Person.class));
-        verify(columnEventPersistManager).firePreDocument(Mockito.any(ColumnEntity.class));
-        verify(columnEventPersistManager).firePostDocument(Mockito.any(ColumnEntity.class));
+        verify(columnEventPersistManager).firePreColumn(Mockito.any(ColumnEntity.class));
+        verify(columnEventPersistManager).firePostColumn(Mockito.any(ColumnEntity.class));
         ColumnEntity value = captor.getValue();
         assertEquals("Person", value.getName());
         assertEquals(4, value.getColumns().size());

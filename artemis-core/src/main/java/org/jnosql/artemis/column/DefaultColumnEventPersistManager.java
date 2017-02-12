@@ -46,12 +46,12 @@ class DefaultColumnEventPersistManager implements ColumnEventPersistManager {
     private Event<EntityPostPersit> entityPostPersitEvent;
 
     @Override
-    public void firePreDocument(ColumnEntity entity) {
+    public void firePreColumn(ColumnEntity entity) {
         documentEntityPrePersistEvent.fire(ColumnEntityPrePersist.of(entity));
     }
 
     @Override
-    public void firePostDocument(ColumnEntity entity) {
+    public void firePostColumn(ColumnEntity entity) {
         documentEntityPostPersistEvent.fire(ColumnEntityPostPersist.of(entity));
     }
 

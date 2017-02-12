@@ -29,9 +29,9 @@ import java.util.function.UnaryOperator;
  * The default implementation follows:
  *  <p>{@link ColumnEventPersistManager#firePreEntity(Object)}</p>
  *  <p>{@link ColumnEntityConverter#toColumn(Object)}</p>
- *  <p>{@link ColumnEventPersistManager#firePreDocument(ColumnEntity)}</p>
+ *  <p>{@link ColumnEventPersistManager#firePreColumn(ColumnEntity)}</p>
  *  <p>Database alteration</p>
- *  <p>{@link ColumnEventPersistManager#firePostDocument(ColumnEntity)}</p>
+ *  <p>{@link ColumnEventPersistManager#firePostColumn(ColumnEntity)}</p>
  *  <p>{@link ColumnEventPersistManager#firePostEntity(Object)}</p>
  */
 public interface ColumnWorkflow {

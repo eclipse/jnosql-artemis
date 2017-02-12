@@ -26,7 +26,7 @@ import org.jnosql.diana.api.key.KeyValueEntity;
  * This interface represent the manager of events. When an entity be either saved or updated an event will be fired. This order gonna be:
  * 1) firePreKeyValue
  * 2) firePostKeyValue
- * 3) firePostDocument
+ * 3) firePostColumn
  * 4) firePostEntity
  *
  * @see KeyValueWorkflow

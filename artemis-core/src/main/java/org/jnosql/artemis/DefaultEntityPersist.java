@@ -20,30 +20,25 @@
 package org.jnosql.artemis;
 
 
-import java.util.Objects;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
+import java.util.Objects;
 
 /**
  * The default representation to {@link EntityPrePersist} and {@link EntityPostPersit}
  */
-class DefaultEntityPersist implements EntityPrePersist, EntityPostPersit {
+class DefaultEntityPersist<T> implements EntityPrePersist<T>, EntityPostPersit<T> {
 
-    private final Object value;
+    private final T value;
 
-    DefaultEntityPersist(Object value) {
+    DefaultEntityPersist(T value) {
         this.value = value;
     }
 
     @Override
-    public Object getValue() {
+    public T getValue() {
         return value;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T cast() {
-        return (T) value;
     }
 
     @Override

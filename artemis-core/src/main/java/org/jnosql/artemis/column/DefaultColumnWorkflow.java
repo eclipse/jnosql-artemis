@@ -63,12 +63,12 @@ class DefaultColumnWorkflow implements ColumnWorkflow {
         Function<T, ColumnEntity> converterColumn = t -> converter.toColumn(t);
 
         UnaryOperator<ColumnEntity> firePreDocument = t -> {
-            columnEventPersistManager.firePreDocument(t);
+            columnEventPersistManager.firePreColumn(t);
             return t;
         };
 
         UnaryOperator<ColumnEntity> firePostDocument = t -> {
-            columnEventPersistManager.firePostDocument(t);
+            columnEventPersistManager.firePostColumn(t);
             return t;
         };
 

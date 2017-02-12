@@ -73,8 +73,8 @@ public class DefaultColumnWorkflowTest {
         UnaryOperator<ColumnEntity> action = t -> t;
         subject.flow("entity", action);
 
-        verify(columnEventPersistManager).firePreDocument(any(ColumnEntity.class));
-        verify(columnEventPersistManager).firePostDocument(any(ColumnEntity.class));
+        verify(columnEventPersistManager).firePreColumn(any(ColumnEntity.class));
+        verify(columnEventPersistManager).firePostColumn(any(ColumnEntity.class));
         verify(columnEventPersistManager).firePreEntity(any(ColumnEntity.class));
         verify(columnEventPersistManager).firePostEntity(any(ColumnEntity.class));
         verify(converter).toColumn(any(Object.class));

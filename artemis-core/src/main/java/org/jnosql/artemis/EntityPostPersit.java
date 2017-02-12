@@ -25,22 +25,14 @@ import java.util.Objects;
 /**
  * When an entity is either saved or updated it's the first event to fire after the database action.
  */
-public interface EntityPostPersit {
+public interface EntityPostPersit<T> {
 
     /**
      * Return the entity whose was either saved or updated
      *
      * @return Return the entity whose was either save or update
      */
-    Object getValue();
-
-    /**
-     * The cast of {@link EntityPrePersist#getValue()}
-     *
-     * @param <T> the type to be casted
-     * @return the  {@link EntityPrePersist#getValue()} casted
-     */
-    <T> T cast();
+    T getValue();
 
     /**
      * Created the default implementation of {@link EntityPostPersit}

@@ -1,4 +1,5 @@
 /*
+ * Copyright 2017 Eclipse Foundation
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
@@ -18,11 +19,68 @@
  */
 package org.jnosql.artemis.column;
 
-import static org.junit.Assert.*;
+import org.jnosql.artemis.EntityPostPersit;
+import org.jnosql.artemis.EntityPrePersist;
+import org.jnosql.diana.api.column.ColumnEntity;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 
-/**
- * Created by otaviojava on 2/12/17.
- */
+import javax.enterprise.event.Event;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
+
+@RunWith(MockitoJUnitRunner.class)
 public class DefaultColumnEventPersistManagerTest {
 
+
+    @InjectMocks
+    private DefaultColumnEventPersistManager subject;
+
+    @Mock
+    private Event<ColumnEntityPrePersist> documentEntityPrePersistEvent;
+
+    @Mock
+    private Event<ColumnEntityPostPersist> documentEntityPostPersistEvent;
+
+    @Mock
+    private Event<EntityPrePersist> entityPrePersistEvent;
+
+    @Mock
+    private Event<EntityPostPersit> entityPostPersitEvent;
+
+
+    @Test
+    public void shouldFirePreColumn() {
+        ColumnEntity entity = ColumnEntity.of("columnFamily");
+        subject.firePreColumn(entity);
+        ArgumentCaptor<ColumnEntityPrePersist> captor = ArgumentCaptor.forClass(ColumnEntityPrePersist.class);
+        verify(documentEntityPrePersistEvent).fire(captor.capture());
+
+        ColumnEntityPrePersist captorValue = captor.getValue();
+        assertEquals(entity, captorValue.getEntity());
+    }
+
+
+    @Test
+    public void shouldFirePostColumn() {
+        ColumnEntity entity = ColumnEntity.of("columnFamily");
+        subject.firePostColumn(entity);
+        ArgumentCaptor<ColumnEntityPostPersist> captor = ArgumentCaptor.forClass(ColumnEntityPostPersist.class);
+        verify(documentEntityPostPersistEvent).fire(captor.capture());
+
+        ColumnEntityPostPersist captorValue = captor.getValue();
+        assertEquals(entity, captorValue.getEntity());
+    }
+
+    @Test
+    public void shouldFirePreEntity() {
+
+    }
 }
