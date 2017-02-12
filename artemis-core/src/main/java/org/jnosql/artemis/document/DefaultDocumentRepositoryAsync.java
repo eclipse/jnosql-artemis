@@ -23,6 +23,7 @@ package org.jnosql.artemis.document;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
 
 import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 
 /**
  * The default implementation of {@link DocumentRepository}
@@ -31,10 +32,19 @@ import javax.enterprise.inject.Instance;
 @DocumentRepositoryInterceptor
 class DefaultDocumentRepositoryAsync extends AbstractDocumentRepositoryAsync {
 
+
     private DocumentEntityConverter converter;
 
     private Instance<DocumentCollectionManagerAsync> manager;
 
+    @Inject
+    DefaultDocumentRepositoryAsync(DocumentEntityConverter converter, Instance<DocumentCollectionManagerAsync> manager) {
+        this.converter = converter;
+        this.manager = manager;
+    }
+
+    DefaultDocumentRepositoryAsync() {
+    }
 
     @Override
     protected DocumentEntityConverter getConverter() {
