@@ -44,6 +44,7 @@
 
     <modules>
         <module>artemis-core</module>
+        <module>artemis-validation</module>
     </modules>
 
     <dependencies>
