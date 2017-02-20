@@ -26,13 +26,13 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import java.util.Objects;
 
 /**
- * The default representation to {@link EntityPrePersist} and {@link EntityPostPersit}
+ * The default representation to {@link EntityPostPersit}
  */
-class DefaultEntityPersist implements EntityPrePersist, EntityPostPersit {
+class DefaultEntityPrePersist implements EntityPostPersit {
 
     private final Object value;
 
-    DefaultEntityPersist(Object value) {
+    DefaultEntityPrePersist(Object value) {
         this.value = value;
     }
 
@@ -46,10 +46,10 @@ class DefaultEntityPersist implements EntityPrePersist, EntityPostPersit {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof DefaultEntityPersist)) {
+        if (!(o instanceof DefaultEntityPrePersist)) {
             return false;
         }
-        DefaultEntityPersist that = (DefaultEntityPersist) o;
+        DefaultEntityPrePersist that = (DefaultEntityPrePersist) o;
         return Objects.equals(value, that.value);
     }
 
