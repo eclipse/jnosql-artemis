@@ -20,10 +20,16 @@
 package org.jnosql.artemis.validation;
 
 import org.jnosql.artemis.key.KeyValueRepository;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
+import javax.validation.ConstraintViolation;
+import java.math.BigDecimal;
+import java.util.Set;
+
+import static java.util.Collections.singletonList;
 
 @RunWith(WeldJUnit4Runner.class)
 public class BucketManagerValidationTest {
@@ -36,8 +42,41 @@ public class BucketManagerValidationTest {
     public void shouldValidate() {
 
         Person person = Person.builder()
+                .withAge(21)
+                .withName("Ada")
+                .withSalary(BigDecimal.ONE)
+                .withPhones(singletonList("123131231"))
+                .build();
+        repository.put(person);
+    }
+
+    @Test(expected = ArtemisValidationException.class)
+    public void shouldReturnValidationException() {
+        Person person = Person.builder()
                 .withAge(10)
-                .withName("Ada").build();
-      repository.put(person);
+                .withName("Ada")
+                .withSalary(BigDecimal.ONE)
+                .withPhones(singletonList("123131231"))
+                .build();
+        repository.put(person);
+    }
+
+
+    @Test
+    public void shouldGetValidations() {
+
+        Person person = Person.builder()
+                .withAge(10)
+                .withName("Ada")
+                .withSalary(BigDecimal.valueOf(12991))
+                .withPhones(singletonList("123131231"))
+                .build();
+        try {
+            repository.put(person);
+        } catch (ArtemisValidationException ex) {
+            Set<ConstraintViolation<?>> violations = ex.getViolations();
+            Assert.assertEquals(2, violations.size());
+        }
+
     }
 }

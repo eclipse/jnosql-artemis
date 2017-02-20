@@ -44,7 +44,7 @@ public class ArtemisValidationException extends ValidationException {
         super(requireNonNull(violations, "validation is required")
                 .stream()
                 .map(c -> c.getPropertyPath() + ": " + c.getMessage())
-                .collect(Collectors.joining("\n")));
+                .collect(Collectors.joining(", ")));
         this.violations = violations;
     }
 
