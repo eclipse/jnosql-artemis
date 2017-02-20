@@ -17,15 +17,42 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jnosql.artemis.validation.key;
+package org.jnosql.artemis.validation;
 
+import java.math.BigDecimal;
+import java.util.List;
 
-import org.jnosql.artemis.key.KeyValueEntityPrePersist;
+public class PersonBuilder {
 
-import javax.enterprise.event.Observes;
+    private String name;
 
-public interface KeyValueEntityObserver {
+    private Integer age;
 
-    void validate(@Observes KeyValueEntityPrePersist entity);
+    private BigDecimal salary;
 
+    private List<String> phones;
+
+    public PersonBuilder withName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public PersonBuilder withAge(Integer age) {
+        this.age = age;
+        return this;
+    }
+
+    public PersonBuilder withSalary(BigDecimal salary) {
+        this.salary = salary;
+        return this;
+    }
+
+    public PersonBuilder withPhones(List<String> phones) {
+        this.phones = phones;
+        return this;
+    }
+
+    public Person build() {
+        return new Person(name, age, salary, phones);
+    }
 }

@@ -17,11 +17,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-/**
- * The artemis-validation is a subproject of Artemis that has the goals to validate the data using bean validation.
- * It uses the Bean validation API to do this validation before the event is persist:
- * So, it listens:
- * <p>EntityPrePersist</p>
- */
 package org.jnosql.artemis.validation;
+
+import org.jboss.weld.environment.se.Weld;
+import org.jboss.weld.environment.se.WeldContainer;
+
+public class WeldContext {
+
+    public static final WeldContext INSTANCE = new WeldContext();
+
+    private final Weld weld;
+    private final WeldContainer container;
+
+    private WeldContext() {
+        this.weld = new Weld();
+        this.container = weld.initialize();
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                weld.shutdown();
+            }
+        });
+    }
+
+    public <T> T getBean(Class<T> type) {
+        return container.instance().select(type).get();
+    }
+}

@@ -17,30 +17,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jnosql.artemis;
+package org.jnosql.artemis.validation;
 
-import org.jboss.weld.environment.se.Weld;
-import org.jboss.weld.environment.se.WeldContainer;
+import org.jnosql.artemis.key.KeyValueRepository;
+import org.jnosql.diana.api.key.BucketManager;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-public class WeldContext {
+import javax.inject.Inject;
 
-    public static final WeldContext INSTANCE = new WeldContext();
+@RunWith(WeldJUnit4Runner.class)
+public class BucketManagerValidationTest {
 
-    private final Weld weld;
-    private final WeldContainer container;
+    @Inject
+    private KeyValueRepository repository;
 
-    private WeldContext() {
-        this.weld = new Weld();
-        this.container = weld.initialize();
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                weld.shutdown();
-            }
-        });
-    }
 
-    public <T> T getBean(Class<T> type) {
-        return container.instance().select(type).get();
+    @Test
+    public void shouldValidate() {
+
+        Person person = Person.builder()
+                .withAge(10)
+                .withName("Ada").build();
+      repository.put(person);
     }
 }
