@@ -45,7 +45,7 @@ public interface ColumnEntityPostPersist {
      */
     static ColumnEntityPostPersist of(ColumnEntity entity) throws NullPointerException {
         Objects.requireNonNull(entity, "Entity is required");
-        return new DefaultColumnEntityPersist(entity);
+        return new DefaultColumnEntityPostPersist(entity);
     }
 
 }

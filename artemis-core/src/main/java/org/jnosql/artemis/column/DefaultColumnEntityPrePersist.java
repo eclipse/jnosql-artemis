@@ -27,13 +27,13 @@ import org.jnosql.diana.api.column.ColumnEntity;
 import java.util.Objects;
 
 /**
- * The default implementation to represents either {@link ColumnEntityPostPersist} and {@link ColumnEntityPrePersist}
+ * The default implementation to represents {@link ColumnEntityPrePersist}
  */
-class DefaultColumnEntityPersist implements ColumnEntityPostPersist, ColumnEntityPrePersist {
+class DefaultColumnEntityPrePersist implements ColumnEntityPrePersist {
 
     private final ColumnEntity entity;
 
-    DefaultColumnEntityPersist(ColumnEntity entity) {
+    DefaultColumnEntityPrePersist(ColumnEntity entity) {
         this.entity = entity;
     }
 
@@ -47,10 +47,10 @@ class DefaultColumnEntityPersist implements ColumnEntityPostPersist, ColumnEntit
         if (this == o) {
             return true;
         }
-        if (!(o instanceof DefaultColumnEntityPersist)) {
+        if (!(o instanceof DefaultColumnEntityPrePersist)) {
             return false;
         }
-        DefaultColumnEntityPersist that = (DefaultColumnEntityPersist) o;
+        DefaultColumnEntityPrePersist that = (DefaultColumnEntityPrePersist) o;
         return Objects.equals(entity, that.entity);
     }
 

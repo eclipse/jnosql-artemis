@@ -45,6 +45,6 @@ public interface ColumnEntityPrePersist {
      */
     static ColumnEntityPrePersist of(ColumnEntity entity) throws NullPointerException {
         Objects.requireNonNull(entity, "Entity is required");
-        return new DefaultColumnEntityPersist(entity);
+        return new DefaultColumnEntityPrePersist(entity);
     }
 }
