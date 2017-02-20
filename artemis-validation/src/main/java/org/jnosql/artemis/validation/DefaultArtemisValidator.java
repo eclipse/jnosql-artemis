@@ -30,7 +30,7 @@ import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
 
-class DefaultArtemisValidator implements ArtemisValidator{
+class DefaultArtemisValidator implements ArtemisValidator {
 
     @Inject
     private Instance<ValidatorFactory> validatorFactories;

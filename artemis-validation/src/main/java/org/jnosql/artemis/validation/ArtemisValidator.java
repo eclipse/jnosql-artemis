@@ -20,7 +20,6 @@
 package org.jnosql.artemis.validation;
 
 
-import javax.validation.Validator;
 
 /**
  * Validates bean instances. Implementations of this interface must be thread-safe.
@@ -34,7 +33,7 @@ public interface ArtemisValidator {
      * @param bean the be to be validated
      * @param <T>  the type
      * @throws NullPointerException       when bean is null
-     * @throws ArtemisValidationException when {@link Validator#validate(Object, Class[])}
+     * @throws ArtemisValidationException when {@link javax.validation.Validator#validate(Object, Class[])}
      *                                    returns a non empty collection
      */
     <T> void validate(T bean) throws NullPointerException, ArtemisValidationException;
