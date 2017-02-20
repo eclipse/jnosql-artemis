@@ -44,6 +44,8 @@ public class User {
         this.age = age;
     }
 
+    User() {}
+
     public String getNickname() {
         return nickname;
     }

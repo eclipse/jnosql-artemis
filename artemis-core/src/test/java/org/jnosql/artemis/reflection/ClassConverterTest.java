@@ -21,7 +21,9 @@ package org.jnosql.artemis.reflection;
 
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Actor;
+import org.jnosql.artemis.model.Animal;
 import org.jnosql.artemis.model.Director;
+import org.jnosql.artemis.model.Machine;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.model.User;
 import org.junit.Assert;
@@ -97,8 +99,18 @@ public class ClassConverterTest {
         assertEquals("nickname", fieldRepresentation.getName());
         assertEquals(DEFAULT, fieldRepresentation.getType());
 
+    }
 
+    @Test(expected = ConstructorException.class)
+    public void shouldReturnErrorWhenThereIsNotConstructor() {
+        classConverter.create(Animal.class);
+    }
 
+    @Test
+    public void shouldReturnWhenIsDefaultConstructor() {
+        ClassRepresentation classRepresentation = classConverter.create(Machine.class);
+        List<FieldRepresentation> fields = classRepresentation.getFields();
+        assertEquals(1, fields.size());
     }
 
 }

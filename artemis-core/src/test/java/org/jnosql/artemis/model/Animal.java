@@ -17,17 +17,44 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jnosql.artemis.reflection;
+package org.jnosql.artemis.model;
 
-import org.jnosql.artemis.ArtemisException;
+import java.util.Objects;
 
+public class Animal {
 
-/**
- * Get the exception when a class has a no arg constructor either public or default
- */
-public class ConstructorException extends ArtemisException {
+    private String name;
 
-    public ConstructorException(Class clazz) {
-        super("This class must have a no arg with either public and default visibility: " + clazz.getName());
+    public Animal(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Animal animal = (Animal) o;
+        return Objects.equals(name, animal.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Animal{");
+        sb.append("name='").append(name).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }

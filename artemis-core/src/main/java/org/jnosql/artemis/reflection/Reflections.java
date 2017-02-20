@@ -26,6 +26,7 @@ import org.jnosql.artemis.Key;
 import org.jnosql.artemis.MappedSuperclass;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -36,6 +37,8 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * Utilitarian class to reflection
@@ -171,6 +174,33 @@ public class Reflections {
                 && !field.isAccessible()) {
             field.setAccessible(true);
         }
+    }
+
+    /**
+     * Make the given a constructor class accessible, explicitly setting it accessible
+     * if necessary. The setAccessible(true) method is only
+     * called when actually necessary, to avoid unnecessary
+     * conflicts with a JVM SecurityManager (if active).
+     *
+     * @param clazz the class constructor acessible
+     * @throws ConstructorException when the constructor has public and default
+     */
+    public void makeAccessible(Class clazz) throws ConstructorException {
+        List<Constructor> constructors = Stream.
+                of(clazz.getDeclaredConstructors())
+                .filter(c -> c.getParameterCount() == 0)
+                .collect(toList());
+
+        if (constructors.isEmpty()) {
+            throw new ConstructorException(clazz);
+        }
+        boolean hasPublicConstructor = constructors.stream().anyMatch(c -> Modifier.isPublic(c.getModifiers()));
+        if (hasPublicConstructor) {
+            return;
+        }
+
+        Constructor constructor = constructors.get(0);
+        constructor.setAccessible(true);
     }
 
     public String getEntityName(Class classEntity) {

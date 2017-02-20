@@ -25,7 +25,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -45,8 +44,7 @@ class ClassConverter {
     }
 
     public ClassRepresentation create(Class entityClass) {
-        checkConstructor(entityClass);
-
+        reflections.makeAccessible(entityClass);
         String entityName = reflections.getEntityName(entityClass);
         List<FieldRepresentation> fields = reflections.getFields(entityClass)
                 .stream().map(this::to).collect(toList());
@@ -58,20 +56,6 @@ class ClassConverter {
                 .build();
     }
 
-    private void checkConstructor(Class entityClass) {
-        List<Constructor> constructors = Stream.
-                 of(entityClass.getDeclaredConstructors())
-                .filter(c -> c.getParameterCount() == 0)
-                .collect(toList());
-
-        boolean hasPublicConstructor = constructors.stream().anyMatch(c -> Modifier.isPublic(c.getModifiers()));
-        if(hasPublicConstructor) {
-            return;
-        }
-
-        Constructor constructor = constructors.get(0);
-        constructor.setAccessible(true);
-    }
 
     private FieldRepresentation to(Field field) {
         FieldType fieldType = FieldType.of(field);
