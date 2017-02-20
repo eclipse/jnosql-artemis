@@ -50,7 +50,7 @@
         </dependency>
       <dependency>
             <groupId>org.jnosql.artemis</groupId>
-            <artifactId>artemis-validation</artifactId>
+            <artifactId>artemis-core</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
