@@ -45,6 +45,6 @@ public interface DocumentEntityPrePersist {
      */
     static DocumentEntityPrePersist of(DocumentEntity entity) throws NullPointerException {
         Objects.requireNonNull(entity, "Entity is required");
-        return new DefaultDocumentEntityPersist(entity);
+        return new DefaultDocumentEntityPrePersist(entity);
     }
 }

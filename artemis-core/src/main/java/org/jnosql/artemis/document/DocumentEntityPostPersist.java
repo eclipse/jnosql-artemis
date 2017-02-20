@@ -44,7 +44,7 @@ public interface DocumentEntityPostPersist {
      */
     static DocumentEntityPostPersist of(DocumentEntity entity) throws NullPointerException {
         Objects.requireNonNull(entity, "Entity is required");
-        return new DefaultDocumentEntityPersist(entity);
+        return new DefaultDocumentEntityPostPersist(entity);
     }
 
 }

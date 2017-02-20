@@ -27,13 +27,13 @@ import org.jnosql.diana.api.document.DocumentEntity;
 import java.util.Objects;
 
 /**
- * The default implementation to represents either {@link DocumentEntityPrePersist} and {@link DocumentEntityPostPersist}
+ * The default implementation to represents {@link DocumentEntityPrePersist}
  */
-class DefaultDocumentEntityPersist implements DocumentEntityPrePersist, DocumentEntityPostPersist {
+class DefaultDocumentEntityPrePersist implements DocumentEntityPrePersist {
 
     private final DocumentEntity entity;
 
-    DefaultDocumentEntityPersist(DocumentEntity entity) {
+    DefaultDocumentEntityPrePersist(DocumentEntity entity) {
         this.entity = entity;
     }
 
@@ -47,10 +47,10 @@ class DefaultDocumentEntityPersist implements DocumentEntityPrePersist, Document
         if (this == o) {
             return true;
         }
-        if (!(o instanceof DefaultDocumentEntityPersist)) {
+        if (!(o instanceof DefaultDocumentEntityPrePersist)) {
             return false;
         }
-        DefaultDocumentEntityPersist that = (DefaultDocumentEntityPersist) o;
+        DefaultDocumentEntityPrePersist that = (DefaultDocumentEntityPrePersist) o;
         return Objects.equals(entity, that.entity);
     }
 
