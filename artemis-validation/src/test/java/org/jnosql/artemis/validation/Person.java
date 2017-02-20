@@ -55,6 +55,9 @@ public class Person {
     private List<String> phones;
 
 
+    public Person() {
+    }
+
     Person(String name, Integer age, BigDecimal salary, List<String> phones) {
         this.name = name;
         this.age = age;
