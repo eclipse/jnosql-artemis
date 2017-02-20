@@ -21,6 +21,7 @@ package org.jnosql.artemis.model;
 
 
 import java.util.List;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jnosql.artemis.Column;
@@ -66,7 +67,7 @@ public class Person {
         return ignore;
     }
 
-    public Person() {
+    Person() {
     }
 
     Person(long id, String name, int age, List<String> phones, String ignore) {

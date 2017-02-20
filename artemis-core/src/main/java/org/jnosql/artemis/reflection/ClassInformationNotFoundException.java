@@ -20,10 +20,12 @@
 package org.jnosql.artemis.reflection;
 
 
+import org.jnosql.artemis.ArtemisException;
+
 /**
  * Exception when a class is not loaded to the cached way
  */
-public class ClassInformationNotFoundException extends RuntimeException {
+public class ClassInformationNotFoundException extends ArtemisException {
 
 
     /**

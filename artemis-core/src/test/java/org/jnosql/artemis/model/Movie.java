@@ -38,7 +38,7 @@ public class Movie {
     @Column
     private Set<String> actors;
 
-    public Movie() {
+    Movie() {
     }
 
     public Movie(String title, long year, Set<String> actors) {

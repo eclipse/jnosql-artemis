@@ -40,7 +40,7 @@ public class Actor extends Person {
         this.movieRating = movieRating;
     }
 
-    public Actor() {
+    Actor() {
     }
 
     public Map<String, String> getMovieCharacter() {
