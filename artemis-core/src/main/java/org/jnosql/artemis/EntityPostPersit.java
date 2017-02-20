@@ -43,7 +43,7 @@ public interface EntityPostPersit {
      */
     static EntityPostPersit of(Object value) throws NullPointerException {
         Objects.requireNonNull(value, "value is required");
-        return new DefaultEntityPrePersist(value);
+        return new DefaultEntityPostPersist(value);
     }
 
 }

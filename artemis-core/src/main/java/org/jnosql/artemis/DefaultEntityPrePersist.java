@@ -26,9 +26,9 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import java.util.Objects;
 
 /**
- * The default representation to {@link EntityPostPersit}
+ * The default representation to {@link EntityPrePersist}
  */
-class DefaultEntityPrePersist implements EntityPostPersit {
+class DefaultEntityPrePersist implements EntityPrePersist {
 
     private final Object value;
 
