@@ -20,7 +20,6 @@
 package org.jnosql.artemis.validation;
 
 import org.jnosql.artemis.key.KeyValueRepository;
-import org.jnosql.diana.api.key.BucketManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
