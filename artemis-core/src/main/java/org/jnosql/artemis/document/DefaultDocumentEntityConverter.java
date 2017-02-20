@@ -68,7 +68,7 @@ class DefaultDocumentEntityConverter implements DocumentEntityConverter {
     @Override
     public <T> T toEntity(Class<T> entityClass, DocumentEntity entity) {
         ClassRepresentation representation = classRepresentations.get(entityClass);
-        T instance = reflections.newInstance(entityClass);
+        T instance = reflections.newInstance(representation.getConstructor());
         return convertEntity(entity, representation, instance);
 
 
@@ -78,7 +78,7 @@ class DefaultDocumentEntityConverter implements DocumentEntityConverter {
     @Override
     public <T> T toEntity(DocumentEntity entity) {
         ClassRepresentation representation = classRepresentations.findByName(entity.getName());
-        T instance = reflections.newInstance((Class<T>) representation.getClassInstance());
+        T instance = reflections.newInstance(representation.getConstructor());
         return convertEntity(entity, representation, instance);
     }
 

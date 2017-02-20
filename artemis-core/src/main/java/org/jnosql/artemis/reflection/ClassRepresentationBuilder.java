@@ -19,6 +19,7 @@
  */
 package org.jnosql.artemis.reflection;
 
+import java.lang.reflect.Constructor;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,6 +30,8 @@ class ClassRepresentationBuilder {
     private List<String> fieldsName = Collections.emptyList();
 
     private Class<?> classInstance;
+
+    private Constructor constructor;
 
     private List<FieldRepresentation> fields = Collections.emptyList();
 
@@ -52,7 +55,12 @@ class ClassRepresentationBuilder {
         return this;
     }
 
+    public ClassRepresentationBuilder withConstructor(Constructor constructor) {
+        this.constructor = constructor;
+        return this;
+    }
+
     public ClassRepresentation build() {
-        return new ClassRepresentation(name, fieldsName, classInstance, fields);
+        return new ClassRepresentation(name, fieldsName, classInstance, fields, constructor);
     }
 }

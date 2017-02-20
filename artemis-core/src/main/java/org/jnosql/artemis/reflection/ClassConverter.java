@@ -23,9 +23,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -44,7 +42,7 @@ class ClassConverter {
     }
 
     public ClassRepresentation create(Class entityClass) {
-        reflections.makeAccessible(entityClass);
+        Constructor constructor = reflections.makeAccessible(entityClass);
         String entityName = reflections.getEntityName(entityClass);
         List<FieldRepresentation> fields = reflections.getFields(entityClass)
                 .stream().map(this::to).collect(toList());
@@ -53,6 +51,7 @@ class ClassConverter {
                 .withClassInstance(entityClass)
                 .withFields(fields)
                 .withFieldsName(fieldsName)
+                .withConstructor(constructor)
                 .build();
     }
 

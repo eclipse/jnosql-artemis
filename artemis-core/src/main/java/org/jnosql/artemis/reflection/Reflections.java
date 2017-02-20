@@ -86,13 +86,13 @@ public class Reflections {
     /**
      * Create new instance of this class.
      *
-     * @param clazz the class to create object
+     * @param constructor the constructor
      * @param <T>   the instance type
      * @return the new instance that class
      */
-    public <T> T newInstance(Class<T> clazz) {
+    public <T> T newInstance(Constructor constructor) {
         try {
-            return clazz.newInstance();
+            return (T) constructor.newInstance();
         } catch (Exception exception) {
             Logger.getLogger(Reflections.class.getName()).log(Level.SEVERE, null, exception);
             return null;
@@ -185,7 +185,7 @@ public class Reflections {
      * @param clazz the class constructor acessible
      * @throws ConstructorException when the constructor has public and default
      */
-    public void makeAccessible(Class clazz) throws ConstructorException {
+    public Constructor makeAccessible(Class clazz) throws ConstructorException {
         List<Constructor> constructors = Stream.
                 of(clazz.getDeclaredConstructors())
                 .filter(c -> c.getParameterCount() == 0)
@@ -194,13 +194,14 @@ public class Reflections {
         if (constructors.isEmpty()) {
             throw new ConstructorException(clazz);
         }
-        boolean hasPublicConstructor = constructors.stream().anyMatch(c -> Modifier.isPublic(c.getModifiers()));
-        if (hasPublicConstructor) {
-            return;
+        Optional<Constructor> publicConstructor = constructors.stream().filter(c -> Modifier.isPublic(c.getModifiers())).findFirst();
+        if (publicConstructor.isPresent()) {
+            return publicConstructor.get();
         }
 
         Constructor constructor = constructors.get(0);
         constructor.setAccessible(true);
+        return constructor;
     }
 
     public String getEntityName(Class classEntity) {

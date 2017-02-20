@@ -26,12 +26,10 @@ import org.jnosql.artemis.model.Director;
 import org.jnosql.artemis.model.Machine;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.model.User;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
-
 import java.util.List;
 import java.util.function.Predicate;
 

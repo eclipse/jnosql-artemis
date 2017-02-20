@@ -33,7 +33,7 @@ public class Director extends Person {
     private Movie movie;
 
 
-    public Director() {
+    Director() {
     }
 
     public Director(long id, String name, int age, List<String> phones, String ignore, Movie movie) {

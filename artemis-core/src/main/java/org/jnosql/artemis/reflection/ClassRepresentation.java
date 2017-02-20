@@ -20,6 +20,7 @@
 package org.jnosql.artemis.reflection;
 
 import java.io.Serializable;
+import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -40,11 +41,14 @@ public class ClassRepresentation implements Serializable {
 
     private final List<FieldRepresentation> fields;
 
-    ClassRepresentation(String name, List<String> fieldsName, Class<?> classInstance, List<FieldRepresentation> fields) {
+    private final Constructor constructor;
+
+    ClassRepresentation(String name, List<String> fieldsName, Class<?> classInstance, List<FieldRepresentation> fields, Constructor constructor) {
         this.name = name;
         this.fieldsName = fieldsName;
         this.classInstance = classInstance;
         this.fields = fields;
+        this.constructor = constructor;
     }
 
     public String getName() {
@@ -61,6 +65,10 @@ public class ClassRepresentation implements Serializable {
 
     public List<FieldRepresentation> getFields() {
         return fields;
+    }
+
+    public Constructor getConstructor() {
+        return constructor;
     }
 
     @Override
@@ -90,6 +98,7 @@ public class ClassRepresentation implements Serializable {
                 .append("fieldsName", fieldsName)
                 .append("classInstance", classInstance)
                 .append("fields", fields)
+                .append("constructor", constructor)
                 .toString();
     }
 
