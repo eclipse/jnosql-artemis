@@ -50,8 +50,7 @@ public interface CrudRepository<T> {
     T save(T entity, Duration ttl);
 
     /**
-     * Saves entity, by default it's just run for each saving using
-     * {@link DocumentRepository#save(Object)},
+     * Saves entity
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -61,8 +60,7 @@ public interface CrudRepository<T> {
     Iterable<T> save(Iterable<T> entities) throws NullPointerException;
 
     /**
-     * Saves documents collection entity with time to live, by default it's just run for each saving using
-     * {@link DocumentRepository#save(Object, Duration)},
+     * Saves documents collection entity with time to live
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
