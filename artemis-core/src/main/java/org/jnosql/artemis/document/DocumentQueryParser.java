@@ -21,6 +21,7 @@
 package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.diana.api.Sort;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentQuery;
@@ -52,7 +53,7 @@ class DocumentQueryParser {
             } else if (token.startsWith(OR)) {
                 or(args, documentQuery, index, token);
             } else if (token.startsWith(ORDER_BY)) {
-
+                sort(documentQuery, token);
             } else {
                 DocumentCondition condition = toCondition(token, index, args);
                 documentQuery.and(condition);
@@ -61,7 +62,6 @@ class DocumentQueryParser {
         }
         return documentQuery;
     }
-
 
     private DocumentCondition toCondition(String token, int index, Object[] args) {
 
@@ -98,6 +98,15 @@ class DocumentQueryParser {
         String field = token.replace(AND, "");
         DocumentCondition condition = toCondition(field, index, args);
         documentQuery.and(condition);
+    }
+
+    private void sort(DocumentQuery documentQuery, String token) {
+        String field = token.replace(ORDER_BY, "");
+        if (field.contains("Desc")) {
+            documentQuery.addSort(Sort.of(getName(field.replace("Desc", "")), Sort.SortType.DESC));
+        } else {
+            documentQuery.addSort(Sort.of(getName(field.replace("Asc", "")), Sort.SortType.ASC));
+        }
     }
 
     private String getName(String token) {

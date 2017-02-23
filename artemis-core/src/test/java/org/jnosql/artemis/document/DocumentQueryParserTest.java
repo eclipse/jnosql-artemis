@@ -25,8 +25,8 @@ import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.Condition;
+import org.jnosql.diana.api.Sort;
 import org.jnosql.diana.api.TypeReference;
-import org.jnosql.diana.api.TypeSupplier;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentQuery;
@@ -35,10 +35,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
-
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 
 @RunWith(WeldJUnit4Runner.class)
@@ -139,6 +138,33 @@ public class DocumentQueryParserTest {
         assertEquals("Person", query.getCollection());
         assertEquals(Condition.LIKE, query.getCondition().get().getCondition());
         assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
+    }
+
+    @Test
+    public void shouldFindByNameLikeOrderByName() {
+        DocumentQuery query = parser.parse("findByNameLikeOrderByName", new Object[]{"name"}, classRepresentation);
+        assertEquals("Person", query.getCollection());
+        assertEquals(Condition.LIKE, query.getCondition().get().getCondition());
+        assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
+        assertEquals(Sort.of("name", Sort.SortType.ASC), query.getSorts().get(0));
+    }
+
+    @Test
+    public void shouldFindByNameLikeOrderByNameAsc() {
+        DocumentQuery query = parser.parse("findByNameLikeOrderByNameAsc", new Object[]{"name"}, classRepresentation);
+        assertEquals("Person", query.getCollection());
+        assertEquals(Condition.LIKE, query.getCondition().get().getCondition());
+        assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
+        assertEquals(Sort.of("name", Sort.SortType.ASC), query.getSorts().get(0));
+    }
+
+    @Test
+    public void shouldFindByNameLikeOrderByNameDesc() {
+        DocumentQuery query = parser.parse("findByNameLikeOrderByNameDesc", new Object[]{"name"}, classRepresentation);
+        assertEquals("Person", query.getCollection());
+        assertEquals(Condition.LIKE, query.getCondition().get().getCondition());
+        assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
+        assertEquals(Sort.of("name", Sort.SortType.DESC), query.getSorts().get(0));
     }
 
 
