@@ -29,7 +29,6 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.time.Duration;
-import java.util.Optional;
 
 class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
 
@@ -68,15 +67,7 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
         }
         if (methodName.startsWith("findBy")) {
             DocumentQuery query = documentQueryParser.parse(methodName, args, classRepresentation);
-            if (typeClass.equals(method.getReturnType())) {
-                Optional<Object> optional = repository.singleResult(query);
-                if (optional.isPresent()) {
-                    return optional.get();
-                } else {
-                    return null;
-                }
-
-            }
+            return ReturnTypeConverterUtil.returnObject(query, repository, typeClass, method);
         } else if (methodName.startsWith("deleteBy")) {
 
         }

@@ -19,6 +19,7 @@
  */
 package org.jnosql.artemis.document;
 
+import org.hamcrest.Matchers;
 import org.jnosql.artemis.CrudRepository;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Person;
@@ -38,7 +39,12 @@ import javax.inject.Inject;
 import java.lang.reflect.Proxy;
 import java.time.Duration;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.Queue;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -126,7 +132,7 @@ public class DocumentCrudRepositoryProxyTest {
                 .withId(10L)
                 .withPhones(singletonList("123123"))
                 .build();
-        personRepository.save(Collections.singletonList(person));
+        personRepository.save(singletonList(person));
         verify(repository).save(captor.capture());
         Iterable<Person> persons = captor.getValue();
         assertThat(persons, containsInAnyOrder(person));
@@ -139,7 +145,7 @@ public class DocumentCrudRepositoryProxyTest {
                 .withId(10L)
                 .withPhones(singletonList("123123"))
                 .build();
-        personRepository.update(Collections.singletonList(person));
+        personRepository.update(singletonList(person));
         verify(repository).update(captor.capture());
         Iterable<Person> persons = captor.getValue();
         assertThat(persons, containsInAnyOrder(person));
@@ -171,6 +177,65 @@ public class DocumentCrudRepositoryProxyTest {
 
     }
 
+    @Test
+    public void shouldFindByNameANDAge() {
+        Person ada = Person.builder()
+                .withAge(20).withName("Ada").build();
+
+        when(repository.find(Mockito.any(DocumentQuery.class)))
+                .thenReturn(singletonList(ada));
+
+        List<Person> persons = personRepository.findByNameANDAge("name", 20);
+        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
+        verify(repository).find(captor.capture());
+        assertThat(persons, Matchers.contains(ada));
+
+    }
+
+    @Test
+    public void shouldFindByAgeANDName() {
+        Person ada = Person.builder()
+                .withAge(20).withName("Ada").build();
+
+        when(repository.find(Mockito.any(DocumentQuery.class)))
+                .thenReturn(singletonList(ada));
+
+        Set<Person> persons = personRepository.findByAgeANDName(20, "name");
+        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
+        verify(repository).find(captor.capture());
+        assertThat(persons, Matchers.contains(ada));
+
+    }
+
+    @Test
+    public void shouldFindByNameANDAgeOrderByName() {
+        Person ada = Person.builder()
+                .withAge(20).withName("Ada").build();
+
+        when(repository.find(Mockito.any(DocumentQuery.class)))
+                .thenReturn(singletonList(ada));
+
+        Stream<Person> persons = personRepository.findByNameANDAgeOrderByName("name", 20);
+        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
+        verify(repository).find(captor.capture());
+        assertThat(persons.collect(Collectors.toList()), Matchers.contains(ada));
+
+    }
+
+    @Test
+    public void shouldFindByNameANDAgeOrderByAge() {
+        Person ada = Person.builder()
+                .withAge(20).withName("Ada").build();
+
+        when(repository.find(Mockito.any(DocumentQuery.class)))
+                .thenReturn(singletonList(ada));
+
+        Queue<Person> persons = personRepository.findByNameANDAgeOrderByAge("name", 20);
+        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
+        verify(repository).find(captor.capture());
+        assertThat(persons, Matchers.contains(ada));
+
+    }
 
     interface PersonRepository extends CrudRepository<Person> {
 
@@ -178,5 +243,12 @@ public class DocumentCrudRepositoryProxyTest {
 
         Optional<Person> findByAge(Integer age);
 
+        List<Person> findByNameANDAge(String name, Integer age);
+
+        Set<Person> findByAgeANDName(Integer age, String name);
+
+        Stream<Person> findByNameANDAgeOrderByName(String name, Integer age);
+
+        Queue<Person> findByNameANDAgeOrderByAge(String name, Integer age);
     }
 }

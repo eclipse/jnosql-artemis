@@ -139,7 +139,7 @@ class DocumentQueryParser {
         if (Condition.BETWEEN.equals(condition.getCondition())) {
             return index + 2;
         } else {
-            return index++;
+            return ++index;
         }
     }
 
@@ -151,7 +151,7 @@ class DocumentQueryParser {
         if (Condition.BETWEEN.equals(condition.getCondition())) {
             return index + 2;
         } else {
-            return index++;
+            return ++index;
         }
 
     }
