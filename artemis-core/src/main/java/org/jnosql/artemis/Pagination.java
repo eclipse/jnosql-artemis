@@ -24,7 +24,18 @@ package org.jnosql.artemis;
  */
 public interface Pagination {
 
-    int getStart();
+    /**
+     * Returns the max number of row in a query
+     *
+     * @return the limit to be used in a query
+     */
+    long getLimit();
 
+    /**
+     * Gets when the result starts
+     *
+     * @return the start
+     */
+    long getStart();
 
 }
