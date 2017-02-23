@@ -42,10 +42,11 @@ class DocumentQueryParser {
     private static final String LESS_THAN_EQUAL = "LessEqualThan";
     private static final String GREATER_THAN_EQUAL = "GreaterEqualThan";
     private static final String LIKE = "Like";
+    private static final String EMPTY = "";
 
     DocumentQuery parse(String query, Object[] args, ClassRepresentation classRepresentation) {
         DocumentQuery documentQuery = DocumentQuery.of(classRepresentation.getName());
-        String[] tokens = query.replace(PREFIX, "").split("(?=AND|OR|OrderBy)");
+        String[] tokens = query.replace(PREFIX, EMPTY).split("(?=AND|OR|OrderBy)");
         int index = 0;
         for (String token : tokens) {
             if (token.startsWith(AND)) {
@@ -68,19 +69,19 @@ class DocumentQueryParser {
         if (token.contains(BETWEEN)) {
 
         } else if (token.contains(LESS_THAN)) {
-            String name = getName(token).replace(LESS_THAN, "");
+            String name = getName(token).replace(LESS_THAN, EMPTY);
             return DocumentCondition.lt(Document.of(name, args[index]));
         } else if (token.contains(GREATER_THAN)) {
-            String name = getName(token).replace(GREATER_THAN, "");
+            String name = getName(token).replace(GREATER_THAN, EMPTY);
             return DocumentCondition.gt(Document.of(name, args[index]));
         } else if (token.contains(LESS_THAN_EQUAL)) {
-            String name = getName(token).replace(LESS_THAN_EQUAL, "");
+            String name = getName(token).replace(LESS_THAN_EQUAL, EMPTY);
             return DocumentCondition.lte(Document.of(name, args[index]));
         } else if (token.contains(GREATER_THAN_EQUAL)) {
-            String name = getName(token).replace(GREATER_THAN_EQUAL, "");
+            String name = getName(token).replace(GREATER_THAN_EQUAL, EMPTY);
             return DocumentCondition.gte(Document.of(name, args[index]));
         } else if (token.contains(LIKE)) {
-            String name = getName(token).replace(LIKE, "");
+            String name = getName(token).replace(LIKE, EMPTY);
             return DocumentCondition.like(Document.of(name, args[index]));
         }
         String name = getName(token);
@@ -89,23 +90,23 @@ class DocumentQueryParser {
     }
 
     private void or(Object[] args, DocumentQuery documentQuery, int index, String token) {
-        String field = token.replace(OR, "");
+        String field = token.replace(OR, EMPTY);
         DocumentCondition condition = toCondition(field, index, args);
         documentQuery.or(condition);
     }
 
     private void and(Object[] args, DocumentQuery documentQuery, int index, String token) {
-        String field = token.replace(AND, "");
+        String field = token.replace(AND, EMPTY);
         DocumentCondition condition = toCondition(field, index, args);
         documentQuery.and(condition);
     }
 
     private void sort(DocumentQuery documentQuery, String token) {
-        String field = token.replace(ORDER_BY, "");
+        String field = token.replace(ORDER_BY, EMPTY);
         if (field.contains("Desc")) {
-            documentQuery.addSort(Sort.of(getName(field.replace("Desc", "")), Sort.SortType.DESC));
+            documentQuery.addSort(Sort.of(getName(field.replace("Desc", EMPTY)), Sort.SortType.DESC));
         } else {
-            documentQuery.addSort(Sort.of(getName(field.replace("Asc", "")), Sort.SortType.ASC));
+            documentQuery.addSort(Sort.of(getName(field.replace("Asc", EMPTY)), Sort.SortType.ASC));
         }
     }
 
