@@ -20,6 +20,7 @@
 package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.DynamicQueryException;
+import org.jnosql.artemis.Pagination;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentation;
@@ -209,4 +210,58 @@ public class DocumentQueryParserTest {
                 classRepresentation);
     }
 
+    @Test
+    public void shouldFindByNameWithSortArgument() {
+        Sort sort = Sort.of("age", Sort.SortType.ASC);
+        DocumentQuery query = parser.parse("findByName", new Object[]{"name",
+                sort}, classRepresentation);
+
+        assertEquals("Person", query.getCollection());
+        assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
+        assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
+        assertEquals(sort, query.getSorts().get(0));
+    }
+
+    @Test
+    public void shouldFindByNameWithPageArgument() {
+        Pagination pagination = Pagination.of(2L, 10);
+        DocumentQuery query = parser.parse("findByName", new Object[]{"name",
+                pagination}, classRepresentation);
+
+        assertEquals("Person", query.getCollection());
+        assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
+        assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
+        assertEquals(pagination.getLimit(), query.getLimit());
+        assertEquals(pagination.getStart(), query.getStart());
+    }
+
+    @Test
+    public void shouldFindByNameWithPageSortArgument() {
+        Pagination pagination = Pagination.of(2L, 10);
+        Sort sort = Sort.of("age", Sort.SortType.ASC);
+        DocumentQuery query = parser.parse("findByName", new Object[]{"name",
+                pagination, sort}, classRepresentation);
+
+        assertEquals("Person", query.getCollection());
+        assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
+        assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
+        assertEquals(pagination.getLimit(), query.getLimit());
+        assertEquals(pagination.getStart(), query.getStart());
+        assertEquals(sort, query.getSorts().get(0));
+    }
+
+    @Test
+    public void shouldFindByNameWithPageSortArgumentAndIgnore() {
+        Pagination pagination = Pagination.of(2L, 10);
+        Sort sort = Sort.of("age", Sort.SortType.ASC);
+        DocumentQuery query = parser.parse("findByName", new Object[]{"name",
+                pagination, sort, "ignore"}, classRepresentation);
+
+        assertEquals("Person", query.getCollection());
+        assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
+        assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
+        assertEquals(pagination.getLimit(), query.getLimit());
+        assertEquals(pagination.getStart(), query.getStart());
+        assertEquals(sort, query.getSorts().get(0));
+    }
 }

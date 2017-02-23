@@ -20,6 +20,7 @@
 package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.DynamicQueryException;
+import org.jnosql.artemis.Pagination;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.Condition;
 import org.jnosql.diana.api.Sort;
@@ -28,12 +29,15 @@ import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentQuery;
 
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 /**
  * Class the returns a {@link org.jnosql.diana.api.document.DocumentQuery}
  * on {@link DocumentCrudRepositoryProxy}
  */
 class DocumentQueryParser {
+
+    private static final Logger LOGGER = Logger.getLogger(DocumentQueryParser.class.getName());
 
     private static final String PREFIX = "findBy";
     private static final String AND = "AND";
@@ -65,7 +69,21 @@ class DocumentQueryParser {
                 documentQuery.and(condition);
                 index++;
             }
+        }
 
+        while (index < args.length) {
+            Object value = args[index];
+            if (Sort.class.isInstance(value)) {
+                documentQuery.addSort(Sort.class.cast(value));
+            } else if (Pagination.class.isInstance(value)) {
+                Pagination pagination = Pagination.class.cast(value);
+                documentQuery.setLimit(pagination.getLimit());
+                documentQuery.setStart(pagination.getStart());
+            } else {
+                LOGGER.info(String.format("Ignoring parameter %s on  methodName %s class name %s arg-number: %d",
+                        String.valueOf(value), methodName, className, index));
+            }
+            index++;
         }
         return documentQuery;
     }
