@@ -20,10 +20,13 @@
 package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.diana.api.Condition;
 import org.jnosql.diana.api.Sort;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentQuery;
+
+import java.util.Arrays;
 
 /**
  * Class the returns a {@link org.jnosql.diana.api.document.DocumentQuery}
@@ -46,26 +49,29 @@ class DocumentQueryParser {
     DocumentQuery parse(String query, Object[] args, ClassRepresentation classRepresentation) {
         DocumentQuery documentQuery = DocumentQuery.of(classRepresentation.getName());
         String[] tokens = query.replace(PREFIX, EMPTY).split("(?=AND|OR|OrderBy)");
-        int index = 0;
+        Integer index = 0;
         for (String token : tokens) {
             if (token.startsWith(AND)) {
-                and(args, documentQuery, index, token);
+                index = and(args, documentQuery, index, token);
             } else if (token.startsWith(OR)) {
-                or(args, documentQuery, index, token);
+                index = or(args, documentQuery, index, token);
             } else if (token.startsWith(ORDER_BY)) {
                 sort(documentQuery, token);
             } else {
                 DocumentCondition condition = toCondition(token, index, args);
                 documentQuery.and(condition);
+                index++;
             }
-            index++;
+
         }
         return documentQuery;
     }
 
-    private DocumentCondition toCondition(String token, int index, Object[] args) {
+    private DocumentCondition toCondition(String token, Integer index, Object[] args) {
 
         if (token.contains(BETWEEN)) {
+            String name = getName(token).replace(BETWEEN, EMPTY);
+            return DocumentCondition.between(Document.of(name, Arrays.asList(args[index], args[++index])));
 
         } else if (token.contains(LESS_THAN)) {
             String name = getName(token).replace(LESS_THAN, EMPTY);
@@ -88,16 +94,27 @@ class DocumentQueryParser {
 
     }
 
-    private void or(Object[] args, DocumentQuery documentQuery, int index, String token) {
+    private int or(Object[] args, DocumentQuery documentQuery, Integer index, String token) {
         String field = token.replace(OR, EMPTY);
         DocumentCondition condition = toCondition(field, index, args);
         documentQuery.or(condition);
+        if (Condition.BETWEEN.equals(condition.getCondition())) {
+            return index + 2;
+        } else {
+            return index++;
+        }
     }
 
-    private void and(Object[] args, DocumentQuery documentQuery, int index, String token) {
+    private int and(Object[] args, DocumentQuery documentQuery, Integer index, String token) {
         String field = token.replace(AND, EMPTY);
         DocumentCondition condition = toCondition(field, index, args);
         documentQuery.and(condition);
+        if (Condition.BETWEEN.equals(condition.getCondition())) {
+            return index + 2;
+        } else {
+            return index++;
+        }
+
     }
 
     private void sort(DocumentQuery documentQuery, String token) {

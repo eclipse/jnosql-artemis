@@ -35,6 +35,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -165,6 +166,27 @@ public class DocumentQueryParserTest {
         assertEquals(Condition.LIKE, query.getCondition().get().getCondition());
         assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
         assertEquals(Sort.of("name", Sort.SortType.DESC), query.getSorts().get(0));
+    }
+
+    @Test
+    public void shouldFindByNameANDAAgeBetween() {
+        DocumentQuery query = parser.parse("findByNameANDAgeBetween", new Object[]{"name", 10, 11},
+                classRepresentation);
+        assertEquals("Person", query.getCollection());
+        DocumentCondition condition = query.getCondition().get();
+        assertEquals(Condition.AND, condition.getCondition());
+        List<DocumentCondition> conditions = condition.getDocument().get(new TypeReference<List<DocumentCondition>>() {
+        });
+
+        DocumentCondition condition1 = conditions.get(0);
+        assertEquals(Condition.EQUALS, condition1.getCondition());
+        assertEquals(Document.of("name", "name"), condition1.getDocument());
+
+        DocumentCondition condition2 = conditions.get(1);
+        assertEquals(Condition.BETWEEN, condition2.getCondition());
+        assertEquals(Document.of("age", Arrays.asList(10, 11)), condition2.getDocument());
+
+
     }
 
 
