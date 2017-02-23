@@ -63,6 +63,7 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
             case "save":
             case "update":
                 return method.invoke(crudRepository, args);
+            default:
 
         }
         if (methodName.startsWith("findBy")) {

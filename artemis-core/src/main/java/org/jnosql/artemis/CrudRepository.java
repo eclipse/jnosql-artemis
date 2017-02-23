@@ -20,14 +20,28 @@
 package org.jnosql.artemis;
 
 
-import org.jnosql.artemis.document.DocumentRepository;
-
 import java.time.Duration;
 
 /**
  * Interface for generic CRUD operations on a repository for a specific type.
+ * The query builder mechanism built into Artemis repository infrastructure is useful for building constraining queries
+ * over entities of the repository. The mechanism strips the prefixes is defined by:
+ * <p>findBy: to find any information T</p>
+ * <p>deleteBy: To delete any information T</p>
+ * Artemis has some keywords on method:
+ * <p><b>AND</b></p>
+ * <p><b>OR</b></p>
+ * <p><b>Between</b></p>
+ * <p><b>LessThan</b></p>
+ * <p><b>GreaterThan</b></p>
+ * <p><b>LessThanEqual</b></p>
+ * <p><b>GreaterThanEqual</b></p>
+ * <p><b>Like</b></p>
+ * <p><b>OrderBy</b></p>
+ * <p><b>OrderBy____Desc</b></p>
+ * <p><b>OrderBy_____ASC</b></p>
  *
- * @param <T> the bean
+ * @param <T> the bean type
  */
 public interface CrudRepository<T> {
 
@@ -79,8 +93,7 @@ public interface CrudRepository<T> {
     T update(T entity);
 
     /**
-     * Updates entity, by default it's just run for each saving using
-     * {@link DocumentRepository#update(Object)},
+     * Updates entities,
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved

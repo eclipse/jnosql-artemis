@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2017 Otavio Santana and others
  * Licensed to the Apache Software Foundation (ASF) under one
