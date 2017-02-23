@@ -133,6 +133,15 @@ public class DocumentQueryParserTest {
         assertEquals(Document.of("age", 10), query.getCondition().get().getDocument());
     }
 
+    @Test
+    public void shouldFindByNameLike() {
+        DocumentQuery query = parser.parse("findByNameLike", new Object[]{"name"}, classRepresentation);
+        assertEquals("Person", query.getCollection());
+        assertEquals(Condition.LIKE, query.getCondition().get().getCondition());
+        assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
+    }
+
+
     //AND
     //OR
     //Between
