@@ -23,8 +23,6 @@ package org.jnosql.artemis.document;
 import org.jnosql.artemis.CrudRepository;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.diana.api.document.Document;
-import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentQuery;
 
 import java.lang.reflect.InvocationHandler;
@@ -44,6 +42,8 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
 
     private final ClassRepresentation classRepresentation;
 
+    private final FindQueryTranslator findQueryTranslator;
+
 
     DocumentCrudRepositoryProxy(DocumentRepository repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
         this.repository = repository;
@@ -51,6 +51,7 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
+        this.findQueryTranslator = new FindQueryTranslator();
     }
 
 
@@ -65,10 +66,7 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
 
         }
         if (methodName.startsWith("findBy")) {
-            DocumentQuery query = DocumentQuery.of(classRepresentation.getName());
-            String findBy = methodName.replace("findBy", "");
-            String name = String.valueOf(Character.toLowerCase(findBy.charAt(0))).concat(findBy.substring(1));
-            query.and(DocumentCondition.eq(Document.of(name, args[0])));
+            DocumentQuery query = findQueryTranslator.parse(methodName, args, classRepresentation);
             if (typeClass.equals(method.getReturnType())) {
                 Optional<Object> optional = repository.singleResult(query);
                 if (optional.isPresent()) {
