@@ -169,6 +169,16 @@ public class DocumentQueryParserTest {
     }
 
     @Test
+    public void shouldFindByNameLikeOrderByNameDescOrderByAgeAsc() {
+        DocumentQuery query = parser.parse("findByNameLikeOrderByNameDescOrderByAgeAsc", new Object[]{"name"}, classRepresentation);
+        assertEquals("Person", query.getCollection());
+        assertEquals(Condition.LIKE, query.getCondition().get().getCondition());
+        assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
+        assertEquals(Sort.of("name", Sort.SortType.DESC), query.getSorts().get(0));
+        assertEquals(Sort.of("age", Sort.SortType.ASC), query.getSorts().get(1));
+    }
+
+    @Test
     public void shouldFindByNameANDAAgeBetween() {
         DocumentQuery query = parser.parse("findByNameANDAgeBetween", new Object[]{"name", 10, 11},
                 classRepresentation);
