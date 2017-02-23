@@ -42,7 +42,7 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
 
     private final ClassRepresentation classRepresentation;
 
-    private final FindQueryTranslator findQueryTranslator;
+    private final DocumentQueryParser documentQueryParser;
 
 
     DocumentCrudRepositoryProxy(DocumentRepository repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
@@ -51,7 +51,7 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
-        this.findQueryTranslator = new FindQueryTranslator();
+        this.documentQueryParser = new DocumentQueryParser();
     }
 
 
@@ -66,7 +66,7 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
 
         }
         if (methodName.startsWith("findBy")) {
-            DocumentQuery query = findQueryTranslator.parse(methodName, args, classRepresentation);
+            DocumentQuery query = documentQueryParser.parse(methodName, args, classRepresentation);
             if (typeClass.equals(method.getReturnType())) {
                 Optional<Object> optional = repository.singleResult(query);
                 if (optional.isPresent()) {

@@ -29,14 +29,35 @@ import org.jnosql.diana.api.document.DocumentQuery;
  * Class the returns a {@link org.jnosql.diana.api.document.DocumentQuery}
  * on {@link DocumentCrudRepositoryProxy}
  */
-class FindQueryTranslator {
+class DocumentQueryParser {
 
+
+    private static final String PREFIX = "findBy";
 
     DocumentQuery parse(String query, Object[] args, ClassRepresentation classRepresentation) {
         DocumentQuery documentQuery = DocumentQuery.of(classRepresentation.getName());
-        String findBy = query.replace("findBy", "");
-        String name = String.valueOf(Character.toLowerCase(findBy.charAt(0))).concat(findBy.substring(1));
-        documentQuery.and(DocumentCondition.eq(Document.of(name, args[0])));
+        String[] tokens = query.replace(PREFIX, "").split("(?=AND|OR|OrderBy)");
+        int index = 0;
+        for (String token : tokens) {
+            if (token.startsWith("AND")) {
+                String field = token.replace("AND", "");
+                String name = String.valueOf(Character.toLowerCase(field.charAt(0)))
+                        .concat(field.substring(1));
+                documentQuery.and(DocumentCondition.eq(Document.of(name, args[index])));
+            } else if (token.startsWith("OR")) {
+                String field = token.replace("AND", "");
+                String name = String.valueOf(Character.toLowerCase(field.charAt(0)))
+                        .concat(field.substring(1));
+                documentQuery.or(DocumentCondition.eq(Document.of(name, args[index])));
+            } else if (token.startsWith("OrderBy")) {
+
+            } else {
+                String name = String.valueOf(Character.toLowerCase(token.charAt(0)))
+                        .concat(token.substring(1));
+                documentQuery.and(DocumentCondition.eq(Document.of(name, args[index])));
+            }
+            index++;
+        }
         return documentQuery;
     }
 }
