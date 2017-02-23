@@ -17,25 +17,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jnosql.artemis;
+package org.jnosql.artemis.document;
 
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.jnosql.artemis.CRUDRepositoryType;
+import org.jnosql.artemis.CrudRepository;
 
-/**
- * Defines which interpreter will be used on {@link CrudRepository}
- * with {@link CRUDRepositoryType}
- */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.METHOD})
-public @interface CRUDRepositoryType {
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Inject;
 
-    Type value();
+@ApplicationScoped
+class DocumentCrudRepositoryFactory {
 
-    enum Type {
-        DOCUMENT, COLUMN;
+    @Inject
+    private DocumentRepository repository;
+
+    @Produces
+    @CRUDRepositoryType(value = CRUDRepositoryType.Type.DOCUMENT)
+    <T> CrudRepository<T> getCRudRepository(InjectionPoint injectionPoint) {
+
+        return null;
     }
+
+
 }

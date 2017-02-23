@@ -20,10 +20,7 @@
 package org.jnosql.artemis;
 
 
-/**
- * Defines which interpreter will be used on {@link CrudRepository}
- * with {@link CRUDRepositoryType}
- */
-public @interface CRUDInterpreter {
-    CRUDRepositoryType value();
+import org.jnosql.artemis.model.Person;
+
+public interface PersonRepository extends CrudRepository<Person> {
 }

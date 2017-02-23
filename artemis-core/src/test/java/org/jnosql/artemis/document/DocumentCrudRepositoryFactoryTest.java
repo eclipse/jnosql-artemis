@@ -17,25 +17,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jnosql.artemis;
+package org.jnosql.artemis.document;
+
+import org.jnosql.artemis.CRUDRepositoryType;
+import org.jnosql.artemis.PersonRepository;
+import org.jnosql.artemis.WeldJUnit4Runner;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import javax.inject.Inject;
+
+import static org.junit.Assert.*;
 
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+@RunWith(WeldJUnit4Runner.class)
+public class DocumentCrudRepositoryFactoryTest {
 
-/**
- * Defines which interpreter will be used on {@link CrudRepository}
- * with {@link CRUDRepositoryType}
- */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.METHOD})
-public @interface CRUDRepositoryType {
 
-    Type value();
+    @Inject
+    @CRUDRepositoryType(CRUDRepositoryType.Type.DOCUMENT)
+    private PersonRepository repository;
 
-    enum Type {
-        DOCUMENT, COLUMN;
+
+    @Test
+    public void shouldIniciate() {
+        assertNotNull(repository);
     }
 }
