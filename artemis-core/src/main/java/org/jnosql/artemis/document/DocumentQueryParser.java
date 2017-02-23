@@ -33,28 +33,28 @@ class DocumentQueryParser {
 
 
     private static final String PREFIX = "findBy";
+    private static final String AND = "AND";
+    private static final String OR = "OR";
+    private static final String ORDER_BY = "OrderBy";
 
     DocumentQuery parse(String query, Object[] args, ClassRepresentation classRepresentation) {
         DocumentQuery documentQuery = DocumentQuery.of(classRepresentation.getName());
         String[] tokens = query.replace(PREFIX, "").split("(?=AND|OR|OrderBy)");
         int index = 0;
         for (String token : tokens) {
-            if (token.startsWith("AND")) {
-                String field = token.replace("AND", "");
-                String name = String.valueOf(Character.toLowerCase(field.charAt(0)))
-                        .concat(field.substring(1));
-                documentQuery.and(DocumentCondition.eq(Document.of(name, args[index])));
-            } else if (token.startsWith("OR")) {
-                String field = token.replace("AND", "");
-                String name = String.valueOf(Character.toLowerCase(field.charAt(0)))
-                        .concat(field.substring(1));
-                documentQuery.or(DocumentCondition.eq(Document.of(name, args[index])));
-            } else if (token.startsWith("OrderBy")) {
+            if (token.startsWith(AND)) {
+                String field = token.replace(AND, "");
+                DocumentCondition condition = toCondition(field, index, args);
+                documentQuery.and(condition);
+            } else if (token.startsWith(OR)) {
+                String field = token.replace(OR, "");
+                DocumentCondition condition = toCondition(field, index, args);
+                documentQuery.or(condition);
+            } else if (token.startsWith(ORDER_BY)) {
 
             } else {
-                String name = String.valueOf(Character.toLowerCase(token.charAt(0)))
-                        .concat(token.substring(1));
-                documentQuery.and(DocumentCondition.eq(Document.of(name, args[index])));
+                DocumentCondition condition = toCondition(token, index, args);
+                documentQuery.and(condition);
             }
             index++;
         }

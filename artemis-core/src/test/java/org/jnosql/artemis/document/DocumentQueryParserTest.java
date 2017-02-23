@@ -106,7 +106,7 @@ public class DocumentQueryParserTest {
         DocumentQuery query = parser.parse("findByAgeLessThan", new Object[]{10}, classRepresentation);
         assertEquals("Person", query.getCollection());
         assertEquals(Condition.LESSER_THAN, query.getCondition().get().getCondition());
-        assertEquals(Document.of("age", "name"), query.getCondition().get().getDocument());
+        assertEquals(Document.of("age", 10), query.getCondition().get().getDocument());
     }
 
     //AND
