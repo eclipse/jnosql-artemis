@@ -21,32 +21,64 @@ package org.jnosql.artemis.document;
 
 
 import org.jnosql.artemis.CrudRepository;
+import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.diana.api.document.Document;
+import org.jnosql.diana.api.document.DocumentCondition;
+import org.jnosql.diana.api.document.DocumentQuery;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.time.Duration;
+import java.util.Optional;
 
-class DocumentCrudRepositoryProxy implements InvocationHandler {
+class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
+
+    private final Class<T> typeClass;
 
     private final DocumentRepository repository;
 
 
     private final DocumentCrudRepository crudRepository;
 
+    private final ClassRepresentation classRepresentation;
 
-    DocumentCrudRepositoryProxy(DocumentRepository repository) {
+
+    DocumentCrudRepositoryProxy(DocumentRepository repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
         this.repository = repository;
         this.crudRepository = new DocumentCrudRepository(repository);
+        this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
+                .getActualTypeArguments()[0]);
+        this.classRepresentation = classRepresentations.get(typeClass);
     }
 
 
     @Override
     public Object invoke(Object o, Method method, Object[] args) throws Throwable {
 
-        switch (method.getName()) {
+        String methodName = method.getName();
+        switch (methodName) {
             case "save":
             case "update":
                 return method.invoke(crudRepository, args);
+
+        }
+        if (methodName.startsWith("findBy")) {
+            DocumentQuery query = DocumentQuery.of(classRepresentation.getName());
+            String findBy = methodName.replace("findBy", "");
+            String name = String.valueOf(Character.toLowerCase(findBy.charAt(0))).concat(findBy.substring(1));
+            query.and(DocumentCondition.eq(Document.of(name, args[0])));
+            if (typeClass.equals(method.getReturnType())) {
+                Optional<Object> optional = repository.singleResult(query);
+                if (optional.isPresent()) {
+                    return optional.get();
+                } else {
+                    return null;
+                }
+
+            }
+        } else if (methodName.startsWith("deleteBy")) {
 
         }
         return null;

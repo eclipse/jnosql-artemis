@@ -19,44 +19,55 @@
  */
 package org.jnosql.artemis.document;
 
-import org.hamcrest.Matchers;
 import org.jnosql.artemis.CrudRepository;
+import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Person;
+import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.diana.api.Condition;
+import org.jnosql.diana.api.document.Document;
+import org.jnosql.diana.api.document.DocumentCondition;
+import org.jnosql.diana.api.document.DocumentQuery;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
 
+import javax.inject.Inject;
 import java.lang.reflect.Proxy;
 import java.time.Duration;
 import java.util.Collections;
-import java.util.List;
+import java.util.Optional;
 
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(WeldJUnit4Runner.class)
 public class DocumentCrudRepositoryProxyTest {
 
-    @Mock
     private DocumentRepository repository;
+
+    @Inject
+    private ClassRepresentations classRepresentations;
 
     private PersonRepository personRepository;
 
 
     @Before
     public void setUp() {
-        DocumentCrudRepositoryProxy handler = new DocumentCrudRepositoryProxy(repository);
+        this.repository = Mockito.mock(DocumentRepository.class);
+
+        DocumentCrudRepositoryProxy handler = new DocumentCrudRepositoryProxy(repository,
+                classRepresentations, PersonRepository.class);
+
         when(repository.save(any(Person.class))).thenReturn(Person.builder().build());
         when(repository.save(any(Person.class), any(Duration.class))).thenReturn(Person.builder().build());
         when(repository.update(any(Person.class))).thenReturn(Person.builder().build());
@@ -135,8 +146,37 @@ public class DocumentCrudRepositoryProxyTest {
     }
 
 
+    @Test
+    public void shouldFindByNameInstance() {
+
+        when(repository.singleResult(Mockito.any(DocumentQuery.class))).thenReturn(Optional
+                .of(Person.builder().build()));
+
+        personRepository.findByName("name");
+
+        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
+        verify(repository).singleResult(captor.capture());
+        DocumentQuery query = captor.getValue();
+        DocumentCondition condition = query.getCondition().get();
+        assertEquals("Person", query.getCollection());
+        assertEquals(Condition.EQUALS, condition.getCondition());
+        assertEquals(Document.of("name", "name"), condition.getDocument());
+
+        assertNotNull(personRepository.findByName("name"));
+        when(repository.singleResult(Mockito.any(DocumentQuery.class))).thenReturn(Optional
+                .empty());
+
+        assertNull(personRepository.findByName("name"));
+
+
+    }
+
 
     interface PersonRepository extends CrudRepository<Person> {
+
+        Person findByName(String name);
+
+        Optional<Person> findByAge(Integer age);
 
     }
 }
