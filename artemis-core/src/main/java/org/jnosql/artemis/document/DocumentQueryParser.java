@@ -31,7 +31,6 @@ import org.jnosql.diana.api.document.DocumentQuery;
  */
 class DocumentQueryParser {
 
-
     private static final String PREFIX = "findBy";
     private static final String AND = "AND";
     private static final String OR = "OR";
@@ -39,8 +38,8 @@ class DocumentQueryParser {
     private static final String BETWEEN = "Between";
     private static final String LESS_THAN = "LessThan";
     private static final String GREATER_THAN = "GreaterThan";
-    private static final String LESS_THAN_EQUAL = "LessThanEqual";
-    private static final String GREATER_THAN_EQUAL = "GreaterThanEqual";
+    private static final String LESS_THAN_EQUAL = "LessEqualThan";
+    private static final String GREATER_THAN_EQUAL = "GreaterEqualThan";
     private static final String LIKE = "Like";
 
     DocumentQuery parse(String query, Object[] args, ClassRepresentation classRepresentation) {
@@ -49,13 +48,9 @@ class DocumentQueryParser {
         int index = 0;
         for (String token : tokens) {
             if (token.startsWith(AND)) {
-                String field = token.replace(AND, "");
-                DocumentCondition condition = toCondition(field, index, args);
-                documentQuery.and(condition);
+                and(args, documentQuery, index, token);
             } else if (token.startsWith(OR)) {
-                String field = token.replace(OR, "");
-                DocumentCondition condition = toCondition(field, index, args);
-                documentQuery.or(condition);
+                or(args, documentQuery, index, token);
             } else if (token.startsWith(ORDER_BY)) {
 
             } else {
@@ -66,43 +61,48 @@ class DocumentQueryParser {
         }
         return documentQuery;
     }
-    //AND
-    //OR
-    //Between
-    //LessThan
-    //GreaterThan
-    //LessThanEqual
-    //GreaterThanEqual
-    //Like
+
 
     private DocumentCondition toCondition(String token, int index, Object[] args) {
 
         if (token.contains(BETWEEN)) {
 
         } else if (token.contains(LESS_THAN)) {
-            String name = String.valueOf(Character.toLowerCase(token.charAt(0)))
-                    .concat(token.substring(1)).replace(LESS_THAN, "");
+            String name = getName(token).replace(LESS_THAN, "");
             return DocumentCondition.lt(Document.of(name, args[index]));
         } else if (token.contains(GREATER_THAN)) {
-            String name = String.valueOf(Character.toLowerCase(token.charAt(0)))
-                    .concat(token.substring(1)).replace(GREATER_THAN, "");
+            String name = getName(token).replace(GREATER_THAN, "");
             return DocumentCondition.gt(Document.of(name, args[index]));
         } else if (token.contains(LESS_THAN_EQUAL)) {
-            String name = String.valueOf(Character.toLowerCase(token.charAt(0)))
-                    .concat(token.substring(1)).replace(LESS_THAN_EQUAL, "");
+            String name = getName(token).replace(LESS_THAN_EQUAL, "");
             return DocumentCondition.lte(Document.of(name, args[index]));
         } else if (token.contains(GREATER_THAN_EQUAL)) {
-            String name = String.valueOf(Character.toLowerCase(token.charAt(0)))
-                    .concat(token.substring(1)).replace(GREATER_THAN_EQUAL, "");
+            String name = getName(token).replace(GREATER_THAN_EQUAL, "");
             return DocumentCondition.gte(Document.of(name, args[index]));
         } else if (token.contains(LIKE)) {
-            String name = String.valueOf(Character.toLowerCase(token.charAt(0)))
-                    .concat(token.substring(1)).replace(LIKE, "");
+            String name = getName(token).replace(LIKE, "");
             return DocumentCondition.like(Document.of(name, args[index]));
         }
-        String name = String.valueOf(Character.toLowerCase(token.charAt(0)))
-                .concat(token.substring(1));
+        String name = getName(token);
         return DocumentCondition.eq(Document.of(name, args[index]));
 
     }
+
+    private void or(Object[] args, DocumentQuery documentQuery, int index, String token) {
+        String field = token.replace(OR, "");
+        DocumentCondition condition = toCondition(field, index, args);
+        documentQuery.or(condition);
+    }
+
+    private void and(Object[] args, DocumentQuery documentQuery, int index, String token) {
+        String field = token.replace(AND, "");
+        DocumentCondition condition = toCondition(field, index, args);
+        documentQuery.and(condition);
+    }
+
+    private String getName(String token) {
+        return String.valueOf(Character.toLowerCase(token.charAt(0)))
+                .concat(token.substring(1));
+    }
+
 }

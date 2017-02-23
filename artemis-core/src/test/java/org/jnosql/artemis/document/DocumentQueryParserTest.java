@@ -109,6 +109,30 @@ public class DocumentQueryParserTest {
         assertEquals(Document.of("age", 10), query.getCondition().get().getDocument());
     }
 
+    @Test
+    public void shouldFindByAgeGreaterThan() {
+        DocumentQuery query = parser.parse("findByAgeGreaterThan", new Object[]{10}, classRepresentation);
+        assertEquals("Person", query.getCollection());
+        assertEquals(Condition.GREATER_THAN, query.getCondition().get().getCondition());
+        assertEquals(Document.of("age", 10), query.getCondition().get().getDocument());
+    }
+
+    @Test
+    public void shouldFindByAgeLessEqualThan() {
+        DocumentQuery query = parser.parse("findByAgeLessEqualThan", new Object[]{10}, classRepresentation);
+        assertEquals("Person", query.getCollection());
+        assertEquals(Condition.LESSER_EQUALS_THAN, query.getCondition().get().getCondition());
+        assertEquals(Document.of("age", 10), query.getCondition().get().getDocument());
+    }
+
+    @Test
+    public void shouldFindByAgeGreaterEqualThan() {
+        DocumentQuery query = parser.parse("findByAgeGreaterEqualThan", new Object[]{10}, classRepresentation);
+        assertEquals("Person", query.getCollection());
+        assertEquals(Condition.GREATER_EQUALS_THAN, query.getCondition().get().getCondition());
+        assertEquals(Document.of("age", 10), query.getCondition().get().getDocument());
+    }
+
     //AND
     //OR
     //Between
