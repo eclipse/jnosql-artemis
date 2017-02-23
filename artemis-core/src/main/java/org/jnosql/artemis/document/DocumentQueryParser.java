@@ -36,6 +36,12 @@ class DocumentQueryParser {
     private static final String AND = "AND";
     private static final String OR = "OR";
     private static final String ORDER_BY = "OrderBy";
+    private static final String BETWEEN = "Between";
+    private static final String LESS_THAN = "LessThan";
+    private static final String GREATER_THAN = "GreaterThan";
+    private static final String LESS_THAN_EQUAL = "LessThanEqual";
+    private static final String GREATER_THAN_EQUAL = "GreaterThanEqual";
+    private static final String LIKE = "Like";
 
     DocumentQuery parse(String query, Object[] args, ClassRepresentation classRepresentation) {
         DocumentQuery documentQuery = DocumentQuery.of(classRepresentation.getName());
@@ -71,27 +77,27 @@ class DocumentQueryParser {
 
     private DocumentCondition toCondition(String token, int index, Object[] args) {
 
-        if (token.contains("Between")) {
+        if (token.contains(BETWEEN)) {
 
-        } else if (token.contains("LessThan")) {
+        } else if (token.contains(LESS_THAN)) {
             String name = String.valueOf(Character.toLowerCase(token.charAt(0)))
-                    .concat(token.substring(1)).replace("LessThan", "");
+                    .concat(token.substring(1)).replace(LESS_THAN, "");
             return DocumentCondition.lt(Document.of(name, args[index]));
-        } else if (token.contains("GreaterThan")) {
+        } else if (token.contains(GREATER_THAN)) {
             String name = String.valueOf(Character.toLowerCase(token.charAt(0)))
-                    .concat(token.substring(1)).replace("GreaterThan", "");
+                    .concat(token.substring(1)).replace(GREATER_THAN, "");
             return DocumentCondition.gt(Document.of(name, args[index]));
-        } else if (token.contains("LessThanEqual")) {
+        } else if (token.contains(LESS_THAN_EQUAL)) {
             String name = String.valueOf(Character.toLowerCase(token.charAt(0)))
-                    .concat(token.substring(1)).replace("LessThanEqual", "");
+                    .concat(token.substring(1)).replace(LESS_THAN_EQUAL, "");
             return DocumentCondition.lte(Document.of(name, args[index]));
-        } else if (token.contains("GreaterThanEqual")) {
+        } else if (token.contains(GREATER_THAN_EQUAL)) {
             String name = String.valueOf(Character.toLowerCase(token.charAt(0)))
-                    .concat(token.substring(1)).replace("GreaterThanEqual", "");
+                    .concat(token.substring(1)).replace(GREATER_THAN_EQUAL, "");
             return DocumentCondition.gte(Document.of(name, args[index]));
-        } else if (token.contains("Like")) {
+        } else if (token.contains(LIKE)) {
             String name = String.valueOf(Character.toLowerCase(token.charAt(0)))
-                    .concat(token.substring(1)).replace("Like", "");
+                    .concat(token.substring(1)).replace(LIKE, "");
             return DocumentCondition.like(Document.of(name, args[index]));
         }
         String name = String.valueOf(Character.toLowerCase(token.charAt(0)))
