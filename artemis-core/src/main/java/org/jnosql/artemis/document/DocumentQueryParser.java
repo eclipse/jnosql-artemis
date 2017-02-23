@@ -60,4 +60,43 @@ class DocumentQueryParser {
         }
         return documentQuery;
     }
+    //AND
+    //OR
+    //Between
+    //LessThan
+    //GreaterThan
+    //LessThanEqual
+    //GreaterThanEqual
+    //Like
+
+    private DocumentCondition toCondition(String token, int index, Object[] args) {
+
+        if (token.contains("Between")) {
+
+        } else if (token.contains("LessThan")) {
+            String name = String.valueOf(Character.toLowerCase(token.charAt(0)))
+                    .concat(token.substring(1)).replace("LessThan", "");
+            return DocumentCondition.lt(Document.of(name, args[index]));
+        } else if (token.contains("GreaterThan")) {
+            String name = String.valueOf(Character.toLowerCase(token.charAt(0)))
+                    .concat(token.substring(1)).replace("GreaterThan", "");
+            return DocumentCondition.gt(Document.of(name, args[index]));
+        } else if (token.contains("LessThanEqual")) {
+            String name = String.valueOf(Character.toLowerCase(token.charAt(0)))
+                    .concat(token.substring(1)).replace("LessThanEqual", "");
+            return DocumentCondition.lte(Document.of(name, args[index]));
+        } else if (token.contains("GreaterThanEqual")) {
+            String name = String.valueOf(Character.toLowerCase(token.charAt(0)))
+                    .concat(token.substring(1)).replace("GreaterThanEqual", "");
+            return DocumentCondition.gte(Document.of(name, args[index]));
+        } else if (token.contains("Like")) {
+            String name = String.valueOf(Character.toLowerCase(token.charAt(0)))
+                    .concat(token.substring(1)).replace("Like", "");
+            return DocumentCondition.like(Document.of(name, args[index]));
+        }
+        String name = String.valueOf(Character.toLowerCase(token.charAt(0)))
+                .concat(token.substring(1));
+        return DocumentCondition.eq(Document.of(name, args[index]));
+
+    }
 }
