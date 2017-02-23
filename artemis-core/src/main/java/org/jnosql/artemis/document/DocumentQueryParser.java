@@ -19,6 +19,7 @@
  */
 package org.jnosql.artemis.document;
 
+import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.Condition;
 import org.jnosql.diana.api.Sort;
@@ -46,19 +47,21 @@ class DocumentQueryParser {
     private static final String LIKE = "Like";
     private static final String EMPTY = "";
 
-    DocumentQuery parse(String query, Object[] args, ClassRepresentation classRepresentation) {
+    DocumentQuery parse(String methodName, Object[] args, ClassRepresentation classRepresentation) {
         DocumentQuery documentQuery = DocumentQuery.of(classRepresentation.getName());
-        String[] tokens = query.replace(PREFIX, EMPTY).split("(?=AND|OR|OrderBy)");
-        Integer index = 0;
+        String[] tokens = methodName.replace(PREFIX, EMPTY).split("(?=AND|OR|OrderBy)");
+        String className = classRepresentation.getClassInstance().getName();
+
+        int index = 0;
         for (String token : tokens) {
             if (token.startsWith(AND)) {
-                index = and(args, documentQuery, index, token);
+                index = and(args, documentQuery, index, token, methodName);
             } else if (token.startsWith(OR)) {
-                index = or(args, documentQuery, index, token);
+                index = or(args, documentQuery, index, token, methodName);
             } else if (token.startsWith(ORDER_BY)) {
                 sort(documentQuery, token);
             } else {
-                DocumentCondition condition = toCondition(token, index, args);
+                DocumentCondition condition = toCondition(token, index, args, methodName);
                 documentQuery.and(condition);
                 index++;
             }
@@ -67,9 +70,18 @@ class DocumentQueryParser {
         return documentQuery;
     }
 
-    private DocumentCondition toCondition(String token, Integer index, Object[] args) {
+    private DocumentCondition toCondition(String token, int index, Object[] args, String methodName) {
 
-        if (token.contains(BETWEEN)) {
+        boolean containsBetween = token.contains(BETWEEN);
+
+        if (containsBetween) {
+            checkContents(index, args.length, 2, methodName);
+        } else {
+            checkContents(index, args.length, 1, methodName);
+        }
+
+        if (containsBetween) {
+
             String name = getName(token).replace(BETWEEN, EMPTY);
             return DocumentCondition.between(Document.of(name, Arrays.asList(args[index], args[++index])));
 
@@ -94,9 +106,17 @@ class DocumentQueryParser {
 
     }
 
-    private int or(Object[] args, DocumentQuery documentQuery, Integer index, String token) {
+    private void checkContents(int index, int argSize, int required, String method) {
+        if ((index + required) <= argSize) {
+            return;
+        }
+        throw new DynamicQueryException(String.format("There is a missed argument in the method %s",
+                method));
+    }
+
+    private int or(Object[] args, DocumentQuery documentQuery, int index, String token, String methodName) {
         String field = token.replace(OR, EMPTY);
-        DocumentCondition condition = toCondition(field, index, args);
+        DocumentCondition condition = toCondition(field, index, args, methodName);
         documentQuery.or(condition);
         if (Condition.BETWEEN.equals(condition.getCondition())) {
             return index + 2;
@@ -105,9 +125,10 @@ class DocumentQueryParser {
         }
     }
 
-    private int and(Object[] args, DocumentQuery documentQuery, Integer index, String token) {
+    private int and(Object[] args, DocumentQuery documentQuery, int index, String token,
+                    String methodName) {
         String field = token.replace(AND, EMPTY);
-        DocumentCondition condition = toCondition(field, index, args);
+        DocumentCondition condition = toCondition(field, index, args, methodName);
         documentQuery.and(condition);
         if (Condition.BETWEEN.equals(condition.getCondition())) {
             return index + 2;

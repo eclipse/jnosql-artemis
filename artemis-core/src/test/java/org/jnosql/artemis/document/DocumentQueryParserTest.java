@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2017 Otavio Santana and others
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -20,6 +19,7 @@
  */
 package org.jnosql.artemis.document;
 
+import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentation;
@@ -185,20 +185,18 @@ public class DocumentQueryParserTest {
         DocumentCondition condition2 = conditions.get(1);
         assertEquals(Condition.BETWEEN, condition2.getCondition());
         assertEquals(Document.of("age", Arrays.asList(10, 11)), condition2.getDocument());
-
-
     }
 
+    @Test(expected = DynamicQueryException.class)
+    public void shouldReturnErrorWhenIsMissedArgument() {
+        DocumentQuery query = parser.parse("findByNameANDAgeBetween", new Object[]{"name", 10},
+                classRepresentation);
+    }
 
-    //AND
-    //OR
-    //Between
-    //LessThan
-    //GreaterThan
-    //LessThanEqual
-    //GreaterThanEqual
-    //Like
-    //OrderBy____Desc
-    //OrderBy_____ASC
+    @Test(expected = DynamicQueryException.class)
+    public void shouldReturnErrorWhenIsMissedArgument2() {
+        DocumentQuery query = parser.parse("findByName", new Object[]{},
+                classRepresentation);
+    }
 
 }
