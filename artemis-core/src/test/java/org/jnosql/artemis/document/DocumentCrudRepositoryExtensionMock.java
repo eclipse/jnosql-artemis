@@ -19,7 +19,6 @@
  */
 package org.jnosql.artemis.document;
 
-
 import org.jnosql.artemis.CrudRepository;
 
 import javax.enterprise.event.Observes;
@@ -30,7 +29,8 @@ import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import java.util.Collection;
 import java.util.HashSet;
 
-class DocumentCrudRepositoryExtension implements Extension {
+
+public class DocumentCrudRepositoryExtensionMock implements Extension {
 
 
     private final Collection<Class<?>> types = new HashSet<>();
@@ -43,10 +43,8 @@ class DocumentCrudRepositoryExtension implements Extension {
 
     void onAfterBeanDiscovery(@Observes final AfterBeanDiscovery afterBeanDiscovery, final BeanManager beanManager) {
         types.forEach(t -> {
-            final ArtemisDocumentBean bean = new ArtemisDocumentBean(t, beanManager);
+            final ArtemisDocumentBean bean = new ArtemisDocumentBean(t, beanManager, "documentRepositoryMock");
             afterBeanDiscovery.addBean(bean);
         });
     }
-
-
 }

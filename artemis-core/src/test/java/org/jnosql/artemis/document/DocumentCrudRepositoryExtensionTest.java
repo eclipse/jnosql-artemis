@@ -30,6 +30,7 @@ import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 
@@ -41,11 +42,22 @@ public class DocumentCrudRepositoryExtensionTest {
     @CRUDRepositoryType(value = DatabaseType.DOCUMENT)
     private PersonRepository repository;
 
+    @Inject
+    @CRUDRepositoryType(value = DatabaseType.DOCUMENT, provider = "documentRepositoryMock")
+    private PersonRepository repositoryMock;
+
 
     @Test
     public void shouldIniciate() {
         assertNotNull(repository);
         Person person = repository.save(Person.builder().build());
-        Assert.assertEquals("Default", person.getName());
+        assertEquals("Default", person.getName());
+    }
+
+    @Test
+    public void shouldUseInstantion(){
+        assertNotNull(repositoryMock);
+        Person person = repositoryMock.save(Person.builder().build());
+        assertEquals("documentRepositoryMock", person.getName());
     }
 }

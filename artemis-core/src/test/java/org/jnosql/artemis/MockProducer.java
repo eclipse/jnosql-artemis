@@ -20,12 +20,17 @@
 package org.jnosql.artemis;
 
 
+import org.jnosql.artemis.document.DocumentRepository;
+import org.jnosql.artemis.model.Person;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
 import org.jnosql.diana.api.document.DocumentEntity;
 import org.mockito.Mockito;
 
 import javax.enterprise.inject.Produces;
+import javax.inject.Named;
+
+import static org.mockito.Mockito.mock;
 
 public class MockProducer {
 
@@ -34,9 +39,18 @@ public class MockProducer {
         DocumentEntity entity = DocumentEntity.of("Person");
         entity.add(Document.of("name", "Default"));
         entity.add(Document.of("age", 10));
-        DocumentCollectionManager manager = Mockito.mock(DocumentCollectionManager.class);
+        DocumentCollectionManager manager = mock(DocumentCollectionManager.class);
         Mockito.when(manager.save(Mockito.any(DocumentEntity.class))).thenReturn(entity);
         return manager;
 
+    }
+
+    @Produces
+    @Named("documentRepositoryMock")
+    public DocumentRepository getDocumentRepository() {
+        DocumentRepository documentRepository = mock(DocumentRepository.class);
+        Mockito.when(documentRepository.save(Mockito.any(Person.class))).thenReturn(Person.builder()
+                .withName("documentRepositoryMock").build());
+        return documentRepository;
     }
 }
