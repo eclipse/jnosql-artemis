@@ -23,6 +23,7 @@ package org.jnosql.artemis.document;
 import org.jnosql.artemis.CrudRepository;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentQuery;
 
 import java.lang.reflect.InvocationHandler;
@@ -69,7 +70,8 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
             DocumentQuery query = documentQueryParser.parse(methodName, args, classRepresentation);
             return ReturnTypeConverterUtil.returnObject(query, repository, typeClass, method);
         } else if (methodName.startsWith("deleteBy")) {
-
+            DocumentDeleteQuery query = null;
+            repository.delete(query);
         }
         return null;
     }
