@@ -65,7 +65,6 @@ class DocumentCrudRepositoryExtension implements Extension {
     }
 
 
-
     private static class ArtemisDocumentBean implements Bean<CrudRepository>, PassivationCapable {
 
         private final Class type;

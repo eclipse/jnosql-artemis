@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
  * with {@link CRUDRepositoryType}
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD})
+@Target({ElementType.FIELD, ElementType.METHOD})
 @Qualifier
 public @interface CRUDRepositoryType {
 
