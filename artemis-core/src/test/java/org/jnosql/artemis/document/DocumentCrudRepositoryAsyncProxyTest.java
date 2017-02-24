@@ -20,9 +20,15 @@
 package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.CrudRepositoryAsync;
+import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.diana.api.Condition;
+import org.jnosql.diana.api.document.Document;
+import org.jnosql.diana.api.document.DocumentCondition;
+import org.jnosql.diana.api.document.DocumentDeleteQuery;
+import org.jnosql.diana.api.document.DocumentQuery;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +38,8 @@ import org.mockito.Mockito;
 import javax.inject.Inject;
 import java.lang.reflect.Proxy;
 import java.time.Duration;
+import java.util.List;
+import java.util.function.Consumer;
 
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -133,10 +141,67 @@ public class DocumentCrudRepositoryAsyncProxyTest {
         assertThat(persons, containsInAnyOrder(person));
     }
 
+    @Test
+    public void shouldDeleteByName() {
+        ArgumentCaptor<DocumentDeleteQuery> captor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
+        personRepository.deleteByName("name");
+        verify(repository).delete(captor.capture());
+        DocumentDeleteQuery query = captor.getValue();
+        DocumentCondition condition = query.getCondition().get();
+        assertEquals("Person", query.getCollection());
+        assertEquals(Condition.EQUALS, condition.getCondition());
+        assertEquals(Document.of("name", "name"), condition.getDocument());
 
+    }
+
+    @Test
+    public void shouldDeleteByNameCallBack() {
+        ArgumentCaptor<DocumentDeleteQuery> captor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
+        ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
+
+        Consumer<Void> voidConsumer = v -> {
+        };
+        personRepository.deleteByName("name", voidConsumer);
+        verify(repository).delete(captor.capture(), consumerCaptor.capture());
+        DocumentDeleteQuery query = captor.getValue();
+        DocumentCondition condition = query.getCondition().get();
+        assertEquals("Person", query.getCollection());
+        assertEquals(Condition.EQUALS, condition.getCondition());
+        assertEquals(Document.of("name", "name"), condition.getDocument());
+        assertEquals(voidConsumer, consumerCaptor.getValue());
+    }
+
+
+    @Test(expected = DynamicQueryException.class)
+    public void shoudReturnErrorOnFindByName() {
+        personRepository.findByName("name");
+    }
+    @Test
+    public void shoudFindByName() {
+        Consumer<List<Person>> callback = v -> {};
+
+        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
+        ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
+
+        personRepository.findByName("name", callback);
+        verify(repository).find(captor.capture(), consumerCaptor.capture());
+        DocumentQuery query = captor.getValue();
+        DocumentCondition condition = query.getCondition().get();
+        assertEquals("Person", query.getCollection());
+        assertEquals(Condition.EQUALS, condition.getCondition());
+        assertEquals(Document.of("name", "name"), condition.getDocument());
+        assertEquals(callback, consumerCaptor.getValue());
+    }
 
     interface PersonAsyncRepository extends CrudRepositoryAsync<Person> {
 
+        void deleteByName(String name);
+
+        void deleteByName(String name, Consumer<Void> callback);
+
+        void findByName(String name);
+
+        void findByName(String name, Consumer<List<Person>> callBack);
 
     }
 
