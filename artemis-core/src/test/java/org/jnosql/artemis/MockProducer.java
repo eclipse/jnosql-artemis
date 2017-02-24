@@ -17,32 +17,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jnosql.artemis.document;
-
-import org.jnosql.artemis.PersonRepository;
-import org.jnosql.artemis.WeldJUnit4Runner;
-import org.jnosql.artemis.model.Person;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import javax.inject.Inject;
-
-import static org.junit.Assert.assertNotNull;
+package org.jnosql.artemis;
 
 
-@RunWith(WeldJUnit4Runner.class)
-public class DocumentCrudRepositoryExtensionTest {
+import org.jnosql.diana.api.document.Document;
+import org.jnosql.diana.api.document.DocumentCollectionManager;
+import org.jnosql.diana.api.document.DocumentEntity;
+import org.mockito.Mockito;
 
+import javax.enterprise.inject.Produces;
 
-    @Inject
-    private PersonRepository repository;
+public class MockProducer {
 
+    @Produces
+    public DocumentCollectionManager get() {
+        DocumentEntity entity = DocumentEntity.of("Person");
+        entity.add(Document.of("name", "Default"));
+        entity.add(Document.of("age", 10));
+        DocumentCollectionManager manager = Mockito.mock(DocumentCollectionManager.class);
+        Mockito.when(manager.save(Mockito.any(DocumentEntity.class))).thenReturn(entity);
+        return manager;
 
-    @Test
-    public void shouldIniciate() {
-        assertNotNull(repository);
-        Person person = repository.save(Person.builder().build());
-        Assert.assertEquals("Default", person.getName());
     }
 }
