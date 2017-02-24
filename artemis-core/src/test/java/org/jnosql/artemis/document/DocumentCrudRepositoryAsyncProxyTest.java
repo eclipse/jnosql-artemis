@@ -275,8 +275,6 @@ public class DocumentCrudRepositoryAsyncProxyTest {
 
         void findByName(String name, Sort sort, Consumer<List<Person>> callBack);
 
-        void findByName(String name, Pagination pagination, Consumer<List<Person>> callBack);
-
         void findByName(String name, Sort sort, Pagination pagination, Consumer<List<Person>> callBack);
     }
 
