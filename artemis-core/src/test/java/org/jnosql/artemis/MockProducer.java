@@ -24,6 +24,7 @@ import org.jnosql.artemis.document.DocumentRepository;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
+import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
 import org.jnosql.diana.api.document.DocumentEntity;
 import org.mockito.Mockito;
 
@@ -51,5 +52,10 @@ public class MockProducer {
         Mockito.when(documentRepository.save(Mockito.any(Person.class))).thenReturn(Person.builder()
                 .withName("documentRepositoryMock").build());
         return documentRepository;
+    }
+
+    @Produces
+    public DocumentCollectionManagerAsync getDocumentCollectionManagerAsync() {
+        return Mockito.mock(DocumentCollectionManagerAsync.class);
     }
 }
