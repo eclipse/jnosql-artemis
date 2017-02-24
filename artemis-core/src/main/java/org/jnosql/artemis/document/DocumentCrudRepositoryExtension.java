@@ -22,7 +22,7 @@ package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.CRUDRepositoryType;
 import org.jnosql.artemis.CrudRepository;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -57,7 +57,7 @@ class DocumentCrudRepositoryExtension implements Extension {
 
         Class<T> javaClass = repo.getAnnotatedType().getJavaClass();
         CRUDRepositoryType annotation = javaClass.getAnnotation(CRUDRepositoryType.class);
-        if (annotation != null && CRUDRepositoryType.Type.DOCUMENT.equals(annotation.value())) {
+        if (annotation != null && DatabaseType.DOCUMENT.equals(annotation.value())) {
             types.add(javaClass);
         }
     }

@@ -20,19 +20,9 @@
 package org.jnosql.artemis;
 
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 /**
- * Defines which interpreter will be used on {@link CrudRepository}
- * with {@link CRUDRepositoryType}
+ * Defines the database type supported on Artemis.
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface CRUDRepositoryType {
-
-    DatabaseType value();
-
+public enum DatabaseType {
+    DOCUMENT, COLUMN, KEY_VALUE, GRAPH;
 }
