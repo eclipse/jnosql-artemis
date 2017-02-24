@@ -21,6 +21,7 @@ package org.jnosql.artemis;
 
 
 import org.jnosql.artemis.document.DocumentRepository;
+import org.jnosql.artemis.document.DocumentRepositoryAsync;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
@@ -58,4 +59,11 @@ public class MockProducer {
     public DocumentCollectionManagerAsync getDocumentCollectionManagerAsync() {
         return Mockito.mock(DocumentCollectionManagerAsync.class);
     }
+
+    @Produces
+    @ArtemisDatabase(value = DatabaseType.DOCUMENT, provider = "documentRepositoryMock")
+    public DocumentRepositoryAsync getDocumentRepositoryAsync() {
+        return mock(DocumentRepositoryAsync.class);
+    }
+
 }
