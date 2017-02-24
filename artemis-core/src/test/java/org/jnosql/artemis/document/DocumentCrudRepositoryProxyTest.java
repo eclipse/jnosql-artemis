@@ -27,6 +27,7 @@ import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.Condition;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCondition;
+import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentQuery;
 import org.junit.Assert;
 import org.junit.Before;
@@ -237,9 +238,24 @@ public class DocumentCrudRepositoryProxyTest {
 
     }
 
+    @Test
+    public void shouldDeleteByName() {
+        ArgumentCaptor<DocumentDeleteQuery> captor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
+        personRepository.deleteByName("Ada");
+        verify(repository).delete(captor.capture());
+        DocumentDeleteQuery deleteQuery = captor.getValue();
+        DocumentCondition condition = deleteQuery.getCondition().get();
+        assertEquals("Person", deleteQuery.getCollection());
+        assertEquals(Condition.EQUALS, condition.getCondition());
+        assertEquals(Document.of("name", "Ada"), condition.getDocument());
+
+    }
+
     interface PersonRepository extends CrudRepository<Person> {
 
         Person findByName(String name);
+
+        void deleteByName(String name);
 
         Optional<Person> findByAge(Integer age);
 

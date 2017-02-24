@@ -75,6 +75,7 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
         } else if (methodName.startsWith("deleteBy")) {
             DocumentDeleteQuery query = documentQueryDeleteParser.parse(methodName, args, classRepresentation);
             repository.delete(query);
+            return null;
         }
         return null;
     }
