@@ -28,7 +28,6 @@ import org.jnosql.diana.api.document.DocumentEntity;
 import org.mockito.Mockito;
 
 import javax.enterprise.inject.Produces;
-import javax.inject.Named;
 
 import static org.mockito.Mockito.mock;
 
@@ -46,7 +45,7 @@ public class MockProducer {
     }
 
     @Produces
-    @CRUDRepositoryType(value = DatabaseType.DOCUMENT, provider = "documentRepositoryMock")
+    @ArtemisDatabase(value = DatabaseType.DOCUMENT, provider = "documentRepositoryMock")
     public DocumentRepository getDocumentRepository() {
         DocumentRepository documentRepository = mock(DocumentRepository.class);
         Mockito.when(documentRepository.save(Mockito.any(Person.class))).thenReturn(Person.builder()

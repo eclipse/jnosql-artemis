@@ -19,7 +19,7 @@
  */
 package org.jnosql.artemis.document;
 
-import org.jnosql.artemis.CRUDRepositoryType;
+import org.jnosql.artemis.ArtemisDatabase;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.PersonRepository;
 import org.jnosql.artemis.WeldJUnit4Runner;
@@ -38,11 +38,11 @@ public class DocumentCrudRepositoryExtensionTest {
 
 
     @Inject
-    @CRUDRepositoryType(value = DatabaseType.DOCUMENT)
+    @ArtemisDatabase(value = DatabaseType.DOCUMENT)
     private PersonRepository repository;
 
     @Inject
-    @CRUDRepositoryType(value = DatabaseType.DOCUMENT, provider = "documentRepositoryMock")
+    @ArtemisDatabase(value = DatabaseType.DOCUMENT, provider = "documentRepositoryMock")
     private PersonRepository repositoryMock;
 
 
