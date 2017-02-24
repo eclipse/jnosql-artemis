@@ -41,7 +41,7 @@ import java.util.Set;
 import static java.util.Arrays.asList;
 
 /**
- * Artemis discoveryBean to CDI extension
+ * Artemis discoveryBean to CDI extension to register {@link CrudRepository}
  */
 public class CrudRepositoryDocumentBean implements Bean<CrudRepository>, PassivationCapable {
 
