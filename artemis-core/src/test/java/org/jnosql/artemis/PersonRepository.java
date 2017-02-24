@@ -22,6 +22,5 @@ package org.jnosql.artemis;
 
 import org.jnosql.artemis.model.Person;
 
-@CRUDRepositoryType(DatabaseType.DOCUMENT)
 public interface PersonRepository extends CrudRepository<Person> {
 }

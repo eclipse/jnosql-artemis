@@ -37,6 +37,7 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.PassivationCapable;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import javax.enterprise.inject.spi.ProcessInjectionTarget;
 import javax.enterprise.util.AnnotationLiteral;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Proxy;
@@ -56,10 +57,7 @@ class DocumentCrudRepositoryExtension implements Extension {
     <T extends CrudRepository> void onProcessAnnotatedType(@Observes final ProcessAnnotatedType<T> repo) {
 
         Class<T> javaClass = repo.getAnnotatedType().getJavaClass();
-        CRUDRepositoryType annotation = javaClass.getAnnotation(CRUDRepositoryType.class);
-        if (annotation != null && DatabaseType.DOCUMENT.equals(annotation.value())) {
-            types.add(javaClass);
-        }
+        types.add(javaClass);
     }
 
     void onAfterBeanDiscovery(@Observes final AfterBeanDiscovery afterBeanDiscovery, final BeanManager beanManager) {
@@ -68,6 +66,7 @@ class DocumentCrudRepositoryExtension implements Extension {
             afterBeanDiscovery.addBean(bean);
         });
     }
+
 
 
     private static class ArtemisDocumentBean implements Bean<CrudRepository>, PassivationCapable {
@@ -131,11 +130,7 @@ class DocumentCrudRepositoryExtension implements Extension {
         @Override
         public Set<Annotation> getQualifiers() {
             Set<Annotation> qualifiers = new HashSet<Annotation>();
-            qualifiers.add(new AnnotationLiteral<Default>() {
-            });
-            qualifiers.add(new AnnotationLiteral<Any>() {
-            });
-
+            qualifiers.add(new CRUDRepositoryTypeQualifier());
             return qualifiers;
         }
 
@@ -165,4 +160,16 @@ class DocumentCrudRepositoryExtension implements Extension {
         }
     }
 
+    static class CRUDRepositoryTypeQualifier extends AnnotationLiteral<CRUDRepositoryType> implements CRUDRepositoryType {
+
+        @Override
+        public DatabaseType value() {
+            return DatabaseType.DOCUMENT;
+        }
+
+        @Override
+        public String provider() {
+            return "";
+        }
+    }
 }
