@@ -44,6 +44,8 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
 
     private final DocumentQueryParser documentQueryParser;
 
+    private final DocumentQueryDeleteParser documentQueryDeleteParser;
+
 
     DocumentCrudRepositoryProxy(DocumentRepository repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
         this.repository = repository;
@@ -52,6 +54,7 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
         this.documentQueryParser = new DocumentQueryParser();
+        this.documentQueryDeleteParser = new DocumentQueryDeleteParser();
     }
 
 
@@ -70,7 +73,7 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
             DocumentQuery query = documentQueryParser.parse(methodName, args, classRepresentation);
             return ReturnTypeConverterUtil.returnObject(query, repository, typeClass, method);
         } else if (methodName.startsWith("deleteBy")) {
-            DocumentDeleteQuery query = null;
+            DocumentDeleteQuery query = documentQueryDeleteParser.parse(methodName, args, classRepresentation);
             repository.delete(query);
         }
         return null;
