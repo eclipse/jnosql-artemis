@@ -19,28 +19,28 @@
  */
 package org.jnosql.artemis.document;
 
-import org.jnosql.artemis.CRUDRepositoryType;
 import org.jnosql.artemis.PersonRepository;
 import org.jnosql.artemis.WeldJUnit4Runner;
+import org.jnosql.artemis.model.Person;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 
 @RunWith(WeldJUnit4Runner.class)
-public class DocumentCrudRepositoryFactoryTest {
+public class DocumentCrudRepositoryExtensionTest {
 
 
     @Inject
-    @CRUDRepositoryType(CRUDRepositoryType.Type.DOCUMENT)
     private PersonRepository repository;
 
 
     @Test
     public void shouldIniciate() {
         assertNotNull(repository);
+        repository.save(Person.builder().build());
     }
 }
