@@ -241,6 +241,26 @@ public class DocumentCrudRepositoryAsyncProxyTest {
         assertEquals(pagination.getLimit(), query.getLimit());
     }
 
+    @Test
+    public void shouldFindByNameOrderByAgeDesc() {
+        Consumer<List<Person>> callback = v -> {
+        };
+
+        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
+        ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
+
+        personRepository.findByNameOrderByAgeDesc("name", callback);
+        verify(repository).find(captor.capture(), consumerCaptor.capture());
+        DocumentQuery query = captor.getValue();
+        DocumentCondition condition = query.getCondition().get();
+        assertEquals("Person", query.getCollection());
+        assertEquals(Condition.EQUALS, condition.getCondition());
+        assertEquals(Document.of("name", "name"), condition.getDocument());
+        assertEquals(callback, consumerCaptor.getValue());
+        assertEquals(Sort.of("age", Sort.SortType.DESC), query.getSorts().get(0));
+
+    }
+
     interface PersonAsyncRepository extends CrudRepositoryAsync<Person> {
 
         void deleteByName(String name);
@@ -250,6 +270,8 @@ public class DocumentCrudRepositoryAsyncProxyTest {
         void findByName(String name);
 
         void findByName(String name, Consumer<List<Person>> callBack);
+
+        void findByNameOrderByAgeDesc(String name, Consumer<List<Person>> callBack);
 
         void findByName(String name, Sort sort, Consumer<List<Person>> callBack);
 
