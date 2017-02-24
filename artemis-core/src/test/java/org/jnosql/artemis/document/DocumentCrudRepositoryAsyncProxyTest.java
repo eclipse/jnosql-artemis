@@ -21,10 +21,12 @@ package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.CrudRepositoryAsync;
 import org.jnosql.artemis.DynamicQueryException;
+import org.jnosql.artemis.Pagination;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.Condition;
+import org.jnosql.diana.api.Sort;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
@@ -176,9 +178,11 @@ public class DocumentCrudRepositoryAsyncProxyTest {
     public void shoudReturnErrorOnFindByName() {
         personRepository.findByName("name");
     }
+
     @Test
     public void shoudFindByName() {
-        Consumer<List<Person>> callback = v -> {};
+        Consumer<List<Person>> callback = v -> {
+        };
 
         ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
         ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
@@ -193,6 +197,50 @@ public class DocumentCrudRepositoryAsyncProxyTest {
         assertEquals(callback, consumerCaptor.getValue());
     }
 
+    @Test
+    public void shoudFindByNameSort() {
+        Consumer<List<Person>> callback = v -> {
+        };
+
+        Sort sort = Sort.of("age", Sort.SortType.ASC);
+
+        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
+        ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
+
+        personRepository.findByName("name", sort, callback);
+        verify(repository).find(captor.capture(), consumerCaptor.capture());
+        DocumentQuery query = captor.getValue();
+        DocumentCondition condition = query.getCondition().get();
+        assertEquals("Person", query.getCollection());
+        assertEquals(Condition.EQUALS, condition.getCondition());
+        assertEquals(Document.of("name", "name"), condition.getDocument());
+        assertEquals(callback, consumerCaptor.getValue());
+        assertEquals(sort, query.getSorts().get(0));
+    }
+
+    @Test
+    public void shoudFindByNameSortPagination() {
+        Consumer<List<Person>> callback = v -> {
+        };
+
+        Sort sort = Sort.of("age", Sort.SortType.ASC);
+        Pagination pagination = Pagination.of(10, 20);
+        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
+        ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
+
+        personRepository.findByName("name", sort, pagination, callback);
+        verify(repository).find(captor.capture(), consumerCaptor.capture());
+        DocumentQuery query = captor.getValue();
+        DocumentCondition condition = query.getCondition().get();
+        assertEquals("Person", query.getCollection());
+        assertEquals(Condition.EQUALS, condition.getCondition());
+        assertEquals(Document.of("name", "name"), condition.getDocument());
+        assertEquals(callback, consumerCaptor.getValue());
+        assertEquals(sort, query.getSorts().get(0));
+        assertEquals(pagination.getStart(), query.getStart());
+        assertEquals(pagination.getLimit(), query.getLimit());
+    }
+
     interface PersonAsyncRepository extends CrudRepositoryAsync<Person> {
 
         void deleteByName(String name);
@@ -203,6 +251,11 @@ public class DocumentCrudRepositoryAsyncProxyTest {
 
         void findByName(String name, Consumer<List<Person>> callBack);
 
+        void findByName(String name, Sort sort, Consumer<List<Person>> callBack);
+
+        void findByName(String name, Pagination pagination, Consumer<List<Person>> callBack);
+
+        void findByName(String name, Sort sort, Pagination pagination, Consumer<List<Person>> callBack);
     }
 
 }
