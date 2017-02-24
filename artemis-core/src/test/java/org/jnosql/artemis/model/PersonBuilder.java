@@ -43,6 +43,12 @@ public class PersonBuilder {
         return this;
     }
 
+    public PersonBuilder withAge(int age) {
+        this.age = age;
+        return this;
+    }
+
+
     public PersonBuilder withPhones(List<String> phones) {
         this.phones = phones;
         return this;

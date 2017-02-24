@@ -21,6 +21,7 @@ package org.jnosql.artemis.model;
 
 
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -85,8 +86,27 @@ public class Person {
                 .append("name", name)
                 .append("age", age)
                 .append("phones", phones)
-                .append("ignore", ignore)
                 .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Person person = (Person) o;
+        return id == person.id &&
+                age == person.age &&
+                Objects.equals(name, person.name) &&
+                Objects.equals(phones, person.phones);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, age, phones, ignore);
     }
 
     public static PersonBuilder builder() {
