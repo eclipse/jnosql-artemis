@@ -148,4 +148,16 @@ public interface CrudRepositoryAsync <T> {
      */
     <T> void update(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
 
+
+    /**
+     * Updates entities asynchronously
+     * each NoSQL vendor might replace to a more appropriate one.
+     *
+     * @param entities entities to be saved
+     * @throws ExecuteAsyncQueryException    when there is a async error
+     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
+     * @throws NullPointerException          when entities is null
+     */
+    void update(Iterable<T> entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
+
 }

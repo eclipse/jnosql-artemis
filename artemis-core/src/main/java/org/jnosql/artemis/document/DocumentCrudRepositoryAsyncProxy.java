@@ -124,6 +124,11 @@ class DocumentCrudRepositoryAsyncProxy<T> implements InvocationHandler {
         }
 
         @Override
+        public void update(Iterable entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+            repository.update(entities);
+        }
+
+        @Override
         public void update(Object entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
             repository.save(entity);
         }
