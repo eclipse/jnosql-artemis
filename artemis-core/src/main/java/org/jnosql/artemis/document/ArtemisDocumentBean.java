@@ -55,14 +55,15 @@ public class ArtemisDocumentBean implements Bean<CrudRepository>, PassivationCap
 
     /**
      * Constructor
-     * @param type the tye
+     *
+     * @param type        the tye
      * @param beanManager the beanManager
-     * @param provider the provider name, that must be a
+     * @param provider    the provider name, that must be a
      */
     public ArtemisDocumentBean(Class type, BeanManager beanManager, String provider) {
         this.type = type;
         this.beanManager = beanManager;
-        this.types.addAll(asList(Object.class, type));
+        this.types.add(type);
         this.provider = provider;
     }
 
@@ -91,7 +92,8 @@ public class ArtemisDocumentBean implements Bean<CrudRepository>, PassivationCap
     @Override
     public CrudRepository create(CreationalContext<CrudRepository> creationalContext) {
         ClassRepresentations classRepresentations = getInstance(ClassRepresentations.class);
-        DocumentRepository repository = provider.isEmpty() ? getInstance(DocumentRepository.class) : getInstance(provider);
+        DocumentRepository repository = provider.isEmpty() ? getInstance(DocumentRepository.class) :
+                getInstance(DocumentRepository.class, provider);
         DocumentCrudRepositoryProxy handler = new DocumentCrudRepositoryProxy(repository,
                 classRepresentations, type);
         return (CrudRepository) Proxy.newProxyInstance(type.getClassLoader(),
@@ -106,10 +108,10 @@ public class ArtemisDocumentBean implements Bean<CrudRepository>, PassivationCap
         return (T) beanManager.getReference(bean, clazz, ctx);
     }
 
-    private <T> T getInstance(String name) {
-        Bean bean = beanManager.getBeans(name).iterator().next();
+    private <T> T getInstance(Class<T> clazz, String name) {
+        Bean bean = beanManager.getBeans(clazz, new CRUDRepositoryTypeQualifier(name)).iterator().next();
         CreationalContext ctx = beanManager.createCreationalContext(bean);
-        return (T) beanManager.getReference(bean, bean.getBeanClass(), ctx);
+        return (T) beanManager.getReference(bean, clazz, ctx);
     }
 
 
@@ -152,14 +154,14 @@ public class ArtemisDocumentBean implements Bean<CrudRepository>, PassivationCap
 
     @Override
     public String getId() {
-        return type.getName();
+        return type.getName() + "---" + provider;
     }
 
     static class CRUDRepositoryTypeQualifier extends AnnotationLiteral<CRUDRepositoryType> implements CRUDRepositoryType {
 
         private final String provider;
 
-        public CRUDRepositoryTypeQualifier(String provider) {
+        CRUDRepositoryTypeQualifier(String provider) {
             this.provider = provider;
         }
 

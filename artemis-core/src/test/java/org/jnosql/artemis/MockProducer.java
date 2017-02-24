@@ -46,7 +46,7 @@ public class MockProducer {
     }
 
     @Produces
-    @Named("documentRepositoryMock")
+    @CRUDRepositoryType(value = DatabaseType.DOCUMENT, provider = "documentRepositoryMock")
     public DocumentRepository getDocumentRepository() {
         DocumentRepository documentRepository = mock(DocumentRepository.class);
         Mockito.when(documentRepository.save(Mockito.any(Person.class))).thenReturn(Person.builder()
