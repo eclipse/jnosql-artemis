@@ -43,7 +43,7 @@ import static java.util.Arrays.asList;
 /**
  * Artemis discoveryBean to CDI extension
  */
-public class ArtemisDocumentBean implements Bean<CrudRepository>, PassivationCapable {
+public class CrudRepositoryDocumentBean implements Bean<CrudRepository>, PassivationCapable {
 
     private final Class type;
 
@@ -60,14 +60,14 @@ public class ArtemisDocumentBean implements Bean<CrudRepository>, PassivationCap
      * @param beanManager the beanManager
      * @param provider    the provider name, that must be a
      */
-    public ArtemisDocumentBean(Class type, BeanManager beanManager, String provider) {
+    public CrudRepositoryDocumentBean(Class type, BeanManager beanManager, String provider) {
         this.type = type;
         this.beanManager = beanManager;
         this.types.add(type);
         this.provider = provider;
     }
 
-    ArtemisDocumentBean(Class type, BeanManager beanManager) {
+    CrudRepositoryDocumentBean(Class type, BeanManager beanManager) {
         this.type = type;
         this.beanManager = beanManager;
         this.types.addAll(asList(Object.class, type));

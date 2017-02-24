@@ -43,7 +43,7 @@ class DocumentCrudRepositoryExtension implements Extension {
 
     void onAfterBeanDiscovery(@Observes final AfterBeanDiscovery afterBeanDiscovery, final BeanManager beanManager) {
         types.forEach(t -> {
-            final ArtemisDocumentBean bean = new ArtemisDocumentBean(t, beanManager);
+            final CrudRepositoryDocumentBean bean = new CrudRepositoryDocumentBean(t, beanManager);
             afterBeanDiscovery.addBean(bean);
         });
     }
