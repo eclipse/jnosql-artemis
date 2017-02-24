@@ -33,7 +33,7 @@ import java.util.logging.Logger;
 
 class DocumentCrudRepositoryAsyncExtension implements Extension {
 
-    private final Logger LOGGER = Logger.getLogger(DocumentCrudRepositoryAsyncExtension.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DocumentCrudRepositoryAsyncExtension.class.getName());
 
     private final Collection<Class<?>> types = new HashSet<>();
 

@@ -33,7 +33,7 @@ import java.util.logging.Logger;
 
 class DocumentCrudRepositoryExtension implements Extension {
 
-    private final Logger LOGGER = Logger.getLogger(DocumentCrudRepositoryExtension.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DocumentCrudRepositoryExtension.class.getName());
 
     private final Collection<Class<?>> types = new HashSet<>();
 
