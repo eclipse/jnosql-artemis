@@ -23,7 +23,7 @@ package org.jnosql.artemis;
 import java.time.Duration;
 
 /**
- * Interface for generic CRUD operations on a repository for a specific type.
+ * Interface to generic CRUD operations on a repository for a specific type.
  * The query builder mechanism built into Artemis repository infrastructure is useful for building constraining queries
  * over entities of the repository. The mechanism strips the prefixes is defined by:
  * <p>findBy: to find any information T</p>
