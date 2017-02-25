@@ -31,6 +31,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.logging.Logger;
 
+/**
+ * The extenstion to startup {@link CrudRepositoryAsync}
+ * as {@link CrudRepositoryAsyncDocumentBean}
+ */
 class DocumentCrudRepositoryAsyncExtension implements Extension {
 
     private static final Logger LOGGER = Logger.getLogger(DocumentCrudRepositoryAsyncExtension.class.getName());

@@ -31,6 +31,13 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.time.Duration;
 
+
+
+/**
+ * Proxy handle to generate {@link CrudRepository}
+ *
+ * @param <T> the type
+ */
 class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
 
     private final Class<T> typeClass;

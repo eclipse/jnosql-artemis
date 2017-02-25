@@ -31,6 +31,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Utilitarian class to return on dynamic query
+ */
 final class ReturnTypeConverterUtil {
 
     private ReturnTypeConverterUtil() {

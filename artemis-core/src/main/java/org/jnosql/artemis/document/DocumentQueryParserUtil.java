@@ -25,6 +25,10 @@ import org.jnosql.diana.api.document.DocumentCondition;
 
 import java.util.Arrays;
 
+/**
+ * Utilitarian class to dynamic query from method on interface
+ * {@link DocumentQueryDeleteParser} and {@link DocumentQueryParser}
+ */
 final class DocumentQueryParserUtil {
 
     static final String AND = "AND";

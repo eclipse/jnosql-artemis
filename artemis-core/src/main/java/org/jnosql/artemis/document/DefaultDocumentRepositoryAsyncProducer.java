@@ -26,7 +26,9 @@ import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 import java.util.Objects;
 
-
+/**
+ * The default implementation of {@link DocumentRepositoryAsyncProducer}
+ */
 class DefaultDocumentRepositoryAsyncProducer implements DocumentRepositoryAsyncProducer {
 
 
