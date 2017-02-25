@@ -17,11 +17,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jnosql.artemis.document;
+package org.jnosql.artemis.document.query;
 
 import org.hamcrest.Matchers;
 import org.jnosql.artemis.CrudRepository;
 import org.jnosql.artemis.WeldJUnit4Runner;
+import org.jnosql.artemis.document.DocumentRepository;
+import org.jnosql.artemis.document.query.DocumentCrudRepositoryProxy;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.Condition;
@@ -29,7 +31,6 @@ import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentQuery;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +40,6 @@ import org.mockito.Mockito;
 import javax.inject.Inject;
 import java.lang.reflect.Proxy;
 import java.time.Duration;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Queue;

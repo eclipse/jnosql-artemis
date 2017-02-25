@@ -19,7 +19,7 @@
 #
 
 org.jnosql.artemis.reflection.ClassRepresentationsExtension
-org.jnosql.artemis.document.DocumentCrudRepositoryExtension
-org.jnosql.artemis.document.DocumentCrudRepositoryExtensionMock
-org.jnosql.artemis.document.DocumentCrudRepositoryAsyncExtension
-org.jnosql.artemis.document.DocumentCrudAsyncRepositoryExtensionMock
+org.jnosql.artemis.document.query.DocumentCrudRepositoryExtension
+org.jnosql.artemis.document.query.DocumentCrudRepositoryExtensionMock
+org.jnosql.artemis.document.query.DocumentCrudRepositoryAsyncExtension
+org.jnosql.artemis.document.query.DocumentCrudAsyncRepositoryExtensionMock

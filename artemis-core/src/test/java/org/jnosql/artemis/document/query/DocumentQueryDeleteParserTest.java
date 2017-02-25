@@ -17,21 +17,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jnosql.artemis.document;
+package org.jnosql.artemis.document.query;
 
 import org.jnosql.artemis.DynamicQueryException;
-import org.jnosql.artemis.Pagination;
 import org.jnosql.artemis.WeldJUnit4Runner;
+import org.jnosql.artemis.document.query.DocumentQueryDeleteParser;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.Condition;
-import org.jnosql.diana.api.Sort;
 import org.jnosql.diana.api.TypeReference;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
-import org.jnosql.diana.api.document.DocumentQuery;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

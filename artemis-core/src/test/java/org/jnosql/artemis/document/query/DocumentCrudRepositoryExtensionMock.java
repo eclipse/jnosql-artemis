@@ -17,10 +17,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jnosql.artemis.document;
-
+package org.jnosql.artemis.document.query;
 
 import org.jnosql.artemis.CrudRepository;
+import org.jnosql.artemis.document.query.CrudRepositoryDocumentBean;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
@@ -29,29 +29,23 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.logging.Logger;
 
-class DocumentCrudRepositoryExtension implements Extension {
 
-    private static final Logger LOGGER = Logger.getLogger(DocumentCrudRepositoryExtension.class.getName());
+public class DocumentCrudRepositoryExtensionMock implements Extension {
+
 
     private final Collection<Class<?>> types = new HashSet<>();
 
     <T extends CrudRepository> void onProcessAnnotatedType(@Observes final ProcessAnnotatedType<T> repo) {
-        LOGGER.info("Starting the onProcessAnnotatedType");
+
         Class<T> javaClass = repo.getAnnotatedType().getJavaClass();
         types.add(javaClass);
-        LOGGER.info("Finished the onProcessAnnotatedType");
     }
 
     void onAfterBeanDiscovery(@Observes final AfterBeanDiscovery afterBeanDiscovery, final BeanManager beanManager) {
-        LOGGER.info("Starting the onAfterBeanDiscovery with elements number: " + types.size());
         types.forEach(t -> {
-            final CrudRepositoryDocumentBean bean = new CrudRepositoryDocumentBean(t, beanManager);
+            final CrudRepositoryDocumentBean bean = new CrudRepositoryDocumentBean(t, beanManager, "documentRepositoryMock");
             afterBeanDiscovery.addBean(bean);
         });
-        LOGGER.info("Finished the onAfterBeanDiscovery");
     }
-
-
 }

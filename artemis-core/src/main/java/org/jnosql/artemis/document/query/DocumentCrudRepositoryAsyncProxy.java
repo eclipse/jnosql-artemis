@@ -17,11 +17,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jnosql.artemis.document;
+package org.jnosql.artemis.document.query;
 
 
 import org.jnosql.artemis.CrudRepositoryAsync;
 import org.jnosql.artemis.DynamicQueryException;
+import org.jnosql.artemis.document.DocumentRepositoryAsync;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.ExecuteAsyncQueryException;

@@ -17,10 +17,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jnosql.artemis.document;
+package org.jnosql.artemis.document.query;
 
 
 import org.jnosql.artemis.CrudRepository;
+import org.jnosql.artemis.document.DocumentRepository;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;

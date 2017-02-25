@@ -17,7 +17,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jnosql.artemis.document;
+package org.jnosql.artemis.document.query;
 
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.diana.api.document.Document;

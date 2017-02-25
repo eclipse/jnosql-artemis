@@ -17,18 +17,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jnosql.artemis.document;
+package org.jnosql.artemis.document.query;
 
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.Condition;
 import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
-
-import static org.jnosql.artemis.document.DocumentQueryParserUtil.AND;
-import static org.jnosql.artemis.document.DocumentQueryParserUtil.EMPTY;
-import static org.jnosql.artemis.document.DocumentQueryParserUtil.OR;
-import static org.jnosql.artemis.document.DocumentQueryParserUtil.toCondition;
 
 /**
  * Class the returns a {@link DocumentDeleteQuery}
@@ -41,17 +36,17 @@ class DocumentQueryDeleteParser {
 
     DocumentDeleteQuery parse(String methodName, Object[] args, ClassRepresentation classRepresentation) {
         DocumentDeleteQuery documentQuery = DocumentDeleteQuery.of(classRepresentation.getName());
-        String[] tokens = methodName.replace(PREFIX, EMPTY).split("(?=AND|OR|OrderBy)");
+        String[] tokens = methodName.replace(PREFIX, DocumentQueryParserUtil.EMPTY).split("(?=AND|OR|OrderBy)");
         String className = classRepresentation.getClassInstance().getName();
 
         int index = 0;
         for (String token : tokens) {
-            if (token.startsWith(AND)) {
+            if (token.startsWith(DocumentQueryParserUtil.AND)) {
                 index = and(args, documentQuery, index, token, methodName);
-            } else if (token.startsWith(OR)) {
+            } else if (token.startsWith(DocumentQueryParserUtil.OR)) {
                 index = or(args, documentQuery, index, token, methodName);
             } else {
-                DocumentCondition condition = toCondition(token, index, args, methodName);
+                DocumentCondition condition = DocumentQueryParserUtil.toCondition(token, index, args, methodName);
                 documentQuery.and(condition);
                 index++;
             }
@@ -70,8 +65,8 @@ class DocumentQueryDeleteParser {
     }
 
     private int or(Object[] args, DocumentDeleteQuery documentQuery, int index, String token, String methodName) {
-        String field = token.replace(OR, EMPTY);
-        DocumentCondition condition = toCondition(field, index, args, methodName);
+        String field = token.replace(DocumentQueryParserUtil.OR, DocumentQueryParserUtil.EMPTY);
+        DocumentCondition condition = DocumentQueryParserUtil.toCondition(field, index, args, methodName);
         documentQuery.or(condition);
         if (Condition.BETWEEN.equals(condition.getCondition())) {
             return index + 2;
@@ -82,8 +77,8 @@ class DocumentQueryDeleteParser {
 
     private int and(Object[] args, DocumentDeleteQuery documentQuery, int index, String token,
                     String methodName) {
-        String field = token.replace(AND, EMPTY);
-        DocumentCondition condition = toCondition(field, index, args, methodName);
+        String field = token.replace(DocumentQueryParserUtil.AND, DocumentQueryParserUtil.EMPTY);
+        DocumentCondition condition = DocumentQueryParserUtil.toCondition(field, index, args, methodName);
         documentQuery.and(condition);
         if (Condition.BETWEEN.equals(condition.getCondition())) {
             return index + 2;
