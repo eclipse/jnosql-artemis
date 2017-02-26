@@ -37,8 +37,18 @@ import java.lang.annotation.Target;
 public @interface ArtemisDatabase {
 
 
+    /**
+     * Defines the type on qualifier
+     *
+     * @return the database type
+     */
     DatabaseType value();
 
+    /**
+     * Defines the database provider.
+     *
+     * @return the provider
+     */
     String provider() default "";
 
 
