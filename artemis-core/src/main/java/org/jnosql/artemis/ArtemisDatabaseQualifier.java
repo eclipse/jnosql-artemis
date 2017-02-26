@@ -23,7 +23,17 @@ package org.jnosql.artemis;
 import javax.enterprise.util.AnnotationLiteral;
 import java.util.Objects;
 
+import static org.jnosql.artemis.DatabaseType.COLUMN;
+import static org.jnosql.artemis.DatabaseType.DOCUMENT;
+
+/**
+ * Utilitarian class to select the {@link ArtemisDatabase}
+ */
 public class ArtemisDatabaseQualifier extends AnnotationLiteral<ArtemisDatabase> implements ArtemisDatabase {
+
+    private static final ArtemisDatabaseQualifier DEFAULT_DOCUMENT_PROVIDER = new ArtemisDatabaseQualifier("", DOCUMENT);
+
+    private static final ArtemisDatabaseQualifier DEFAULT_COLUMN_PROVIDER = new ArtemisDatabaseQualifier("", COLUMN);
 
     private final String provider;
 
@@ -45,11 +55,47 @@ public class ArtemisDatabaseQualifier extends AnnotationLiteral<ArtemisDatabase>
     }
 
 
+    /**
+     * Returns the qualifier filter with document type {@link DatabaseType#DOCUMENT}
+     * and the nosql provider default
+     *
+     * @return the default document provider
+     */
     public static ArtemisDatabaseQualifier ofDocument() {
-        return new ArtemisDatabaseQualifier("", DatabaseType.DOCUMENT);
+        return DEFAULT_DOCUMENT_PROVIDER;
     }
 
+    /**
+     * Returns the qualifier filter with document type {@link DatabaseType#DOCUMENT} and the
+     * nosql provider defined
+     *
+     * @param provider the provider
+     * @return the qualifier filter instance
+     * @throws NullPointerException when provider is null
+     */
     public static ArtemisDatabaseQualifier ofDocument(String provider) throws NullPointerException {
-        return new ArtemisDatabaseQualifier(Objects.requireNonNull(provider, "provider is required"), DatabaseType.DOCUMENT);
+        return new ArtemisDatabaseQualifier(Objects.requireNonNull(provider, "provider is required"), DOCUMENT);
+    }
+
+    /**
+     * Returns the qualifier filter with document type {@link DatabaseType#COLUMN}
+     * and the nosql provider default
+     *
+     * @return the default column provider
+     */
+    public static ArtemisDatabaseQualifier ofColumn() {
+        return DEFAULT_COLUMN_PROVIDER;
+    }
+
+    /**
+     * Returns the qualifier filter with document type {@link DatabaseType#COLUMN} and the
+     * nosql provider defined
+     *
+     * @param provider the provider
+     * @return the qualifier filter instance
+     * @throws NullPointerException when provider is null
+     */
+    public static ArtemisDatabaseQualifier ofColumn(String provider) throws NullPointerException {
+        return new ArtemisDatabaseQualifier(Objects.requireNonNull(provider, "provider is required"), DOCUMENT);
     }
 }
