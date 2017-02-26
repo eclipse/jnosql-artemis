@@ -21,7 +21,7 @@ package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.ArtemisDatabase;
 import org.jnosql.artemis.DatabaseType;
-import org.jnosql.artemis.PersonRepositoryAsync;
+import org.jnosql.artemis.PersonRepository;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Person;
 import org.junit.Test;
@@ -31,25 +31,30 @@ import javax.inject.Inject;
 
 import static org.junit.Assert.*;
 
+
 @RunWith(WeldJUnit4Runner.class)
-public class ColumnCrudRepositoryAsyncExtensionTest {
+public class ColumnCrudRepositoryExtensionTest {
+
     @Inject
     @ArtemisDatabase(value = DatabaseType.COLUMN)
-    private PersonRepositoryAsync repository;
+    private PersonRepository repository;
 
     @Inject
     @ArtemisDatabase(value = DatabaseType.COLUMN, provider = "columnRepositoryMock")
-    private PersonRepositoryAsync repositoryMock;
+    private PersonRepository repositoryMock;
+
 
     @Test
     public void shouldIniciate() {
         assertNotNull(repository);
-        repository.save(Person.builder().build());
+        Person person = repository.save(Person.builder().build());
+        assertEquals("Default", person.getName());
     }
 
     @Test
-    public void shouldGetQualifier() {
+    public void shouldUseInstantion(){
         assertNotNull(repositoryMock);
-        repositoryMock.save(Person.builder().build());
+        Person person = repositoryMock.save(Person.builder().build());
+        assertEquals("columnRepositoryMock", person.getName());
     }
 }
