@@ -24,10 +24,9 @@ import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.Condition;
 import org.jnosql.diana.api.column.ColumnCondition;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
-import org.jnosql.diana.api.document.DocumentDeleteQuery;
 
 /**
- * Class the returns a {@link DocumentDeleteQuery}
+ * Class the returns a {@link ColumnDeleteQuery}
  * on {@link ColumnCrudRepositoryProxy}
  */
 class ColumnQueryDeleteParser {
@@ -36,24 +35,24 @@ class ColumnQueryDeleteParser {
 
 
     ColumnDeleteQuery parse(String methodName, Object[] args, ClassRepresentation classRepresentation) {
-        ColumnDeleteQuery documentQuery = ColumnDeleteQuery.of(classRepresentation.getName());
+        ColumnDeleteQuery columnDeleteQuery = ColumnDeleteQuery.of(classRepresentation.getName());
         String[] tokens = methodName.replace(PREFIX, ColumnQueryParserUtil.EMPTY).split("(?=AND|OR|OrderBy)");
         String className = classRepresentation.getClassInstance().getName();
 
         int index = 0;
         for (String token : tokens) {
             if (token.startsWith(ColumnQueryParserUtil.AND)) {
-                index = and(args, documentQuery, index, token, methodName);
+                index = and(args, columnDeleteQuery, index, token, methodName);
             } else if (token.startsWith(ColumnQueryParserUtil.OR)) {
-                index = or(args, documentQuery, index, token, methodName);
+                index = or(args, columnDeleteQuery, index, token, methodName);
             } else {
                 ColumnCondition condition = ColumnQueryParserUtil.toCondition(token, index, args, methodName);
-                documentQuery.and(condition);
+                columnDeleteQuery.and(condition);
                 index++;
             }
         }
 
-        return documentQuery;
+        return columnDeleteQuery;
     }
 
 
@@ -65,10 +64,10 @@ class ColumnQueryDeleteParser {
                 method));
     }
 
-    private int or(Object[] args, ColumnDeleteQuery documentQuery, int index, String token, String methodName) {
+    private int or(Object[] args, ColumnDeleteQuery columnQuery, int index, String token, String methodName) {
         String field = token.replace(ColumnQueryParserUtil.OR, ColumnQueryParserUtil.EMPTY);
         ColumnCondition condition = ColumnQueryParserUtil.toCondition(field, index, args, methodName);
-        documentQuery.or(condition);
+        columnQuery.or(condition);
         if (Condition.BETWEEN.equals(condition.getCondition())) {
             return index + 2;
         } else {
@@ -76,11 +75,11 @@ class ColumnQueryDeleteParser {
         }
     }
 
-    private int and(Object[] args, ColumnDeleteQuery documentQuery, int index, String token,
+    private int and(Object[] args, ColumnDeleteQuery columnQuery, int index, String token,
                     String methodName) {
         String field = token.replace(ColumnQueryParserUtil.AND, ColumnQueryParserUtil.EMPTY);
         ColumnCondition condition = ColumnQueryParserUtil.toCondition(field, index, args, methodName);
-        documentQuery.and(condition);
+        columnQuery.and(condition);
         if (Condition.BETWEEN.equals(condition.getCondition())) {
             return index + 2;
         } else {
