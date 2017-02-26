@@ -39,7 +39,7 @@ public class ArtemisDatabaseQualifier extends AnnotationLiteral<ArtemisDatabase>
 
     private final DatabaseType type;
 
-    ArtemisDatabaseQualifier(String provider, DatabaseType type) {
+    private ArtemisDatabaseQualifier(String provider, DatabaseType type) {
         this.provider = provider;
         this.type = type;
     }
@@ -104,6 +104,6 @@ public class ArtemisDatabaseQualifier extends AnnotationLiteral<ArtemisDatabase>
         if (provider.trim().isEmpty()) {
             return DEFAULT_COLUMN_PROVIDER;
         }
-        return new ArtemisDatabaseQualifier(provider, DOCUMENT);
+        return new ArtemisDatabaseQualifier(provider, COLUMN);
     }
 }
