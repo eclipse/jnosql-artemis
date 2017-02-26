@@ -24,6 +24,7 @@
     <artifactId>artemis-core</artifactId>
     <packaging>jar</packaging>
     <name>Artemis Core engine</name>
+
     <parent>
         <groupId>org.jnosql.artemis</groupId>
         <artifactId>artemis-parent</artifactId>
