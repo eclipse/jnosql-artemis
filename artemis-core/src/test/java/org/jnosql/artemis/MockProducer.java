@@ -20,9 +20,14 @@
 package org.jnosql.artemis;
 
 
+import org.jnosql.artemis.column.ColumnRepository;
+import org.jnosql.artemis.column.ColumnRepositoryAsync;
 import org.jnosql.artemis.document.DocumentRepository;
 import org.jnosql.artemis.document.DocumentRepositoryAsync;
 import org.jnosql.artemis.model.Person;
+import org.jnosql.diana.api.column.ColumnEntity;
+import org.jnosql.diana.api.column.ColumnFamilyManager;
+import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
@@ -36,12 +41,23 @@ import static org.mockito.Mockito.mock;
 public class MockProducer {
 
     @Produces
-    public DocumentCollectionManager get() {
+    public DocumentCollectionManager getDocumentCollectionManager() {
         DocumentEntity entity = DocumentEntity.of("Person");
         entity.add(Document.of("name", "Default"));
         entity.add(Document.of("age", 10));
         DocumentCollectionManager manager = mock(DocumentCollectionManager.class);
         Mockito.when(manager.save(Mockito.any(DocumentEntity.class))).thenReturn(entity);
+        return manager;
+
+    }
+
+    @Produces
+    public ColumnFamilyManager getColumnFamilyManager() {
+        ColumnEntity entity = ColumnEntity.of("Person");
+        entity.add(org.jnosql.diana.api.column.Column.of("name", "Default"));
+        entity.add(org.jnosql.diana.api.column.Column.of("age", 10));
+        ColumnFamilyManager manager = mock(ColumnFamilyManager.class);
+        Mockito.when(manager.save(Mockito.any(ColumnEntity.class))).thenReturn(entity);
         return manager;
 
     }
@@ -56,14 +72,36 @@ public class MockProducer {
     }
 
     @Produces
+    @ArtemisDatabase(value = DatabaseType.COLUMN, provider = "columnRepositoryMock")
+    public ColumnRepository getColumnRepository() {
+        ColumnRepository documentRepository = mock(ColumnRepository.class);
+        Mockito.when(documentRepository.save(Mockito.any(Person.class))).thenReturn(Person.builder()
+                .withName("columnRepositoryMock").build());
+        return documentRepository;
+    }
+
+
+    @Produces
     public DocumentCollectionManagerAsync getDocumentCollectionManagerAsync() {
         return Mockito.mock(DocumentCollectionManagerAsync.class);
     }
 
     @Produces
+    public ColumnFamilyManagerAsync getColumnFamilyManagerAsync() {
+        return Mockito.mock(ColumnFamilyManagerAsync.class);
+    }
+
+
+    @Produces
     @ArtemisDatabase(value = DatabaseType.DOCUMENT, provider = "documentRepositoryMock")
     public DocumentRepositoryAsync getDocumentRepositoryAsync() {
         return mock(DocumentRepositoryAsync.class);
+    }
+
+    @Produces
+    @ArtemisDatabase(value = DatabaseType.COLUMN, provider = "columnRepositoryMock")
+    public ColumnRepositoryAsync getColumnRepositoryAsync() {
+        return mock(ColumnRepositoryAsync.class);
     }
 
 }
