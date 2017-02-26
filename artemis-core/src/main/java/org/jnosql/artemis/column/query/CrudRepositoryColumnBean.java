@@ -20,6 +20,7 @@
 package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.ArtemisDatabase;
+import org.jnosql.artemis.ArtemisDatabaseQualifier;
 import org.jnosql.artemis.CrudRepository;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.column.ColumnRepository;
@@ -110,7 +111,7 @@ public class CrudRepositoryColumnBean implements Bean<CrudRepository>, Passivati
     }
 
     private <T> T getInstance(Class<T> clazz, String name) {
-        Bean bean = beanManager.getBeans(clazz, new ArtemisDatabaseQualifier(name)).iterator().next();
+        Bean bean = beanManager.getBeans(clazz, ArtemisDatabaseQualifier.ofColumn(name)).iterator().next();
         CreationalContext ctx = beanManager.createCreationalContext(bean);
         return (T) beanManager.getReference(bean, clazz, ctx);
     }
@@ -129,7 +130,7 @@ public class CrudRepositoryColumnBean implements Bean<CrudRepository>, Passivati
     @Override
     public Set<Annotation> getQualifiers() {
         Set<Annotation> qualifiers = new HashSet<Annotation>();
-        qualifiers.add(new ArtemisDatabaseQualifier(provider));
+        qualifiers.add(ArtemisDatabaseQualifier.ofColumn(provider));
         return qualifiers;
     }
 
@@ -158,22 +159,4 @@ public class CrudRepositoryColumnBean implements Bean<CrudRepository>, Passivati
         return type.getName() + '@' + DatabaseType.COLUMN + "-" + provider;
     }
 
-    static class ArtemisDatabaseQualifier extends AnnotationLiteral<ArtemisDatabase> implements ArtemisDatabase {
-
-        private final String provider;
-
-        ArtemisDatabaseQualifier(String provider) {
-            this.provider = provider;
-        }
-
-        @Override
-        public DatabaseType value() {
-            return DatabaseType.COLUMN;
-        }
-
-        @Override
-        public String provider() {
-            return provider;
-        }
-    }
 }

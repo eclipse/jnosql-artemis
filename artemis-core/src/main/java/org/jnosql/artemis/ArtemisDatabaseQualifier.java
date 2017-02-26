@@ -74,7 +74,11 @@ public class ArtemisDatabaseQualifier extends AnnotationLiteral<ArtemisDatabase>
      * @throws NullPointerException when provider is null
      */
     public static ArtemisDatabaseQualifier ofDocument(String provider) throws NullPointerException {
-        return new ArtemisDatabaseQualifier(Objects.requireNonNull(provider, "provider is required"), DOCUMENT);
+        Objects.requireNonNull(provider, "provider is required");
+        if (provider.trim().isEmpty()) {
+            return DEFAULT_DOCUMENT_PROVIDER;
+        }
+        return new ArtemisDatabaseQualifier(provider, DOCUMENT);
     }
 
     /**
@@ -96,6 +100,10 @@ public class ArtemisDatabaseQualifier extends AnnotationLiteral<ArtemisDatabase>
      * @throws NullPointerException when provider is null
      */
     public static ArtemisDatabaseQualifier ofColumn(String provider) throws NullPointerException {
-        return new ArtemisDatabaseQualifier(Objects.requireNonNull(provider, "provider is required"), DOCUMENT);
+        Objects.requireNonNull(provider, "provider is required");
+        if (provider.trim().isEmpty()) {
+            return DEFAULT_COLUMN_PROVIDER;
+        }
+        return new ArtemisDatabaseQualifier(provider, DOCUMENT);
     }
 }
