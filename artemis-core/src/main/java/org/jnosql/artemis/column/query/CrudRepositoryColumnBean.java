@@ -38,8 +38,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import static java.util.Arrays.asList;
-
 /**
  * Artemis discoveryBean to CDI extension to register {@link CrudRepository}
  */
@@ -49,7 +47,7 @@ public class CrudRepositoryColumnBean implements Bean<CrudRepository>, Passivati
 
     private final BeanManager beanManager;
 
-    private final Set<Type> types = new HashSet<>();
+    private final Set<Type> types;
 
     private final String provider;
 
@@ -63,14 +61,14 @@ public class CrudRepositoryColumnBean implements Bean<CrudRepository>, Passivati
     public CrudRepositoryColumnBean(Class type, BeanManager beanManager, String provider) {
         this.type = type;
         this.beanManager = beanManager;
-        this.types.add(type);
+        this.types = Collections.singleton(type);
         this.provider = provider;
     }
 
     CrudRepositoryColumnBean(Class type, BeanManager beanManager) {
         this.type = type;
         this.beanManager = beanManager;
-        this.types.addAll(asList(Object.class, type));
+        this.types = Collections.singleton(type);
         this.provider = "";
     }
 
