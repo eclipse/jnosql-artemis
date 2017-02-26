@@ -17,17 +17,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jnosql.artemis.document.query;
+package org.jnosql.artemis.column.query;
 
 
 import org.jnosql.artemis.CrudRepositoryAsync;
 import org.jnosql.artemis.DynamicQueryException;
-import org.jnosql.artemis.document.DocumentRepositoryAsync;
+import org.jnosql.artemis.column.ColumnRepositoryAsync;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
-import org.jnosql.diana.api.document.DocumentDeleteQuery;
-import org.jnosql.diana.api.document.DocumentQuery;
+import org.jnosql.diana.api.column.ColumnDeleteQuery;
+import org.jnosql.diana.api.column.ColumnQuery;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -40,30 +40,30 @@ import java.util.function.Consumer;
  *
  * @param <T> the type
  */
-class DocumentCrudRepositoryAsyncProxy<T> implements InvocationHandler {
+class ColumnCrudRepositoryAsyncProxy<T> implements InvocationHandler {
 
     private final Class<T> typeClass;
 
-    private final DocumentRepositoryAsync repository;
+    private final ColumnRepositoryAsync repository;
 
 
-    private final DocumentCrudRepositoryAsync crudRepository;
+    private final ColumnCrudRepositoryAsync crudRepository;
 
     private final ClassRepresentation classRepresentation;
 
-    private final DocumentQueryParser queryParser;
+    private final ColumnQueryParser queryParser;
 
-    private final DocumentQueryDeleteParser queryDeleteParser;
+    private final ColumnQueryDeleteParser queryDeleteParser;
 
 
-    DocumentCrudRepositoryAsyncProxy(DocumentRepositoryAsync repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
+    ColumnCrudRepositoryAsyncProxy(ColumnRepositoryAsync repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
         this.repository = repository;
-        this.crudRepository = new DocumentCrudRepositoryAsync(repository);
+        this.crudRepository = new ColumnCrudRepositoryAsync(repository);
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
-        this.queryParser = new DocumentQueryParser();
-        this.queryDeleteParser = new DocumentQueryDeleteParser();
+        this.queryParser = new ColumnQueryParser();
+        this.queryDeleteParser = new ColumnQueryDeleteParser();
     }
 
 
@@ -79,7 +79,7 @@ class DocumentCrudRepositoryAsyncProxy<T> implements InvocationHandler {
 
         }
         if (methodName.startsWith("findBy")) {
-            DocumentQuery query = queryParser.parse(methodName, args, classRepresentation);
+            ColumnQuery query = queryParser.parse(methodName, args, classRepresentation);
             Object callBack = args[args.length - 1];
             if (Consumer.class.isInstance(callBack)) {
                 repository.find(query, Consumer.class.cast(callBack));
@@ -89,7 +89,7 @@ class DocumentCrudRepositoryAsyncProxy<T> implements InvocationHandler {
             }
         } else if (methodName.startsWith("deleteBy")) {
             Object callBack = args[args.length - 1];
-            DocumentDeleteQuery query = queryDeleteParser.parse(methodName, args, classRepresentation);
+            ColumnDeleteQuery query = queryDeleteParser.parse(methodName, args, classRepresentation);
             if (Consumer.class.isInstance(callBack)) {
                 repository.delete(query, Consumer.class.cast(callBack));
             } else {
@@ -101,11 +101,11 @@ class DocumentCrudRepositoryAsyncProxy<T> implements InvocationHandler {
     }
 
 
-    class DocumentCrudRepositoryAsync implements CrudRepositoryAsync {
+    class ColumnCrudRepositoryAsync implements CrudRepositoryAsync {
 
-        private final DocumentRepositoryAsync repository;
+        private final ColumnRepositoryAsync repository;
 
-        DocumentCrudRepositoryAsync(DocumentRepositoryAsync repository) {
+        ColumnCrudRepositoryAsync(ColumnRepositoryAsync repository) {
             this.repository = repository;
         }
 
