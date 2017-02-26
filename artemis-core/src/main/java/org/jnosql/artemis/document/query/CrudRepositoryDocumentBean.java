@@ -19,7 +19,6 @@
  */
 package org.jnosql.artemis.document.query;
 
-import org.jnosql.artemis.ArtemisDatabase;
 import org.jnosql.artemis.ArtemisDatabaseQualifier;
 import org.jnosql.artemis.CrudRepository;
 import org.jnosql.artemis.DatabaseType;
@@ -32,7 +31,6 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.PassivationCapable;
-import javax.enterprise.util.AnnotationLiteral;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
