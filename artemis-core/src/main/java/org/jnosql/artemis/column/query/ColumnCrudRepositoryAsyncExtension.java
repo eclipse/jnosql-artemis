@@ -21,7 +21,6 @@ package org.jnosql.artemis.column.query;
 
 
 import org.jnosql.artemis.CrudRepositoryAsync;
-import org.jnosql.artemis.document.query.CrudRepositoryAsyncDocumentBean;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;

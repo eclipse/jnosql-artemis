@@ -21,8 +21,6 @@ package org.jnosql.artemis.document.query;
 
 
 import org.jnosql.artemis.CrudRepository;
-import org.jnosql.artemis.CrudRepositoryAsync;
-import org.jnosql.artemis.column.query.CrudRepositoryColumnBean;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
@@ -34,7 +32,7 @@ import java.util.HashSet;
 import java.util.logging.Logger;
 
 /**
- * The extenstion to startup {@link CrudRepositoryAsync}
+ * The extenstion to startup {@link CrudRepository}
  * as {@link CrudRepositoryDocumentBean}
  */
 class DocumentCrudRepositoryExtension implements Extension {
