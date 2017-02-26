@@ -17,12 +17,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jnosql.artemis.document.query;
+package org.jnosql.artemis.column.query;
 
 
-import org.jnosql.artemis.CrudRepository;
 import org.jnosql.artemis.CrudRepositoryAsync;
-import org.jnosql.artemis.column.query.CrudRepositoryColumnBean;
+import org.jnosql.artemis.document.query.CrudRepositoryAsyncDocumentBean;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
@@ -35,15 +34,15 @@ import java.util.logging.Logger;
 
 /**
  * The extenstion to startup {@link CrudRepositoryAsync}
- * as {@link CrudRepositoryDocumentBean}
+ * as {@link CrudRepositoryAsyncColumnBean}
  */
-class DocumentCrudRepositoryExtension implements Extension {
+class ColumnCrudRepositoryAsyncExtension implements Extension {
 
-    private static final Logger LOGGER = Logger.getLogger(DocumentCrudRepositoryExtension.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ColumnCrudRepositoryAsyncExtension.class.getName());
 
     private final Collection<Class<?>> types = new HashSet<>();
 
-    <T extends CrudRepository> void onProcessAnnotatedType(@Observes final ProcessAnnotatedType<T> repo) {
+    <T extends CrudRepositoryAsync> void onProcessAnnotatedType(@Observes final ProcessAnnotatedType<T> repo) {
         LOGGER.info("Starting the onProcessAnnotatedType");
         Class<T> javaClass = repo.getAnnotatedType().getJavaClass();
         types.add(javaClass);
@@ -52,8 +51,9 @@ class DocumentCrudRepositoryExtension implements Extension {
 
     void onAfterBeanDiscovery(@Observes final AfterBeanDiscovery afterBeanDiscovery, final BeanManager beanManager) {
         LOGGER.info("Starting the onAfterBeanDiscovery with elements number: " + types.size());
+
         types.forEach(t -> {
-            final CrudRepositoryDocumentBean bean = new CrudRepositoryDocumentBean(t, beanManager);
+            final CrudRepositoryAsyncColumnBean bean = new CrudRepositoryAsyncColumnBean(t, beanManager);
             afterBeanDiscovery.addBean(bean);
         });
         LOGGER.info("Finished the onAfterBeanDiscovery");
