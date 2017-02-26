@@ -17,15 +17,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jnosql.artemis.document.query;
+package org.jnosql.artemis.column.query;
 
 
 import org.jnosql.artemis.CrudRepository;
-import org.jnosql.artemis.document.DocumentRepository;
+import org.jnosql.artemis.column.ColumnRepository;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.diana.api.document.DocumentDeleteQuery;
-import org.jnosql.diana.api.document.DocumentQuery;
+import org.jnosql.diana.api.column.ColumnDeleteQuery;
+import org.jnosql.diana.api.column.ColumnQuery;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -33,36 +33,35 @@ import java.lang.reflect.ParameterizedType;
 import java.time.Duration;
 
 
-
 /**
  * Proxy handle to generate {@link CrudRepository}
  *
  * @param <T> the type
  */
-class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
+class ColumnCrudRepositoryProxy<T> implements InvocationHandler {
 
     private final Class<T> typeClass;
 
-    private final DocumentRepository repository;
+    private final ColumnRepository repository;
 
 
-    private final DocumentCrudRepository crudRepository;
+    private final ColumnCrudRepository crudRepository;
 
     private final ClassRepresentation classRepresentation;
 
-    private final DocumentQueryParser queryParser;
+    private final ColumnQueryParser queryParser;
 
-    private final DocumentQueryDeleteParser deleteQueryParser;
+    private final ColumnQueryDeleteParser deleteQueryParser;
 
 
-    DocumentCrudRepositoryProxy(DocumentRepository repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
+    ColumnCrudRepositoryProxy(ColumnRepository repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
         this.repository = repository;
-        this.crudRepository = new DocumentCrudRepository(repository);
+        this.crudRepository = new ColumnCrudRepository(repository);
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
-        this.queryParser = new DocumentQueryParser();
-        this.deleteQueryParser = new DocumentQueryDeleteParser();
+        this.queryParser = new ColumnQueryParser();
+        this.deleteQueryParser = new ColumnQueryDeleteParser();
     }
 
 
@@ -78,10 +77,10 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
 
         }
         if (methodName.startsWith("findBy")) {
-            DocumentQuery query = queryParser.parse(methodName, args, classRepresentation);
+            ColumnQuery query = queryParser.parse(methodName, args, classRepresentation);
             return ReturnTypeConverterUtil.returnObject(query, repository, typeClass, method);
         } else if (methodName.startsWith("deleteBy")) {
-            DocumentDeleteQuery query = deleteQueryParser.parse(methodName, args, classRepresentation);
+            ColumnDeleteQuery query = deleteQueryParser.parse(methodName, args, classRepresentation);
             repository.delete(query);
             return null;
         }
@@ -89,11 +88,11 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
     }
 
 
-    class DocumentCrudRepository implements CrudRepository {
+    class ColumnCrudRepository implements CrudRepository {
 
-        private final DocumentRepository repository;
+        private final ColumnRepository repository;
 
-        DocumentCrudRepository(DocumentRepository repository) {
+        ColumnCrudRepository(ColumnRepository repository) {
             this.repository = repository;
         }
 
