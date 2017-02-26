@@ -48,7 +48,6 @@ public class ArtemisDatabaseQualifierTest {
         ArtemisDatabaseQualifier.ofColumn(null);
     }
 
-    //
     @Test
     public void shouldReturnDefaultDocument() {
         ArtemisDatabaseQualifier qualifier = ArtemisDatabaseQualifier.ofDocument();
