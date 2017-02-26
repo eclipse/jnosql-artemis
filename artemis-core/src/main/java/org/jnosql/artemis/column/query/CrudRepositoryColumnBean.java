@@ -17,12 +17,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jnosql.artemis.document.query;
+package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.ArtemisDatabase;
 import org.jnosql.artemis.CrudRepository;
 import org.jnosql.artemis.DatabaseType;
-import org.jnosql.artemis.document.DocumentRepository;
+import org.jnosql.artemis.column.ColumnRepository;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -44,7 +44,7 @@ import static java.util.Arrays.asList;
 /**
  * Artemis discoveryBean to CDI extension to register {@link CrudRepository}
  */
-public class CrudRepositoryDocumentBean implements Bean<CrudRepository>, PassivationCapable {
+public class CrudRepositoryColumnBean implements Bean<CrudRepository>, PassivationCapable {
 
     private final Class type;
 
@@ -61,14 +61,14 @@ public class CrudRepositoryDocumentBean implements Bean<CrudRepository>, Passiva
      * @param beanManager the beanManager
      * @param provider    the provider name, that must be a
      */
-    public CrudRepositoryDocumentBean(Class type, BeanManager beanManager, String provider) {
+    public CrudRepositoryColumnBean(Class type, BeanManager beanManager, String provider) {
         this.type = type;
         this.beanManager = beanManager;
         this.types.add(type);
         this.provider = provider;
     }
 
-    CrudRepositoryDocumentBean(Class type, BeanManager beanManager) {
+    CrudRepositoryColumnBean(Class type, BeanManager beanManager) {
         this.type = type;
         this.beanManager = beanManager;
         this.types.addAll(asList(Object.class, type));
@@ -93,9 +93,9 @@ public class CrudRepositoryDocumentBean implements Bean<CrudRepository>, Passiva
     @Override
     public CrudRepository create(CreationalContext<CrudRepository> creationalContext) {
         ClassRepresentations classRepresentations = getInstance(ClassRepresentations.class);
-        DocumentRepository repository = provider.isEmpty() ? getInstance(DocumentRepository.class) :
-                getInstance(DocumentRepository.class, provider);
-        DocumentCrudRepositoryProxy handler = new DocumentCrudRepositoryProxy(repository,
+        ColumnRepository repository = provider.isEmpty() ? getInstance(ColumnRepository.class) :
+                getInstance(ColumnRepository.class, provider);
+        ColumnCrudRepositoryProxy handler = new ColumnCrudRepositoryProxy(repository,
                 classRepresentations, type);
         return (CrudRepository) Proxy.newProxyInstance(type.getClassLoader(),
                 new Class[]{type},
@@ -155,7 +155,7 @@ public class CrudRepositoryDocumentBean implements Bean<CrudRepository>, Passiva
 
     @Override
     public String getId() {
-        return type.getName() + '@' + DatabaseType.DOCUMENT + "-" + provider;
+        return type.getName() + '@' + DatabaseType.COLUMN + "-" + provider;
     }
 
     static class ArtemisDatabaseQualifier extends AnnotationLiteral<ArtemisDatabase> implements ArtemisDatabase {
@@ -168,7 +168,7 @@ public class CrudRepositoryDocumentBean implements Bean<CrudRepository>, Passiva
 
         @Override
         public DatabaseType value() {
-            return DatabaseType.DOCUMENT;
+            return DatabaseType.COLUMN;
         }
 
         @Override

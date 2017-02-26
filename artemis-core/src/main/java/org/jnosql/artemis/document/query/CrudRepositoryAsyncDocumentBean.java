@@ -155,7 +155,7 @@ public class CrudRepositoryAsyncDocumentBean implements Bean<CrudRepositoryAsync
 
     @Override
     public String getId() {
-        return type.getName() + "Async@" + provider;
+        return type.getName() + "Async@" + DatabaseType.DOCUMENT + "-" + provider;
     }
 
     static class ArtemisDatabaseQualifier extends AnnotationLiteral<ArtemisDatabase> implements ArtemisDatabase {
