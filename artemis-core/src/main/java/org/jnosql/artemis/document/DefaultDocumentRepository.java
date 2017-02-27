@@ -28,7 +28,6 @@ import javax.inject.Inject;
  * The default implementation of {@link DocumentRepository}
  */
 @SuppressWarnings("unchecked")
-@DocumentRepositoryInterceptor
 class DefaultDocumentRepository extends AbstractDocumentRepository {
 
 

@@ -46,7 +46,6 @@ class DefaultDocumentRepositoryProducer implements DocumentRepositoryProducer {
     }
 
     @Vetoed
-    @DocumentRepositoryInterceptor
     static class ProducerDocumentRepository extends AbstractDocumentRepository {
 
         private DocumentEntityConverter converter;
