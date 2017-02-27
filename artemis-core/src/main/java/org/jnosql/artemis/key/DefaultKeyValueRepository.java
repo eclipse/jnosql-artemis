@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 
-@KeyValueRepositoryInterceptor
 class DefaultKeyValueRepository implements KeyValueRepository {
 
     private KeyValueEntityConverter converter;

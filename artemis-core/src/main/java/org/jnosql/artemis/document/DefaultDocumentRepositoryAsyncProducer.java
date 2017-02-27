@@ -42,7 +42,6 @@ class DefaultDocumentRepositoryAsyncProducer implements DocumentRepositoryAsyncP
     }
 
     @Vetoed
-    @DocumentRepositoryInterceptor
     static class ProducerAbstractDocumentRepositoryAsync extends AbstractDocumentRepositoryAsync {
 
         private DocumentEntityConverter converter;
