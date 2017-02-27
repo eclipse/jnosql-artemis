@@ -52,34 +52,39 @@ final class ColumnQueryParserUtil {
 
         if (containsBetween) {
             checkContents(index, args.length, 2, methodName);
-        } else {
-            checkContents(index, args.length, 1, methodName);
-        }
-
-        if (containsBetween) {
-
             String name = getName(token).replace(BETWEEN, EMPTY);
             return ColumnCondition.between(Column.of(name, Arrays.asList(args[index], args[++index])));
+        }
 
-        } else if (token.contains(LESS_THAN)) {
+        checkContents(index, args.length, 1, methodName);
+
+        if (token.contains(LESS_THAN)) {
             String name = getName(token).replace(LESS_THAN, EMPTY);
             return ColumnCondition.lt(Column.of(name, args[index]));
-        } else if (token.contains(GREATER_THAN)) {
+        }
+
+        if (token.contains(GREATER_THAN)) {
             String name = getName(token).replace(GREATER_THAN, EMPTY);
             return ColumnCondition.gt(Column.of(name, args[index]));
-        } else if (token.contains(LESS_THAN_EQUAL)) {
+        }
+
+        if (token.contains(LESS_THAN_EQUAL)) {
             String name = getName(token).replace(LESS_THAN_EQUAL, EMPTY);
             return ColumnCondition.lte(Column.of(name, args[index]));
-        } else if (token.contains(GREATER_THAN_EQUAL)) {
+        }
+
+        if (token.contains(GREATER_THAN_EQUAL)) {
             String name = getName(token).replace(GREATER_THAN_EQUAL, EMPTY);
             return ColumnCondition.gte(Column.of(name, args[index]));
-        } else if (token.contains(LIKE)) {
+        }
+
+        if (token.contains(LIKE)) {
             String name = getName(token).replace(LIKE, EMPTY);
             return ColumnCondition.like(Column.of(name, args[index]));
         }
+
         String name = getName(token);
         return ColumnCondition.eq(Column.of(name, args[index]));
-
     }
 
     private static void checkContents(int index, int argSize, int required, String method) {
