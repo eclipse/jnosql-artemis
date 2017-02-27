@@ -42,10 +42,14 @@ import java.util.function.Consumer;
  */
 class ColumnCrudRepositoryAsyncProxy<T> implements InvocationHandler {
 
+    public static final String SAVE = "save";
+    public static final String UPDATE = "update";
+    public static final String FIND_BY = "findBy";
+    public static final String DELETE_BY = "deleteBy";
+
     private final Class<T> typeClass;
 
     private final ColumnRepositoryAsync repository;
-
 
     private final ColumnCrudRepositoryAsync crudRepository;
 
@@ -72,31 +76,37 @@ class ColumnCrudRepositoryAsyncProxy<T> implements InvocationHandler {
 
         String methodName = method.getName();
         switch (methodName) {
-            case "save":
-            case "update":
+            case SAVE:
+            case UPDATE:
                 return method.invoke(crudRepository, args);
             default:
-
         }
-        if (methodName.startsWith("findBy")) {
+
+
+        if (methodName.startsWith(FIND_BY)) {
             ColumnQuery query = queryParser.parse(methodName, args, classRepresentation);
             Object callBack = args[args.length - 1];
             if (Consumer.class.isInstance(callBack)) {
                 repository.find(query, Consumer.class.cast(callBack));
-            } else {
-                throw new DynamicQueryException("On find async method you must put a java.util.function.Consumer" +
-                        " as end parameter as callback");
+                return null;
             }
-        } else if (methodName.startsWith("deleteBy")) {
+
+            throw new DynamicQueryException("On find async method you must put a java.util.function.Consumer" +
+                    " as end parameter as callback");
+        }
+
+        if (methodName.startsWith(DELETE_BY)) {
             Object callBack = args[args.length - 1];
             ColumnDeleteQuery query = queryDeleteParser.parse(methodName, args, classRepresentation);
             if (Consumer.class.isInstance(callBack)) {
                 repository.delete(query, Consumer.class.cast(callBack));
-            } else {
-                repository.delete(query);
+                return null;
             }
+
+            repository.delete(query);
             return null;
         }
+
         return null;
     }
 
