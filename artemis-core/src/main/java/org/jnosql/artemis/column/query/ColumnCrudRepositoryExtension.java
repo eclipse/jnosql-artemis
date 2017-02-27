@@ -43,15 +43,14 @@ class ColumnCrudRepositoryExtension implements Extension {
 
     <T extends CrudRepository> void onProcessAnnotatedType(@Observes final ProcessAnnotatedType<T> repo) {
         LOGGER.info("Starting the onProcessAnnotatedType");
-        Class<T> javaClass = repo.getAnnotatedType().getJavaClass();
-        types.add(javaClass);
+        types.add(repo.getAnnotatedType().getJavaClass());
         LOGGER.info("Finished the onProcessAnnotatedType");
     }
 
     void onAfterBeanDiscovery(@Observes final AfterBeanDiscovery afterBeanDiscovery, final BeanManager beanManager) {
         LOGGER.info("Starting the onAfterBeanDiscovery with elements number: " + types.size());
-        types.forEach(t -> {
-            final CrudRepositoryColumnBean bean = new CrudRepositoryColumnBean(t, beanManager);
+        types.forEach(type -> {
+            final CrudRepositoryColumnBean bean = new CrudRepositoryColumnBean(type, beanManager);
             afterBeanDiscovery.addBean(bean);
         });
         LOGGER.info("Finished the onAfterBeanDiscovery");

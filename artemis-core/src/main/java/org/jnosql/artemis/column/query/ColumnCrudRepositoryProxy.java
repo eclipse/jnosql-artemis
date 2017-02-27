@@ -40,10 +40,14 @@ import java.time.Duration;
  */
 class ColumnCrudRepositoryProxy<T> implements InvocationHandler {
 
+    public static final String SAVE = "save";
+    public static final String UPDATE = "update";
+    public static final String FIND_BY = "findBy";
+    public static final String DELETE_BY = "deleteBy";
+
     private final Class<T> typeClass;
 
     private final ColumnRepository repository;
-
 
     private final ColumnCrudRepository crudRepository;
 
@@ -67,19 +71,20 @@ class ColumnCrudRepositoryProxy<T> implements InvocationHandler {
 
     @Override
     public Object invoke(Object o, Method method, Object[] args) throws Throwable {
-
         String methodName = method.getName();
         switch (methodName) {
-            case "save":
-            case "update":
+            case SAVE:
+            case UPDATE:
                 return method.invoke(crudRepository, args);
             default:
-
         }
-        if (methodName.startsWith("findBy")) {
+
+        if (methodName.startsWith(FIND_BY)) {
             ColumnQuery query = queryParser.parse(methodName, args, classRepresentation);
             return ReturnTypeConverterUtil.returnObject(query, repository, typeClass, method);
-        } else if (methodName.startsWith("deleteBy")) {
+        }
+
+        if (methodName.startsWith(DELETE_BY)) {
             ColumnDeleteQuery query = deleteQueryParser.parse(methodName, args, classRepresentation);
             repository.delete(query);
             return null;
