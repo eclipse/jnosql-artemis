@@ -40,10 +40,10 @@ import java.time.Duration;
  */
 class ColumnCrudRepositoryProxy<T> implements InvocationHandler {
 
-    public static final String SAVE = "save";
-    public static final String UPDATE = "update";
-    public static final String FIND_BY = "findBy";
-    public static final String DELETE_BY = "deleteBy";
+    private static final String SAVE = "save";
+    private static final String UPDATE = "update";
+    private static final String FIND_BY = "findBy";
+    private static final String DELETE_BY = "deleteBy";
 
     private final Class<T> typeClass;
 
