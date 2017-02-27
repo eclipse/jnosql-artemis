@@ -41,7 +41,6 @@ class DefaultColumnRepositoryAsyncProducer implements ColumnRepositoryAsyncProdu
     }
 
     @Vetoed
-    @ColumnRepositoryInterceptor
     static class ProducerColumnRepositoryAsync extends AbstractColumnRepositoryAsync {
 
         private ColumnEntityConverter converter;
