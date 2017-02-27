@@ -29,7 +29,6 @@ import javax.inject.Inject;
  * The default implementation of {@link ColumnRepositoryAsync}
  */
 @SuppressWarnings("unchecked")
-@ColumnRepositoryInterceptor
 class DefaultColumnRepositoryAsync extends AbstractColumnRepositoryAsync {
 
     private ColumnEntityConverter converter;
