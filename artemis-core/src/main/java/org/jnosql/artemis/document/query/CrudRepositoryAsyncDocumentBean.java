@@ -19,7 +19,7 @@
  */
 package org.jnosql.artemis.document.query;
 
-import org.jnosql.artemis.ArtemisDatabaseQualifier;
+import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.CrudRepositoryAsync;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.document.DocumentRepositoryAsync;
@@ -107,7 +107,7 @@ public class CrudRepositoryAsyncDocumentBean implements Bean<CrudRepositoryAsync
     }
 
     private <T> T getInstance(Class<T> clazz, String name) {
-        Bean bean = beanManager.getBeans(clazz, ArtemisDatabaseQualifier.ofDocument(name)).iterator().next();
+        Bean bean = beanManager.getBeans(clazz, DatabaseQualifier.ofDocument(name)).iterator().next();
         CreationalContext ctx = beanManager.createCreationalContext(bean);
         return (T) beanManager.getReference(bean, clazz, ctx);
     }
@@ -126,7 +126,7 @@ public class CrudRepositoryAsyncDocumentBean implements Bean<CrudRepositoryAsync
     @Override
     public Set<Annotation> getQualifiers() {
         Set<Annotation> qualifiers = new HashSet<Annotation>();
-        qualifiers.add(ArtemisDatabaseQualifier.ofDocument(provider));
+        qualifiers.add(DatabaseQualifier.ofDocument(provider));
         return qualifiers;
     }
 

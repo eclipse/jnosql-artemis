@@ -63,7 +63,7 @@ public class MockProducer {
     }
 
     @Produces
-    @ArtemisDatabase(value = DatabaseType.DOCUMENT, provider = "documentRepositoryMock")
+    @Database(value = DatabaseType.DOCUMENT, provider = "documentRepositoryMock")
     public DocumentRepository getDocumentRepository() {
         DocumentRepository documentRepository = mock(DocumentRepository.class);
         Mockito.when(documentRepository.save(Mockito.any(Person.class))).thenReturn(Person.builder()
@@ -72,7 +72,7 @@ public class MockProducer {
     }
 
     @Produces
-    @ArtemisDatabase(value = DatabaseType.COLUMN, provider = "columnRepositoryMock")
+    @Database(value = DatabaseType.COLUMN, provider = "columnRepositoryMock")
     public ColumnRepository getColumnRepository() {
         ColumnRepository documentRepository = mock(ColumnRepository.class);
         Mockito.when(documentRepository.save(Mockito.any(Person.class))).thenReturn(Person.builder()
@@ -93,13 +93,13 @@ public class MockProducer {
 
 
     @Produces
-    @ArtemisDatabase(value = DatabaseType.DOCUMENT, provider = "documentRepositoryMock")
+    @Database(value = DatabaseType.DOCUMENT, provider = "documentRepositoryMock")
     public DocumentRepositoryAsync getDocumentRepositoryAsync() {
         return mock(DocumentRepositoryAsync.class);
     }
 
     @Produces
-    @ArtemisDatabase(value = DatabaseType.COLUMN, provider = "columnRepositoryMock")
+    @Database(value = DatabaseType.COLUMN, provider = "columnRepositoryMock")
     public ColumnRepositoryAsync getColumnRepositoryAsync() {
         return mock(ColumnRepositoryAsync.class);
     }

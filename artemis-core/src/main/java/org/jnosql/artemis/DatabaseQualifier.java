@@ -27,19 +27,19 @@ import static org.jnosql.artemis.DatabaseType.COLUMN;
 import static org.jnosql.artemis.DatabaseType.DOCUMENT;
 
 /**
- * Utilitarian class to select the {@link ArtemisDatabase}
+ * Utilitarian class to select the {@link Database}
  */
-public class ArtemisDatabaseQualifier extends AnnotationLiteral<ArtemisDatabase> implements ArtemisDatabase {
+public class DatabaseQualifier extends AnnotationLiteral<Database> implements Database {
 
-    private static final ArtemisDatabaseQualifier DEFAULT_DOCUMENT_PROVIDER = new ArtemisDatabaseQualifier("", DOCUMENT);
+    private static final DatabaseQualifier DEFAULT_DOCUMENT_PROVIDER = new DatabaseQualifier("", DOCUMENT);
 
-    private static final ArtemisDatabaseQualifier DEFAULT_COLUMN_PROVIDER = new ArtemisDatabaseQualifier("", COLUMN);
+    private static final DatabaseQualifier DEFAULT_COLUMN_PROVIDER = new DatabaseQualifier("", COLUMN);
 
     private final String provider;
 
     private final DatabaseType type;
 
-    private ArtemisDatabaseQualifier(String provider, DatabaseType type) {
+    private DatabaseQualifier(String provider, DatabaseType type) {
         this.provider = provider;
         this.type = type;
     }
@@ -61,7 +61,7 @@ public class ArtemisDatabaseQualifier extends AnnotationLiteral<ArtemisDatabase>
      *
      * @return the default document provider
      */
-    public static ArtemisDatabaseQualifier ofDocument() {
+    public static DatabaseQualifier ofDocument() {
         return DEFAULT_DOCUMENT_PROVIDER;
     }
 
@@ -73,12 +73,12 @@ public class ArtemisDatabaseQualifier extends AnnotationLiteral<ArtemisDatabase>
      * @return the qualifier filter instance
      * @throws NullPointerException when provider is null
      */
-    public static ArtemisDatabaseQualifier ofDocument(String provider) throws NullPointerException {
+    public static DatabaseQualifier ofDocument(String provider) throws NullPointerException {
         Objects.requireNonNull(provider, "provider is required");
         if (provider.trim().isEmpty()) {
             return DEFAULT_DOCUMENT_PROVIDER;
         }
-        return new ArtemisDatabaseQualifier(provider, DOCUMENT);
+        return new DatabaseQualifier(provider, DOCUMENT);
     }
 
     /**
@@ -87,7 +87,7 @@ public class ArtemisDatabaseQualifier extends AnnotationLiteral<ArtemisDatabase>
      *
      * @return the default column provider
      */
-    public static ArtemisDatabaseQualifier ofColumn() {
+    public static DatabaseQualifier ofColumn() {
         return DEFAULT_COLUMN_PROVIDER;
     }
 
@@ -99,11 +99,11 @@ public class ArtemisDatabaseQualifier extends AnnotationLiteral<ArtemisDatabase>
      * @return the qualifier filter instance
      * @throws NullPointerException when provider is null
      */
-    public static ArtemisDatabaseQualifier ofColumn(String provider) throws NullPointerException {
+    public static DatabaseQualifier ofColumn(String provider) throws NullPointerException {
         Objects.requireNonNull(provider, "provider is required");
         if (provider.trim().isEmpty()) {
             return DEFAULT_COLUMN_PROVIDER;
         }
-        return new ArtemisDatabaseQualifier(provider, COLUMN);
+        return new DatabaseQualifier(provider, COLUMN);
     }
 }

@@ -19,7 +19,7 @@
  */
 package org.jnosql.artemis.column.query;
 
-import org.jnosql.artemis.ArtemisDatabase;
+import org.jnosql.artemis.Database;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.PersonRepositoryAsync;
 import org.jnosql.artemis.WeldJUnit4Runner;
@@ -34,11 +34,11 @@ import static org.junit.Assert.*;
 @RunWith(WeldJUnit4Runner.class)
 public class ColumnCrudRepositoryAsyncExtensionTest {
     @Inject
-    @ArtemisDatabase(value = DatabaseType.COLUMN)
+    @Database(value = DatabaseType.COLUMN)
     private PersonRepositoryAsync repository;
 
     @Inject
-    @ArtemisDatabase(value = DatabaseType.COLUMN, provider = "columnRepositoryMock")
+    @Database(value = DatabaseType.COLUMN, provider = "columnRepositoryMock")
     private PersonRepositoryAsync repositoryMock;
 
     @Test

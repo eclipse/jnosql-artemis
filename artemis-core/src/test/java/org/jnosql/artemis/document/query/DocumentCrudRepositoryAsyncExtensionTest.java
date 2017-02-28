@@ -19,7 +19,7 @@
  */
 package org.jnosql.artemis.document.query;
 
-import org.jnosql.artemis.ArtemisDatabase;
+import org.jnosql.artemis.Database;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.PersonRepositoryAsync;
 import org.jnosql.artemis.WeldJUnit4Runner;
@@ -35,11 +35,11 @@ import static org.junit.Assert.assertNotNull;
 public class DocumentCrudRepositoryAsyncExtensionTest {
 
     @Inject
-    @ArtemisDatabase(value = DatabaseType.DOCUMENT)
+    @Database(value = DatabaseType.DOCUMENT)
     private PersonRepositoryAsync repository;
 
     @Inject
-    @ArtemisDatabase(value = DatabaseType.DOCUMENT, provider = "documentRepositoryMock")
+    @Database(value = DatabaseType.DOCUMENT, provider = "documentRepositoryMock")
     private PersonRepositoryAsync repositoryMock;
 
     @Test

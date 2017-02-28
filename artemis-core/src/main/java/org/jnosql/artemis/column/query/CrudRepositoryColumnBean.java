@@ -19,7 +19,7 @@
  */
 package org.jnosql.artemis.column.query;
 
-import org.jnosql.artemis.ArtemisDatabaseQualifier;
+import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.CrudRepository;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.column.ColumnRepository;
@@ -107,7 +107,7 @@ public class CrudRepositoryColumnBean implements Bean<CrudRepository>, Passivati
     }
 
     private <T> T getInstance(Class<T> clazz, String name) {
-        Bean bean = beanManager.getBeans(clazz, ArtemisDatabaseQualifier.ofColumn(name)).iterator().next();
+        Bean bean = beanManager.getBeans(clazz, DatabaseQualifier.ofColumn(name)).iterator().next();
         CreationalContext ctx = beanManager.createCreationalContext(bean);
         return (T) beanManager.getReference(bean, clazz, ctx);
     }
@@ -126,7 +126,7 @@ public class CrudRepositoryColumnBean implements Bean<CrudRepository>, Passivati
     @Override
     public Set<Annotation> getQualifiers() {
         Set<Annotation> qualifiers = new HashSet<Annotation>();
-        qualifiers.add(ArtemisDatabaseQualifier.ofColumn(provider));
+        qualifiers.add(DatabaseQualifier.ofColumn(provider));
         return qualifiers;
     }
 

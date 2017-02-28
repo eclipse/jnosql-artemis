@@ -29,12 +29,12 @@ import java.lang.annotation.Target;
 
 /**
  * Defines which interpreter will be used on {@link CrudRepository}
- * with {@link ArtemisDatabase}
+ * with {@link Database}
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Qualifier
-public @interface ArtemisDatabase {
+public @interface Database {
 
 
     /**

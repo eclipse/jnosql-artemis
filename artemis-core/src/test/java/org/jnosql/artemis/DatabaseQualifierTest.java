@@ -26,11 +26,11 @@ import static org.jnosql.artemis.DatabaseType.DOCUMENT;
 import static org.junit.Assert.assertEquals;
 
 
-public class ArtemisDatabaseQualifierTest {
+public class DatabaseQualifierTest {
 
     @Test
     public void shouldReturnDefaultColumn() {
-        ArtemisDatabaseQualifier qualifier = ArtemisDatabaseQualifier.ofColumn();
+        DatabaseQualifier qualifier = DatabaseQualifier.ofColumn();
         assertEquals("", qualifier.provider());
         assertEquals(COLUMN, qualifier.value());
     }
@@ -38,19 +38,19 @@ public class ArtemisDatabaseQualifierTest {
     @Test
     public void shouldReturnColumnProvider() {
         String provider = "provider";
-        ArtemisDatabaseQualifier qualifier = ArtemisDatabaseQualifier.ofColumn(provider);
+        DatabaseQualifier qualifier = DatabaseQualifier.ofColumn(provider);
         assertEquals(provider, qualifier.provider());
         assertEquals(COLUMN, qualifier.value());
     }
 
     @Test(expected = NullPointerException.class)
     public void shouldReturnErrorWhenColumnNull() {
-        ArtemisDatabaseQualifier.ofColumn(null);
+        DatabaseQualifier.ofColumn(null);
     }
 
     @Test
     public void shouldReturnDefaultDocument() {
-        ArtemisDatabaseQualifier qualifier = ArtemisDatabaseQualifier.ofDocument();
+        DatabaseQualifier qualifier = DatabaseQualifier.ofDocument();
         assertEquals("", qualifier.provider());
         assertEquals(DOCUMENT, qualifier.value());
     }
@@ -58,14 +58,14 @@ public class ArtemisDatabaseQualifierTest {
     @Test
     public void shouldReturnDocumentProvider() {
         String provider = "provider";
-        ArtemisDatabaseQualifier qualifier = ArtemisDatabaseQualifier.ofDocument(provider);
+        DatabaseQualifier qualifier = DatabaseQualifier.ofDocument(provider);
         assertEquals(provider, qualifier.provider());
         assertEquals(DOCUMENT, qualifier.value());
     }
 
     @Test(expected = NullPointerException.class)
     public void shouldReturnErrorWhenDocumentNull() {
-        ArtemisDatabaseQualifier.ofDocument(null);
+        DatabaseQualifier.ofDocument(null);
     }
 
 }
