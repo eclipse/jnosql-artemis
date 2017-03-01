@@ -21,4 +21,3 @@
 org.jnosql.artemis.reflection.ClassRepresentationsExtension
 org.jnosql.artemis.document.query.DocumentCrudRepositoryExtension
 org.jnosql.artemis.column.query.ColumnCrudRepositoryExtension
-org.jnosql.artemis.column.query.ColumnCrudRepositoryAsyncExtension
