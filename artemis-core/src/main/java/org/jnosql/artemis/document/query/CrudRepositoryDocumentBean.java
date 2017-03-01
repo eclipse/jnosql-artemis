@@ -19,8 +19,8 @@
  */
 package org.jnosql.artemis.document.query;
 
-import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.CrudRepository;
+import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.document.DocumentRepository;
 import org.jnosql.artemis.reflection.ClassRepresentations;
@@ -35,7 +35,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -51,6 +50,8 @@ public class CrudRepositoryDocumentBean implements Bean<CrudRepository>, Passiva
 
     private final String provider;
 
+    private final Set<Annotation> qualifiers;
+
     /**
      * Constructor
      *
@@ -63,6 +64,7 @@ public class CrudRepositoryDocumentBean implements Bean<CrudRepository>, Passiva
         this.beanManager = beanManager;
         this.types = Collections.singleton(type);
         this.provider = provider;
+        this.qualifiers = Collections.singleton(DatabaseQualifier.ofDocument(provider));
     }
 
     CrudRepositoryDocumentBean(Class type, BeanManager beanManager) {
@@ -70,6 +72,7 @@ public class CrudRepositoryDocumentBean implements Bean<CrudRepository>, Passiva
         this.beanManager = beanManager;
         this.types = Collections.singleton(type);
         this.provider = "";
+        this.qualifiers = Collections.singleton(DatabaseQualifier.ofDocument(""));
     }
 
     @Override
@@ -125,8 +128,6 @@ public class CrudRepositoryDocumentBean implements Bean<CrudRepository>, Passiva
 
     @Override
     public Set<Annotation> getQualifiers() {
-        Set<Annotation> qualifiers = new HashSet<Annotation>();
-        qualifiers.add(DatabaseQualifier.ofDocument(provider));
         return qualifiers;
     }
 

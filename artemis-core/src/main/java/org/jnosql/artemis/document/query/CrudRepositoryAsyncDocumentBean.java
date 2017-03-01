@@ -19,8 +19,8 @@
  */
 package org.jnosql.artemis.document.query;
 
-import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.CrudRepositoryAsync;
+import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.document.DocumentRepositoryAsync;
 import org.jnosql.artemis.reflection.ClassRepresentations;
@@ -35,7 +35,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -51,6 +50,8 @@ public class CrudRepositoryAsyncDocumentBean implements Bean<CrudRepositoryAsync
 
     private final String provider;
 
+    private final Set<Annotation> qualifiers;
+
     /**
      * Constructor
      *
@@ -63,6 +64,7 @@ public class CrudRepositoryAsyncDocumentBean implements Bean<CrudRepositoryAsync
         this.beanManager = beanManager;
         this.types = Collections.singleton(type);
         this.provider = provider;
+        this.qualifiers = Collections.singleton(DatabaseQualifier.ofDocument(provider));
     }
 
     CrudRepositoryAsyncDocumentBean(Class type, BeanManager beanManager) {
@@ -70,6 +72,7 @@ public class CrudRepositoryAsyncDocumentBean implements Bean<CrudRepositoryAsync
         this.beanManager = beanManager;
         this.types = Collections.singleton(type);
         this.provider = "";
+        this.qualifiers = Collections.singleton(DatabaseQualifier.ofDocument(provider));
     }
 
     @Override
@@ -125,8 +128,6 @@ public class CrudRepositoryAsyncDocumentBean implements Bean<CrudRepositoryAsync
 
     @Override
     public Set<Annotation> getQualifiers() {
-        Set<Annotation> qualifiers = new HashSet<Annotation>();
-        qualifiers.add(DatabaseQualifier.ofDocument(provider));
         return qualifiers;
     }
 
