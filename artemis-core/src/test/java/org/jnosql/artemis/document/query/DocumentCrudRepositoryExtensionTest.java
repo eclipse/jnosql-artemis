@@ -22,6 +22,7 @@ package org.jnosql.artemis.document.query;
 import org.jnosql.artemis.Database;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.PersonRepository;
+import org.jnosql.artemis.PersonRepositoryAsync;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Person;
 import org.junit.Test;
@@ -45,7 +46,25 @@ public class DocumentCrudRepositoryExtensionTest {
     @Database(value = DatabaseType.DOCUMENT, provider = "documentRepositoryMock")
     private PersonRepository repositoryMock;
 
+    @Inject
+    @Database(value = DatabaseType.DOCUMENT)
+    private PersonRepositoryAsync repositoryAsync;
 
+    @Inject
+    @Database(value = DatabaseType.DOCUMENT, provider = "documentRepositoryMock")
+    private PersonRepositoryAsync repositoryMockAsync;
+
+    @Test
+    public void shouldIniciateAsync() {
+        assertNotNull(repositoryAsync);
+        repositoryAsync.save(Person.builder().build());
+    }
+
+    @Test
+    public void shouldGetQualifierAsync() {
+        assertNotNull(repositoryMockAsync);
+        repositoryMockAsync.save(Person.builder().build());
+    }
 
 
     @Test

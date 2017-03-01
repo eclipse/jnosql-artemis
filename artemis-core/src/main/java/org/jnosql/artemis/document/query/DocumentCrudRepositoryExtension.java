@@ -21,6 +21,7 @@ package org.jnosql.artemis.document.query;
 
 
 import org.jnosql.artemis.CrudRepository;
+import org.jnosql.artemis.CrudRepositoryAsync;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
@@ -39,23 +40,43 @@ class DocumentCrudRepositoryExtension implements Extension {
 
     private static final Logger LOGGER = Logger.getLogger(DocumentCrudRepositoryExtension.class.getName());
 
-    private final Collection<Class<?>> types = new HashSet<>();
+    private final Collection<Class<?>> crudTypes = new HashSet<>();
+
+    private final Collection<Class<?>> crudAsyncTypes = new HashSet<>();
 
     <T extends CrudRepository> void onProcessAnnotatedType(@Observes final ProcessAnnotatedType<T> repo) {
         LOGGER.info("Starting the onProcessAnnotatedType");
         Class<T> javaClass = repo.getAnnotatedType().getJavaClass();
-        types.add(javaClass);
+        crudTypes.add(javaClass);
         LOGGER.info("Finished the onProcessAnnotatedType");
     }
 
     void onAfterBeanDiscovery(@Observes final AfterBeanDiscovery afterBeanDiscovery, final BeanManager beanManager) {
-        LOGGER.info("Starting the onAfterBeanDiscovery with elements number: " + types.size());
-        types.forEach(t -> {
+        LOGGER.info("Starting the onAfterBeanDiscovery with elements number: " + crudTypes.size());
+        crudTypes.forEach(t -> {
             final CrudRepositoryDocumentBean bean = new CrudRepositoryDocumentBean(t, beanManager);
             afterBeanDiscovery.addBean(bean);
         });
         LOGGER.info("Finished the onAfterBeanDiscovery");
     }
 
+
+
+    <T extends CrudRepositoryAsync> void onProcessAnnotatedTypeAsync(@Observes final ProcessAnnotatedType<T> repo) {
+        LOGGER.info("Starting the onProcessAnnotatedType");
+        Class<T> javaClass = repo.getAnnotatedType().getJavaClass();
+        crudAsyncTypes.add(javaClass);
+        LOGGER.info("Finished the onProcessAnnotatedType");
+    }
+
+    void onAfterBeanDiscoveryAsync(@Observes final AfterBeanDiscovery afterBeanDiscovery, final BeanManager beanManager) {
+        LOGGER.info("Starting the onAfterBeanDiscovery with elements number: " + crudAsyncTypes.size());
+
+        crudAsyncTypes.forEach(t -> {
+            final CrudRepositoryAsyncDocumentBean bean = new CrudRepositoryAsyncDocumentBean(t, beanManager);
+            afterBeanDiscovery.addBean(bean);
+        });
+        LOGGER.info("Finished the onAfterBeanDiscovery");
+    }
 
 }
