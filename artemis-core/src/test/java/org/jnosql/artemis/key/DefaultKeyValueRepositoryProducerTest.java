@@ -17,11 +17,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jnosql.artemis.document;
+package org.jnosql.artemis.key;
 
 import org.jnosql.artemis.WeldJUnit4Runner;
-import org.jnosql.artemis.column.ColumnRepository;
-import org.jnosql.diana.api.document.DocumentCollectionManager;
+import org.jnosql.diana.api.key.BucketManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -30,12 +29,12 @@ import javax.inject.Inject;
 
 import static org.junit.Assert.assertNotNull;
 
-
 @RunWith(WeldJUnit4Runner.class)
-public class DefaultDocumentRepositoryProducerTest {
+public class DefaultKeyValueRepositoryProducerTest {
+
 
     @Inject
-    private DocumentRepositoryProducer producer;
+    private KeyValueRepositoryProducer producer;
 
 
     @Test(expected = NullPointerException.class)
@@ -45,8 +44,8 @@ public class DefaultDocumentRepositoryProducerTest {
 
     @Test
     public void shouldReturn() {
-        DocumentCollectionManager manager = Mockito.mock(DocumentCollectionManager.class);
-        DocumentRepository documentRepository = producer.get(manager);
-        assertNotNull(documentRepository);
+        BucketManager manager = Mockito.mock(BucketManager.class);
+        KeyValueRepository repository = producer.get(manager);
+        assertNotNull(repository);
     }
 }
