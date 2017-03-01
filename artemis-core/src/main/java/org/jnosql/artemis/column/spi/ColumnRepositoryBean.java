@@ -17,13 +17,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jnosql.artemis.column.query;
+package org.jnosql.artemis.column.spi;
 
-import org.jnosql.artemis.CrudRepositoryAsync;
+
 import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
-import org.jnosql.artemis.column.ColumnRepositoryAsync;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.column.ColumnRepository;
+import org.jnosql.artemis.column.ColumnRepositoryProducer;
+import org.jnosql.diana.api.column.ColumnFamilyManager;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
@@ -32,17 +33,11 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.PassivationCapable;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
 
-/**
- * Artemis discoveryBean to CDI extension to register {@link CrudRepositoryAsync}
- */
-public class CrudRepositoryAsyncColumnBean implements Bean<CrudRepositoryAsync>, PassivationCapable {
-
-    private final Class type;
+class ColumnRepositoryBean implements Bean<ColumnRepository>, PassivationCapable {
 
     private final BeanManager beanManager;
 
@@ -55,21 +50,19 @@ public class CrudRepositoryAsyncColumnBean implements Bean<CrudRepositoryAsync>,
     /**
      * Constructor
      *
-     * @param type        the tye
      * @param beanManager the beanManager
      * @param provider    the provider name, that must be a
      */
-    public CrudRepositoryAsyncColumnBean(Class type, BeanManager beanManager, String provider) {
-        this.type = type;
+    public ColumnRepositoryBean(BeanManager beanManager, String provider) {
         this.beanManager = beanManager;
-        this.types = Collections.singleton(type);
+        this.types = Collections.singleton(ColumnRepository.class);
         this.provider = provider;
         this.qualifiers = Collections.singleton(DatabaseQualifier.ofColumn(provider));
     }
 
     @Override
     public Class<?> getBeanClass() {
-        return type;
+        return ColumnRepository.class;
     }
 
     @Override
@@ -83,15 +76,18 @@ public class CrudRepositoryAsyncColumnBean implements Bean<CrudRepositoryAsync>,
     }
 
     @Override
-    public CrudRepositoryAsync create(CreationalContext<CrudRepositoryAsync> creationalContext) {
-        ClassRepresentations classRepresentations = getInstance(ClassRepresentations.class);
-        ColumnRepositoryAsync repository = provider.isEmpty() ? getInstance(ColumnRepositoryAsync.class) :
-                getInstance(ColumnRepositoryAsync.class, provider);
-        ColumnCrudRepositoryAsyncProxy handler = new ColumnCrudRepositoryAsyncProxy(repository,
-                classRepresentations, type);
-        return (CrudRepositoryAsync) Proxy.newProxyInstance(type.getClassLoader(),
-                new Class[]{type},
-                handler);
+    public ColumnRepository create(CreationalContext<ColumnRepository> creationalContext) {
+
+        ColumnRepositoryProducer producer = getInstance(ColumnRepositoryProducer.class);
+        ColumnFamilyManager columnFamilyManager = getColumnFamilyManager();
+        return producer.get(columnFamilyManager);
+    }
+
+    private ColumnFamilyManager getColumnFamilyManager() {
+        Bean<ColumnFamilyManager> bean = (Bean<ColumnFamilyManager>) beanManager.getBeans(ColumnFamilyManager.class,
+                DatabaseQualifier.ofColumn(provider) ).iterator().next();
+        CreationalContext<ColumnFamilyManager> ctx = beanManager.createCreationalContext(bean);
+        return (ColumnFamilyManager) beanManager.getReference(bean, ColumnFamilyManager.class, ctx);
     }
 
 
@@ -109,7 +105,7 @@ public class CrudRepositoryAsyncColumnBean implements Bean<CrudRepositoryAsync>,
 
 
     @Override
-    public void destroy(CrudRepositoryAsync instance, CreationalContext<CrudRepositoryAsync> creationalContext) {
+    public void destroy(ColumnRepository instance, CreationalContext<ColumnRepository> creationalContext) {
 
     }
 
@@ -145,8 +141,7 @@ public class CrudRepositoryAsyncColumnBean implements Bean<CrudRepositoryAsync>,
 
     @Override
     public String getId() {
-        return type.getName() + "Async@" + DatabaseType.COLUMN + "-" + provider;
+        return ColumnRepository.class.getName() + DatabaseType.COLUMN + "-" + provider;
     }
-
 
 }

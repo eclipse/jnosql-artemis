@@ -63,20 +63,24 @@ public class MockProducer {
     }
 
     @Produces
+    @Database(value = DatabaseType.COLUMN, provider = "columnRepositoryMock")
+    public ColumnFamilyManager getColumnFamilyManagerMock() {
+        ColumnEntity entity = ColumnEntity.of("Person");
+        entity.add(org.jnosql.diana.api.column.Column.of("name", "columnRepositoryMock"));
+        entity.add(org.jnosql.diana.api.column.Column.of("age", 10));
+        ColumnFamilyManager manager = mock(ColumnFamilyManager.class);
+        Mockito.when(manager.save(Mockito.any(ColumnEntity.class))).thenReturn(entity);
+        return manager;
+
+    }
+
+
+    @Produces
     @Database(value = DatabaseType.DOCUMENT, provider = "documentRepositoryMock")
     public DocumentRepository getDocumentRepository() {
         DocumentRepository documentRepository = mock(DocumentRepository.class);
         Mockito.when(documentRepository.save(Mockito.any(Person.class))).thenReturn(Person.builder()
                 .withName("documentRepositoryMock").build());
-        return documentRepository;
-    }
-
-    @Produces
-    @Database(value = DatabaseType.COLUMN, provider = "columnRepositoryMock")
-    public ColumnRepository getColumnRepository() {
-        ColumnRepository documentRepository = mock(ColumnRepository.class);
-        Mockito.when(documentRepository.save(Mockito.any(Person.class))).thenReturn(Person.builder()
-                .withName("columnRepositoryMock").build());
         return documentRepository;
     }
 

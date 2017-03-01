@@ -71,7 +71,7 @@ class ColumnCrudRepositoryExtension implements Extension {
         LOGGER.info("Starting the onAfterBeanDiscovery with elements number: " + crudAsyncTypes.size());
 
         crudAsyncTypes.forEach(t -> {
-            final CrudRepositoryAsyncColumnBean bean = new CrudRepositoryAsyncColumnBean(t, beanManager);
+            final CrudRepositoryAsyncColumnBean bean = new CrudRepositoryAsyncColumnBean(t, beanManager, "");
             afterBeanDiscovery.addBean(bean);
         });
         LOGGER.info("Finished the onAfterBeanDiscovery");
