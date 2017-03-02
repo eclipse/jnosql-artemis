@@ -17,6 +17,3 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-
-org.jnosql.artemis.document.query.DocumentCrudRepositoryExtensionMock
-org.jnosql.artemis.document.query.DocumentCrudAsyncRepositoryExtensionMock
