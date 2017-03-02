@@ -67,14 +67,6 @@ public class CrudRepositoryDocumentBean implements Bean<CrudRepository>, Passiva
         this.qualifiers = Collections.singleton(DatabaseQualifier.ofDocument(provider));
     }
 
-    CrudRepositoryDocumentBean(Class type, BeanManager beanManager) {
-        this.type = type;
-        this.beanManager = beanManager;
-        this.types = Collections.singleton(type);
-        this.provider = "";
-        this.qualifiers = Collections.singleton(DatabaseQualifier.ofDocument(""));
-    }
-
     @Override
     public Class<?> getBeanClass() {
         return type;

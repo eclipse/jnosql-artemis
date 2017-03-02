@@ -67,14 +67,6 @@ public class CrudRepositoryAsyncDocumentBean implements Bean<CrudRepositoryAsync
         this.qualifiers = Collections.singleton(DatabaseQualifier.ofDocument(provider));
     }
 
-    CrudRepositoryAsyncDocumentBean(Class type, BeanManager beanManager) {
-        this.type = type;
-        this.beanManager = beanManager;
-        this.types = Collections.singleton(type);
-        this.provider = "";
-        this.qualifiers = Collections.singleton(DatabaseQualifier.ofDocument(provider));
-    }
-
     @Override
     public Class<?> getBeanClass() {
         return type;
