@@ -38,7 +38,7 @@ class KeyValueCrudRepositoryProxy<T> implements InvocationHandler {
 
     KeyValueCrudRepositoryProxy(Class<?> repositoryType, KeyValueRepository repository) {
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
-                .getActualTypeArguments()[0]);;
+                .getActualTypeArguments()[0]);
         this.repository = repository;
         this.crudRepository = new DefaultKeyValueCrudRepository(typeClass, repository);
     }
