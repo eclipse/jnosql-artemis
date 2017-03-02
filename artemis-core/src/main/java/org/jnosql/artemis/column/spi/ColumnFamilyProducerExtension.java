@@ -125,6 +125,16 @@ class ColumnFamilyProducerExtension implements Extension {
                 afterBeanDiscovery.addBean(bean);
             });
         });
+
+        crudAsyncTypes.forEach(t -> {
+            final CrudRepositoryAsyncColumnBean bean = new CrudRepositoryAsyncColumnBean(t, beanManager, "");
+            afterBeanDiscovery.addBean(bean);
+        });
+
+        crudTypes.forEach(type -> {
+            final CrudRepositoryColumnBean bean = new CrudRepositoryColumnBean(type, beanManager, "");
+            afterBeanDiscovery.addBean(bean);
+        });
         LOGGER.info("Finished the onAfterBeanDiscovery");
     }
 
