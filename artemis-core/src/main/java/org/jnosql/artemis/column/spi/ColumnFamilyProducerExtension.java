@@ -23,6 +23,7 @@ package org.jnosql.artemis.column.spi;
 import org.jnosql.artemis.Database;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
+import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
@@ -42,6 +43,8 @@ class ColumnFamilyProducerExtension implements Extension {
 
     private final List<Database> databases = new ArrayList<>();
 
+    private final List<Database> databasesAsync = new ArrayList<>();
+
 
     <T, X extends ColumnFamilyManager> void processProducer(@Observes final ProcessProducer<T, X> pp) {
         Set<Annotation> annotations = pp.getAnnotatedMember().getAnnotations();
@@ -58,10 +61,30 @@ class ColumnFamilyProducerExtension implements Extension {
 
     }
 
+    <T, X extends ColumnFamilyManagerAsync> void processProducerAsync(@Observes final ProcessProducer<T, X> pp) {
+        Set<Annotation> annotations = pp.getAnnotatedMember().getAnnotations();
+        Optional<Database> databaseOptional = annotations.stream().filter(a -> a instanceof Database)
+                .map(Database.class::cast).findFirst();
+        if (databaseOptional.isPresent()) {
+            Database database = databaseOptional.get();
+            if (!DatabaseType.COLUMN.equals(database.value())) {
+                String simpleName = pp.getAnnotatedMember().getDeclaringType().getJavaClass().getSimpleName();
+                throw new IllegalStateException(String.format("The %s must produce ColumnFamilyManager with COLUMN type", simpleName));
+            }
+            databasesAsync.add(database);
+        }
+
+    }
+
     void onAfterBeanDiscovery(@Observes final AfterBeanDiscovery afterBeanDiscovery, final BeanManager beanManager) {
         LOGGER.info("Starting the onAfterBeanDiscovery with elements number: " + databases.size());
         databases.forEach(type -> {
             final ColumnRepositoryBean bean = new ColumnRepositoryBean(beanManager, type.provider());
+            afterBeanDiscovery.addBean(bean);
+        });
+
+        databasesAsync.forEach(type -> {
+            final ColumnRepositoryAsyncBean bean = new ColumnRepositoryAsyncBean(beanManager, type.provider());
             afterBeanDiscovery.addBean(bean);
         });
         LOGGER.info("Finished the onAfterBeanDiscovery");

@@ -20,8 +20,6 @@
 package org.jnosql.artemis;
 
 
-import org.jnosql.artemis.column.ColumnRepository;
-import org.jnosql.artemis.column.ColumnRepositoryAsync;
 import org.jnosql.artemis.document.DocumentRepository;
 import org.jnosql.artemis.document.DocumentRepositoryAsync;
 import org.jnosql.artemis.model.Person;
@@ -95,6 +93,11 @@ public class MockProducer {
         return Mockito.mock(ColumnFamilyManagerAsync.class);
     }
 
+    @Produces
+    @Database(value = DatabaseType.COLUMN, provider = "columnRepositoryMock")
+    public ColumnFamilyManagerAsync getColumnFamilyManagerAsyncMock() {
+        return Mockito.mock(ColumnFamilyManagerAsync.class);
+    }
 
     @Produces
     @Database(value = DatabaseType.DOCUMENT, provider = "documentRepositoryMock")
@@ -102,10 +105,5 @@ public class MockProducer {
         return mock(DocumentRepositoryAsync.class);
     }
 
-    @Produces
-    @Database(value = DatabaseType.COLUMN, provider = "columnRepositoryMock")
-    public ColumnRepositoryAsync getColumnRepositoryAsync() {
-        return mock(ColumnRepositoryAsync.class);
-    }
 
 }

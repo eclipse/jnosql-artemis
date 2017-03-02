@@ -23,6 +23,7 @@ import org.jnosql.artemis.Database;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.column.ColumnRepository;
+import org.jnosql.artemis.column.ColumnRepositoryAsync;
 import org.jnosql.artemis.model.Person;
 import org.junit.Assert;
 import org.junit.Test;
@@ -42,6 +43,13 @@ public class ColumnFamilyProducerExtensionTest {
     @Inject
     private ColumnRepository manager;
 
+    @Inject
+    @Database(value = DatabaseType.COLUMN, provider = "columnRepositoryMock")
+    private ColumnRepositoryAsync managerMockAsync;
+
+    @Inject
+    private ColumnRepositoryAsync managerAsync;
+
     @Test
     public void shouldInstance() {
         Assert.assertNotNull(manager);
@@ -55,5 +63,11 @@ public class ColumnFamilyProducerExtensionTest {
 
         assertEquals("Default", person.getName());
         assertEquals("columnRepositoryMock", personMock.getName());
+    }
+
+    @Test
+    public void shouldSaveAsync() {
+        managerAsync.save(Person.builder().build());
+        managerMockAsync.save(Person.builder().build());
     }
 }
