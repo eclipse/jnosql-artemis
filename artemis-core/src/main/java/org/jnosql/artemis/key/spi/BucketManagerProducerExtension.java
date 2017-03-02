@@ -79,15 +79,10 @@ class BucketManagerProducerExtension implements Extension {
         });
 
         crudTypes.forEach(type -> {
+            afterBeanDiscovery.addBean(new KeyValueRepositoryBean(type, beanManager, ""));
             databases.forEach(database -> {
-                final KeyValueRepositoryBean bean = new KeyValueRepositoryBean(type, beanManager, database.provider());
-                afterBeanDiscovery.addBean(bean);
+                afterBeanDiscovery.addBean(new KeyValueRepositoryBean(type, beanManager, database.provider()));
             });
-        });
-
-        crudTypes.forEach(type -> {
-            final KeyValueRepositoryBean bean = new KeyValueRepositoryBean(type, beanManager, "");
-            afterBeanDiscovery.addBean(bean);
         });
 
         LOGGER.info("Finished the onAfterBeanDiscovery");

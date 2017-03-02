@@ -113,6 +113,7 @@ class DocumentCollectionProducerExtension implements Extension {
         });
 
         crudTypes.forEach(type -> {
+            afterBeanDiscovery.addBean(new CrudRepositoryDocumentBean(type, beanManager, ""));
             databases.forEach(database -> {
                 final CrudRepositoryDocumentBean bean = new CrudRepositoryDocumentBean(type, beanManager, database.provider());
                 afterBeanDiscovery.addBean(bean);
@@ -120,21 +121,13 @@ class DocumentCollectionProducerExtension implements Extension {
         });
 
         crudAsyncTypes.forEach(type -> {
+            afterBeanDiscovery.addBean(new CrudRepositoryAsyncDocumentBean(type, beanManager, ""));
             databasesAsync.forEach(database -> {
                 final CrudRepositoryAsyncDocumentBean bean = new CrudRepositoryAsyncDocumentBean(type, beanManager, database.provider());
                 afterBeanDiscovery.addBean(bean);
             });
         });
 
-        crudAsyncTypes.forEach(t -> {
-            final CrudRepositoryAsyncDocumentBean bean = new CrudRepositoryAsyncDocumentBean(t, beanManager, "");
-            afterBeanDiscovery.addBean(bean);
-        });
-
-        crudTypes.forEach(type -> {
-            final CrudRepositoryDocumentBean bean = new CrudRepositoryDocumentBean(type, beanManager, "");
-            afterBeanDiscovery.addBean(bean);
-        });
         LOGGER.info("Finished the onAfterBeanDiscovery");
     }
 

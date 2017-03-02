@@ -113,28 +113,20 @@ class ColumnFamilyProducerExtension implements Extension {
         });
 
         crudTypes.forEach(type -> {
+            afterBeanDiscovery.addBean(new CrudRepositoryColumnBean(type, beanManager, ""));
             databases.forEach(database -> {
-                final CrudRepositoryColumnBean bean = new CrudRepositoryColumnBean(type, beanManager, database.provider());
-                afterBeanDiscovery.addBean(bean);
+                afterBeanDiscovery.addBean(new CrudRepositoryColumnBean(type, beanManager, database.provider()));
             });
         });
 
         crudAsyncTypes.forEach(type -> {
+            afterBeanDiscovery.addBean(new CrudRepositoryAsyncColumnBean(type, beanManager, ""));
             databasesAsync.forEach(database -> {
-                final CrudRepositoryAsyncColumnBean bean = new CrudRepositoryAsyncColumnBean(type, beanManager, database.provider());
-                afterBeanDiscovery.addBean(bean);
+                afterBeanDiscovery.addBean(new CrudRepositoryAsyncColumnBean(type, beanManager, database.provider()));
             });
         });
 
-        crudAsyncTypes.forEach(t -> {
-            final CrudRepositoryAsyncColumnBean bean = new CrudRepositoryAsyncColumnBean(t, beanManager, "");
-            afterBeanDiscovery.addBean(bean);
-        });
 
-        crudTypes.forEach(type -> {
-            final CrudRepositoryColumnBean bean = new CrudRepositoryColumnBean(type, beanManager, "");
-            afterBeanDiscovery.addBean(bean);
-        });
         LOGGER.info("Finished the onAfterBeanDiscovery");
     }
 
