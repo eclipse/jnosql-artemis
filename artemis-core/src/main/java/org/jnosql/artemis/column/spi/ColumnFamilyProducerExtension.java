@@ -20,8 +20,12 @@
 package org.jnosql.artemis.column.spi;
 
 
+import org.jnosql.artemis.CrudRepository;
+import org.jnosql.artemis.CrudRepositoryAsync;
 import org.jnosql.artemis.Database;
 import org.jnosql.artemis.DatabaseType;
+import org.jnosql.artemis.column.query.CrudRepositoryAsyncColumnBean;
+import org.jnosql.artemis.column.query.CrudRepositoryColumnBean;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
 
@@ -29,9 +33,12 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessProducer;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -45,6 +52,23 @@ class ColumnFamilyProducerExtension implements Extension {
 
     private final List<Database> databasesAsync = new ArrayList<>();
 
+    private final Collection<Class<?>> crudTypes = new HashSet<>();
+
+    private final Collection<Class<?>> crudAsyncTypes = new HashSet<>();
+
+
+    <T extends CrudRepository> void onProcessAnnotatedType(@Observes final ProcessAnnotatedType<T> repo) {
+        LOGGER.info("Starting the onProcessAnnotatedType");
+        crudTypes.add(repo.getAnnotatedType().getJavaClass());
+        LOGGER.info("Finished the onProcessAnnotatedType");
+    }
+
+    <T extends CrudRepositoryAsync> void onProcessAnnotatedTypeAsync(@Observes final ProcessAnnotatedType<T> repo) {
+        LOGGER.info("Starting the onProcessAnnotatedType");
+        Class<T> javaClass = repo.getAnnotatedType().getJavaClass();
+        crudAsyncTypes.add(javaClass);
+        LOGGER.info("Finished the onProcessAnnotatedType");
+    }
 
     <T, X extends ColumnFamilyManager> void processProducer(@Observes final ProcessProducer<T, X> pp) {
         Set<Annotation> annotations = pp.getAnnotatedMember().getAnnotations();
@@ -86,6 +110,20 @@ class ColumnFamilyProducerExtension implements Extension {
         databasesAsync.forEach(type -> {
             final ColumnRepositoryAsyncBean bean = new ColumnRepositoryAsyncBean(beanManager, type.provider());
             afterBeanDiscovery.addBean(bean);
+        });
+
+        crudTypes.forEach(type -> {
+            databases.forEach(database -> {
+                final CrudRepositoryColumnBean bean = new CrudRepositoryColumnBean(type, beanManager, database.provider());
+                afterBeanDiscovery.addBean(bean);
+            });
+        });
+
+        crudAsyncTypes.forEach(type -> {
+            databasesAsync.forEach(database -> {
+                final CrudRepositoryAsyncColumnBean bean = new CrudRepositoryAsyncColumnBean(type, beanManager, database.provider());
+                afterBeanDiscovery.addBean(bean);
+            });
         });
         LOGGER.info("Finished the onAfterBeanDiscovery");
     }

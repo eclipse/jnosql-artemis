@@ -20,5 +20,3 @@
 
 org.jnosql.artemis.document.query.DocumentCrudRepositoryExtensionMock
 org.jnosql.artemis.document.query.DocumentCrudAsyncRepositoryExtensionMock
-org.jnosql.artemis.column.query.ColumnCrudRepositoryExtensionMock
-org.jnosql.artemis.column.query.ColumnCrudAsyncRepositoryExtensionMock
