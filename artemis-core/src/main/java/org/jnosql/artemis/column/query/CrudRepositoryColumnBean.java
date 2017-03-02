@@ -67,14 +67,6 @@ public class CrudRepositoryColumnBean implements Bean<CrudRepository>, Passivati
         this.qualifiers = Collections.singleton(DatabaseQualifier.ofColumn(provider));
     }
 
-    CrudRepositoryColumnBean(Class type, BeanManager beanManager) {
-        this.type = type;
-        this.beanManager = beanManager;
-        this.types = Collections.singleton(type);
-        this.provider = "";
-        this.qualifiers = Collections.singleton(DatabaseQualifier.ofColumn(provider));
-    }
-
     @Override
     public Class<?> getBeanClass() {
         return type;
