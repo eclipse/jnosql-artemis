@@ -44,6 +44,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
 
+/**
+ * Extension to start up the DocumentRepository, DocumentRepositoryAsync, CrudRepository and CrudRepositoryAsync
+ * from the {@link Database} qualifier
+ */
 class DocumentCollectionProducerExtension implements Extension {
 
     private static final Logger LOGGER = Logger.getLogger(DocumentCollectionProducerExtension.class.getName());

@@ -41,6 +41,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
 
+/**
+ * Extension to start up {@link org.jnosql.artemis.key.KeyValueRepository} and {@link KeyValueCrudRepository}
+ * from the {@link javax.enterprise.inject.Default} and {@link Database} qualifier
+ */
 class BucketManagerProducerExtension implements Extension {
 
     private static final Logger LOGGER = Logger.getLogger(BucketManagerProducerExtension.class.getName());
