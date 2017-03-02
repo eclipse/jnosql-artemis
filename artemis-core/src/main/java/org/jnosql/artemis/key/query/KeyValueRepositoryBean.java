@@ -68,8 +68,9 @@ public class KeyValueRepositoryBean implements Bean<KeyValueCrudRepository>, Pas
         if (provider.isEmpty()) {
             this.qualifiers = new HashSet<>();
             qualifiers.add(DatabaseQualifier.ofKeyValue());
-            qualifiers.add(new AnnotationLiteral<Default>() {});
-        } else{
+            qualifiers.add(new AnnotationLiteral<Default>() {
+            });
+        } else {
             this.qualifiers = Collections.singleton(DatabaseQualifier.ofKeyValue(provider));
         }
 

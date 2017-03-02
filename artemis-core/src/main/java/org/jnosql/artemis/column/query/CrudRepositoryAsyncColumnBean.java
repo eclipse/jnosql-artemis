@@ -27,14 +27,17 @@ import org.jnosql.artemis.reflection.ClassRepresentations;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.PassivationCapable;
+import javax.enterprise.util.AnnotationLiteral;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -64,7 +67,14 @@ public class CrudRepositoryAsyncColumnBean implements Bean<CrudRepositoryAsync>,
         this.beanManager = beanManager;
         this.types = Collections.singleton(type);
         this.provider = provider;
-        this.qualifiers = Collections.singleton(DatabaseQualifier.ofColumn(provider));
+        if (provider.isEmpty()) {
+            this.qualifiers = new HashSet<>();
+            qualifiers.add(DatabaseQualifier.ofColumn());
+            qualifiers.add(new AnnotationLiteral<Default>() {
+            });
+        } else {
+            this.qualifiers = Collections.singleton(DatabaseQualifier.ofColumn(provider));
+        }
     }
 
     @Override
