@@ -23,6 +23,7 @@ import org.junit.Test;
 
 import static org.jnosql.artemis.DatabaseType.COLUMN;
 import static org.jnosql.artemis.DatabaseType.DOCUMENT;
+import static org.jnosql.artemis.DatabaseType.KEY_VALUE;
 import static org.junit.Assert.assertEquals;
 
 
@@ -68,4 +69,23 @@ public class DatabaseQualifierTest {
         DatabaseQualifier.ofDocument(null);
     }
 
+    @Test(expected = NullPointerException.class)
+    public void shouldReturnErrorWhenKeyValueNull() {
+        DatabaseQualifier.ofKeyValue(null);
+    }
+
+    @Test
+    public void shouldReturnKeyValueProvider() {
+        String provider = "provider";
+        DatabaseQualifier qualifier = DatabaseQualifier.ofKeyValue(provider);
+        assertEquals(provider, qualifier.provider());
+        assertEquals(KEY_VALUE, qualifier.value());
+    }
+
+    @Test
+    public void shouldReturnDefaultKeyValue() {
+        DatabaseQualifier qualifier = DatabaseQualifier.ofKeyValue();
+        assertEquals("", qualifier.provider());
+        assertEquals(KEY_VALUE, qualifier.value());
+    }
 }

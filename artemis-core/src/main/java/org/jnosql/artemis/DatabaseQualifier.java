@@ -25,6 +25,7 @@ import java.util.Objects;
 
 import static org.jnosql.artemis.DatabaseType.COLUMN;
 import static org.jnosql.artemis.DatabaseType.DOCUMENT;
+import static org.jnosql.artemis.DatabaseType.KEY_VALUE;
 
 /**
  * Utilitarian class to select the {@link Database}
@@ -34,6 +35,8 @@ public class DatabaseQualifier extends AnnotationLiteral<Database> implements Da
     private static final DatabaseQualifier DEFAULT_DOCUMENT_PROVIDER = new DatabaseQualifier("", DOCUMENT);
 
     private static final DatabaseQualifier DEFAULT_COLUMN_PROVIDER = new DatabaseQualifier("", COLUMN);
+
+    private static final DatabaseQualifier DEFAULT_KEY_VALUE_PROVIDER = new DatabaseQualifier("", KEY_VALUE);
 
     private final String provider;
 
@@ -105,5 +108,30 @@ public class DatabaseQualifier extends AnnotationLiteral<Database> implements Da
             return DEFAULT_COLUMN_PROVIDER;
         }
         return new DatabaseQualifier(provider, COLUMN);
+    }
+    /**
+     * Returns the qualifier filter with document type {@link DatabaseType#KEY_VALUE}
+     * and the nosql provider default
+     *
+     * @return the default key-value provider
+     */
+    public static DatabaseQualifier ofKeyValue() {
+        return DEFAULT_KEY_VALUE_PROVIDER;
+    }
+
+    /**
+     * Returns the qualifier filter with document type {@link DatabaseType#KEY_VALUE} and the
+     * nosql provider defined
+     *
+     * @param provider the provider
+     * @return the qualifier filter instance
+     * @throws NullPointerException when provider is null
+     */
+    public static DatabaseQualifier ofKeyValue(String provider) throws NullPointerException {
+        Objects.requireNonNull(provider, "provider is required");
+        if (provider.trim().isEmpty()) {
+            return DEFAULT_KEY_VALUE_PROVIDER;
+        }
+        return new DatabaseQualifier(provider, KEY_VALUE);
     }
 }

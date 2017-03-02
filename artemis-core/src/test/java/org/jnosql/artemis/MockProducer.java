@@ -23,6 +23,7 @@ package org.jnosql.artemis;
 import org.jnosql.artemis.document.DocumentRepository;
 import org.jnosql.artemis.document.DocumentRepositoryAsync;
 import org.jnosql.artemis.model.Person;
+import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
@@ -30,9 +31,12 @@ import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
 import org.jnosql.diana.api.document.DocumentEntity;
+import org.jnosql.diana.api.key.BucketManager;
 import org.mockito.Mockito;
 
 import javax.enterprise.inject.Produces;
+
+import java.util.Optional;
 
 import static org.mockito.Mockito.mock;
 
@@ -122,6 +126,24 @@ public class MockProducer {
     @Database(value = DatabaseType.DOCUMENT, provider = "documentRepositoryMock")
     public DocumentRepositoryAsync getDocumentRepositoryAsync() {
         return mock(DocumentRepositoryAsync.class);
+    }
+
+
+    @Produces
+    public BucketManager getBucketManager() {
+        BucketManager bucketManager = Mockito.mock(BucketManager.class);
+        Person person = Person.builder().withName("Default").build();
+        Mockito.when(bucketManager.get("key")).thenReturn(Optional.ofNullable(Value.of(person)));
+        return bucketManager;
+    }
+
+    @Produces
+    @Database(value = DatabaseType.KEY_VALUE, provider = "keyvalueMock")
+    public BucketManager getBucketManagerMock() {
+        BucketManager bucketManager = Mockito.mock(BucketManager.class);
+        Person person = Person.builder().withName("keyvalueMock").build();
+        Mockito.when(bucketManager.get("key")).thenReturn(Optional.ofNullable(Value.of(person)));
+        return bucketManager;
     }
 
 
