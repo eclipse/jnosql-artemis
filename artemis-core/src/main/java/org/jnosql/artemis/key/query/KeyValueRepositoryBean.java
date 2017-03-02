@@ -25,20 +25,23 @@ import org.jnosql.artemis.key.KeyValueRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.PassivationCapable;
+import javax.enterprise.util.AnnotationLiteral;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Artemis discoveryBean to CDI extension to register {@link KeyValueRepository}
  */
-public class KeyValueRepositoryDocumentBean implements Bean<KeyValueRepository>, PassivationCapable {
+public class KeyValueRepositoryBean implements Bean<KeyValueCrudRepository>, PassivationCapable {
 
     private final Class type;
 
@@ -57,12 +60,19 @@ public class KeyValueRepositoryDocumentBean implements Bean<KeyValueRepository>,
      * @param beanManager the beanManager
      * @param provider    the provider name, that must be a
      */
-    public KeyValueRepositoryDocumentBean(Class type, BeanManager beanManager, String provider) {
+    public KeyValueRepositoryBean(Class type, BeanManager beanManager, String provider) {
         this.type = type;
         this.beanManager = beanManager;
         this.types = Collections.singleton(type);
         this.provider = provider;
-        this.qualifiers = Collections.singleton(DatabaseQualifier.ofKeyValue(provider));
+        if (provider.isEmpty()) {
+            this.qualifiers = new HashSet<>();
+            qualifiers.add(DatabaseQualifier.ofKeyValue());
+            qualifiers.add(new AnnotationLiteral<Default>() {});
+        } else{
+            this.qualifiers = Collections.singleton(DatabaseQualifier.ofKeyValue(provider));
+        }
+
     }
 
     @Override
@@ -81,11 +91,11 @@ public class KeyValueRepositoryDocumentBean implements Bean<KeyValueRepository>,
     }
 
     @Override
-    public KeyValueRepository create(CreationalContext<KeyValueRepository> creationalContext) {
+    public KeyValueCrudRepository create(CreationalContext<KeyValueCrudRepository> creationalContext) {
         KeyValueRepository repository = provider.isEmpty() ? getInstance(KeyValueRepository.class) :
                 getInstance(KeyValueRepository.class, provider);
         KeyValueCrudRepositoryProxy handler = new KeyValueCrudRepositoryProxy(type, repository);
-        return (KeyValueRepository) Proxy.newProxyInstance(type.getClassLoader(),
+        return (KeyValueCrudRepository) Proxy.newProxyInstance(type.getClassLoader(),
                 new Class[]{type},
                 handler);
     }
@@ -98,14 +108,14 @@ public class KeyValueRepositoryDocumentBean implements Bean<KeyValueRepository>,
     }
 
     private <T> T getInstance(Class<T> clazz, String name) {
-        Bean bean = beanManager.getBeans(clazz, DatabaseQualifier.ofDocument(name)).iterator().next();
+        Bean bean = beanManager.getBeans(clazz, DatabaseQualifier.ofKeyValue(name)).iterator().next();
         CreationalContext ctx = beanManager.createCreationalContext(bean);
         return (T) beanManager.getReference(bean, clazz, ctx);
     }
 
 
     @Override
-    public void destroy(KeyValueRepository instance, CreationalContext<KeyValueRepository> creationalContext) {
+    public void destroy(KeyValueCrudRepository instance, CreationalContext<KeyValueCrudRepository> creationalContext) {
 
     }
 

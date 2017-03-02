@@ -22,15 +22,20 @@ package org.jnosql.artemis.key.spi;
 
 import org.jnosql.artemis.Database;
 import org.jnosql.artemis.DatabaseType;
+import org.jnosql.artemis.key.query.KeyValueCrudRepository;
+import org.jnosql.artemis.key.query.KeyValueRepositoryBean;
 import org.jnosql.diana.api.key.BucketManager;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessProducer;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -41,6 +46,8 @@ class BucketManagerProducerExtension implements Extension {
     private static final Logger LOGGER = Logger.getLogger(BucketManagerProducerExtension.class.getName());
 
     private final List<Database> databases = new ArrayList<>();
+
+    private final Collection<Class<?>> crudTypes = new HashSet<>();
 
     <T, X extends BucketManager> void processProducer(@Observes final ProcessProducer<T, X> pp) {
         Set<Annotation> annotations = pp.getAnnotatedMember().getAnnotations();
@@ -57,10 +64,29 @@ class BucketManagerProducerExtension implements Extension {
 
     }
 
+    <T extends KeyValueCrudRepository> void onProcessAnnotatedType(@Observes final ProcessAnnotatedType<T> repo) {
+        LOGGER.info("Starting the onProcessAnnotatedType");
+        crudTypes.add(repo.getAnnotatedType().getJavaClass());
+        LOGGER.info("Finished the onProcessAnnotatedType");
+    }
+
     void onAfterBeanDiscovery(@Observes final AfterBeanDiscovery afterBeanDiscovery, final BeanManager beanManager) {
         LOGGER.info("Starting the onAfterBeanDiscovery with elements number: " + databases.size());
+
         databases.forEach(type -> {
-            final KeyValueRepositoryBean bean = new KeyValueRepositoryBean(beanManager, type.provider());
+            final org.jnosql.artemis.key.spi.KeyValueRepositoryBean bean = new org.jnosql.artemis.key.spi.KeyValueRepositoryBean(beanManager, type.provider());
+            afterBeanDiscovery.addBean(bean);
+        });
+
+        crudTypes.forEach(type -> {
+            databases.forEach(database -> {
+                final KeyValueRepositoryBean bean = new KeyValueRepositoryBean(type, beanManager, database.provider());
+                afterBeanDiscovery.addBean(bean);
+            });
+        });
+
+        crudTypes.forEach(type -> {
+            final KeyValueRepositoryBean bean = new KeyValueRepositoryBean(type, beanManager, "");
             afterBeanDiscovery.addBean(bean);
         });
 

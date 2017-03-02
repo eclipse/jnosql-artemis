@@ -21,18 +21,17 @@ package org.jnosql.artemis.key.spi;
 
 import org.jnosql.artemis.Database;
 import org.jnosql.artemis.DatabaseType;
+import org.jnosql.artemis.UserRepository;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.key.KeyValueRepository;
 import org.jnosql.artemis.model.Person;
-import org.jnosql.diana.api.key.BucketManager;
+import org.jnosql.artemis.model.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 
-import java.util.Optional;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(WeldJUnit4Runner.class)
 public class BucketManagerProducerExtensionTest {
@@ -44,6 +43,17 @@ public class BucketManagerProducerExtensionTest {
     @Database(value = DatabaseType.KEY_VALUE, provider = "keyvalueMock")
     private KeyValueRepository repositoryMock;
 
+    @Inject
+    private UserRepository userRepository;
+
+    @Inject
+    @Database(value = DatabaseType.KEY_VALUE)
+    private UserRepository userRepositoryDefault;
+
+    @Inject
+    @Database(value = DatabaseType.KEY_VALUE, provider = "keyvalueMock")
+    private UserRepository userRepositoryMock;
+
     @Test
     public void shouldPut() {
         Person person = repository.get("key", Person.class).get();
@@ -53,6 +63,17 @@ public class BucketManagerProducerExtensionTest {
         assertEquals("Default", person.getName());
         assertEquals("keyvalueMock", personMock.getName());
 
+    }
+
+
+    @Test
+    public void shouldGet() {
+        User user = userRepository.get("user").get();
+        User userDefault = userRepositoryDefault.get("user").get();
+        User userMock = userRepositoryMock.get("user").get();
+        assertEquals("Default", user.getName());
+        assertEquals("Default", userDefault.getName());
+        assertEquals("keyvalueMock", userMock.getName());
     }
 
 }

@@ -23,6 +23,7 @@ package org.jnosql.artemis;
 import org.jnosql.artemis.document.DocumentRepository;
 import org.jnosql.artemis.document.DocumentRepositoryAsync;
 import org.jnosql.artemis.model.Person;
+import org.jnosql.artemis.model.User;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
@@ -39,6 +40,7 @@ import javax.enterprise.inject.Produces;
 import java.util.Optional;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class MockProducer {
 
@@ -48,7 +50,7 @@ public class MockProducer {
         entity.add(Document.of("name", "Default"));
         entity.add(Document.of("age", 10));
         DocumentCollectionManager manager = mock(DocumentCollectionManager.class);
-        Mockito.when(manager.save(Mockito.any(DocumentEntity.class))).thenReturn(entity);
+        when(manager.save(Mockito.any(DocumentEntity.class))).thenReturn(entity);
         return manager;
 
     }
@@ -60,7 +62,7 @@ public class MockProducer {
         entity.add(Document.of("name", "documentRepositoryMock"));
         entity.add(Document.of("age", 10));
         DocumentCollectionManager manager = mock(DocumentCollectionManager.class);
-        Mockito.when(manager.save(Mockito.any(DocumentEntity.class))).thenReturn(entity);
+        when(manager.save(Mockito.any(DocumentEntity.class))).thenReturn(entity);
         return manager;
 
     }
@@ -71,7 +73,7 @@ public class MockProducer {
         entity.add(org.jnosql.diana.api.column.Column.of("name", "Default"));
         entity.add(org.jnosql.diana.api.column.Column.of("age", 10));
         ColumnFamilyManager manager = mock(ColumnFamilyManager.class);
-        Mockito.when(manager.save(Mockito.any(ColumnEntity.class))).thenReturn(entity);
+        when(manager.save(Mockito.any(ColumnEntity.class))).thenReturn(entity);
         return manager;
 
     }
@@ -83,7 +85,7 @@ public class MockProducer {
         entity.add(org.jnosql.diana.api.column.Column.of("name", "columnRepositoryMock"));
         entity.add(org.jnosql.diana.api.column.Column.of("age", 10));
         ColumnFamilyManager manager = mock(ColumnFamilyManager.class);
-        Mockito.when(manager.save(Mockito.any(ColumnEntity.class))).thenReturn(entity);
+        when(manager.save(Mockito.any(ColumnEntity.class))).thenReturn(entity);
         return manager;
 
     }
@@ -93,7 +95,7 @@ public class MockProducer {
     @Database(value = DatabaseType.DOCUMENT, provider = "documentRepositoryMock")
     public DocumentRepository getDocumentRepository() {
         DocumentRepository documentRepository = mock(DocumentRepository.class);
-        Mockito.when(documentRepository.save(Mockito.any(Person.class))).thenReturn(Person.builder()
+        when(documentRepository.save(Mockito.any(Person.class))).thenReturn(Person.builder()
                 .withName("documentRepositoryMock").build());
         return documentRepository;
     }
@@ -133,7 +135,8 @@ public class MockProducer {
     public BucketManager getBucketManager() {
         BucketManager bucketManager = Mockito.mock(BucketManager.class);
         Person person = Person.builder().withName("Default").build();
-        Mockito.when(bucketManager.get("key")).thenReturn(Optional.ofNullable(Value.of(person)));
+        when(bucketManager.get("key")).thenReturn(Optional.ofNullable(Value.of(person)));
+        when(bucketManager.get("user")).thenReturn(Optional.of(Value.of(new User("Default", "Default", 10))));
         return bucketManager;
     }
 
@@ -142,7 +145,8 @@ public class MockProducer {
     public BucketManager getBucketManagerMock() {
         BucketManager bucketManager = Mockito.mock(BucketManager.class);
         Person person = Person.builder().withName("keyvalueMock").build();
-        Mockito.when(bucketManager.get("key")).thenReturn(Optional.ofNullable(Value.of(person)));
+        when(bucketManager.get("key")).thenReturn(Optional.ofNullable(Value.of(person)));
+        when(bucketManager.get("user")).thenReturn(Optional.of(Value.of(new User("keyvalueMock", "keyvalueMock", 10))));
         return bucketManager;
     }
 
