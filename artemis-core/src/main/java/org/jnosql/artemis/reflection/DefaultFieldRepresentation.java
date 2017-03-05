@@ -25,6 +25,7 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.jnosql.artemis.AttributeConverter;
 import org.jnosql.artemis.Key;
 
 /**
@@ -35,8 +36,8 @@ public class DefaultFieldRepresentation extends AbstractFieldRepresentation {
 
     private final boolean key;
 
-    DefaultFieldRepresentation(FieldType type, Field field, String name) {
-        super(type, field, name);
+    DefaultFieldRepresentation(FieldType type, Field field, String name, Class<? extends AttributeConverter> converter) {
+        super(type, field, name, converter);
         this.key = field.getDeclaredAnnotation(Key.class) != null;
     }
 

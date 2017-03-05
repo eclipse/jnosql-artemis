@@ -19,6 +19,7 @@
  */
 package org.jnosql.artemis.reflection;
 
+import org.jnosql.artemis.AttributeConverter;
 import org.jnosql.diana.api.TypeSupplier;
 
 import java.lang.reflect.Field;
@@ -34,6 +35,8 @@ class FieldRepresentationBuilder {
     private String entityName;
 
     private TypeSupplier<?> typeSupplier;
+
+    private Class<? extends AttributeConverter> converter;
 
     public FieldRepresentationBuilder withType(FieldType type) {
         this.type = type;
@@ -60,16 +63,21 @@ class FieldRepresentationBuilder {
         return this;
     }
 
+    public FieldRepresentationBuilder withConverter(Class<? extends AttributeConverter> converter) {
+        this.converter = converter;
+        return this;
+    }
+
     public DefaultFieldRepresentation buildDefault() {
-        return new DefaultFieldRepresentation(type, field, name);
+        return new DefaultFieldRepresentation(type, field, name, converter);
     }
 
     public GenericFieldRepresentation buildGeneric() {
-        return new GenericFieldRepresentation(type, field, name, typeSupplier);
+        return new GenericFieldRepresentation(type, field, name, typeSupplier, converter);
     }
 
     public EmbeddedFieldRepresentation buildEmedded() {
-        return new EmbeddedFieldRepresentation(type, field, name, entityName);
+        return new EmbeddedFieldRepresentation(type, field, name, entityName, converter);
     }
 
 }

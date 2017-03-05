@@ -77,7 +77,7 @@ public interface FieldRepresentation extends Serializable {
      * @param <T> the Converter
      * @return the converter if present
      */
-    <T extends AttributeConverter> Optional<Class<T>> getConverter();
+    <T extends AttributeConverter> Optional<Class<? extends AttributeConverter>> getConverter();
 
     /**
      * Creates the FieldRepresentationBuilder

@@ -22,6 +22,7 @@ package org.jnosql.artemis.reflection;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.jnosql.artemis.AttributeConverter;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
@@ -30,8 +31,8 @@ public final class EmbeddedFieldRepresentation extends AbstractFieldRepresentati
 
     private final String entityName;
 
-    public EmbeddedFieldRepresentation(FieldType type, Field field, String name, String entityName) {
-        super(type, field, name);
+    public EmbeddedFieldRepresentation(FieldType type, Field field, String name, String entityName, Class<? extends AttributeConverter> converter) {
+        super(type, field, name, converter);
         this.entityName = entityName;
     }
 
