@@ -22,6 +22,9 @@ package org.jnosql.artemis.reflection;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.Optional;
+
+import org.jnosql.artemis.AttributeConverter;
 import org.jnosql.diana.api.Value;
 
 /**
@@ -56,16 +59,25 @@ public interface FieldRepresentation extends Serializable {
     /**
      * Returns the object from the field type
      *
-     * @param value       the value {@link Value}
+     * @param value the value {@link Value}
      * @return the instance from the field type
      */
     Object getValue(Value value);
 
     /**
      * Returns true is the field is annotated with {@link org.jnosql.artemis.Key}
+     *
      * @return true is annotated with {@link org.jnosql.artemis.Key}
      */
     boolean isKey();
+
+    /**
+     * Returns the converter class
+     *
+     * @param <T> the Converter
+     * @return the converter if present
+     */
+    <T extends AttributeConverter> Optional<Class<T>> getConverter();
 
     /**
      * Creates the FieldRepresentationBuilder
