@@ -19,18 +19,21 @@
  */
 package org.jnosql.artemis.document;
 
+import org.jnosql.artemis.AttributeConverter;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.FieldRepresentation;
 import org.jnosql.artemis.reflection.FieldValue;
 import org.jnosql.artemis.reflection.Reflections;
+import org.jnosql.diana.api.TypeReference;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentEntity;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -112,14 +115,23 @@ class DefaultDocumentEntityConverter implements DocumentEntityConverter {
 
     private <T> void setSingleField(T instance, Optional<Document> document, FieldRepresentation field) {
         Value value = document.get().getValue();
-        reflections.setValue(instance, field.getField(), field.getValue(value));
+        Optional<Class<? extends AttributeConverter>> converter = field.getConverter();
+        if (converter.isPresent()) {
+            AttributeConverter attributeConverter = converters.get(converter.get());
+            Object attributeConverted = attributeConverter.convertToEntityAttribute(value.get());
+            reflections.setValue(instance, field.getField(), field.getValue(Value.of(attributeConverted)));
+        } else {
+            reflections.setValue(instance, field.getField(), field.getValue(value));
+        }
     }
 
     private <T> void setEmbeddedField(T instance, DocumentEntity entity, Optional<Document> document, FieldRepresentation field) {
         if (document.isPresent()) {
-            Value value = document.get().getValue();
-            DocumentEntity columnEntity = value.get(DocumentEntity.class);
-            reflections.setValue(instance, field.getField(), toEntity(columnEntity));
+            Document subdocument = document.get();
+            DocumentEntity documentEntity = DocumentEntity.of(subdocument.getName(),
+                    subdocument.get(new TypeReference<List<Document>>() {
+                    }));
+            reflections.setValue(instance, field.getField(), toEntity(documentEntity));
         } else {
             reflections.setValue(instance, field.getField(), toEntity(field.getField().getType(), entity));
         }

@@ -34,6 +34,7 @@ import org.jnosql.diana.api.TypeSupplier;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentEntity;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -153,13 +154,15 @@ public class DefaultDocumentEntityConverterTest {
         assertEquals(getValue(entity.find("_id")), director.getId());
         assertEquals(getValue(entity.find("phones")), director.getPhones());
 
-        DocumentEntity subdocument = (DocumentEntity) getValue(entity.find("movie"));
-
-        assertEquals(3, subdocument.size());
+        Document subdocument = entity.find("movie").get();
+        List<Document> documents = subdocument.get(new TypeReference<List<Document>>() {
+        });
+        assertEquals(3, documents.size());
         assertEquals("movie", subdocument.getName());
-        assertEquals(movie.getTitle(), getValue(subdocument.find("title")));
-        assertEquals(movie.getYear(), getValue(subdocument.find("year")));
-        assertEquals(movie.getActors(), getValue(subdocument.find("actors")));
+
+        assertEquals(movie.getTitle(), getValue(documents.stream().filter(d -> "title".equals(d.getName())).findFirst()));
+        assertEquals(movie.getYear(), getValue(documents.stream().filter(d -> "year".equals(d.getName())).findFirst()));
+        assertEquals(movie.getActors(), getValue(documents.stream().filter(d -> "actors".equals(d.getName())).findFirst()));
 
 
     }
@@ -223,6 +226,21 @@ public class DefaultDocumentEntityConverterTest {
         assertEquals("BRL 10", entity.find("money").get().get());
     }
 
+    @Test
+    public void shouldConvertToEntityWhenHasConverter() {
+        Worker worker = new Worker();
+        Job job = new Job();
+        job.setCity("Sao Paulo");
+        job.setDescription("Java Developer");
+        worker.setName("Bob");
+        worker.setSalary(new Money("BRL", BigDecimal.TEN));
+        worker.setJob(job);
+        DocumentEntity entity = converter.toDocument(worker);
+        Worker worker1 = converter.toEntity(entity);
+        Assert.assertEquals(worker.getSalary(), worker1.getSalary());
+        assertEquals(job.getCity(), worker1.getJob().getCity());
+        assertEquals(job.getDescription(), worker1.getJob().getDescription());
+    }
 
     private Object getValue(Optional<Document> document) {
         return document.map(Document::getValue).map(Value::get).orElse(null);

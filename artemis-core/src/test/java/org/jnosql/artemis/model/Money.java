@@ -52,12 +52,12 @@ public class Money {
         }
         Money money = (Money) o;
         return Objects.equals(currency, money.currency) &&
-                Objects.equals(value, money.value);
+                Objects.equals(value.doubleValue(), money.value.doubleValue());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(currency, value);
+        return Objects.hash(currency, value.doubleValue());
     }
 
     @Override

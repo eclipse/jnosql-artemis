@@ -60,4 +60,6 @@ public class Worker {
     public void setSalary(Money salary) {
         this.salary = salary;
     }
+
+
 }
