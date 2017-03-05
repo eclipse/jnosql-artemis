@@ -23,6 +23,7 @@ import org.jnosql.artemis.model.Actor;
 import org.jnosql.artemis.model.Director;
 import org.jnosql.artemis.model.Movie;
 import org.jnosql.artemis.model.Person;
+import org.jnosql.artemis.model.Worker;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -58,8 +59,15 @@ public class FieldTypeTest {
 
 
     @Test
-    public void shouldReturnEmbedded() throws NoSuchFieldException{
+    public void shouldReturnEmbeddedAsEntity() throws NoSuchFieldException{
         Field field = Director.class.getDeclaredField("movie");
+        Assert.assertEquals(FieldType.EMBEDDED, FieldType.of(field));
+    }
+
+
+    @Test
+    public void shouldReturnEmbedded() throws NoSuchFieldException{
+        Field field = Worker.class.getDeclaredField("job");
         Assert.assertEquals(FieldType.EMBEDDED, FieldType.of(field));
     }
 
