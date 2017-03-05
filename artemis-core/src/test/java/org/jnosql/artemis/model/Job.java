@@ -31,12 +31,23 @@ public class Job {
     @Column
     private String description;
 
+    @Column
+    private String city;
+
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     @Override

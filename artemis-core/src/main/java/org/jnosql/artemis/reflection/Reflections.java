@@ -87,12 +87,29 @@ public class Reflections {
      * Create new instance of this class.
      *
      * @param constructor the constructor
-     * @param <T>   the instance type
+     * @param <T>         the instance type
      * @return the new instance that class
      */
     public <T> T newInstance(Constructor constructor) {
         try {
             return (T) constructor.newInstance();
+        } catch (Exception exception) {
+            Logger.getLogger(Reflections.class.getName()).log(Level.SEVERE, null, exception);
+            return null;
+        }
+    }
+
+
+    /**
+     * Create new instance of this class.
+     *
+     * @param clazz the clazz
+     * @param <T>   the instance type
+     * @return the new instance that class
+     */
+    public <T> T newInstance(Class<T> clazz) {
+        try {
+            return (T) clazz.newInstance();
         } catch (Exception exception) {
             Logger.getLogger(Reflections.class.getName()).log(Level.SEVERE, null, exception);
             return null;

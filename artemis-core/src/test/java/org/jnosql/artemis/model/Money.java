@@ -59,4 +59,17 @@ public class Money {
     public int hashCode() {
         return Objects.hash(currency, value);
     }
+
+    @Override
+    public String toString() {
+        return currency + " " + value.toString();
+    }
+
+    public static Money parse(String dbData) {
+        String[] values = dbData.split(" ");
+        String currency = values[0];
+        BigDecimal value = BigDecimal.valueOf(Double.valueOf(values[1]));
+        return new Money(currency, value);
+    }
 }
+

@@ -20,6 +20,7 @@
 package org.jnosql.artemis.column;
 
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.FieldRepresentation;
@@ -51,6 +52,9 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
     @Inject
     private Reflections reflections;
 
+    @Inject
+    private Converters converters;
+
     @Override
     public ColumnEntity toColumn(Object entityInstance) {
         Objects.requireNonNull(entityInstance, "Object is required");
@@ -59,7 +63,7 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
         representation.getFields().stream()
                 .map(f -> to(f, entityInstance))
                 .filter(FieldValue::isNotEmpty)
-                .map(f -> f.toColumn(this))
+                .map(f -> f.toColumn(this, converters))
                 .forEach(entity::add);
         return entity;
     }

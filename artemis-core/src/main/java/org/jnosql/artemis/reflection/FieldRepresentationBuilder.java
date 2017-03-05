@@ -77,7 +77,7 @@ class FieldRepresentationBuilder {
     }
 
     public EmbeddedFieldRepresentation buildEmedded() {
-        return new EmbeddedFieldRepresentation(type, field, name, entityName, converter);
+        return new EmbeddedFieldRepresentation(type, field, name, entityName);
     }
 
 }

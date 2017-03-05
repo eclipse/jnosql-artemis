@@ -19,12 +19,18 @@
  */
 package org.jnosql.artemis.document;
 
+import org.hamcrest.Matchers;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Actor;
 import org.jnosql.artemis.model.Director;
+import org.jnosql.artemis.model.Job;
+import org.jnosql.artemis.model.Money;
 import org.jnosql.artemis.model.Movie;
 import org.jnosql.artemis.model.Person;
+import org.jnosql.artemis.model.Worker;
 import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.diana.api.TypeReference;
+import org.jnosql.diana.api.TypeSupplier;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentEntity;
@@ -33,8 +39,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -52,6 +60,7 @@ public class DefaultDocumentEntityConverterTest {
 
     @Inject
     private ClassRepresentations classRepresentations;
+
     private Document[] documents;
 
     private Actor actor = Actor.actorBuilder().withAge()
@@ -193,6 +202,25 @@ public class DefaultDocumentEntityConverterTest {
         assertEquals(director.getName(), director1.getName());
         assertEquals(director.getAge(), director1.getAge());
         assertEquals(director.getId(), director1.getId());
+    }
+
+    @Test
+    public void shouldConvertToDocumentWhenHaConverter() {
+        Worker worker = new Worker();
+        Job job = new Job();
+        job.setCity("Sao Paulo");
+        job.setDescription("Java Developer");
+        worker.setName("Bob");
+        worker.setSalary(new Money("BRL", BigDecimal.TEN));
+        worker.setJob(job);
+        DocumentEntity entity = converter.toDocument(worker);
+        assertEquals("Worker", entity.getName());
+        assertEquals("Bob", entity.find("name").get().get());
+        Document subDocument = entity.find("job").get();
+        List<Document> documents = subDocument.get(new TypeReference<List<Document>>() {
+        });
+        assertThat(documents, Matchers.containsInAnyOrder(Document.of("city", "Sao Paulo"), Document.of("description", "Java Developer")));
+        assertEquals("BRL 10", entity.find("money").get().get());
     }
 
 

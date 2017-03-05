@@ -19,6 +19,7 @@
  */
 package org.jnosql.artemis.document;
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.FieldRepresentation;
@@ -50,6 +51,9 @@ class DefaultDocumentEntityConverter implements DocumentEntityConverter {
     @Inject
     private Reflections reflections;
 
+    @Inject
+    private Converters converters;
+
 
     @Override
     public DocumentEntity toDocument(Object entityInstance) {
@@ -59,7 +63,7 @@ class DefaultDocumentEntityConverter implements DocumentEntityConverter {
         representation.getFields().stream()
                 .map(f -> to(f, entityInstance))
                 .filter(FieldValue::isNotEmpty)
-                .map(f -> f.toDocument(this))
+                .map(f -> f.toDocument(this, converters))
                 .forEach(entity::add);
         return entity;
 
