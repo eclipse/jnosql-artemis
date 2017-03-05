@@ -104,7 +104,7 @@ public final class FieldValue {
     public Column toColumn(ColumnEntityConverter converter, Converters converters) {
 
         if (FieldType.EMBEDDED.equals(getField().getType())) {
-            return Column.of(field.getName(), converter.toColumn(value));
+            return Column.of(field.getName(), converter.toColumn(value).getColumns());
         }
         Optional<Class<? extends AttributeConverter>> optionalConverter = field.getConverter();
         if (optionalConverter.isPresent()) {

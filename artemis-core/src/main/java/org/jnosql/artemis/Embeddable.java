@@ -33,4 +33,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Embeddable {
+    /**
+     * The name of an Embeddable. Defaults to the unqualified name of the entity class.
+     * @return the entity name (Optional)
+     */
+    String value() default "";
 }
