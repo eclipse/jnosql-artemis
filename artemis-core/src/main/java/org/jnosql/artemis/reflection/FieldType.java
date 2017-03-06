@@ -19,6 +19,7 @@
  */
 package org.jnosql.artemis.reflection;
 
+import org.jnosql.artemis.Embeddable;
 import org.jnosql.artemis.Entity;
 
 import java.lang.reflect.Field;
@@ -49,7 +50,8 @@ public enum FieldType {
         if (Map.class.isAssignableFrom(field.getType())) {
             return MAP;
         }
-        if (field.getType().isAnnotationPresent(Entity.class)) {
+        if (field.getType().isAnnotationPresent(Embeddable.class) ||
+                field.getType().isAnnotationPresent(Entity.class)) {
             return EMBEDDED;
         }
 

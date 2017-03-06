@@ -20,12 +20,16 @@
 package org.jnosql.artemis.reflection;
 
 import java.lang.reflect.Field;
+import java.util.Optional;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.jnosql.artemis.AttributeConverter;
 import org.jnosql.diana.api.Value;
 
 /**
- *Base class to all {@link FieldRepresentation}
- * @see  FieldRepresentation
+ * Base class to all {@link FieldRepresentation}
+ *
+ * @see FieldRepresentation
  */
 abstract class AbstractFieldRepresentation implements FieldRepresentation {
 
@@ -35,10 +39,13 @@ abstract class AbstractFieldRepresentation implements FieldRepresentation {
 
     protected final String name;
 
-    AbstractFieldRepresentation(FieldType type, Field field, String name) {
+    protected final Optional<Class<? extends AttributeConverter>> converter;
+
+    AbstractFieldRepresentation(FieldType type, Field field, String name, Class<? extends AttributeConverter> converter) {
         this.type = type;
         this.field = field;
         this.name = name;
+        this.converter = Optional.ofNullable(converter);
     }
 
     @Override
@@ -55,6 +62,12 @@ abstract class AbstractFieldRepresentation implements FieldRepresentation {
     public String getName() {
         return name;
     }
+
+    @Override
+    public <T extends AttributeConverter> Optional<Class<? extends AttributeConverter>> getConverter() {
+        return converter;
+    }
+
 
     @Override
     public String toString() {

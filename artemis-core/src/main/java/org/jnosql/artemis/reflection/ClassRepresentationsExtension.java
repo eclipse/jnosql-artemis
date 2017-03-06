@@ -28,8 +28,10 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.jnosql.artemis.Embeddable;
 import org.jnosql.artemis.Entity;
 
 /**
@@ -46,6 +48,8 @@ public class ClassRepresentationsExtension implements Extension {
 
     private final Map<String, ClassRepresentation> representations = new ConcurrentHashMap<>();
 
+    private final Map<Class, ClassRepresentation> classes = new ConcurrentHashMap<>();
+
 
     /**
      * Event observer
@@ -56,13 +60,18 @@ public class ClassRepresentationsExtension implements Extension {
     public <T> void initializePropertyLoading(final @Observes ProcessAnnotatedType<T> target) {
 
         AnnotatedType<T> at = target.getAnnotatedType();
-        if (!at.isAnnotationPresent(Entity.class)) {
-            return;
+        if (at.isAnnotationPresent(Entity.class)) {
+            Class<T> javaClass = target.getAnnotatedType().getJavaClass();
+            LOGGER.info("scanning type: " + javaClass.getName());
+            ClassRepresentation classRepresentation = classConverter.create(javaClass);
+            representations.put(classRepresentation.getName(), classRepresentation);
+            classes.put(javaClass, classRepresentation);
+        } else if (at.isAnnotationPresent(Embeddable.class)) {
+            Class<T> javaClass = target.getAnnotatedType().getJavaClass();
+            ClassRepresentation classRepresentation = classConverter.create(javaClass);
+            classes.put(javaClass, classRepresentation);
         }
-        Class<T> javaClass = target.getAnnotatedType().getJavaClass();
-        LOGGER.info("scanning type: " + javaClass.getName());
-        ClassRepresentation classRepresentation = classConverter.create(javaClass);
-        representations.put(classRepresentation.getName(), classRepresentation);
+
     }
 
 
@@ -73,6 +82,15 @@ public class ClassRepresentationsExtension implements Extension {
      */
     public Map<String, ClassRepresentation> getRepresentations() {
         return representations;
+    }
+
+    /**
+     * Returns all class found in the process grouped by Java class
+     *
+     * @return the map instance
+     */
+    public Map<Class, ClassRepresentation> getClasses() {
+        return classes;
     }
 
     @Override

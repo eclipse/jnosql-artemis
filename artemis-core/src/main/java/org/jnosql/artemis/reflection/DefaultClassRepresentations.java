@@ -25,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -37,6 +38,8 @@ class DefaultClassRepresentations implements ClassRepresentations {
 
     private Map<String, ClassRepresentation> representations;
 
+    private Map<Class, ClassRepresentation> classes;
+
 
     @Inject
     private ClassConverter classConverter;
@@ -47,6 +50,8 @@ class DefaultClassRepresentations implements ClassRepresentations {
     @PostConstruct
     public void init() {
         representations = new ConcurrentHashMap<>();
+        classes = new ConcurrentHashMap<>();
+        classes.putAll(extension.getClasses());
         representations.putAll(extension.getRepresentations());
     }
 
@@ -57,9 +62,10 @@ class DefaultClassRepresentations implements ClassRepresentations {
 
     @Override
     public ClassRepresentation get(Class classEntity) {
-        ClassRepresentation classRepresentation = representations.get(classEntity.getName());
+        ClassRepresentation classRepresentation = classes.get(classEntity);
         if (classRepresentation == null) {
-            load(classEntity);
+            classRepresentation = classConverter.create(classEntity);
+            classes.put(classEntity, classRepresentation);
             return this.get(classEntity);
         }
         return classRepresentation;
@@ -75,8 +81,9 @@ class DefaultClassRepresentations implements ClassRepresentations {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE)
-                .append("REPRESENTATIONS", representations)
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append("representations", representations.size())
+                .append("classes", classes.size())
                 .toString();
     }
 
