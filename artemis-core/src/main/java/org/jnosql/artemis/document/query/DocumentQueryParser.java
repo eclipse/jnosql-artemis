@@ -33,14 +33,14 @@ import java.util.logging.Logger;
  * Class the returns a {@link org.jnosql.diana.api.document.DocumentQuery}
  * on {@link DocumentCrudRepositoryProxy}
  */
-class DocumentQueryParser {
+public class DocumentQueryParser {
 
     private static final Logger LOGGER = Logger.getLogger(DocumentQueryParser.class.getName());
 
     private static final String PREFIX = "findBy";
 
 
-    DocumentQuery parse(String methodName, Object[] args, ClassRepresentation classRepresentation) {
+    public DocumentQuery parse(String methodName, Object[] args, ClassRepresentation classRepresentation) {
         DocumentQuery documentQuery = DocumentQuery.of(classRepresentation.getName());
         String[] tokens = methodName.replace(PREFIX, DocumentQueryParserUtil.EMPTY).split("(?=AND|OR|OrderBy)");
         String className = classRepresentation.getClassInstance().getName();

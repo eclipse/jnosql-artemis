@@ -29,7 +29,7 @@ import java.util.Arrays;
  * Utilitarian class to dynamic query from method on interface
  * {@link DocumentQueryDeleteParser} and {@link DocumentQueryParser}
  */
-final class DocumentQueryParserUtil {
+public final class DocumentQueryParserUtil {
 
     static final String AND = "AND";
     static final String OR = "OR";
@@ -46,7 +46,7 @@ final class DocumentQueryParserUtil {
     private DocumentQueryParserUtil() {
     }
 
-    static DocumentCondition toCondition(String token, int index, Object[] args, String methodName) {
+    public static DocumentCondition toCondition(String token, int index, Object[] args, String methodName) {
 
         boolean containsBetween = token.contains(BETWEEN);
 

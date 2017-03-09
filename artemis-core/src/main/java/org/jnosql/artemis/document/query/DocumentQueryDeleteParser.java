@@ -29,12 +29,12 @@ import org.jnosql.diana.api.document.DocumentDeleteQuery;
  * Class the returns a {@link DocumentDeleteQuery}
  * on {@link DocumentCrudRepositoryProxy}
  */
-class DocumentQueryDeleteParser {
+public class DocumentQueryDeleteParser {
 
     private static final String PREFIX = "deleteBy";
 
 
-    DocumentDeleteQuery parse(String methodName, Object[] args, ClassRepresentation classRepresentation) {
+    public DocumentDeleteQuery parse(String methodName, Object[] args, ClassRepresentation classRepresentation) {
         DocumentDeleteQuery documentQuery = DocumentDeleteQuery.of(classRepresentation.getName());
         String[] tokens = methodName.replace(PREFIX, DocumentQueryParserUtil.EMPTY).split("(?=AND|OR|OrderBy)");
         String className = classRepresentation.getClassInstance().getName();
