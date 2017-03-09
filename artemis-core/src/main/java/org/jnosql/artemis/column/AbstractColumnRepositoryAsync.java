@@ -33,6 +33,9 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 
+/**
+ * The template method to {@link ColumnRepositoryAsync}
+ */
 public abstract class AbstractColumnRepositoryAsync implements ColumnRepositoryAsync {
 
     protected abstract ColumnEntityConverter getConverter();

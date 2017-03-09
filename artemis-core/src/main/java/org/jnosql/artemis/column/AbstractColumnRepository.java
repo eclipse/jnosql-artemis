@@ -33,6 +33,9 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * The template method to {@link ColumnRepository}
+ */
 public abstract class AbstractColumnRepository implements ColumnRepository {
 
 
