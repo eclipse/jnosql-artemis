@@ -27,18 +27,20 @@ import org.jnosql.diana.api.ExecuteAsyncQueryException;
 import java.time.Duration;
 import java.util.function.Consumer;
 
-
-public abstract class AbstractColumnCrudRepositoryAsync implements CrudRepositoryAsync {
+/**
+ * The template method to {@link CrudRepositoryAsync}
+ */
+public abstract class AbstractColumnCrudRepositoryAsync<T> implements CrudRepositoryAsync<T> {
 
     protected abstract ColumnRepositoryAsync getColumnRepository();
 
     @Override
-    public void save(Object entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public void save(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
         getColumnRepository().save(entity);
     }
 
     @Override
-    public void save(Object entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public void save(T entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
         getColumnRepository().save(entity, ttl);
     }
 

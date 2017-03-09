@@ -93,7 +93,7 @@ class ColumnCrudRepositoryProxy<T> implements InvocationHandler {
     }
 
 
-    class ColumnCrudRepository implements CrudRepository {
+    class ColumnCrudRepository extends  AbstractColumnCrudRepository implements CrudRepository {
 
         private final ColumnRepository repository;
 
@@ -102,33 +102,8 @@ class ColumnCrudRepositoryProxy<T> implements InvocationHandler {
         }
 
         @Override
-        public Object save(Object entity) throws NullPointerException {
-            return repository.save(entity);
-        }
-
-        @Override
-        public Object save(Object entity, Duration ttl) {
-            return repository.save(entity, ttl);
-        }
-
-        @Override
-        public Iterable save(Iterable entities) throws NullPointerException {
-            return repository.save(entities);
-        }
-
-        @Override
-        public Iterable save(Iterable entities, Duration ttl) throws NullPointerException {
-            return repository.save(entities, ttl);
-        }
-
-        @Override
-        public Object update(Object entity) {
-            return repository.update(entity);
-        }
-
-        @Override
-        public Iterable update(Iterable entities) throws NullPointerException {
-            return repository.update(entities);
+        protected ColumnRepository getColumnRepository() {
+            return repository;
         }
     }
 }
