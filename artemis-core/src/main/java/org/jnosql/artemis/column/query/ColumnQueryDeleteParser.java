@@ -29,12 +29,12 @@ import org.jnosql.diana.api.column.ColumnDeleteQuery;
  * Class the returns a {@link ColumnDeleteQuery}
  * on {@link ColumnCrudRepositoryProxy}
  */
-class ColumnQueryDeleteParser {
+public class ColumnQueryDeleteParser {
 
     private static final String PREFIX = "deleteBy";
 
 
-    ColumnDeleteQuery parse(String methodName, Object[] args, ClassRepresentation classRepresentation) {
+    public ColumnDeleteQuery parse(String methodName, Object[] args, ClassRepresentation classRepresentation) {
         ColumnDeleteQuery columnDeleteQuery = ColumnDeleteQuery.of(classRepresentation.getName());
         String[] tokens = methodName.replace(PREFIX, ColumnQueryParserUtil.EMPTY).split("(?=AND|OR|OrderBy)");
         String className = classRepresentation.getClassInstance().getName();

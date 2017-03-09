@@ -35,13 +35,13 @@ import java.util.stream.Stream;
 /**
  * Utilitarian class to return on dynamic query
  */
-final class ReturnTypeConverterUtil {
+public final class ReturnTypeConverterUtil {
 
     private ReturnTypeConverterUtil() {
     }
 
 
-    static Object returnObject(ColumnQuery query, ColumnRepository repository, Class typeClass, Method method) {
+    public static Object returnObject(ColumnQuery query, ColumnRepository repository, Class typeClass, Method method) {
         Class<?> returnType = method.getReturnType();
 
         if (typeClass.equals(returnType)) {

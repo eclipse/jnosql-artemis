@@ -33,14 +33,14 @@ import java.util.logging.Logger;
  * Class the returns a {@link ColumnQuery}
  * on {@link ColumnCrudRepositoryProxy}
  */
-class ColumnQueryParser {
+public class ColumnQueryParser {
 
     private static final Logger LOGGER = Logger.getLogger(ColumnQueryParser.class.getName());
 
     private static final String PREFIX = "findBy";
 
 
-    ColumnQuery parse(String methodName, Object[] args, ClassRepresentation classRepresentation) {
+    public ColumnQuery parse(String methodName, Object[] args, ClassRepresentation classRepresentation) {
         ColumnQuery columnQuery = ColumnQuery.of(classRepresentation.getName());
         String[] tokens = methodName.replace(PREFIX, ColumnQueryParserUtil.EMPTY).split("(?=AND|OR|OrderBy)");
         String className = classRepresentation.getClassInstance().getName();
