@@ -89,7 +89,7 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
     }
 
 
-    class DocumentCrudRepository implements CrudRepository {
+    class DocumentCrudRepository extends AbstractDocumentCrudRepository implements CrudRepository {
 
         private final DocumentRepository repository;
 
@@ -98,33 +98,8 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
         }
 
         @Override
-        public Object save(Object entity) throws NullPointerException {
-            return repository.save(entity);
-        }
-
-        @Override
-        public Object save(Object entity, Duration ttl) {
-            return repository.save(entity, ttl);
-        }
-
-        @Override
-        public Iterable save(Iterable entities) throws NullPointerException {
-            return repository.save(entities);
-        }
-
-        @Override
-        public Iterable save(Iterable entities, Duration ttl) throws NullPointerException {
-            return repository.save(entities, ttl);
-        }
-
-        @Override
-        public Object update(Object entity) {
-            return repository.update(entity);
-        }
-
-        @Override
-        public Iterable update(Iterable entities) throws NullPointerException {
-            return repository.update(entities);
+        protected DocumentRepository getDocumentRepository() {
+            return repository;
         }
     }
 }
