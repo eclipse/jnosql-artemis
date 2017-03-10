@@ -36,6 +36,7 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessProducer;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -43,6 +44,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 /**
  * Extension to start up the DocumentRepository, DocumentRepositoryAsync, CrudRepository and CrudRepositoryAsync
@@ -62,16 +64,30 @@ class DocumentCollectionProducerExtension implements Extension {
 
 
     <T extends CrudRepository> void onProcessAnnotatedType(@Observes final ProcessAnnotatedType<T> repo) {
-        LOGGER.info("Starting the onProcessAnnotatedType");
-        crudTypes.add(repo.getAnnotatedType().getJavaClass());
-        LOGGER.info("Finished the onProcessAnnotatedType");
+        Class<T> javaClass = repo.getAnnotatedType().getJavaClass();
+
+        if(CrudRepository.class.equals(javaClass)) {
+            return;
+        }
+
+
+        if (Stream.of(javaClass.getInterfaces()).anyMatch(c -> CrudRepository.class.equals(c))
+                && Modifier.isInterface(javaClass.getModifiers())) {
+            crudTypes.add(javaClass);
+        }
     }
 
     <T extends CrudRepositoryAsync> void onProcessAnnotatedTypeAsync(@Observes final ProcessAnnotatedType<T> repo) {
-        LOGGER.info("Starting the onProcessAnnotatedType");
         Class<T> javaClass = repo.getAnnotatedType().getJavaClass();
-        crudAsyncTypes.add(javaClass);
-        LOGGER.info("Finished the onProcessAnnotatedType");
+
+        if(CrudRepositoryAsync.class.equals(javaClass)) {
+            return;
+        }
+
+        if (Stream.of(javaClass.getInterfaces()).anyMatch(c -> CrudRepositoryAsync.class.equals(c))
+                && Modifier.isInterface(javaClass.getModifiers())) {
+            crudAsyncTypes.add(javaClass);
+        }
     }
 
     <T, X extends DocumentCollectionManager> void processProducer(@Observes final ProcessProducer<T, X> pp) {
