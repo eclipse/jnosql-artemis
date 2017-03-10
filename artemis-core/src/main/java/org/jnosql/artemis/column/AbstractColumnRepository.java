@@ -45,6 +45,8 @@ public abstract class AbstractColumnRepository implements ColumnRepository {
 
     protected abstract ColumnWorkflow getFlow();
 
+    protected abstract ColumnEventPersistManager getEventManager();
+
 
     @Override
     public <T> T save(T entity) throws NullPointerException {
@@ -74,6 +76,7 @@ public abstract class AbstractColumnRepository implements ColumnRepository {
     @Override
     public void delete(ColumnDeleteQuery query) {
         requireNonNull(query, "query is required");
+        getEventManager().firePreDeleteQuery(query);
         getManager().delete(query);
     }
 
@@ -81,6 +84,7 @@ public abstract class AbstractColumnRepository implements ColumnRepository {
     @Override
     public <T> List<T> find(ColumnQuery query) throws NullPointerException {
         requireNonNull(query, "query is required");
+        getEventManager().firePreQuery(query);
         List<ColumnEntity> entities = getManager().find(query);
         Function<ColumnEntity, T> function = e -> getConverter().toEntity(e);
         return entities.stream().map(function).collect(Collectors.toList());

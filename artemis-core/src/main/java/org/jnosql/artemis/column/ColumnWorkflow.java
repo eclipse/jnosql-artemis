@@ -49,4 +49,5 @@ public interface ColumnWorkflow {
      * ColumnRepository#update(Object)
      */
     <T> T flow(T entity, UnaryOperator<ColumnEntity> action) throws NullPointerException;
+
 }

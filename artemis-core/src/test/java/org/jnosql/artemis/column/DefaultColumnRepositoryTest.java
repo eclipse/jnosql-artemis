@@ -62,6 +62,9 @@ public class DefaultColumnRepositoryTest {
     @Inject
     private ColumnEntityConverter converter;
 
+    @Inject
+    private ColumnEventPersistManager eventManager;
+
     private ColumnFamilyManager managerMock;
 
     private DefaultColumnRepository subject;
@@ -78,7 +81,7 @@ public class DefaultColumnRepositoryTest {
         captor = ArgumentCaptor.forClass(ColumnEntity.class);
         Instance<ColumnFamilyManager> instance = Mockito.mock(Instance.class);
         Mockito.when(instance.get()).thenReturn(managerMock);
-        this.subject = new DefaultColumnRepository(converter, instance, new DefaultColumnWorkflow(columnEventPersistManager, converter));
+        this.subject = new DefaultColumnRepository(converter, instance, new DefaultColumnWorkflow(columnEventPersistManager, converter), columnEventPersistManager);
     }
 
     @Test

@@ -34,14 +34,18 @@ class DefaultColumnRepository extends AbstractColumnRepository {
 
     private Instance<ColumnFamilyManager> manager;
 
-
     private ColumnWorkflow flow;
 
+    private ColumnEventPersistManager eventManager;
+
     @Inject
-    DefaultColumnRepository(ColumnEntityConverter converter, Instance<ColumnFamilyManager> manager, ColumnWorkflow flow) {
+    DefaultColumnRepository(ColumnEntityConverter converter, Instance<ColumnFamilyManager> manager,
+                            ColumnWorkflow flow,
+                            ColumnEventPersistManager eventManager) {
         this.converter = converter;
         this.manager = manager;
         this.flow = flow;
+        this.eventManager = eventManager;
     }
 
     DefaultColumnRepository() {
@@ -61,5 +65,10 @@ class DefaultColumnRepository extends AbstractColumnRepository {
     @Override
     protected ColumnWorkflow getFlow() {
         return flow;
+    }
+
+    @Override
+    protected ColumnEventPersistManager getEventManager() {
+        return eventManager;
     }
 }

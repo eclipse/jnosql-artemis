@@ -38,11 +38,14 @@ class DefaultColumnRepositoryProducer implements ColumnRepositoryProducer {
     @Inject
     private ColumnWorkflow columnWorkflow;
 
+    @Inject
+    private ColumnEventPersistManager eventManager;
+
 
     @Override
     public ColumnRepository get(ColumnFamilyManager columnFamilyManager) throws NullPointerException {
         Objects.requireNonNull(columnFamilyManager, "columnFamilyManager is required");
-        return new ProducerColumnRepository(converter, columnWorkflow, columnFamilyManager);
+        return new ProducerColumnRepository(converter, columnWorkflow, columnFamilyManager, eventManager);
     }
 
 
@@ -55,10 +58,14 @@ class DefaultColumnRepositoryProducer implements ColumnRepositoryProducer {
 
         private ColumnFamilyManager columnFamilyManager;
 
-        ProducerColumnRepository(ColumnEntityConverter converter, ColumnWorkflow columnWorkflow, ColumnFamilyManager columnFamilyManager) {
+        private ColumnEventPersistManager eventManager;
+
+        ProducerColumnRepository(ColumnEntityConverter converter, ColumnWorkflow columnWorkflow,
+                                 ColumnFamilyManager columnFamilyManager, ColumnEventPersistManager eventManager) {
             this.converter = converter;
             this.columnWorkflow = columnWorkflow;
             this.columnFamilyManager = columnFamilyManager;
+            this.eventManager = eventManager;
         }
 
         ProducerColumnRepository() {
@@ -77,6 +84,11 @@ class DefaultColumnRepositoryProducer implements ColumnRepositoryProducer {
         @Override
         protected ColumnWorkflow getFlow() {
             return columnWorkflow;
+        }
+
+        @Override
+        protected ColumnEventPersistManager getEventManager() {
+            return eventManager;
         }
     }
 }

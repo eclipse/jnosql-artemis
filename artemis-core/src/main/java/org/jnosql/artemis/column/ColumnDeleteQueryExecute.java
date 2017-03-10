@@ -21,7 +21,6 @@ package org.jnosql.artemis.column;
 
 
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
-import org.jnosql.diana.api.column.ColumnQuery;
 
 /**
  * When a column delete query is executed this event if fired
@@ -31,7 +30,7 @@ public interface ColumnDeleteQueryExecute {
     /**
      * The ColumnQuery before executed
      *
-     * @return the {@link ColumnQuery}
+     * @return the {@link ColumnDeleteQuery}
      */
     ColumnDeleteQuery getQuery();
 
