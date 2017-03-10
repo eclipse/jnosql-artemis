@@ -21,7 +21,9 @@ package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.EntityPostPersit;
 import org.jnosql.artemis.EntityPrePersist;
+import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentEntity;
+import org.jnosql.diana.api.document.DocumentQuery;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -57,6 +59,12 @@ public class DefaultDocumentEventPersistManagerTest {
 
     @Mock
     private Event<EntityDocumentPostPersist> entityDocumentPostPersist;
+
+    @Mock
+    private Event<DocumentQueryExecute> documentQueryExecute;
+
+    @Mock
+    private Event<DocumentDeleteQueryExecute> documentDeleteQueryExecute;
 
 
     @Test
@@ -126,6 +134,25 @@ public class DefaultDocumentEventPersistManagerTest {
         EntityDocumentPostPersist value = captor.getValue();
         assertEquals(jedi, value.getValue());
     }
+
+    @Test
+    public void shouldFirePreQuery() {
+        DocumentQuery query = DocumentQuery.of("collection");
+        subject.firePreQuery(query);
+        ArgumentCaptor<DocumentQueryExecute> captor = ArgumentCaptor.forClass(DocumentQueryExecute.class);
+        verify(documentQueryExecute).fire(captor.capture());
+        assertEquals(query, captor.getValue().getQuery());
+    }
+
+    @Test
+    public void shouldFirePreDeleteQuery() {
+        DocumentDeleteQuery query = DocumentDeleteQuery.of("collection");
+        subject.firePreDeleteQuery(query);
+        ArgumentCaptor<DocumentDeleteQueryExecute> captor = ArgumentCaptor.forClass(DocumentDeleteQueryExecute.class);
+        verify(documentDeleteQueryExecute).fire(captor.capture());
+        assertEquals(query, captor.getValue().getQuery());
+    }
+
 
     class Jedi {
         private String name;

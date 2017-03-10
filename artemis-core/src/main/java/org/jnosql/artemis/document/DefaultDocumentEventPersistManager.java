@@ -22,7 +22,9 @@ package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.EntityPostPersit;
 import org.jnosql.artemis.EntityPrePersist;
+import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentEntity;
+import org.jnosql.diana.api.document.DocumentQuery;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -52,6 +54,12 @@ class DefaultDocumentEventPersistManager implements DocumentEventPersistManager 
     @Inject
     private Event<EntityDocumentPostPersist> entityDocumentPostPersist;
 
+    @Inject
+    private Event<DocumentQueryExecute> documentQueryExecute;
+
+    @Inject
+    private Event<DocumentDeleteQueryExecute> documentDeleteQueryExecute;
+
     @Override
     public void firePreDocument(DocumentEntity entity) {
         documentEntityPrePersistEvent.fire(DocumentEntityPrePersist.of(entity));
@@ -80,5 +88,15 @@ class DefaultDocumentEventPersistManager implements DocumentEventPersistManager 
     @Override
     public <T> void firePostDocumentEntity(T entity) {
         entityDocumentPostPersist.fire(EntityDocumentPostPersist.of(entity));
+    }
+
+    @Override
+    public void firePreQuery(DocumentQuery query) {
+        documentQueryExecute.fire(DocumentQueryExecute.of(query));
+    }
+
+    @Override
+    public void firePreDeleteQuery(DocumentDeleteQuery query) {
+        documentDeleteQueryExecute.fire(DocumentDeleteQueryExecute.of(query));
     }
 }
