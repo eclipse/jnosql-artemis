@@ -66,7 +66,7 @@ class DocumentCollectionProducerExtension implements Extension {
     <T extends CrudRepository> void onProcessAnnotatedType(@Observes final ProcessAnnotatedType<T> repo) {
         Class<T> javaClass = repo.getAnnotatedType().getJavaClass();
 
-        if(CrudRepository.class.equals(javaClass)) {
+        if (CrudRepository.class.equals(javaClass)) {
             return;
         }
 
@@ -80,7 +80,7 @@ class DocumentCollectionProducerExtension implements Extension {
     <T extends CrudRepositoryAsync> void onProcessAnnotatedTypeAsync(@Observes final ProcessAnnotatedType<T> repo) {
         Class<T> javaClass = repo.getAnnotatedType().getJavaClass();
 
-        if(CrudRepositoryAsync.class.equals(javaClass)) {
+        if (CrudRepositoryAsync.class.equals(javaClass)) {
             return;
         }
 
