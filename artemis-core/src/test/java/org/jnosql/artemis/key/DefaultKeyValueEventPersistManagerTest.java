@@ -84,49 +84,49 @@ public class DefaultKeyValueEventPersistManagerTest {
 
     @Test
     public void shouldFirePreEntity() {
-        Jedi jedi = new Jedi();
-        jedi.name = "Luke";
-        subject.firePreEntity(jedi);
+        Actor actor = new Actor();
+        actor.name = "Luke";
+        subject.firePreEntity(actor);
         ArgumentCaptor<EntityPrePersist> captor = ArgumentCaptor.forClass(EntityPrePersist.class);
         verify(entityPrePersistEvent).fire(captor.capture());
         EntityPrePersist value = captor.getValue();
-        assertEquals(jedi, value.getValue());
+        assertEquals(actor, value.getValue());
     }
 
     @Test
     public void shouldFirePostEntity() {
-        Jedi jedi = new Jedi();
-        jedi.name = "Luke";
-        subject.firePostEntity(jedi);
+        Actor actor = new Actor();
+        actor.name = "Luke";
+        subject.firePostEntity(actor);
         ArgumentCaptor<EntityPostPersit> captor = ArgumentCaptor.forClass(EntityPostPersit.class);
         verify(entityPostPersitEvent).fire(captor.capture());
         EntityPostPersit value = captor.getValue();
-        assertEquals(jedi, value.getValue());
+        assertEquals(actor, value.getValue());
     }
 
     @Test
     public void shouldFirePreKeyValueEntity() {
-        Jedi jedi = new Jedi();
-        jedi.name = "Luke";
-        subject.firePreKeyValueEntity(jedi);
+        Actor actor = new Actor();
+        actor.name = "Luke";
+        subject.firePreKeyValueEntity(actor);
         ArgumentCaptor<EntityKeyValuePrePersist> captor = ArgumentCaptor.forClass(EntityKeyValuePrePersist.class);
         verify(entityKeyValuePrePersist).fire(captor.capture());
         EntityKeyValuePrePersist value = captor.getValue();
-        assertEquals(jedi, value.getValue());
+        assertEquals(actor, value.getValue());
     }
 
     @Test
     public void shouldFirePostColumnEntity() {
-        Jedi jedi = new Jedi();
-        jedi.name = "Luke";
-        subject.firePostKeyValueEntity(jedi);
+        Actor actor = new Actor();
+        actor.name = "Luke";
+        subject.firePostKeyValueEntity(actor);
         ArgumentCaptor<EntityKeyValuePostPersist> captor = ArgumentCaptor.forClass(EntityKeyValuePostPersist.class);
         verify(entityKeyValuePostPersist).fire(captor.capture());
         EntityKeyValuePostPersist value = captor.getValue();
-        assertEquals(jedi, value.getValue());
+        assertEquals(actor, value.getValue());
     }
 
-    class Jedi {
+    class Actor {
         private String name;
     }
 

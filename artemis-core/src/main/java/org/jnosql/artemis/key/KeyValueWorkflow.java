@@ -28,11 +28,13 @@ import java.util.function.UnaryOperator;
  * This implementation defines the workflow to save an Entity on {@link KeyValueRepository}.
  * The default implementation follows:
  *  <p>{@link KeyValueEventPersistManager#firePreEntity(Object)}</p>
+ *  <p>{@link KeyValueEventPersistManager#firePreKeyValueEntity(Object)}</p>
  *  <p>{@link KeyValueEntityConverter#toKeyValue(Object)}</p>
  *  <p>{@link KeyValueEventPersistManager#firePreKeyValue(KeyValueEntity)}</p>
  *  <p>Database alteration</p>
  *  <p>{@link KeyValueEventPersistManager#firePostKeyValue(KeyValueEntity)}</p>
  *  <p>{@link KeyValueEventPersistManager#firePostEntity(Object)}</p>
+ *  <p>{@link KeyValueEventPersistManager#firePostKeyValueEntity(Object)}</p>
  */
 public interface KeyValueWorkflow {
 

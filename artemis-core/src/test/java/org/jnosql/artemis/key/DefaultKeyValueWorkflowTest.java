@@ -77,6 +77,9 @@ public class DefaultKeyValueWorkflowTest {
         verify(eventPersistManager).firePostKeyValue(any(KeyValueEntity.class));
         verify(eventPersistManager).firePreEntity(any(DocumentEntity.class));
         verify(eventPersistManager).firePostEntity(any(DocumentEntity.class));
+
+        verify(eventPersistManager).firePreKeyValueEntity(any(DocumentEntity.class));
+        verify(eventPersistManager).firePostKeyValueEntity(any(DocumentEntity.class));
     }
 
 }

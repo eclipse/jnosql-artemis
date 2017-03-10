@@ -62,6 +62,11 @@ class DefaultKeyValueWorkflow implements KeyValueWorkflow {
             return t;
         };
 
+        UnaryOperator<T> firePreKeyValueEntity = t -> {
+            eventPersistManager.firePreKeyValueEntity(t);
+            return t;
+        };
+
         Function<T, KeyValueEntity<?>> converterColumn = t -> converter.toKeyValue(t);
 
         UnaryOperator<KeyValueEntity<?>> firePreDocument = t -> {
@@ -81,14 +86,21 @@ class DefaultKeyValueWorkflow implements KeyValueWorkflow {
             return t;
         };
 
+        UnaryOperator<T> firePostKeyValueEntity = t -> {
+            eventPersistManager.firePostKeyValueEntity(t);
+            return t;
+        };
+
 
         return validation
                 .andThen(firePreEntity)
+                .andThen(firePreKeyValueEntity)
                 .andThen(converterColumn)
                 .andThen(firePreDocument)
                 .andThen(action)
                 .andThen(firePostDocument)
                 .andThen(converterEntity)
-                .andThen(firePostEntity);
+                .andThen(firePostEntity)
+                .andThen(firePostKeyValueEntity);
     }
 }
