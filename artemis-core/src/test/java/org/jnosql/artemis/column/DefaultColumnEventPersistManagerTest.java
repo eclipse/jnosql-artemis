@@ -22,13 +22,11 @@ package org.jnosql.artemis.column;
 import org.jnosql.artemis.EntityPostPersit;
 import org.jnosql.artemis.EntityPrePersist;
 import org.jnosql.diana.api.column.ColumnEntity;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.enterprise.event.Event;
@@ -54,6 +52,12 @@ public class DefaultColumnEventPersistManagerTest {
 
     @Mock
     private Event<EntityPostPersit> entityPostPersitEvent;
+
+    @Mock
+    private Event<EntityColumnPrePersist> entityColumnPrePersist;
+
+    @Mock
+    private Event<EntityColumnPostPersist> entityColumnPostPersist;
 
 
     @Test
@@ -101,6 +105,27 @@ public class DefaultColumnEventPersistManagerTest {
         assertEquals(jedi, value.getValue());
     }
 
+    @Test
+    public void shouldFirePreColumnEntity() {
+        Jedi jedi = new Jedi();
+        jedi.name = "Luke";
+        subject.firePreColumnEntity(jedi);
+        ArgumentCaptor<EntityColumnPrePersist> captor = ArgumentCaptor.forClass(EntityColumnPrePersist.class);
+        verify(entityColumnPrePersist).fire(captor.capture());
+        EntityColumnPrePersist value = captor.getValue();
+        assertEquals(jedi, value.getValue());
+    }
+
+    @Test
+    public void shouldFirePostColumnEntity() {
+        Jedi jedi = new Jedi();
+        jedi.name = "Luke";
+        subject.firePostColumnEntity(jedi);
+        ArgumentCaptor<EntityColumnPostPersist> captor = ArgumentCaptor.forClass(EntityColumnPostPersist.class);
+        verify(entityColumnPostPersist).fire(captor.capture());
+        EntityColumnPostPersist value = captor.getValue();
+        assertEquals(jedi, value.getValue());
+    }
 
     class Jedi {
         private String name;

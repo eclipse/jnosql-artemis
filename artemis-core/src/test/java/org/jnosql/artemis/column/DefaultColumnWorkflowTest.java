@@ -77,6 +77,9 @@ public class DefaultColumnWorkflowTest {
         verify(columnEventPersistManager).firePostColumn(any(ColumnEntity.class));
         verify(columnEventPersistManager).firePreEntity(any(ColumnEntity.class));
         verify(columnEventPersistManager).firePostEntity(any(ColumnEntity.class));
+
+        verify(columnEventPersistManager).firePreColumnEntity(any(ColumnEntity.class));
+        verify(columnEventPersistManager).firePostColumnEntity(any(ColumnEntity.class));
         verify(converter).toColumn(any(Object.class));
     }
 

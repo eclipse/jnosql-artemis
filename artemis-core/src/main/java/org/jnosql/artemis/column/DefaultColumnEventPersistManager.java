@@ -45,6 +45,13 @@ class DefaultColumnEventPersistManager implements ColumnEventPersistManager {
     @Inject
     private Event<EntityPostPersit> entityPostPersitEvent;
 
+
+    @Inject
+    private Event<EntityColumnPrePersist> entityColumnPrePersist;
+
+    @Inject
+    private Event<EntityColumnPostPersist> entityColumnPostPersist;
+
     @Override
     public void firePreColumn(ColumnEntity entity) {
         documentEntityPrePersistEvent.fire(ColumnEntityPrePersist.of(entity));
@@ -63,5 +70,15 @@ class DefaultColumnEventPersistManager implements ColumnEventPersistManager {
     @Override
     public <T> void firePostEntity(T entity) {
         entityPostPersitEvent.fire(EntityPostPersit.of(entity));
+    }
+
+    @Override
+    public <T> void firePreColumnEntity(T entity) {
+        entityColumnPrePersist.fire(EntityColumnPrePersist.of(entity));
+    }
+
+    @Override
+    public <T> void firePostColumnEntity(T entity) {
+        entityColumnPostPersist.fire(EntityColumnPostPersist.of(entity));
     }
 }

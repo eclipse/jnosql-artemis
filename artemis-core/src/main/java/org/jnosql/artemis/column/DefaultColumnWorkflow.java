@@ -60,6 +60,11 @@ class DefaultColumnWorkflow implements ColumnWorkflow {
             return t;
         };
 
+        UnaryOperator<T> firePreColumnEntity = t -> {
+            columnEventPersistManager.firePreColumnEntity(t);
+            return t;
+        };
+
         Function<T, ColumnEntity> converterColumn = t -> converter.toColumn(t);
 
         UnaryOperator<ColumnEntity> firePreDocument = t -> {
@@ -79,14 +84,20 @@ class DefaultColumnWorkflow implements ColumnWorkflow {
             return t;
         };
 
+        UnaryOperator<T> firePostColumnEntity = t -> {
+            columnEventPersistManager.firePostColumnEntity(t);
+            return t;
+        };
 
         return validation
                 .andThen(firePreEntity)
+                .andThen(firePreColumnEntity)
                 .andThen(converterColumn)
                 .andThen(firePreDocument)
                 .andThen(action)
                 .andThen(firePostDocument)
                 .andThen(converterEntity)
-                .andThen(firePostEntity);
+                .andThen(firePostEntity)
+                .andThen(firePostColumnEntity);
     }
 }

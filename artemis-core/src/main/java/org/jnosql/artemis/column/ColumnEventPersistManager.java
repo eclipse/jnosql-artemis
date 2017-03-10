@@ -25,9 +25,11 @@ import org.jnosql.diana.api.column.ColumnEntity;
 /**
  * This interface represent the manager of events. When an entity be either saved or updated an event will be fired. This order gonna be:
  * 1) firePreEntity
- * 2) firePreColumn
- * 3) firePostColumn
- * 4) firePostEntity
+ * 2) firePreColumnEntity
+ * 3) firePreColumn
+ * 4) firePostColumn
+ * 5) firePostEntity
+ * 6) firePostColumnEntity
  *
  * @see ColumnWorkflow
  */
@@ -63,5 +65,22 @@ public interface ColumnEventPersistManager {
      * @param <T>    the entity kind
      */
     <T> void firePostEntity(T entity);
+
+
+    /**
+     * Fire an event once the method is called after firePreEntity
+     *
+     * @param entity the entity
+     * @param <T>    the entity type
+     */
+    <T> void firePreColumnEntity(T entity);
+
+    /**
+     * Fire an event after firePostEntity
+     *
+     * @param entity the entity
+     * @param <T>    the entity kind
+     */
+    <T> void firePostColumnEntity(T entity);
 
 }
