@@ -38,11 +38,14 @@ class DefaultDocumentRepositoryProducer implements DocumentRepositoryProducer {
     @Inject
     private DocumentWorkflow workflow;
 
+    @Inject
+    private DocumentEventPersistManager persistManager;
+
 
     @Override
     public DocumentRepository get(DocumentCollectionManager collectionManager) throws NullPointerException {
         Objects.requireNonNull(collectionManager, "collectionManager is required");
-        return new ProducerDocumentRepository(converter, collectionManager, workflow);
+        return new ProducerDocumentRepository(converter, collectionManager, workflow, persistManager);
     }
 
     @Vetoed
@@ -53,11 +56,14 @@ class DefaultDocumentRepositoryProducer implements DocumentRepositoryProducer {
         private DocumentCollectionManager manager;
 
         private DocumentWorkflow workflow;
+        private DocumentEventPersistManager persistManager;
 
-        ProducerDocumentRepository(DocumentEntityConverter converter, DocumentCollectionManager manager, DocumentWorkflow workflow) {
+        ProducerDocumentRepository(DocumentEntityConverter converter, DocumentCollectionManager manager,
+                                   DocumentWorkflow workflow, DocumentEventPersistManager persistManager) {
             this.converter = converter;
             this.manager = manager;
             this.workflow = workflow;
+            this.persistManager = persistManager;
         }
 
         ProducerDocumentRepository() {
@@ -76,6 +82,11 @@ class DefaultDocumentRepositoryProducer implements DocumentRepositoryProducer {
         @Override
         protected DocumentWorkflow getWorkflow() {
             return workflow;
+        }
+
+        @Override
+        protected DocumentEventPersistManager getPersistManager() {
+            return persistManager;
         }
     }
 }

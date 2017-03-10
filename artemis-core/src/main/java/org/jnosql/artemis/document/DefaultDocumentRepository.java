@@ -37,12 +37,16 @@ class DefaultDocumentRepository extends AbstractDocumentRepository {
 
     private DocumentWorkflow workflow;
 
+    private DocumentEventPersistManager persistManager;
+
 
     @Inject
-    DefaultDocumentRepository(DocumentEntityConverter converter, Instance<DocumentCollectionManager> manager, DocumentWorkflow workflow) {
+    DefaultDocumentRepository(DocumentEntityConverter converter, Instance<DocumentCollectionManager> manager,
+                              DocumentWorkflow workflow,DocumentEventPersistManager persistManager) {
         this.converter = converter;
         this.manager = manager;
         this.workflow = workflow;
+        this.persistManager = persistManager;
     }
 
     DefaultDocumentRepository() {
@@ -61,5 +65,10 @@ class DefaultDocumentRepository extends AbstractDocumentRepository {
     @Override
     protected DocumentWorkflow getWorkflow() {
         return workflow;
+    }
+
+    @Override
+    protected DocumentEventPersistManager getPersistManager() {
+        return persistManager;
     }
 }

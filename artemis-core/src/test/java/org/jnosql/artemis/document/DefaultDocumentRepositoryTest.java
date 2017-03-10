@@ -82,7 +82,7 @@ public class DefaultDocumentRepositoryTest {
         Instance<DocumentCollectionManager> instance = Mockito.mock(Instance.class);
         when(instance.get()).thenReturn(managerMock);
         DefaultDocumentWorkflow workflow = new DefaultDocumentWorkflow(documentEventPersistManager, converter);
-        this.subject = new DefaultDocumentRepository(converter, instance, workflow);
+        this.subject = new DefaultDocumentRepository(converter, instance, workflow, documentEventPersistManager);
     }
 
     @Test

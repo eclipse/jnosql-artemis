@@ -27,6 +27,7 @@ import org.jnosql.diana.api.document.DocumentQuery;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -44,9 +45,11 @@ public abstract class AbstractDocumentRepository implements DocumentRepository {
 
     protected abstract DocumentWorkflow getWorkflow();
 
+    protected abstract DocumentEventPersistManager getPersistManager();
+
     @Override
     public <T> T save(T entity) throws NullPointerException {
-
+        Objects.requireNonNull(entity, "entity is required");
         UnaryOperator<DocumentEntity> saveAction = e -> getManager().save(e);
         return getWorkflow().flow(entity, saveAction);
     }
@@ -54,6 +57,8 @@ public abstract class AbstractDocumentRepository implements DocumentRepository {
 
     @Override
     public <T> T save(T entity, Duration ttl) {
+        Objects.requireNonNull(entity, "entity is required");
+        Objects.requireNonNull(ttl, "ttl is required");
         UnaryOperator<DocumentEntity> saveAction = e -> getManager().save(e, ttl);
         return getWorkflow().flow(entity, saveAction);
     }
@@ -62,7 +67,7 @@ public abstract class AbstractDocumentRepository implements DocumentRepository {
 
     @Override
     public <T> T update(T entity) {
-
+        Objects.requireNonNull(entity, "entity is required");
         UnaryOperator<DocumentEntity> saveAction = e -> getManager().update(e);
         return getWorkflow().flow(entity, saveAction);
     }
@@ -71,11 +76,15 @@ public abstract class AbstractDocumentRepository implements DocumentRepository {
 
     @Override
     public void delete(DocumentDeleteQuery query) {
+        Objects.requireNonNull(query, "query is required");
+        getPersistManager().firePreDeleteQuery(query);
         getManager().delete(query);
     }
 
     @Override
     public <T> List<T> find(DocumentQuery query) throws NullPointerException {
+        Objects.requireNonNull(query, "query is required");
+        getPersistManager().firePreQuery(query);
         List<DocumentEntity> entities = getManager().find(query);
         Function<DocumentEntity, T> function = e -> getConverter().toEntity(e);
         return entities.stream().map(function).collect(Collectors.toList());
