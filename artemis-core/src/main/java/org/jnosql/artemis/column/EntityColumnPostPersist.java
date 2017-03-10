@@ -20,8 +20,6 @@
 package org.jnosql.artemis.column;
 
 
-import org.jnosql.artemis.EntityPrePersist;
-
 import java.util.Objects;
 
 /**
@@ -40,7 +38,7 @@ public interface EntityColumnPostPersist {
      * Created the default implementation of {@link EntityColumnPostPersist}
      *
      * @param value the value
-     * @return the new instance of {@link EntityPrePersist}
+     * @return the new instance of {@link EntityColumnPostPersist}
      * @throws NullPointerException when value is null
      */
     static EntityColumnPostPersist of(Object value) throws NullPointerException {
