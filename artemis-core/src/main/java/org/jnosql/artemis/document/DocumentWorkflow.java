@@ -28,11 +28,13 @@ import java.util.function.UnaryOperator;
  * This implementation defines the workflow to save an Entity on {@link DocumentRepository}.
  * The default implementation follows:
  *  <p>{@link DocumentEventPersistManager#firePreEntity(Object)}</p>
+ *  <p>{@link DocumentEventPersistManager#firePreDocumentEntity(Object)}</p>
  *  <p>{@link DocumentEntityConverter#toDocument(Object)}</p>
  *  <p>{@link DocumentEventPersistManager#firePreDocument(DocumentEntity)}}</p>
  *  <p>Database alteration</p>
  *  <p>{@link DocumentEventPersistManager#firePostDocument(DocumentEntity)}</p>
  *  <p>{@link DocumentEventPersistManager#firePostEntity(Object)}</p>
+ *  <p>{@link DocumentEventPersistManager#firePostDocumentEntity(Object)}</p>
  */
 public interface DocumentWorkflow {
 

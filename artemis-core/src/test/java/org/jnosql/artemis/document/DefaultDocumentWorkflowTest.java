@@ -76,6 +76,8 @@ public class DefaultDocumentWorkflowTest {
         verify(columnEventPersistManager).firePostDocument(any(DocumentEntity.class));
         verify(columnEventPersistManager).firePreEntity(any(DocumentEntity.class));
         verify(columnEventPersistManager).firePostEntity(any(DocumentEntity.class));
+        verify(columnEventPersistManager).firePreDocumentEntity(any(DocumentEntity.class));
+        verify(columnEventPersistManager).firePostDocumentEntity(any(DocumentEntity.class));
         verify(converter).toDocument(any(Object.class));
     }
 

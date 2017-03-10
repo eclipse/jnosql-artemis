@@ -21,10 +21,6 @@ package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.EntityPostPersit;
 import org.jnosql.artemis.EntityPrePersist;
-import org.jnosql.artemis.column.ColumnEntityPostPersist;
-import org.jnosql.artemis.column.ColumnEntityPrePersist;
-import org.jnosql.artemis.column.DefaultColumnEventPersistManagerTest;
-import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.document.DocumentEntity;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +30,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
@@ -56,6 +51,12 @@ public class DefaultDocumentEventPersistManagerTest {
 
     @Mock
     private Event<EntityPostPersit> entityPostPersitEvent;
+
+    @Mock
+    private Event<EntityDocumentPrePersist> entityDocumentPrePersist;
+
+    @Mock
+    private Event<EntityDocumentPostPersist> entityDocumentPostPersist;
 
 
     @Test
@@ -102,7 +103,29 @@ public class DefaultDocumentEventPersistManagerTest {
         EntityPostPersit value = captor.getValue();
         assertEquals(jedi, value.getValue());
     }
+    //
 
+    @Test
+    public void shouldFirePreDocumentEntity() {
+        Jedi jedi = new Jedi();
+        jedi.name = "Luke";
+        subject.firePreDocumentEntity(jedi);
+        ArgumentCaptor<EntityDocumentPrePersist> captor = ArgumentCaptor.forClass(EntityDocumentPrePersist.class);
+        verify(entityDocumentPrePersist).fire(captor.capture());
+        EntityDocumentPrePersist value = captor.getValue();
+        assertEquals(jedi, value.getValue());
+    }
+
+    @Test
+    public void shouldFirePostDocumentEntity() {
+        Jedi jedi = new Jedi();
+        jedi.name = "Luke";
+        subject.firePostDocumentEntity(jedi);
+        ArgumentCaptor<EntityDocumentPostPersist> captor = ArgumentCaptor.forClass(EntityDocumentPostPersist.class);
+        verify(entityDocumentPostPersist).fire(captor.capture());
+        EntityDocumentPostPersist value = captor.getValue();
+        assertEquals(jedi, value.getValue());
+    }
 
     class Jedi {
         private String name;

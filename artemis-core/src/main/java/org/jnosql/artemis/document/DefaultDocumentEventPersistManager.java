@@ -46,6 +46,12 @@ class DefaultDocumentEventPersistManager implements DocumentEventPersistManager 
     @Inject
     private Event<EntityPostPersit> entityPostPersitEvent;
 
+    @Inject
+    private Event<EntityDocumentPrePersist> entityDocumentPrePersist;
+
+    @Inject
+    private Event<EntityDocumentPostPersist> entityDocumentPostPersist;
+
     @Override
     public void firePreDocument(DocumentEntity entity) {
         documentEntityPrePersistEvent.fire(DocumentEntityPrePersist.of(entity));
@@ -64,5 +70,15 @@ class DefaultDocumentEventPersistManager implements DocumentEventPersistManager 
     @Override
     public <T> void firePostEntity(T entity) {
         entityPostPersitEvent.fire(EntityPostPersit.of(entity));
+    }
+
+    @Override
+    public <T> void firePreDocumentEntity(T entity) {
+        entityDocumentPrePersist.fire(EntityDocumentPrePersist.of(entity));
+    }
+
+    @Override
+    public <T> void firePostDocumentEntity(T entity) {
+        entityDocumentPostPersist.fire(EntityDocumentPostPersist.of(entity));
     }
 }

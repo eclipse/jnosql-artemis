@@ -62,6 +62,12 @@ class DefaultDocumentWorkflow implements DocumentWorkflow {
             return t;
         };
 
+        UnaryOperator<T> firePreDocumentEntity = t -> {
+            columnEventPersistManager.firePreDocumentEntity(t);
+            return t;
+        };
+
+
         Function<T, DocumentEntity> converterColumn = t -> converter.toDocument(t);
 
         UnaryOperator<DocumentEntity> firePreDocument = t -> {
@@ -81,14 +87,21 @@ class DefaultDocumentWorkflow implements DocumentWorkflow {
             return t;
         };
 
+        UnaryOperator<T> firePostDocumentEntity = t -> {
+            columnEventPersistManager.firePostDocumentEntity(t);
+            return t;
+        };
+
 
         return validation
                 .andThen(firePreEntity)
+                .andThen(firePreDocumentEntity)
                 .andThen(converterColumn)
                 .andThen(firePreDocument)
                 .andThen(action)
                 .andThen(firePostDocument)
                 .andThen(converterEntity)
-                .andThen(firePostEntity);
+                .andThen(firePostEntity)
+                .andThen(firePostDocumentEntity);
     }
 }

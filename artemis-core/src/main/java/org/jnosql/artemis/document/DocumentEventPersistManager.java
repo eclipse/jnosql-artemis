@@ -25,9 +25,11 @@ import org.jnosql.diana.api.document.DocumentEntity;
 /**
  * This interface represent the manager of events. When an entity be either saved or updated an event will be fired. This order gonna be:
  * 1) firePreEntity
- * 2) firePreColumn
- * 3) firePostColumn
- * 4) firePostEntity
+ * 2) firePreDocumentEntity
+ * 3) firePreColumn
+ * 4) firePostColumn
+ * 5) firePostEntity
+ * 6) firePostDocumentEntity
  *
  * @see DocumentWorkflow
  */
@@ -63,5 +65,21 @@ public interface DocumentEventPersistManager {
      * @param <T>    the entity kind
      */
     <T> void firePostEntity(T entity);
+
+    /**
+     * Fire an event after firePreEntity
+     *
+     * @param entity the entity
+     * @param <T>    the entity type
+     */
+    <T> void firePreDocumentEntity(T entity);
+
+    /**
+     * Fire an event after firePostEntity
+     *
+     * @param entity the entity
+     * @param <T>    the entity kind
+     */
+    <T> void firePostDocumentEntity(T entity);
 
 }
