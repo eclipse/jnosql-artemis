@@ -22,7 +22,9 @@ package org.jnosql.artemis.column;
 
 import org.jnosql.artemis.EntityPostPersit;
 import org.jnosql.artemis.EntityPrePersist;
+import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnEntity;
+import org.jnosql.diana.api.column.ColumnQuery;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -45,12 +47,17 @@ class DefaultColumnEventPersistManager implements ColumnEventPersistManager {
     @Inject
     private Event<EntityPostPersit> entityPostPersitEvent;
 
-
     @Inject
     private Event<EntityColumnPrePersist> entityColumnPrePersist;
 
     @Inject
     private Event<EntityColumnPostPersist> entityColumnPostPersist;
+
+    @Inject
+    private Event<ColumnQueryExecute> columnQueryExecute;
+
+    @Inject
+    private Event<ColumnDeleteQueryExecute> columnDeleteQueryExecute;
 
     @Override
     public void firePreColumn(ColumnEntity entity) {
@@ -80,5 +87,15 @@ class DefaultColumnEventPersistManager implements ColumnEventPersistManager {
     @Override
     public <T> void firePostColumnEntity(T entity) {
         entityColumnPostPersist.fire(EntityColumnPostPersist.of(entity));
+    }
+
+    @Override
+    public void firePreQuery(ColumnQuery query) {
+        columnQueryExecute.fire(ColumnQueryExecute.of(query));
+    }
+
+    @Override
+    public void firePreDeleteQuery(ColumnDeleteQuery query) {
+        columnDeleteQueryExecute.fire(ColumnDeleteQueryExecute.of(query));
     }
 }

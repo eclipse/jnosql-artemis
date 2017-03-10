@@ -41,11 +41,11 @@ class DefaultColumnQueryExecute implements ColumnQueryExecute {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof DefaultColumnQueryExecute)) {
+        if (!(o instanceof ColumnQueryExecute)) {
             return false;
         }
-        DefaultColumnQueryExecute that = (DefaultColumnQueryExecute) o;
-        return Objects.equals(query, that.query);
+        ColumnQueryExecute that = (ColumnQueryExecute) o;
+        return Objects.equals(query, that.getQuery());
     }
 
     @Override
