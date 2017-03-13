@@ -94,7 +94,7 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
 
     private FieldValue to(FieldRepresentation field, Object entityInstance) {
         Object value = reflections.getValue(entityInstance, field.getField());
-        return new FieldValue(value, field);
+        return FieldValue.of(value, field);
     }
 
     private <T> Consumer<String> feedObject(T instance, List<Column> columns, Map<String, FieldRepresentation> fieldsGroupByName) {

@@ -20,23 +20,16 @@
 package org.jnosql.artemis.reflection;
 
 
-import org.jnosql.artemis.AttributeConverter;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.column.ColumnEntityConverter;
 import org.jnosql.artemis.document.DocumentEntityConverter;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.document.Document;
 
-import java.util.Optional;
-
 /**
  * The tuple between the instance value and {@link FieldRepresentation}
  */
-public final class FieldValue {
-
-    private final Object value;
-
-    private final FieldRepresentation field;
+public interface FieldValue {
 
 
     /**
@@ -45,9 +38,8 @@ public final class FieldValue {
      * @param value the value
      * @param field the field
      */
-    public FieldValue(Object value, FieldRepresentation field) {
-        this.value = value;
-        this.field = field;
+    static FieldValue of(Object value, FieldRepresentation field) {
+        return new DefaultFieldValue(value, field);
     }
 
     /**
@@ -55,27 +47,21 @@ public final class FieldValue {
      *
      * @return the instance
      */
-    public Object getValue() {
-        return value;
-    }
+    Object getValue();
 
     /**
      * returns the Field representation
      *
      * @return the {@link FieldRepresentation} instance
      */
-    public FieldRepresentation getField() {
-        return field;
-    }
+    FieldRepresentation getField();
 
     /**
      * Returns true if {@link FieldValue#getValue()} is different of null
      *
      * @return if {@link FieldValue#getValue()} is different of null
      */
-    public boolean isNotEmpty() {
-        return value != null;
-    }
+    boolean isNotEmpty();
 
     /**
      * Convert this instance to {@link Document}
@@ -83,17 +69,7 @@ public final class FieldValue {
      * @param converter the converter
      * @return a {@link Document} instance
      */
-    public Document toDocument(DocumentEntityConverter converter, Converters converters) {
-        if (FieldType.EMBEDDED.equals(field.getType())) {
-            return Document.of(field.getName(), converter.toDocument(value).getDocuments());
-        }
-        Optional<Class<? extends AttributeConverter>> optionalConverter = field.getConverter();
-        if (optionalConverter.isPresent()) {
-            AttributeConverter attributeConverter = converters.get(optionalConverter.get());
-            return Document.of(field.getName(), attributeConverter.convertToDatabaseColumn(value));
-        }
-        return Document.of(field.getName(), value);
-    }
+    Document toDocument(DocumentEntityConverter converter, Converters converters);
 
     /**
      * Convert this instance to {@link Column}
@@ -101,25 +77,5 @@ public final class FieldValue {
      * @param converter the converter
      * @return a {@link Column} instance
      */
-    public Column toColumn(ColumnEntityConverter converter, Converters converters) {
-
-        if (FieldType.EMBEDDED.equals(getField().getType())) {
-            return Column.of(field.getName(), converter.toColumn(value).getColumns());
-        }
-        Optional<Class<? extends AttributeConverter>> optionalConverter = field.getConverter();
-        if (optionalConverter.isPresent()) {
-            AttributeConverter attributeConverter = converters.get(optionalConverter.get());
-            return Column.of(field.getName(), attributeConverter.convertToDatabaseColumn(value));
-        }
-
-        return Column.of(field.getName(), value);
-    }
-
-    @Override
-    public String toString() {
-        return "FieldValue{" +
-                "value=" + value +
-                ", field=" + field +
-                '}';
-    }
+    Column toColumn(ColumnEntityConverter converter, Converters converters);
 }
