@@ -33,8 +33,6 @@ import org.jnosql.diana.api.TypeReference;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnEntity;
-import org.jnosql.diana.api.document.Document;
-import org.jnosql.diana.api.document.DocumentEntity;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,7 +42,9 @@ import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -202,6 +202,30 @@ public class DefaultColumnEntityConverterTest {
         entity.add(Column.of("title", "Matrix"));
         entity.add(Column.of("year", 2012));
         entity.add(Column.of("actors", singleton("Actor")));
+        Director director1 = converter.toEntity(entity);
+
+        assertEquals(movie, director1.getMovie());
+        assertEquals(director.getName(), director1.getName());
+        assertEquals(director.getAge(), director1.getAge());
+        assertEquals(director.getId(), director1.getId());
+    }
+
+    @Test
+    public void shouldConvertToEmbeddedClassWhenHasSubColumn3() {
+        Movie movie = new Movie("Matrix", 2012, singleton("Actor"));
+        Director director = Director.builderDiretor().withAge(12)
+                .withId(12)
+                .withName("Otavio")
+                .withPhones(Arrays.asList("234", "2342")).withMovie(movie).build();
+
+        ColumnEntity entity = converter.toColumn(director);
+        entity.remove("movie");
+        Map<String, Object> map = new HashMap<>();
+        map.put("title", "Matrix");
+        map.put("year", 2012);
+        map.put("actors", singleton("Actor"));
+
+        entity.add(Column.of("movie", map));
         Director director1 = converter.toEntity(entity);
 
         assertEquals(movie, director1.getMovie());

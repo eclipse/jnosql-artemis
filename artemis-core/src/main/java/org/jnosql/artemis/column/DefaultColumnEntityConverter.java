@@ -34,12 +34,14 @@ import org.jnosql.diana.api.column.ColumnEntity;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -135,8 +137,20 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
     private <T> void setEmbeddedField(T instance, List<Column> columns, Optional<Column> column, FieldRepresentation field) {
         if (column.isPresent()) {
             Column subColumn = column.get();
-            reflections.setValue(instance, field.getField(), toEntity(field.getField().getType(), subColumn.get(new TypeReference<List<Column>>() {
-            })));
+            Object value = subColumn.get();
+            if (Map.class.isInstance(value)) {
+                Map map = Map.class.cast(value);
+                List<Column> embeddedColumns = new ArrayList<>();
+                for (Object key : map.keySet()) {
+                    embeddedColumns.add(Column.of(key.toString(), map.get(key)));
+                }
+                reflections.setValue(instance, field.getField(), toEntity(field.getField().getType(), embeddedColumns));
+            } else {
+                reflections.setValue(instance, field.getField(), toEntity(field.getField().getType(),
+                        subColumn.get(new TypeReference<List<Column>>() {
+                        })));
+            }
+
         } else {
             reflections.setValue(instance, field.getField(), toEntity(field.getField().getType(), columns));
         }
