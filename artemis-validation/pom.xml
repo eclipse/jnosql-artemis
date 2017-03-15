@@ -27,7 +27,7 @@
     <parent>
         <groupId>org.jnosql.artemis</groupId>
         <artifactId>artemis-parent</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1</version>
     </parent>
 
     <properties>
@@ -80,5 +80,13 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <distributionManagement>
+        <repository>
+            <id>bintray-jnosql-maven</id>
+            <name>jnosql-maven</name>
+            <url>https://api.bintray.com/maven/jnosql/maven/org.jnosql.artemis:artemis-parent/;publish=1</url>
+        </repository>
+    </distributionManagement>
 
 </project>
