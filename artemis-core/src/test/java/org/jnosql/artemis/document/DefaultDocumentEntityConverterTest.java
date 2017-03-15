@@ -43,7 +43,9 @@ import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -199,6 +201,32 @@ public class DefaultDocumentEntityConverterTest {
         entity.add(Document.of("title", "Matrix"));
         entity.add(Document.of("year", 2012));
         entity.add(Document.of("actors", singleton("Actor")));
+        Director director1 = converter.toEntity(entity);
+
+        assertEquals(movie, director1.getMovie());
+        assertEquals(director.getName(), director1.getName());
+        assertEquals(director.getAge(), director1.getAge());
+        assertEquals(director.getId(), director1.getId());
+    }
+
+
+    @Test
+    public void shouldConvertToEmbeddedClassWhenHasSubColumn3() {
+        Movie movie = new Movie("Matrix", 2012, singleton("Actor"));
+        Director director = Director.builderDiretor().withAge(12)
+                .withId(12)
+                .withName("Otavio")
+                .withPhones(Arrays.asList("234", "2342")).withMovie(movie).build();
+
+        DocumentEntity entity = converter.toDocument(director);
+        entity.remove("movie");
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("title", "Matrix");
+        map.put("year", 2012);
+        map.put("actors", singleton("Actor"));
+
+        entity.add(Document.of("movie", map));
         Director director1 = converter.toEntity(entity);
 
         assertEquals(movie, director1.getMovie());

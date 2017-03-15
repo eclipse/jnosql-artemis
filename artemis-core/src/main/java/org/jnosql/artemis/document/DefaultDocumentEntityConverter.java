@@ -33,6 +33,7 @@ import org.jnosql.diana.api.document.DocumentEntity;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -136,8 +137,19 @@ class DefaultDocumentEntityConverter implements DocumentEntityConverter {
     private <T> void setEmbeddedField(T instance, List<Document> documents, Optional<Document> document, FieldRepresentation field) {
         if (document.isPresent()) {
             Document sudDocument = document.get();
-            reflections.setValue(instance, field.getField(), toEntity(field.getField().getType(), sudDocument.get(new TypeReference<List<Document>>() {
-            })));
+            Object value = sudDocument.get();
+            if (Map.class.isInstance(value)) {
+                Map map = Map.class.cast(value);
+                List<Document> embeddedDocument = new ArrayList<>();
+                for (Object key : map.keySet()) {
+                    embeddedDocument.add(Document.of(key.toString(), map.get(key)));
+                }
+                reflections.setValue(instance, field.getField(), toEntity(field.getField().getType(), embeddedDocument));
+            } else {
+                reflections.setValue(instance, field.getField(), toEntity(field.getField().getType(), sudDocument.get(new TypeReference<List<Document>>() {
+                })));
+            }
+
         } else {
             reflections.setValue(instance, field.getField(), toEntity(field.getField().getType(), documents));
         }
