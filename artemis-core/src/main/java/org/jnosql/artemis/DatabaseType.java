@@ -24,5 +24,18 @@ package org.jnosql.artemis;
  * Defines the database type supported on Artemis.
  */
 public enum DatabaseType {
-    DOCUMENT, COLUMN, KEY_VALUE, GRAPH;
+    DOCUMENT("DocumentCollectionManager"),
+    COLUMN("ColumnFamilyManager"),
+    KEY_VALUE("BucketManager"),
+    GRAPH("GraphManager");
+
+    private final String managerName;
+
+    DatabaseType(String managerName) {
+        this.managerName = managerName;
+    }
+
+    public String getManagerName() {
+        return managerName;
+    }
 }

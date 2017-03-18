@@ -23,7 +23,7 @@ package org.jnosql.artemis.document.spi;
 import org.jnosql.artemis.CrudRepository;
 import org.jnosql.artemis.CrudRepositoryAsync;
 import org.jnosql.artemis.Database;
-import org.jnosql.artemis.DatabaseType;
+import org.jnosql.artemis.Databases;
 import org.jnosql.artemis.document.query.CrudRepositoryAsyncDocumentBean;
 import org.jnosql.artemis.document.query.CrudRepositoryDocumentBean;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
@@ -35,16 +35,15 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessProducer;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
+
+import static org.jnosql.artemis.DatabaseType.DOCUMENT;
 
 /**
  * Extension to start up the DocumentRepository, DocumentRepositoryAsync, CrudRepository and CrudRepositoryAsync
@@ -91,33 +90,11 @@ class DocumentCollectionProducerExtension implements Extension {
     }
 
     <T, X extends DocumentCollectionManager> void processProducer(@Observes final ProcessProducer<T, X> pp) {
-        Set<Annotation> annotations = pp.getAnnotatedMember().getAnnotations();
-        Optional<Database> databaseOptional = annotations.stream().filter(a -> a instanceof Database)
-                .map(Database.class::cast).findFirst();
-        if (databaseOptional.isPresent()) {
-            Database database = databaseOptional.get();
-            if (!DatabaseType.DOCUMENT.equals(database.value())) {
-                String simpleName = pp.getAnnotatedMember().getDeclaringType().getJavaClass().getSimpleName();
-                throw new IllegalStateException(String.format("The %s must produce DocumentCollectionManager with DOCUMENT type", simpleName));
-            }
-            databases.add(database);
-        }
-
+        Databases.addDatabase(pp, DOCUMENT, databases);
     }
 
     <T, X extends DocumentCollectionManagerAsync> void processProducerAsync(@Observes final ProcessProducer<T, X> pp) {
-        Set<Annotation> annotations = pp.getAnnotatedMember().getAnnotations();
-        Optional<Database> databaseOptional = annotations.stream().filter(a -> a instanceof Database)
-                .map(Database.class::cast).findFirst();
-        if (databaseOptional.isPresent()) {
-            Database database = databaseOptional.get();
-            if (!DatabaseType.DOCUMENT.equals(database.value())) {
-                String simpleName = pp.getAnnotatedMember().getDeclaringType().getJavaClass().getSimpleName();
-                throw new IllegalStateException(String.format("The %s must produce DocumentCollectionManager with DOCUMENT type", simpleName));
-            }
-            databasesAsync.add(database);
-        }
-
+        Databases.addDatabase(pp, DOCUMENT, databasesAsync);
     }
 
     void onAfterBeanDiscovery(@Observes final AfterBeanDiscovery afterBeanDiscovery, final BeanManager beanManager) {
