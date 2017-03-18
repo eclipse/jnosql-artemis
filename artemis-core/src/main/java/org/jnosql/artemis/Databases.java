@@ -21,10 +21,24 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * Class util for check some data during CDI Extensions for Artemis
+ */
 public class Databases {
 
     private Databases() {}
 
+    /**
+     * This method get the class from ProcessProduce, check if the object is a valid object for the database type
+     * add it for a list passed for CDI's lifecycle.
+     *
+     * @param pp the {@link ProcessProducer} of CDI Exntesion
+     * @param databaseType type data which extension is scanning
+     * @param dataBaseList list of objects which will be used by Artemis CDI Extension
+     *
+     * @see DatabaseType
+     *
+     */
     public static void addDatabase(final ProcessProducer pp, final DatabaseType databaseType, final List<Database> dataBaseList) {
         Set<Annotation> annotations = pp.getAnnotatedMember().getAnnotations();
         Optional<Database> databaseOptional = annotations.stream().filter(a -> a instanceof Database)
@@ -33,7 +47,7 @@ public class Databases {
             Database database = databaseOptional.get();
             if (!databaseType.equals(database.value())) {
                 String simpleName = pp.getAnnotatedMember().getDeclaringType().getJavaClass().getSimpleName();
-                throw new IllegalStateException(String.format("The %s must produce %s with %s type", simpleName, databaseType.getManagerName(), databaseType));
+                throw new IllegalStateException(String.format("The %s is producing a wrong manager for %s type", simpleName, databaseType));
             }
             dataBaseList.add(database);
         }
