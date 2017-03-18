@@ -17,7 +17,7 @@ package org.jnosql.artemis.key.spi;
 
 
 import org.jnosql.artemis.Database;
-import org.jnosql.artemis.DatabaseType;
+import org.jnosql.artemis.Databases;
 import org.jnosql.artemis.key.query.KeyValueCrudRepository;
 import org.jnosql.artemis.key.query.KeyValueRepositoryBean;
 import org.jnosql.diana.api.key.BucketManager;
@@ -28,14 +28,13 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessProducer;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import java.util.logging.Logger;
+
+import static org.jnosql.artemis.DatabaseType.KEY_VALUE;
 
 /**
  * Extension to start up {@link org.jnosql.artemis.key.KeyValueRepository} and {@link KeyValueCrudRepository}
@@ -50,18 +49,7 @@ class BucketManagerProducerExtension implements Extension {
     private final Collection<Class<?>> crudTypes = new HashSet<>();
 
     <T, X extends BucketManager> void processProducer(@Observes final ProcessProducer<T, X> pp) {
-        Set<Annotation> annotations = pp.getAnnotatedMember().getAnnotations();
-        Optional<Database> databaseOptional = annotations.stream().filter(a -> a instanceof Database)
-                .map(Database.class::cast).findFirst();
-        if (databaseOptional.isPresent()) {
-            Database database = databaseOptional.get();
-            if (!DatabaseType.KEY_VALUE.equals(database.value())) {
-                String simpleName = pp.getAnnotatedMember().getDeclaringType().getJavaClass().getSimpleName();
-                throw new IllegalStateException(String.format("The %s must produce BucketManager with KEY_VALUE type", simpleName));
-            }
-            databases.add(database);
-        }
-
+        Databases.addDatabase(pp, KEY_VALUE, databases);
     }
 
     <T extends KeyValueCrudRepository> void onProcessAnnotatedType(@Observes final ProcessAnnotatedType<T> repo) {
@@ -87,5 +75,4 @@ class BucketManagerProducerExtension implements Extension {
 
         LOGGER.info("Finished the onAfterBeanDiscovery");
     }
-
 }

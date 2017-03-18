@@ -19,7 +19,7 @@ package org.jnosql.artemis.column.spi;
 import org.jnosql.artemis.CrudRepository;
 import org.jnosql.artemis.CrudRepositoryAsync;
 import org.jnosql.artemis.Database;
-import org.jnosql.artemis.DatabaseType;
+import org.jnosql.artemis.Databases;
 import org.jnosql.artemis.column.query.CrudRepositoryAsyncColumnBean;
 import org.jnosql.artemis.column.query.CrudRepositoryColumnBean;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
@@ -31,16 +31,15 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessProducer;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
+
+import static org.jnosql.artemis.DatabaseType.COLUMN;
 
 /**
  * Extension to start up the ColumnRepository, ColumnRepositoryAsync, CrudRepository and CrudRepositoryAsync
@@ -82,33 +81,11 @@ class ColumnFamilyProducerExtension implements Extension {
     }
 
     <T, X extends ColumnFamilyManager> void processProducer(@Observes final ProcessProducer<T, X> pp) {
-        Set<Annotation> annotations = pp.getAnnotatedMember().getAnnotations();
-        Optional<Database> databaseOptional = annotations.stream().filter(a -> a instanceof Database)
-                .map(Database.class::cast).findFirst();
-        if (databaseOptional.isPresent()) {
-            Database database = databaseOptional.get();
-            if (!DatabaseType.COLUMN.equals(database.value())) {
-                String simpleName = pp.getAnnotatedMember().getDeclaringType().getJavaClass().getSimpleName();
-                throw new IllegalStateException(String.format("The %s must produce ColumnFamilyManager with COLUMN type", simpleName));
-            }
-            databases.add(database);
-        }
-
+        Databases.addDatabase(pp, COLUMN, databases);
     }
 
     <T, X extends ColumnFamilyManagerAsync> void processProducerAsync(@Observes final ProcessProducer<T, X> pp) {
-        Set<Annotation> annotations = pp.getAnnotatedMember().getAnnotations();
-        Optional<Database> databaseOptional = annotations.stream().filter(a -> a instanceof Database)
-                .map(Database.class::cast).findFirst();
-        if (databaseOptional.isPresent()) {
-            Database database = databaseOptional.get();
-            if (!DatabaseType.COLUMN.equals(database.value())) {
-                String simpleName = pp.getAnnotatedMember().getDeclaringType().getJavaClass().getSimpleName();
-                throw new IllegalStateException(String.format("The %s must produce ColumnFamilyManager with COLUMN type", simpleName));
-            }
-            databasesAsync.add(database);
-        }
-
+        Databases.addDatabase(pp, COLUMN, databasesAsync);
     }
 
     void onAfterBeanDiscovery(@Observes final AfterBeanDiscovery afterBeanDiscovery, final BeanManager beanManager) {
