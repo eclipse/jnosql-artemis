@@ -16,13 +16,12 @@
 package org.jnosql.artemis;
 
 
-import org.jnosql.artemis.reflection.Reflections;
-
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The Default implementation to {@link Converters}
@@ -31,27 +30,24 @@ import java.util.concurrent.ConcurrentHashMap;
 class DefaultConverters implements Converters {
 
     @Inject
-    private Reflections reflections;
-
-    private Map<Class<? extends AttributeConverter>, AttributeConverter> attributeConverters = new ConcurrentHashMap<>();
-
+    private BeanManager beanManager;
 
     @Override
     public AttributeConverter get(Class<? extends AttributeConverter> converterClass) throws NullPointerException {
         Objects.requireNonNull(converterClass, "The converterClass is required");
-        AttributeConverter converter = attributeConverters.get(converterClass);
-        if (Objects.isNull(converter)) {
-            converter = reflections.newInstance(converterClass);
-            attributeConverters.put(converterClass, converter);
-        }
+        return getInstance(converterClass);
+    }
 
-        return converter;
+    private <T> T getInstance(Class<T> clazz) {
+        Bean<T> bean = (Bean<T>) beanManager.getBeans(clazz).iterator().next();
+        CreationalContext<T> ctx = beanManager.createCreationalContext(bean);
+        return (T) beanManager.getReference(bean, clazz, ctx);
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("DefaultConverters{");
-        sb.append("attributeConverters=").append(attributeConverters.size());
+        sb.append("beanManager=").append(beanManager);
         sb.append('}');
         return sb.toString();
     }
