@@ -28,7 +28,6 @@ import org.jnosql.diana.api.TypeReference;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnCondition;
 import org.jnosql.diana.api.column.ColumnQuery;
-import org.jnosql.diana.api.document.Document;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -228,8 +227,8 @@ public class ColumnQueryParserTest {
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
         assertEquals(Column.of("name", "name"), query.getCondition().get().getColumn());
-        assertEquals(pagination.getLimit(), query.getMaxResults());
-        assertEquals(pagination.getStart(), query.getFirstResult());
+        assertEquals(pagination.getMaxResults(), query.getMaxResults());
+        assertEquals(pagination.getFirstResult(), query.getFirstResult());
     }
 
     @Test
@@ -242,8 +241,8 @@ public class ColumnQueryParserTest {
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
         assertEquals(Column.of("name", "name"), query.getCondition().get().getColumn());
-        assertEquals(pagination.getLimit(), query.getMaxResults());
-        assertEquals(pagination.getStart(), query.getFirstResult());
+        assertEquals(pagination.getMaxResults(), query.getMaxResults());
+        assertEquals(pagination.getFirstResult(), query.getFirstResult());
         assertEquals(sort, query.getSorts().get(0));
     }
 
@@ -257,8 +256,8 @@ public class ColumnQueryParserTest {
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
         assertEquals(Column.of("name", "name"), query.getCondition().get().getColumn());
-        assertEquals(pagination.getLimit(), query.getMaxResults());
-        assertEquals(pagination.getStart(), query.getFirstResult());
+        assertEquals(pagination.getMaxResults(), query.getMaxResults());
+        assertEquals(pagination.getFirstResult(), query.getFirstResult());
         assertEquals(sort, query.getSorts().get(0));
     }
 }

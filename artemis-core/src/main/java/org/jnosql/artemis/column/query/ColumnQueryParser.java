@@ -62,8 +62,8 @@ public class ColumnQueryParser {
                 columnQuery.addSort(Sort.class.cast(value));
             } else if (Pagination.class.isInstance(value)) {
                 Pagination pagination = Pagination.class.cast(value);
-                columnQuery.withMaxResults(pagination.getLimit());
-                columnQuery.withFirstResult(pagination.getStart());
+                columnQuery.withMaxResults(pagination.getMaxResults());
+                columnQuery.withFirstResult(pagination.getFirstResult());
             } else {
                 LOGGER.info(String.format("Ignoring parameter %s on  methodName %s class name %s arg-number: %d",
                         String.valueOf(value), methodName, className, index));

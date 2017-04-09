@@ -233,8 +233,8 @@ public class ColumnCrudRepositoryAsyncProxyTest {
         assertEquals(Column.of("name", "name"), condition.getColumn());
         assertEquals(callback, consumerCaptor.getValue());
         assertEquals(sort, query.getSorts().get(0));
-        assertEquals(pagination.getStart(), query.getFirstResult());
-        assertEquals(pagination.getLimit(), query.getMaxResults());
+        assertEquals(pagination.getFirstResult(), query.getFirstResult());
+        assertEquals(pagination.getMaxResults(), query.getMaxResults());
     }
 
     @Test

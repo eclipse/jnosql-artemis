@@ -30,12 +30,12 @@ class DefaultPagination implements Pagination {
     }
 
     @Override
-    public long getLimit() {
+    public long getMaxResults() {
         return limit;
     }
 
     @Override
-    public long getStart() {
+    public long getFirstResult() {
         return start;
     }
 
@@ -48,8 +48,8 @@ class DefaultPagination implements Pagination {
             return false;
         }
         Pagination that = (Pagination) o;
-        return limit == that.getLimit() &&
-                start == that.getStart();
+        return limit == that.getMaxResults() &&
+                start == that.getFirstResult();
     }
 
     @Override
