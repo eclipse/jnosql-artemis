@@ -38,10 +38,10 @@ public interface Pagination {
      * Creates a default pagination
      *
      * @param start the start
-     *              {@link org.jnosql.diana.api.document.DocumentQuery#setLimit(long)}
-     *              {@link org.jnosql.diana.api.column.ColumnQuery#setLimit(long)}
-     * @param limit the limit {@link org.jnosql.diana.api.document.DocumentQuery#setLimit(long)}
-     *              {@link org.jnosql.diana.api.column.ColumnQuery#setLimit(long)}
+     *              {@link org.jnosql.diana.api.document.DocumentQuery#withMaxResults(long)}}
+     *              {@link org.jnosql.diana.api.column.ColumnQuery#withFirstResult(long)}}
+     * @param limit the limit {@link org.jnosql.diana.api.document.DocumentQuery#withMaxResults(long)}
+     *              {@link org.jnosql.diana.api.column.ColumnQuery#withFirstResult(long)}
      * @return the pagination instance
      */
     static Pagination of(long start, long limit) {
