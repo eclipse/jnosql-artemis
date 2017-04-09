@@ -235,8 +235,8 @@ public class DocumentCrudRepositoryAsyncProxyTest {
         assertEquals(Document.of("name", "name"), condition.getDocument());
         assertEquals(callback, consumerCaptor.getValue());
         assertEquals(sort, query.getSorts().get(0));
-        assertEquals(pagination.getStart(), query.getStart());
-        assertEquals(pagination.getLimit(), query.getLimit());
+        assertEquals(pagination.getStart(), query.getFirstResult());
+        assertEquals(pagination.getLimit(), query.getMaxResults());
     }
 
     @Test

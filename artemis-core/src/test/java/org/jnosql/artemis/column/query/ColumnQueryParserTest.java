@@ -228,8 +228,8 @@ public class ColumnQueryParserTest {
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
         assertEquals(Column.of("name", "name"), query.getCondition().get().getColumn());
-        assertEquals(pagination.getLimit(), query.getLimit());
-        assertEquals(pagination.getStart(), query.getStart());
+        assertEquals(pagination.getLimit(), query.getMaxResults());
+        assertEquals(pagination.getStart(), query.getFirstResult());
     }
 
     @Test
@@ -242,8 +242,8 @@ public class ColumnQueryParserTest {
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
         assertEquals(Column.of("name", "name"), query.getCondition().get().getColumn());
-        assertEquals(pagination.getLimit(), query.getLimit());
-        assertEquals(pagination.getStart(), query.getStart());
+        assertEquals(pagination.getLimit(), query.getMaxResults());
+        assertEquals(pagination.getStart(), query.getFirstResult());
         assertEquals(sort, query.getSorts().get(0));
     }
 
@@ -257,8 +257,8 @@ public class ColumnQueryParserTest {
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
         assertEquals(Column.of("name", "name"), query.getCondition().get().getColumn());
-        assertEquals(pagination.getLimit(), query.getLimit());
-        assertEquals(pagination.getStart(), query.getStart());
+        assertEquals(pagination.getLimit(), query.getMaxResults());
+        assertEquals(pagination.getStart(), query.getFirstResult());
         assertEquals(sort, query.getSorts().get(0));
     }
 }
