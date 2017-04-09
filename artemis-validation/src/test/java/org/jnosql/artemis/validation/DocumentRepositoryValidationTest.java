@@ -23,6 +23,7 @@ import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.math.BigDecimal;
 import java.util.Set;
 
@@ -47,7 +48,7 @@ public class DocumentRepositoryValidationTest {
         repository.save(person);
     }
 
-    @Test(expected = ArtemisValidationException.class)
+    @Test(expected = ConstraintViolationException.class)
     public void shouldReturnValidationExceptionOnSave() {
         Person person = Person.builder()
                 .withAge(10)
@@ -70,8 +71,8 @@ public class DocumentRepositoryValidationTest {
                 .build();
         try {
             repository.save(person);
-        } catch (ArtemisValidationException ex) {
-            Set<ConstraintViolation<?>> violations = ex.getViolations();
+        } catch (ConstraintViolationException ex) {
+            Set<ConstraintViolation<?>> violations = ex.getConstraintViolations();
             Assert.assertEquals(2, violations.size());
         }
 
@@ -89,7 +90,7 @@ public class DocumentRepositoryValidationTest {
         repository.update(person);
     }
 
-    @Test(expected = ArtemisValidationException.class)
+    @Test(expected = ConstraintViolationException.class)
     public void shouldReturnValidationExceptionOnUpdate() {
         Person person = Person.builder()
                 .withAge(10)
@@ -112,8 +113,8 @@ public class DocumentRepositoryValidationTest {
                 .build();
         try {
             repository.update(person);
-        } catch (ArtemisValidationException ex) {
-            Set<ConstraintViolation<?>> violations = ex.getViolations();
+        } catch (ConstraintViolationException ex) {
+            Set<ConstraintViolation<?>> violations = ex.getConstraintViolations();
             Assert.assertEquals(2, violations.size());
         }
 

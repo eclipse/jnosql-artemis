@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.math.BigDecimal;
 import java.util.Set;
 
@@ -46,7 +47,7 @@ public class KeyValueRepositoryValidationTest {
         repository.put(person);
     }
 
-    @Test(expected = ArtemisValidationException.class)
+    @Test(expected = ConstraintViolationException.class)
     public void shouldReturnValidationException() {
         Person person = Person.builder()
                 .withAge(10)
@@ -69,8 +70,8 @@ public class KeyValueRepositoryValidationTest {
                 .build();
         try {
             repository.put(person);
-        } catch (ArtemisValidationException ex) {
-            Set<ConstraintViolation<?>> violations = ex.getViolations();
+        } catch (ConstraintViolationException ex) {
+            Set<ConstraintViolation<?>> violations = ex.getConstraintViolations();
             Assert.assertEquals(2, violations.size());
         }
 
