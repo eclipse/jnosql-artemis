@@ -19,6 +19,7 @@ package org.jnosql.artemis.validation;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
@@ -39,7 +40,7 @@ class DefaultArtemisValidator implements ArtemisValidator {
         Set<ConstraintViolation<Object>> violations = validator.validate(bean);
 
         if (!violations.isEmpty()) {
-            throw new ArtemisValidationException(violations.stream().collect(toSet()));
+            throw new ConstraintViolationException(violations.stream().collect(toSet()));
         }
 
     }

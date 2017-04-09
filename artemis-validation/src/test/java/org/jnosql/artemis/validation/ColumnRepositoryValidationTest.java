@@ -16,13 +16,13 @@
 package org.jnosql.artemis.validation;
 
 import org.jnosql.artemis.column.ColumnRepository;
-import org.jnosql.artemis.document.DocumentRepository;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.math.BigDecimal;
 import java.util.Set;
 
@@ -47,7 +47,7 @@ public class ColumnRepositoryValidationTest {
         repository.save(person);
     }
 
-    @Test(expected = ArtemisValidationException.class)
+    @Test(expected = ConstraintViolationException.class)
     public void shouldReturnValidationExceptionOnSave() {
         Person person = Person.builder()
                 .withAge(10)
@@ -70,8 +70,8 @@ public class ColumnRepositoryValidationTest {
                 .build();
         try {
             repository.save(person);
-        } catch (ArtemisValidationException ex) {
-            Set<ConstraintViolation<?>> violations = ex.getViolations();
+        } catch (ConstraintViolationException ex) {
+            Set<ConstraintViolation<?>> violations = ex.getConstraintViolations();
             Assert.assertEquals(2, violations.size());
         }
 
@@ -89,7 +89,7 @@ public class ColumnRepositoryValidationTest {
         repository.update(person);
     }
 
-    @Test(expected = ArtemisValidationException.class)
+    @Test(expected = ConstraintViolationException.class)
     public void shouldReturnValidationExceptionOnUpdate() {
         Person person = Person.builder()
                 .withAge(10)
@@ -112,8 +112,8 @@ public class ColumnRepositoryValidationTest {
                 .build();
         try {
             repository.update(person);
-        } catch (ArtemisValidationException ex) {
-            Set<ConstraintViolation<?>> violations = ex.getViolations();
+        } catch (ConstraintViolationException ex) {
+            Set<ConstraintViolation<?>> violations = ex.getConstraintViolations();
             Assert.assertEquals(2, violations.size());
         }
 
