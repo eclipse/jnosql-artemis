@@ -28,7 +28,7 @@ public class WeldContext {
     private WeldContext() {
         this.weld = new Weld();
         this.container = weld.initialize();
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> weld.shutdown()));
+        Runtime.getRuntime().addShutdownHook(new Thread(weld::shutdown));
     }
 
     public <T> T getBean(Class<T> type) {

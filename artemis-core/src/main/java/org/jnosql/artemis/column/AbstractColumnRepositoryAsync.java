@@ -100,13 +100,11 @@ public abstract class AbstractColumnRepositoryAsync implements ColumnRepositoryA
         requireNonNull(query, "query is required");
         requireNonNull(callBack, "callBack is required");
 
-        Consumer<List<ColumnEntity>> dianaCallBack = d -> {
-            callBack.accept(
-                    d.stream()
-                            .map(getConverter()::toEntity)
-                            .map(o -> (T) o)
-                            .collect(toList()));
-        };
+        Consumer<List<ColumnEntity>> dianaCallBack = d -> callBack.accept(
+                d.stream()
+                        .map(getConverter()::toEntity)
+                        .map(o -> (T) o)
+                        .collect(toList()));
         getManager().find(query, dianaCallBack);
     }
 }

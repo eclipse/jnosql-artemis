@@ -102,16 +102,14 @@ class ColumnFamilyProducerExtension implements Extension {
 
         crudTypes.forEach(type -> {
             afterBeanDiscovery.addBean(new CrudRepositoryColumnBean(type, beanManager, ""));
-            databases.forEach(database -> {
-                afterBeanDiscovery.addBean(new CrudRepositoryColumnBean(type, beanManager, database.provider()));
-            });
+            databases.forEach(database -> afterBeanDiscovery
+                    .addBean(new CrudRepositoryColumnBean(type, beanManager, database.provider())));
         });
 
         crudAsyncTypes.forEach(type -> {
             afterBeanDiscovery.addBean(new CrudRepositoryAsyncColumnBean(type, beanManager, ""));
-            databasesAsync.forEach(database -> {
-                afterBeanDiscovery.addBean(new CrudRepositoryAsyncColumnBean(type, beanManager, database.provider()));
-            });
+            databasesAsync.forEach(database -> afterBeanDiscovery
+                    .addBean(new CrudRepositoryAsyncColumnBean(type, beanManager, database.provider())));
         });
 
 

@@ -102,13 +102,11 @@ public abstract class AbstractDocumentRepositoryAsync implements DocumentReposit
         requireNonNull(query, "query is required");
         requireNonNull(callBack, "callBack is required");
 
-        Consumer<List<DocumentEntity>> dianaCallBack = d -> {
-            callBack.accept(
-                    d.stream()
-                            .map(getConverter()::toEntity)
-                            .map(o -> (T) o)
-                            .collect(toList()));
-        };
+        Consumer<List<DocumentEntity>> dianaCallBack = d -> callBack.accept(
+                d.stream()
+                        .map(getConverter()::toEntity)
+                        .map(o -> (T) o)
+                        .collect(toList()));
         getManager().find(query, dianaCallBack);
     }
 }
