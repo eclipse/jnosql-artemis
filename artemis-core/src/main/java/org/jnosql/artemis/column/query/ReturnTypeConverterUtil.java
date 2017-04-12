@@ -20,6 +20,7 @@ import org.jnosql.diana.api.column.ColumnQuery;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.PriorityQueue;
@@ -55,9 +56,9 @@ public final class ReturnTypeConverterUtil {
                 || Collection.class.equals(returnType)) {
             return repository.find(query);
         } else if (Set.class.equals(returnType)) {
-            return repository.find(query).stream().collect(Collectors.toSet());
+            return new HashSet<>(repository.find(query));
         } else if (Queue.class.equals(returnType)) {
-            return repository.find(query).stream().collect(Collectors.toCollection(PriorityQueue::new));
+            return new PriorityQueue<>(repository.find(query));
         } else if (Stream.class.equals(returnType)) {
             return repository.find(query).stream();
         }
