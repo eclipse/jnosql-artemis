@@ -84,14 +84,14 @@ public interface DocumentEventPersistManager {
     /**
      * Fire an event before the query is executed
      *
-     * @param query
+     * @param query the query
      */
     void firePreQuery(DocumentQuery query);
 
     /**
      * Fire an event before the delete query is executed
      *
-     * @param query
+     * @param query the query
      */
     void firePreDeleteQuery(DocumentDeleteQuery query);
 

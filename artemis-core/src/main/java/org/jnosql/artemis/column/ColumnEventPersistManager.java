@@ -84,14 +84,14 @@ public interface ColumnEventPersistManager {
     /**
      * Fire an event before the query is executed
      *
-     * @param query
+     * @param query the query
      */
     void firePreQuery(ColumnQuery query);
 
     /**
      * Fire an event before the delete query is executed
      *
-     * @param query
+     * @param query the query
      */
     void firePreDeleteQuery(ColumnDeleteQuery query);
 }
