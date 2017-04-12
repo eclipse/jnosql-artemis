@@ -65,7 +65,7 @@ public abstract class AbstractKeyValueRepository implements KeyValueRepository {
         Optional<Value> value = getManager().get(key);
         return value.map(v -> getConverter().toEntity(clazz, v))
                 .filter(Objects::nonNull)
-                .map(t -> Optional.ofNullable(t))
+                .map(Optional::ofNullable)
                 .orElse(Optional.empty());
     }
 

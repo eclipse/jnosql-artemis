@@ -63,7 +63,7 @@ class ColumnFamilyProducerExtension implements Extension {
         if (CrudRepository.class.equals(javaClass)) {
             return;
         }
-        if (Stream.of(javaClass.getInterfaces()).anyMatch(c -> CrudRepository.class.equals(c))
+        if (Stream.of(javaClass.getInterfaces()).anyMatch(CrudRepository.class::equals)
                 && Modifier.isInterface(javaClass.getModifiers())) {
             crudTypes.add(javaClass);
         }

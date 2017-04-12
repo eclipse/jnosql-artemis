@@ -87,7 +87,7 @@ public class ClassConverterTest {
         ClassRepresentation classRepresentation = classConverter.create(User.class);
         List<FieldRepresentation> fields = classRepresentation.getFields();
 
-        Predicate<FieldRepresentation> hasKeyAnnotation = f -> f.isKey();
+        Predicate<FieldRepresentation> hasKeyAnnotation = FieldRepresentation::isKey;
         assertTrue(fields.stream().anyMatch(hasKeyAnnotation));
         FieldRepresentation fieldRepresentation = fields.stream().filter(hasKeyAnnotation).findFirst().get();
         assertEquals("nickname", fieldRepresentation.getName());

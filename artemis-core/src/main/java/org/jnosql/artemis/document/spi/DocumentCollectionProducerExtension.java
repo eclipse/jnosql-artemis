@@ -66,7 +66,7 @@ class DocumentCollectionProducerExtension implements Extension {
         }
 
 
-        if (Stream.of(javaClass.getInterfaces()).anyMatch(c -> CrudRepository.class.equals(c))
+        if (Stream.of(javaClass.getInterfaces()).anyMatch(CrudRepository.class::equals)
                 && Modifier.isInterface(javaClass.getModifiers())) {
             crudTypes.add(javaClass);
         }
@@ -79,7 +79,7 @@ class DocumentCollectionProducerExtension implements Extension {
             return;
         }
 
-        if (Stream.of(javaClass.getInterfaces()).anyMatch(c -> CrudRepositoryAsync.class.equals(c))
+        if (Stream.of(javaClass.getInterfaces()).anyMatch(CrudRepositoryAsync.class::equals)
                 && Modifier.isInterface(javaClass.getModifiers())) {
             crudAsyncTypes.add(javaClass);
         }
