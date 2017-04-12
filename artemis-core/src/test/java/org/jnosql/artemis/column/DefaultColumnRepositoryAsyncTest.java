@@ -20,7 +20,6 @@ import org.jnosql.artemis.model.Person;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnEntity;
-import org.jnosql.diana.api.column.ColumnFamilyManager;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +29,6 @@ import org.mockito.Mockito;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;

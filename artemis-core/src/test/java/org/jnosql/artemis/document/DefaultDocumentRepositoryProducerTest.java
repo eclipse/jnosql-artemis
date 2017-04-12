@@ -16,7 +16,6 @@
 package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.WeldJUnit4Runner;
-import org.jnosql.artemis.column.ColumnRepository;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;

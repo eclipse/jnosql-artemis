@@ -26,7 +26,6 @@ import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.model.Worker;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.TypeReference;
-import org.jnosql.diana.api.TypeSupplier;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentEntity;

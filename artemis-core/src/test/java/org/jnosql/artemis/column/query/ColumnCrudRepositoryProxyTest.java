@@ -26,7 +26,6 @@ import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnCondition;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnQuery;
-import org.jnosql.diana.api.document.DocumentQuery;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
