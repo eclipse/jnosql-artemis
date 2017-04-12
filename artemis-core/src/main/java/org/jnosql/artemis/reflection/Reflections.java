@@ -105,7 +105,7 @@ public class Reflections {
      */
     public <T> T newInstance(Class<T> clazz) {
         try {
-            return (T) clazz.newInstance();
+            return clazz.newInstance();
         } catch (Exception exception) {
             Logger.getLogger(Reflections.class.getName()).log(Level.SEVERE, null, exception);
             return null;
