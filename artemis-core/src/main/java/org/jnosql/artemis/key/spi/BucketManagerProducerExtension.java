@@ -40,7 +40,7 @@ import static org.jnosql.artemis.DatabaseType.KEY_VALUE;
  * Extension to start up {@link org.jnosql.artemis.key.KeyValueRepository} and {@link KeyValueCrudRepository}
  * from the {@link javax.enterprise.inject.Default} and {@link Database} qualifier
  */
-class BucketManagerProducerExtension implements Extension {
+public class BucketManagerProducerExtension implements Extension {
 
     private static final Logger LOGGER = Logger.getLogger(BucketManagerProducerExtension.class.getName());
 

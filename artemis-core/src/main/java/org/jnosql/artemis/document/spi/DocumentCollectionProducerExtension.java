@@ -45,7 +45,7 @@ import static org.jnosql.artemis.DatabaseType.DOCUMENT;
  * Extension to start up the DocumentRepository, DocumentRepositoryAsync, CrudRepository and CrudRepositoryAsync
  * from the {@link Database} qualifier
  */
-class DocumentCollectionProducerExtension implements Extension {
+public class DocumentCollectionProducerExtension implements Extension {
 
     private static final Logger LOGGER = Logger.getLogger(DocumentCollectionProducerExtension.class.getName());
 
@@ -94,7 +94,9 @@ class DocumentCollectionProducerExtension implements Extension {
     }
 
     void onAfterBeanDiscovery(@Observes final AfterBeanDiscovery afterBeanDiscovery, final BeanManager beanManager) {
-        LOGGER.info("Starting the onAfterBeanDiscovery with elements number: " + databases.size());
+        LOGGER.info(String.format("Starting to process on documents: %d databases crud %d and crudAsync %d",
+                databases.size(), crudTypes.size(), crudAsyncTypes.size()));
+
         databases.forEach(type -> {
             final DocumentRepositoryBean bean = new DocumentRepositoryBean(beanManager, type.provider());
             afterBeanDiscovery.addBean(bean);

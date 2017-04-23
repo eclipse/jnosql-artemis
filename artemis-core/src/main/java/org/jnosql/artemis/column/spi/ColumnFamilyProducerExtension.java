@@ -45,7 +45,7 @@ import static org.jnosql.artemis.DatabaseType.COLUMN;
  * Extension to start up the ColumnRepository, ColumnRepositoryAsync, CrudRepository and CrudRepositoryAsync
  * from the {@link Database} qualifier
  */
-class ColumnFamilyProducerExtension implements Extension {
+public class ColumnFamilyProducerExtension implements Extension {
 
     private static final Logger LOGGER = Logger.getLogger(ColumnFamilyProducerExtension.class.getName());
 
@@ -89,7 +89,8 @@ class ColumnFamilyProducerExtension implements Extension {
     }
 
     void onAfterBeanDiscovery(@Observes final AfterBeanDiscovery afterBeanDiscovery, final BeanManager beanManager) {
-        LOGGER.info("Starting the onAfterBeanDiscovery with elements number: " + databases.size());
+        LOGGER.info(String.format("Starting to process on columns: %d databases crud %d and crudAsync %d",
+                databases.size(), crudTypes.size(), crudAsyncTypes.size()));
         databases.forEach(type -> {
             final ColumnRepositoryBean bean = new ColumnRepositoryBean(beanManager, type.provider());
             afterBeanDiscovery.addBean(bean);
