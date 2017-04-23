@@ -28,11 +28,13 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessProducer;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 import static org.jnosql.artemis.DatabaseType.KEY_VALUE;
 
@@ -53,13 +55,22 @@ public class BucketManagerProducerExtension implements Extension {
     }
 
     <T extends KeyValueCrudRepository> void onProcessAnnotatedType(@Observes final ProcessAnnotatedType<T> repo) {
-        LOGGER.info("Starting the onProcessAnnotatedType");
-        crudTypes.add(repo.getAnnotatedType().getJavaClass());
-        LOGGER.info("Finished the onProcessAnnotatedType");
+        Class<T> javaClass = repo.getAnnotatedType().getJavaClass();
+
+        if (KeyValueCrudRepository.class.equals(javaClass)) {
+            return;
+        }
+
+        if (Stream.of(javaClass.getInterfaces()).anyMatch(KeyValueCrudRepository.class::equals)
+                && Modifier.isInterface(javaClass.getModifiers())) {
+            LOGGER.info("Adding a new KeyValueCrudRepository as discovered on Column: " + javaClass);
+            crudTypes.add(repo.getAnnotatedType().getJavaClass());
+        }
     }
 
     void onAfterBeanDiscovery(@Observes final AfterBeanDiscovery afterBeanDiscovery, final BeanManager beanManager) {
-        LOGGER.info("Starting the onAfterBeanDiscovery with elements number: " + databases.size());
+        LOGGER.info(String.format("Processing buckets: %d databases crud %d ",
+                databases.size(), crudTypes.size()));
 
         databases.forEach(type -> {
             final org.jnosql.artemis.key.spi.KeyValueRepositoryBean bean = new org.jnosql.artemis.key.spi.KeyValueRepositoryBean(beanManager, type.provider());
@@ -72,6 +83,5 @@ public class BucketManagerProducerExtension implements Extension {
                     .addBean(new KeyValueRepositoryBean(type, beanManager, database.provider())));
         });
 
-        LOGGER.info("Finished the onAfterBeanDiscovery");
     }
 }

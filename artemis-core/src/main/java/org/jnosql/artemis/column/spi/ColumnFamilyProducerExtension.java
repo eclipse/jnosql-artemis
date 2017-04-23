@@ -65,6 +65,7 @@ public class ColumnFamilyProducerExtension implements Extension {
         }
         if (Stream.of(javaClass.getInterfaces()).anyMatch(CrudRepository.class::equals)
                 && Modifier.isInterface(javaClass.getModifiers())) {
+            LOGGER.info("Adding a new CrudRepository as discovered on Column: " + javaClass);
             crudTypes.add(javaClass);
         }
     }
@@ -76,6 +77,7 @@ public class ColumnFamilyProducerExtension implements Extension {
         }
         if (Stream.of(javaClass.getInterfaces()).anyMatch(CrudRepositoryAsync.class::equals)
                 && Modifier.isInterface(javaClass.getModifiers())) {
+            LOGGER.info("Adding a new CrudRepositoryAsync as discovered on Column: " + javaClass);
             crudAsyncTypes.add(javaClass);
         }
     }
@@ -114,7 +116,6 @@ public class ColumnFamilyProducerExtension implements Extension {
         });
 
 
-        LOGGER.info("Finished the onAfterBeanDiscovery");
     }
 
 }

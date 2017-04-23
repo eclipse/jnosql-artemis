@@ -60,7 +60,6 @@ public class DocumentCollectionProducerExtension implements Extension {
 
     <T extends CrudRepository> void onProcessAnnotatedType(@Observes final ProcessAnnotatedType<T> repo) {
         Class<T> javaClass = repo.getAnnotatedType().getJavaClass();
-
         if (CrudRepository.class.equals(javaClass)) {
             return;
         }
@@ -68,6 +67,7 @@ public class DocumentCollectionProducerExtension implements Extension {
 
         if (Stream.of(javaClass.getInterfaces()).anyMatch(CrudRepository.class::equals)
                 && Modifier.isInterface(javaClass.getModifiers())) {
+            LOGGER.info("Adding a new CrudRepository as discovered on document: " + javaClass);
             crudTypes.add(javaClass);
         }
     }
@@ -81,6 +81,7 @@ public class DocumentCollectionProducerExtension implements Extension {
 
         if (Stream.of(javaClass.getInterfaces()).anyMatch(CrudRepositoryAsync.class::equals)
                 && Modifier.isInterface(javaClass.getModifiers())) {
+            LOGGER.info("Adding a new CrudRepositoryAsync as discovered on document: " + javaClass);
             crudAsyncTypes.add(javaClass);
         }
     }
@@ -123,7 +124,6 @@ public class DocumentCollectionProducerExtension implements Extension {
             });
         });
 
-        LOGGER.info("Finished the onAfterBeanDiscovery");
     }
 
 }
