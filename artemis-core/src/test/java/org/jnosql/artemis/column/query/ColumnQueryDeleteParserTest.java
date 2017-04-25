@@ -61,7 +61,7 @@ public class ColumnQueryDeleteParserTest {
 
 
     @Test
-    public void shouldDeleteByNameANDAge() {
+    public void shouldDeleteByNameAndAge() {
         ColumnDeleteQuery query = parser.parse("deleteByNameAndAge", new Object[]{"name", 10}, classRepresentation);
         ColumnCondition condition = query.getCondition().get();
         assertEquals("Person", query.getColumnFamily());
@@ -78,7 +78,7 @@ public class ColumnQueryDeleteParserTest {
     }
 
     @Test
-    public void shouldDeleteByNameORAge() {
+    public void shouldDeleteByNameOrAge() {
         ColumnDeleteQuery query = parser.parse("deleteByNameOrAge", new Object[]{"name", 10}, classRepresentation);
         ColumnCondition condition = query.getCondition().get();
         assertEquals("Person", query.getColumnFamily());
@@ -138,7 +138,7 @@ public class ColumnQueryDeleteParserTest {
 
 
     @Test
-    public void shouldDeleteByNameANDAAgeBetween() {
+    public void shouldDeleteByNameAndAAgeBetween() {
         ColumnDeleteQuery query = parser.parse("deleteByNameAndAgeBetween", new Object[]{"name", 10, 11},
                 classRepresentation);
         assertEquals("Person", query.getColumnFamily());
