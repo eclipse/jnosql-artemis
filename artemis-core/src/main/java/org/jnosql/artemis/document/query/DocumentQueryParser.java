@@ -60,11 +60,6 @@ public class DocumentQueryParser {
             }
         }
 
-        checkMethodPagination(methodName, args, documentQuery, className, index);
-        return documentQuery;
-    }
-
-    private void checkMethodPagination(String methodName, Object[] args, DocumentQuery documentQuery, String className, int index) {
         while (index < args.length) {
             Object value = args[index];
             if (Sort.class.isInstance(value)) {
@@ -79,8 +74,9 @@ public class DocumentQueryParser {
             }
             index++;
         }
-    }
 
+        return documentQuery;
+    }
 
     private void checkContents(int index, int argSize, int required, String method) {
         if ((index + required) <= argSize) {

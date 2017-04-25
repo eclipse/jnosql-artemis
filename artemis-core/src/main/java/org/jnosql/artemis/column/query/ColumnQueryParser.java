@@ -34,21 +34,22 @@ public class ColumnQueryParser {
     private static final Logger LOGGER = Logger.getLogger(ColumnQueryParser.class.getName());
 
     private static final String PREFIX = "findBy";
+    private static final String TOKENIZER = "(?=And|OrderBy|Or)";
 
 
     public ColumnQuery parse(String methodName, Object[] args, ClassRepresentation classRepresentation) {
         ColumnQuery columnQuery = ColumnQuery.of(classRepresentation.getName());
-        String[] tokens = methodName.replace(PREFIX, ColumnQueryParserUtil.EMPTY).split("(?=AND|OR|OrderBy)");
+        String[] tokens = methodName.replace(PREFIX, ColumnQueryParserUtil.EMPTY).split(TOKENIZER);
         String className = classRepresentation.getClassInstance().getName();
 
         int index = 0;
         for (String token : tokens) {
             if (token.startsWith(ColumnQueryParserUtil.AND)) {
                 index = and(args, columnQuery, index, token, methodName);
-            } else if (token.startsWith(ColumnQueryParserUtil.OR)) {
-                index = or(args, columnQuery, index, token, methodName);
             } else if (token.startsWith(ColumnQueryParserUtil.ORDER_BY)) {
                 sort(columnQuery, token);
+            } else if (token.startsWith(ColumnQueryParserUtil.OR)) {
+                index = or(args, columnQuery, index, token, methodName);
             } else {
                 ColumnCondition condition = ColumnQueryParserUtil.toCondition(token, index, args, methodName);
                 columnQuery.and(condition);
