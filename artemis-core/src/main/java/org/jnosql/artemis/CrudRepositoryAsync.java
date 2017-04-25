@@ -28,8 +28,8 @@ import java.util.function.Consumer;
  * <p>findBy: to find any information T</p>
  * <p>deleteBy: To delete any information T</p>
  * Artemis has some keywords on method:
- * <p><b>AND</b></p>
- * <p><b>OR</b></p>
+ * <p><b>And</b></p>
+ * <p><b>Or</b></p>
  * <p><b>Between</b></p>
  * <p><b>LessThan</b></p>
  * <p><b>GreaterThan</b></p>
