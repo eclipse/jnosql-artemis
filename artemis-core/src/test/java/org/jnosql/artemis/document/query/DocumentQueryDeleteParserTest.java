@@ -64,7 +64,7 @@ public class DocumentQueryDeleteParserTest {
 
 
     @Test
-    public void shouldDeleteByNameANDAge() {
+    public void shouldDeleteByNameAndAge() {
         DocumentDeleteQuery query = parser.parse("deleteByNameAndAge", new Object[]{"name", 10}, classRepresentation);
         DocumentCondition condition = query.getCondition().get();
         assertEquals("Person", query.getCollection());
@@ -81,7 +81,7 @@ public class DocumentQueryDeleteParserTest {
     }
 
     @Test
-    public void shouldDeleteByNameORAge() {
+    public void shouldDeleteByNameOrAge() {
         DocumentDeleteQuery query = parser.parse("deleteByNameOrAge", new Object[]{"name", 10}, classRepresentation);
         DocumentCondition condition = query.getCondition().get();
         assertEquals("Person", query.getCollection());
@@ -141,7 +141,7 @@ public class DocumentQueryDeleteParserTest {
 
 
     @Test
-    public void shouldDeleteByNameANDAAgeBetween() {
+    public void shouldDeleteByNameAndAAgeBetween() {
         DocumentDeleteQuery query = parser.parse("deleteByNameAndAgeBetween", new Object[]{"name", 10, 11},
                 classRepresentation);
         assertEquals("Person", query.getCollection());

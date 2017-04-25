@@ -64,7 +64,7 @@ public class DocumentQueryParserTest {
 
 
     @Test
-    public void shouldFindByNameANDAge() {
+    public void shouldFindByNameAndAge() {
         DocumentQuery query = parser.parse("findByNameAndAge", new Object[]{"name", 10}, classRepresentation);
         DocumentCondition condition = query.getCondition().get();
         assertEquals("Person", query.getCollection());
@@ -81,7 +81,7 @@ public class DocumentQueryParserTest {
     }
 
     @Test
-    public void shouldFindByNameORAge() {
+    public void shouldFindByNameOrAge() {
         DocumentQuery query = parser.parse("findByNameOrAge", new Object[]{"name", 10}, classRepresentation);
         DocumentCondition condition = query.getCondition().get();
         assertEquals("Person", query.getCollection());
@@ -176,7 +176,7 @@ public class DocumentQueryParserTest {
     }
 
     @Test
-    public void shouldFindByNameANDAAgeBetween() {
+    public void shouldFindByNameAndAAgeBetween() {
         DocumentQuery query = parser.parse("findByNameAndAgeBetween", new Object[]{"name", 10, 11},
                 classRepresentation);
         assertEquals("Person", query.getCollection());
