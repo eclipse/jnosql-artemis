@@ -28,11 +28,12 @@ import org.jnosql.diana.api.document.DocumentDeleteQuery;
 public class DocumentQueryDeleteParser {
 
     private static final String PREFIX = "deleteBy";
+    private static final String TOKENIZER = "(?=And|OrderBy|Or)";
 
 
     public DocumentDeleteQuery parse(String methodName, Object[] args, ClassRepresentation classRepresentation) {
         DocumentDeleteQuery documentQuery = DocumentDeleteQuery.of(classRepresentation.getName());
-        String[] tokens = methodName.replace(PREFIX, DocumentQueryParserUtil.EMPTY).split("(?=AND|OR|OrderBy)");
+        String[] tokens = methodName.replace(PREFIX, DocumentQueryParserUtil.EMPTY).split(TOKENIZER);
         String className = classRepresentation.getClassInstance().getName();
 
         int index = 0;
