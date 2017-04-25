@@ -34,28 +34,37 @@ public class DocumentQueryParser {
     private static final Logger LOGGER = Logger.getLogger(DocumentQueryParser.class.getName());
 
     private static final String PREFIX = "findBy";
+    private static final String TOKENIZER = "(?=And|OrderBy|Or)";
 
 
     public DocumentQuery parse(String methodName, Object[] args, ClassRepresentation classRepresentation) {
         DocumentQuery documentQuery = DocumentQuery.of(classRepresentation.getName());
-        String[] tokens = methodName.replace(PREFIX, DocumentQueryParserUtil.EMPTY).split("(?=AND|OR|OrderBy)");
+        String[] tokens = methodName.replace(PREFIX, DocumentQueryParserUtil.EMPTY).split(TOKENIZER);
         String className = classRepresentation.getClassInstance().getName();
 
         int index = 0;
         for (String token : tokens) {
+
             if (token.startsWith(DocumentQueryParserUtil.AND)) {
                 index = and(args, documentQuery, index, token, methodName);
-            } else if (token.startsWith(DocumentQueryParserUtil.OR)) {
-                index = or(args, documentQuery, index, token, methodName);
-            } else if (token.startsWith(DocumentQueryParserUtil.ORDER_BY)) {
-                sort(documentQuery, token);
             } else {
-                DocumentCondition condition = DocumentQueryParserUtil.toCondition(token, index, args, methodName);
-                documentQuery.and(condition);
-                index++;
+                if (token.startsWith(DocumentQueryParserUtil.ORDER_BY)) {
+                    sort(documentQuery, token);
+                } else if (token.startsWith(DocumentQueryParserUtil.OR)) {
+                    index = or(args, documentQuery, index, token, methodName);
+                } else {
+                    DocumentCondition condition = DocumentQueryParserUtil.toCondition(token, index, args, methodName);
+                    documentQuery.and(condition);
+                    index++;
+                }
             }
         }
 
+        checkMethodPagination(methodName, args, documentQuery, className, index);
+        return documentQuery;
+    }
+
+    private void checkMethodPagination(String methodName, Object[] args, DocumentQuery documentQuery, String className, int index) {
         while (index < args.length) {
             Object value = args[index];
             if (Sort.class.isInstance(value)) {
@@ -70,7 +79,6 @@ public class DocumentQueryParser {
             }
             index++;
         }
-        return documentQuery;
     }
 
 
