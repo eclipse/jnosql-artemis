@@ -64,8 +64,8 @@ public class ColumnQueryParserTest {
 
 
     @Test
-    public void shouldFindByNameANDAge() {
-        ColumnQuery query = parser.parse("findByNameANDAge", new Object[]{"name", 10}, classRepresentation);
+    public void shouldFindByNameAndAge() {
+        ColumnQuery query = parser.parse("findByNameAndAge", new Object[]{"name", 10}, classRepresentation);
         ColumnCondition condition = query.getCondition().get();
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.AND, condition.getCondition());
@@ -81,8 +81,8 @@ public class ColumnQueryParserTest {
     }
 
     @Test
-    public void shouldFindByNameORAge() {
-        ColumnQuery query = parser.parse("findByNameORAge", new Object[]{"name", 10}, classRepresentation);
+    public void shouldFindByNameOrAge() {
+        ColumnQuery query = parser.parse("findByNameOrAge", new Object[]{"name", 10}, classRepresentation);
         ColumnCondition condition = query.getCondition().get();
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.OR, condition.getCondition());
@@ -176,8 +176,8 @@ public class ColumnQueryParserTest {
     }
 
     @Test
-    public void shouldFindByNameANDAAgeBetween() {
-        ColumnQuery query = parser.parse("findByNameANDAgeBetween", new Object[]{"name", 10, 11},
+    public void shouldFindByNameAndAAgeBetween() {
+        ColumnQuery query = parser.parse("findByNameAndAgeBetween", new Object[]{"name", 10, 11},
                 classRepresentation);
         assertEquals("Person", query.getColumnFamily());
         ColumnCondition condition = query.getCondition().get();
@@ -196,7 +196,7 @@ public class ColumnQueryParserTest {
 
     @Test(expected = DynamicQueryException.class)
     public void shouldReturnErrorWhenIsMissedArgument() {
-        ColumnQuery query = parser.parse("findByNameANDAgeBetween", new Object[]{"name", 10},
+        ColumnQuery query = parser.parse("findByNameAndAgeBetween", new Object[]{"name", 10},
                 classRepresentation);
     }
 
