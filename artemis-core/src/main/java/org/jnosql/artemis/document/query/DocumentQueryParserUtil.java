@@ -27,8 +27,8 @@ import java.util.Arrays;
  */
 public final class DocumentQueryParserUtil {
 
-    static final String AND = "AND";
-    static final String OR = "OR";
+    static final String AND = "And";
+    static final String OR = "Or";
     static final String EMPTY = "";
 
     static final String ORDER_BY = "OrderBy";

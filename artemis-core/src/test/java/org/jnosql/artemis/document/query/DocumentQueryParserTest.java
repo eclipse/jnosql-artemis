@@ -65,7 +65,7 @@ public class DocumentQueryParserTest {
 
     @Test
     public void shouldFindByNameANDAge() {
-        DocumentQuery query = parser.parse("findByNameANDAge", new Object[]{"name", 10}, classRepresentation);
+        DocumentQuery query = parser.parse("findByNameAndAge", new Object[]{"name", 10}, classRepresentation);
         DocumentCondition condition = query.getCondition().get();
         assertEquals("Person", query.getCollection());
         assertEquals(Condition.AND, condition.getCondition());
@@ -82,7 +82,7 @@ public class DocumentQueryParserTest {
 
     @Test
     public void shouldFindByNameORAge() {
-        DocumentQuery query = parser.parse("findByNameORAge", new Object[]{"name", 10}, classRepresentation);
+        DocumentQuery query = parser.parse("findByNameOrAge", new Object[]{"name", 10}, classRepresentation);
         DocumentCondition condition = query.getCondition().get();
         assertEquals("Person", query.getCollection());
         assertEquals(Condition.OR, condition.getCondition());
@@ -177,7 +177,7 @@ public class DocumentQueryParserTest {
 
     @Test
     public void shouldFindByNameANDAAgeBetween() {
-        DocumentQuery query = parser.parse("findByNameANDAgeBetween", new Object[]{"name", 10, 11},
+        DocumentQuery query = parser.parse("findByNameAndAgeBetween", new Object[]{"name", 10, 11},
                 classRepresentation);
         assertEquals("Person", query.getCollection());
         DocumentCondition condition = query.getCondition().get();
@@ -196,7 +196,7 @@ public class DocumentQueryParserTest {
 
     @Test(expected = DynamicQueryException.class)
     public void shouldReturnErrorWhenIsMissedArgument() {
-        DocumentQuery query = parser.parse("findByNameANDAgeBetween", new Object[]{"name", 10},
+        DocumentQuery query = parser.parse("findByNameAndAgeBetween", new Object[]{"name", 10},
                 classRepresentation);
     }
 
