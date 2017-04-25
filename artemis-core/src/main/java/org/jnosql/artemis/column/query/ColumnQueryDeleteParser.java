@@ -28,11 +28,12 @@ import org.jnosql.diana.api.column.ColumnDeleteQuery;
 public class ColumnQueryDeleteParser {
 
     private static final String PREFIX = "deleteBy";
+    private static final String TOKENIZER = "(?=And|OrderBy|Or)";
 
 
     public ColumnDeleteQuery parse(String methodName, Object[] args, ClassRepresentation classRepresentation) {
         ColumnDeleteQuery columnDeleteQuery = ColumnDeleteQuery.of(classRepresentation.getName());
-        String[] tokens = methodName.replace(PREFIX, ColumnQueryParserUtil.EMPTY).split("(?=AND|OR|OrderBy)");
+        String[] tokens = methodName.replace(PREFIX, ColumnQueryParserUtil.EMPTY).split(TOKENIZER);
         String className = classRepresentation.getClassInstance().getName();
 
         int index = 0;
