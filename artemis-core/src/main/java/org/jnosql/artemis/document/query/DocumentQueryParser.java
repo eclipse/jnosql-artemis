@@ -15,15 +15,21 @@
  */
 package org.jnosql.artemis.document.query;
 
-import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.Pagination;
 import org.jnosql.artemis.reflection.ClassRepresentation;
-import org.jnosql.diana.api.Condition;
 import org.jnosql.diana.api.Sort;
 import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentQuery;
 
 import java.util.logging.Logger;
+
+import static org.jnosql.artemis.document.query.DocumentQueryParserUtil.AND;
+import static org.jnosql.artemis.document.query.DocumentQueryParserUtil.EMPTY;
+import static org.jnosql.artemis.document.query.DocumentQueryParserUtil.ORDER_BY;
+import static org.jnosql.artemis.document.query.DocumentQueryParserUtil.toCondition;
+import static org.jnosql.diana.api.Condition.BETWEEN;
+import static org.jnosql.diana.api.Sort.SortType.ASC;
+import static org.jnosql.diana.api.Sort.SortType.DESC;
 
 /**
  * Class the returns a {@link org.jnosql.diana.api.document.DocumentQuery}
@@ -37,23 +43,25 @@ public class DocumentQueryParser {
     private static final String TOKENIZER = "(?=And|OrderBy|Or)";
 
 
-    public DocumentQuery parse(String methodName, Object[] args, ClassRepresentation classRepresentation) {
-        DocumentQuery documentQuery = DocumentQuery.of(classRepresentation.getName());
-        String[] tokens = methodName.replace(PREFIX, DocumentQueryParserUtil.EMPTY).split(TOKENIZER);
-        String className = classRepresentation.getClassInstance().getName();
+    public DocumentQuery parse(String methodName, Object[] args, ClassRepresentation representation) {
+        DocumentQuery documentQuery = DocumentQuery.of(representation.getName());
+        String[] tokens = methodName.replace(PREFIX, EMPTY).split(TOKENIZER);
+        String className = representation.getClassInstance().getName();
 
         int index = 0;
         for (String token : tokens) {
 
-            if (token.startsWith(DocumentQueryParserUtil.AND)) {
-                index = and(args, documentQuery, index, token, methodName);
+            if (token.startsWith(AND)) {
+                index = and(args, documentQuery, index, token, methodName, representation);
             } else {
-                if (token.startsWith(DocumentQueryParserUtil.ORDER_BY)) {
-                    sort(documentQuery, token);
+                if (token.startsWith(ORDER_BY)) {
+                    sort(documentQuery, token, representation);
                 } else if (token.startsWith(DocumentQueryParserUtil.OR)) {
-                    index = or(args, documentQuery, index, token, methodName);
+                    index = or(args, documentQuery, index, token, methodName, representation);
                 } else {
-                    DocumentCondition condition = DocumentQueryParserUtil.toCondition(token, index, args, methodName);
+                    DocumentCondition condition = toCondition(token, index, args,
+                            methodName, representation);
+
                     documentQuery.and(condition);
                     index++;
                 }
@@ -78,19 +86,14 @@ public class DocumentQueryParser {
         return documentQuery;
     }
 
-    private void checkContents(int index, int argSize, int required, String method) {
-        if ((index + required) <= argSize) {
-            return;
-        }
-        throw new DynamicQueryException(String.format("There is a missed argument in the method %s",
-                method));
-    }
+    private int or(Object[] args, DocumentQuery documentQuery, int index, String token, String methodName,
+                   ClassRepresentation representation) {
 
-    private int or(Object[] args, DocumentQuery documentQuery, int index, String token, String methodName) {
-        String field = token.replace(DocumentQueryParserUtil.OR, DocumentQueryParserUtil.EMPTY);
-        DocumentCondition condition = DocumentQueryParserUtil.toCondition(field, index, args, methodName);
+        String field = token.replace(DocumentQueryParserUtil.OR, EMPTY);
+
+        DocumentCondition condition = toCondition(field, index, args, methodName, representation);
         documentQuery.or(condition);
-        if (Condition.BETWEEN.equals(condition.getCondition())) {
+        if (BETWEEN.equals(condition.getCondition())) {
             return index + 2;
         } else {
             return ++index;
@@ -98,11 +101,12 @@ public class DocumentQueryParser {
     }
 
     private int and(Object[] args, DocumentQuery documentQuery, int index, String token,
-                    String methodName) {
-        String field = token.replace(DocumentQueryParserUtil.AND, DocumentQueryParserUtil.EMPTY);
-        DocumentCondition condition = DocumentQueryParserUtil.toCondition(field, index, args, methodName);
+                    String methodName,  ClassRepresentation representation) {
+        String field = token.replace(AND, EMPTY);
+        DocumentCondition condition = toCondition(field, index, args, methodName, representation);
+
         documentQuery.and(condition);
-        if (Condition.BETWEEN.equals(condition.getCondition())) {
+        if (BETWEEN.equals(condition.getCondition())) {
             return index + 2;
         } else {
             return ++index;
@@ -110,18 +114,20 @@ public class DocumentQueryParser {
 
     }
 
-    private void sort(DocumentQuery documentQuery, String token) {
-        String field = token.replace(DocumentQueryParserUtil.ORDER_BY, DocumentQueryParserUtil.EMPTY);
+    private void sort(DocumentQuery documentQuery, String token, ClassRepresentation representation) {
+        String field = token.replace(ORDER_BY, EMPTY);
         if (field.contains("Desc")) {
-            documentQuery.addSort(Sort.of(getName(field.replace("Desc", DocumentQueryParserUtil.EMPTY)), Sort.SortType.DESC));
+            documentQuery.addSort(Sort.of(getName(field.replace("Desc", EMPTY), representation)
+                    , DESC));
         } else {
-            documentQuery.addSort(Sort.of(getName(field.replace("Asc", DocumentQueryParserUtil.EMPTY)), Sort.SortType.ASC));
+            documentQuery.addSort(Sort.of(getName(field.replace("Asc", EMPTY), representation)
+                    , ASC));
         }
     }
 
-    private String getName(String token) {
-        return String.valueOf(Character.toLowerCase(token.charAt(0)))
-                .concat(token.substring(1));
+    private String getName(String token, ClassRepresentation representation) {
+        return representation.getColumnField(String.valueOf(Character.toLowerCase(token.charAt(0)))
+                .concat(token.substring(1)));
     }
 
 }

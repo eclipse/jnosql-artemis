@@ -16,6 +16,7 @@
 package org.jnosql.artemis.document.query;
 
 import org.jnosql.artemis.DynamicQueryException;
+import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCondition;
 
@@ -42,7 +43,11 @@ public final class DocumentQueryParserUtil {
     private DocumentQueryParserUtil() {
     }
 
-    public static DocumentCondition toCondition(String token, int index, Object[] args, String methodName) {
+    public static DocumentCondition toCondition(String token,
+                                                int index,
+                                                Object[] args,
+                                                String methodName,
+                                                ClassRepresentation representation) {
 
         boolean containsBetween = token.contains(BETWEEN);
 
@@ -54,26 +59,26 @@ public final class DocumentQueryParserUtil {
 
         if (containsBetween) {
 
-            String name = getName(token).replace(BETWEEN, EMPTY);
+            String name = getName(token, representation).replace(BETWEEN, EMPTY);
             return DocumentCondition.between(Document.of(name, Arrays.asList(args[index], args[++index])));
 
         } else if (token.contains(LESS_THAN)) {
-            String name = getName(token).replace(LESS_THAN, EMPTY);
+            String name = getName(token, representation).replace(LESS_THAN, EMPTY);
             return DocumentCondition.lt(Document.of(name, args[index]));
         } else if (token.contains(GREATER_THAN)) {
-            String name = getName(token).replace(GREATER_THAN, EMPTY);
+            String name = getName(token, representation).replace(GREATER_THAN, EMPTY);
             return DocumentCondition.gt(Document.of(name, args[index]));
         } else if (token.contains(LESS_THAN_EQUAL)) {
-            String name = getName(token).replace(LESS_THAN_EQUAL, EMPTY);
+            String name = getName(token, representation).replace(LESS_THAN_EQUAL, EMPTY);
             return DocumentCondition.lte(Document.of(name, args[index]));
         } else if (token.contains(GREATER_THAN_EQUAL)) {
-            String name = getName(token).replace(GREATER_THAN_EQUAL, EMPTY);
+            String name = getName(token, representation).replace(GREATER_THAN_EQUAL, EMPTY);
             return DocumentCondition.gte(Document.of(name, args[index]));
         } else if (token.contains(LIKE)) {
-            String name = getName(token).replace(LIKE, EMPTY);
+            String name = getName(token, representation).replace(LIKE, EMPTY);
             return DocumentCondition.like(Document.of(name, args[index]));
         }
-        String name = getName(token);
+        String name = getName(token, representation);
         return DocumentCondition.eq(Document.of(name, args[index]));
 
     }
@@ -87,8 +92,8 @@ public final class DocumentQueryParserUtil {
     }
 
 
-    private static String getName(String token) {
-        return String.valueOf(Character.toLowerCase(token.charAt(0)))
-                .concat(token.substring(1));
+    private static String getName(String token, ClassRepresentation representation) {
+        return representation.getColumnField(String.valueOf(Character.toLowerCase(token.charAt(0)))
+                .concat(token.substring(1)));
     }
 }

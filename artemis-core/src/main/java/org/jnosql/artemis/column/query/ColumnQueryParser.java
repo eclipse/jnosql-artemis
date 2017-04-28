@@ -30,7 +30,7 @@ import static org.jnosql.artemis.column.query.ColumnQueryParserUtil.toCondition;
  * Class the returns a {@link ColumnQuery}
  * on {@link ColumnCrudRepositoryProxy}
  */
-class ColumnQueryParser {
+public class ColumnQueryParser {
 
     private static final Logger LOGGER = Logger.getLogger(ColumnQueryParser.class.getName());
 
