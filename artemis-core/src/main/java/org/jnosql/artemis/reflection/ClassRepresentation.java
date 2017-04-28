@@ -15,14 +15,17 @@
  */
 package org.jnosql.artemis.reflection;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * This class is a representation of {@link Class} in cached way
@@ -39,12 +42,22 @@ public class ClassRepresentation implements Serializable {
 
     private final Constructor constructor;
 
+    private final Map<String, String> javaFieldGroupedByColumn;
+
+    private final Map<String, FieldRepresentation> fieldsGroupedByName;
+
     ClassRepresentation(String name, List<String> fieldsName, Class<?> classInstance, List<FieldRepresentation> fields, Constructor constructor) {
         this.name = name;
         this.fieldsName = fieldsName;
         this.classInstance = classInstance;
         this.fields = fields;
         this.constructor = constructor;
+        this.fieldsGroupedByName = fields.stream()
+                .collect(toMap(FieldRepresentation::getName,
+                        Function.identity()));
+        this.javaFieldGroupedByColumn = fields.stream()
+                .collect(toMap(FieldRepresentation::getFieldName,
+                        FieldRepresentation::getName));
     }
 
     public String getName() {
@@ -65,6 +78,31 @@ public class ClassRepresentation implements Serializable {
 
     public Constructor getConstructor() {
         return constructor;
+    }
+
+
+    /**
+     * Returns a
+     *
+     * @param javaField
+     * @return
+     * @throws NullPointerException
+     */
+    public String getColumnField(String javaField) throws NullPointerException {
+        requireNonNull(javaField, "javaField is required");
+        return javaFieldGroupedByColumn.getOrDefault(javaField, javaField);
+
+    }
+
+    /**
+     * Returns a Fields grouped by the name
+     *
+     * @return a {@link FieldRepresentation} grouped by
+     * {@link FieldRepresentation#getName()}
+     * @see FieldRepresentation#getName()
+     */
+    public Map<String, FieldRepresentation> getFieldsGroupByName() {
+        return fieldsGroupedByName;
     }
 
     @Override
@@ -98,12 +136,6 @@ public class ClassRepresentation implements Serializable {
                 .toString();
     }
 
-
-    public Map<String, FieldRepresentation> getFieldsGroupByName() {
-        return fields.stream()
-                .collect(Collectors.toMap(FieldRepresentation::getName,
-                        Function.identity()));
-    }
 
     static ClassRepresentationBuilder builder() {
         return new ClassRepresentationBuilder();
