@@ -260,4 +260,12 @@ public class DocumentQueryParserTest {
         assertEquals(pagination.getFirstResult(), query.getFirstResult());
         assertEquals(sort, query.getSorts().get(0));
     }
+
+    @Test
+    public void shouldConvertsJavaFieldToColumn() {
+        DocumentQuery query = parser.parse("findById", new Object[]{"id"}, classRepresentation);
+        assertEquals("Person", query.getCollection());
+        assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
+        assertEquals(Document.of("_id", "id"), query.getCondition().get().getDocument());
+    }
 }
