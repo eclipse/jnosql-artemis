@@ -27,7 +27,7 @@ import java.util.function.Function;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toMap;
 
-class DefaultClassRepresentation implements ClassRepresentation{
+class DefaultClassRepresentation implements ClassRepresentation {
 
 
     private final String name;
@@ -127,6 +127,7 @@ class DefaultClassRepresentation implements ClassRepresentation{
 
     /**
      * Creates a builder
+     *
      * @return {@link ClassRepresentationBuilder}
      */
     static ClassRepresentationBuilder builder() {

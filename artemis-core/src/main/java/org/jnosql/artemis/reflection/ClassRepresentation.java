@@ -27,25 +27,37 @@ public interface ClassRepresentation extends Serializable {
 
 
     /**
-     * @return the
+     * @return the Entity name
      */
     String getName();
 
+    /**
+     * @return the fields name
+     */
     List<String> getFieldsName();
 
+    /**
+     * @return The class
+     */
     Class<?> getClassInstance();
 
+    /**
+     * @return The fields from this class
+     */
     List<FieldRepresentation> getFields();
 
+    /**
+     * @return The constructor
+     */
     Constructor getConstructor();
 
 
     /**
-     * Returns a
+     * Gets javaField from Column
      *
-     * @param javaField
-     * @return
-     * @throws NullPointerException
+     * @param javaField the java field
+     * @return the column name or column
+     * @throws NullPointerException when javaField is null
      */
     String getColumnField(String javaField) throws NullPointerException;
 
