@@ -260,4 +260,12 @@ public class ColumnQueryParserTest {
         assertEquals(pagination.getFirstResult(), query.getFirstResult());
         assertEquals(sort, query.getSorts().get(0));
     }
+
+    @Test
+    public void shouldConvertsJavaFieldToColumn() {
+        ColumnQuery query = parser.parse("findById", new Object[]{"id"}, classRepresentation);
+        assertEquals("Person", query.getColumnFamily());
+        assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
+        assertEquals(Column.of("_id", "id"), query.getCondition().get().getColumn());
+    }
 }

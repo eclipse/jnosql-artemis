@@ -15,7 +15,6 @@
  */
 package org.jnosql.artemis.column.query;
 
-import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.Pagination;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.Condition;
@@ -25,11 +24,13 @@ import org.jnosql.diana.api.column.ColumnQuery;
 
 import java.util.logging.Logger;
 
+import static org.jnosql.artemis.column.query.ColumnQueryParserUtil.toCondition;
+
 /**
  * Class the returns a {@link ColumnQuery}
  * on {@link ColumnCrudRepositoryProxy}
  */
-public class ColumnQueryParser {
+class ColumnQueryParser {
 
     private static final Logger LOGGER = Logger.getLogger(ColumnQueryParser.class.getName());
 
@@ -45,13 +46,13 @@ public class ColumnQueryParser {
         int index = 0;
         for (String token : tokens) {
             if (token.startsWith(ColumnQueryParserUtil.AND)) {
-                index = and(args, columnQuery, index, token, methodName);
+                index = and(args, columnQuery, index, token, methodName, classRepresentation);
             } else if (token.startsWith(ColumnQueryParserUtil.ORDER_BY)) {
-                sort(columnQuery, token);
+                sort(columnQuery, token, classRepresentation);
             } else if (token.startsWith(ColumnQueryParserUtil.OR)) {
-                index = or(args, columnQuery, index, token, methodName);
+                index = or(args, columnQuery, index, token, methodName, classRepresentation);
             } else {
-                ColumnCondition condition = ColumnQueryParserUtil.toCondition(token, index, args, methodName);
+                ColumnCondition condition = toCondition(token, index, args, methodName, classRepresentation);
                 columnQuery.and(condition);
                 index++;
             }
@@ -75,17 +76,11 @@ public class ColumnQueryParser {
     }
 
 
-    private void checkContents(int index, int argSize, int required, String method) {
-        if ((index + required) <= argSize) {
-            return;
-        }
-        throw new DynamicQueryException(String.format("There is a missed argument in the method %s",
-                method));
-    }
-
-    private int or(Object[] args, ColumnQuery columnQuery, int index, String token, String methodName) {
+    private int or(Object[] args, ColumnQuery columnQuery, int index,
+                   String token, String methodName,
+                   ClassRepresentation classRepresentation) {
         String field = token.replace(ColumnQueryParserUtil.OR, ColumnQueryParserUtil.EMPTY);
-        ColumnCondition condition = ColumnQueryParserUtil.toCondition(field, index, args, methodName);
+        ColumnCondition condition = toCondition(field, index, args, methodName, classRepresentation);
         columnQuery.or(condition);
         if (Condition.BETWEEN.equals(condition.getCondition())) {
             return index + 2;
@@ -95,9 +90,9 @@ public class ColumnQueryParser {
     }
 
     private int and(Object[] args, ColumnQuery columnQuery, int index, String token,
-                    String methodName) {
+                    String methodName, ClassRepresentation classRepresentation) {
         String field = token.replace(ColumnQueryParserUtil.AND, ColumnQueryParserUtil.EMPTY);
-        ColumnCondition condition = ColumnQueryParserUtil.toCondition(field, index, args, methodName);
+        ColumnCondition condition = toCondition(field, index, args, methodName, classRepresentation);
         columnQuery.and(condition);
         if (Condition.BETWEEN.equals(condition.getCondition())) {
             return index + 2;
@@ -107,18 +102,21 @@ public class ColumnQueryParser {
 
     }
 
-    private void sort(ColumnQuery columnQuery, String token) {
+    private void sort(ColumnQuery columnQuery, String token, ClassRepresentation representation) {
         String field = token.replace(ColumnQueryParserUtil.ORDER_BY, ColumnQueryParserUtil.EMPTY);
         if (field.contains("Desc")) {
-            columnQuery.addSort(Sort.of(getName(field.replace("Desc", ColumnQueryParserUtil.EMPTY)), Sort.SortType.DESC));
+            columnQuery.addSort(Sort.of(getName(field.replace("Desc", ColumnQueryParserUtil.EMPTY),
+                    representation), Sort.SortType.DESC));
         } else {
-            columnQuery.addSort(Sort.of(getName(field.replace("Asc", ColumnQueryParserUtil.EMPTY)), Sort.SortType.ASC));
+            columnQuery.addSort(Sort.of(getName(field.replace("Asc", ColumnQueryParserUtil.EMPTY),
+                    representation), Sort.SortType.ASC));
         }
     }
 
-    private String getName(String token) {
-        return String.valueOf(Character.toLowerCase(token.charAt(0)))
-                .concat(token.substring(1));
+    private String getName(String token, ClassRepresentation representation) {
+        return representation.getColumnField(String.valueOf(Character.toLowerCase(token.charAt(0)))
+                .concat(token.substring(1)));
+
     }
 
 }

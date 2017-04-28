@@ -16,6 +16,7 @@
 package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.DynamicQueryException;
+import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnCondition;
 
@@ -42,44 +43,48 @@ final class ColumnQueryParserUtil {
     private ColumnQueryParserUtil() {
     }
 
-    static ColumnCondition toCondition(String token, int index, Object[] args, String methodName) {
+    static ColumnCondition toCondition(String token,
+                                       int index,
+                                       Object[] args,
+                                       String methodName,
+                                       ClassRepresentation representation) {
 
         boolean containsBetween = token.contains(BETWEEN);
 
         if (containsBetween) {
             checkContents(index, args.length, 2, methodName);
-            String name = getName(token).replace(BETWEEN, EMPTY);
+            String name = getName(token, representation).replace(BETWEEN, EMPTY);
             return ColumnCondition.between(Column.of(name, Arrays.asList(args[index], args[++index])));
         }
 
         checkContents(index, args.length, 1, methodName);
 
         if (token.contains(LESS_THAN)) {
-            String name = getName(token).replace(LESS_THAN, EMPTY);
+            String name = getName(token, representation).replace(LESS_THAN, EMPTY);
             return ColumnCondition.lt(Column.of(name, args[index]));
         }
 
         if (token.contains(GREATER_THAN)) {
-            String name = getName(token).replace(GREATER_THAN, EMPTY);
+            String name = getName(token, representation).replace(GREATER_THAN, EMPTY);
             return ColumnCondition.gt(Column.of(name, args[index]));
         }
 
         if (token.contains(LESS_THAN_EQUAL)) {
-            String name = getName(token).replace(LESS_THAN_EQUAL, EMPTY);
+            String name = getName(token, representation).replace(LESS_THAN_EQUAL, EMPTY);
             return ColumnCondition.lte(Column.of(name, args[index]));
         }
 
         if (token.contains(GREATER_THAN_EQUAL)) {
-            String name = getName(token).replace(GREATER_THAN_EQUAL, EMPTY);
+            String name = getName(token, representation).replace(GREATER_THAN_EQUAL, EMPTY);
             return ColumnCondition.gte(Column.of(name, args[index]));
         }
 
         if (token.contains(LIKE)) {
-            String name = getName(token).replace(LIKE, EMPTY);
+            String name = getName(token, representation).replace(LIKE, EMPTY);
             return ColumnCondition.like(Column.of(name, args[index]));
         }
 
-        String name = getName(token);
+        String name = getName(token, representation);
         return ColumnCondition.eq(Column.of(name, args[index]));
     }
 
@@ -92,8 +97,8 @@ final class ColumnQueryParserUtil {
     }
 
 
-    private static String getName(String token) {
-        return String.valueOf(Character.toLowerCase(token.charAt(0)))
-                .concat(token.substring(1));
+    private static String getName(String token, ClassRepresentation representation) {
+        return representation.getColumnField(String.valueOf(Character.toLowerCase(token.charAt(0)))
+                .concat(token.substring(1)));
     }
 }
