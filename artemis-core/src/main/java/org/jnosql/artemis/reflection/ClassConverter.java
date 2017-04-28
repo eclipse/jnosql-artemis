@@ -47,7 +47,7 @@ class ClassConverter {
         List<FieldRepresentation> fields = reflections.getFields(entityClass)
                 .stream().map(this::to).collect(toList());
         List<String> fieldsName = fields.stream().map(FieldRepresentation::getName).collect(toList());
-        return ClassRepresentation.builder().withName(entityName)
+        return DefaultClassRepresentation.builder().withName(entityName)
                 .withClassInstance(entityClass)
                 .withFields(fields)
                 .withFieldsName(fieldsName)
