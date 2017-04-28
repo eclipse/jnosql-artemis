@@ -64,7 +64,7 @@ abstract class AbstractFieldRepresentation implements FieldRepresentation {
 
     @Override
     public String getFieldName() {
-        return null;
+        return fieldName;
     }
 
 
@@ -80,6 +80,7 @@ abstract class AbstractFieldRepresentation implements FieldRepresentation {
                 .append("type", type)
                 .append("field", field)
                 .append("name", name)
+                .append("fieldName", fieldName)
                 .toString();
     }
 
