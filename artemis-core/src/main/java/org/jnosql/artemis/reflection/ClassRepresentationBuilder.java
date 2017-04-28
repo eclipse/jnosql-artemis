@@ -57,6 +57,6 @@ class ClassRepresentationBuilder {
     }
 
     public ClassRepresentation build() {
-        return new ClassRepresentation(name, fieldsName, classInstance, fields, constructor);
+        return new DefaultClassRepresentation(name, fieldsName, classInstance, fields, constructor);
     }
 }
