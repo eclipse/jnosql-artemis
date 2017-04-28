@@ -51,6 +51,14 @@ public interface FieldRepresentation extends Serializable {
      */
     String getName();
 
+    /**
+     * Returns the Java Fields name.
+     * {@link Field#getName()}
+     *
+     * @return The Java Field name {@link Field#getName()}
+     */
+    String getFieldName();
+
 
     /**
      * Returns the object from the field type
