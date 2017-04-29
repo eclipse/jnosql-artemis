@@ -18,5 +18,5 @@ package org.jnosql.artemis;
 
 import org.jnosql.artemis.model.Person;
 
-public interface PersonRepository extends CrudRepository<Person> {
+public interface PersonRepository extends Repository<Person> {
 }

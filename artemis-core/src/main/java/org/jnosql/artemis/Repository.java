@@ -39,7 +39,7 @@ import java.time.Duration;
  *
  * @param <T> the bean type
  */
-public interface CrudRepository<T> {
+public interface Repository<T> {
 
     /**
      * Saves entity

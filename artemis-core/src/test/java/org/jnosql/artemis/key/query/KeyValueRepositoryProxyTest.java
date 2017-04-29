@@ -37,7 +37,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
-public class KeyValueCrudRepositoryProxyTest {
+public class KeyValueRepositoryProxyTest {
 
     @Mock
     private KeyValueTemplate repository;

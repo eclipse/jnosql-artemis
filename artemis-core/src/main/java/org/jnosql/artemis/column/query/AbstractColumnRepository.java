@@ -15,15 +15,15 @@
  */
 package org.jnosql.artemis.column.query;
 
-import org.jnosql.artemis.CrudRepository;
+import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.column.ColumnTemplate;
 
 import java.time.Duration;
 
 /**
- * The {@link CrudRepository} template method
+ * The {@link Repository} template method
  */
-public abstract class AbstractColumnCrudRepository implements CrudRepository {
+public abstract class AbstractColumnRepository implements Repository {
 
     protected abstract ColumnTemplate getColumnRepository();
 

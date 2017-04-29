@@ -15,15 +15,15 @@
  */
 package org.jnosql.artemis.document.query;
 
-import org.jnosql.artemis.CrudRepository;
+import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.document.DocumentTemplate;
 
 import java.time.Duration;
 
 /**
- * The {@link CrudRepository} template method
+ * The {@link Repository} template method
  */
-public abstract class AbstractDocumentCrudRepository implements CrudRepository {
+public abstract class AbstractDocumentRepository implements Repository {
 
     protected abstract DocumentTemplate getDocumentRepository();
 

@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jnosql.artemis.document.query;
+package org.jnosql.artemis.column.query;
 
 import org.hamcrest.Matchers;
-import org.jnosql.artemis.CrudRepository;
+import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.WeldJUnit4Runner;
-import org.jnosql.artemis.document.DocumentTemplate;
+import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.Condition;
-import org.jnosql.diana.api.document.Document;
-import org.jnosql.diana.api.document.DocumentCondition;
-import org.jnosql.diana.api.document.DocumentDeleteQuery;
-import org.jnosql.diana.api.document.DocumentQuery;
+import org.jnosql.diana.api.column.Column;
+import org.jnosql.diana.api.column.ColumnCondition;
+import org.jnosql.diana.api.column.ColumnDeleteQuery;
+import org.jnosql.diana.api.column.ColumnQuery;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,9 +53,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(WeldJUnit4Runner.class)
-public class DocumentCrudRepositoryProxyTest {
+public class ColumnRepositoryProxyTest {
 
-    private DocumentTemplate repository;
+    private ColumnTemplate repository;
 
     @Inject
     private ClassRepresentations classRepresentations;
@@ -65,9 +65,9 @@ public class DocumentCrudRepositoryProxyTest {
 
     @Before
     public void setUp() {
-        this.repository = Mockito.mock(DocumentTemplate.class);
+        this.repository = Mockito.mock(ColumnTemplate.class);
 
-        DocumentCrudRepositoryProxy handler = new DocumentCrudRepositoryProxy(repository,
+        ColumnCrudRepositoryProxy handler = new ColumnCrudRepositoryProxy(repository,
                 classRepresentations, PersonRepository.class);
 
         when(repository.save(any(Person.class))).thenReturn(Person.builder().build());
@@ -151,21 +151,21 @@ public class DocumentCrudRepositoryProxyTest {
     @Test
     public void shouldFindByNameInstance() {
 
-        when(repository.singleResult(Mockito.any(DocumentQuery.class))).thenReturn(Optional
+        when(repository.singleResult(Mockito.any(ColumnQuery.class))).thenReturn(Optional
                 .of(Person.builder().build()));
 
         personRepository.findByName("name");
 
-        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
+        ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
         verify(repository).singleResult(captor.capture());
-        DocumentQuery query = captor.getValue();
-        DocumentCondition condition = query.getCondition().get();
-        assertEquals("Person", query.getCollection());
+        ColumnQuery query = captor.getValue();
+        ColumnCondition condition = query.getCondition().get();
+        assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.EQUALS, condition.getCondition());
-        assertEquals(Document.of("name", "name"), condition.getDocument());
+        assertEquals(Column.of("name", "name"), condition.getColumn());
 
         assertNotNull(personRepository.findByName("name"));
-        when(repository.singleResult(Mockito.any(DocumentQuery.class))).thenReturn(Optional
+        when(repository.singleResult(Mockito.any(ColumnQuery.class))).thenReturn(Optional
                 .empty());
 
         assertNull(personRepository.findByName("name"));
@@ -178,11 +178,11 @@ public class DocumentCrudRepositoryProxyTest {
         Person ada = Person.builder()
                 .withAge(20).withName("Ada").build();
 
-        when(repository.find(Mockito.any(DocumentQuery.class)))
+        when(repository.find(Mockito.any(ColumnQuery.class)))
                 .thenReturn(singletonList(ada));
 
         List<Person> persons = personRepository.findByNameANDAge("name", 20);
-        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
+        ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
         verify(repository).find(captor.capture());
         assertThat(persons, Matchers.contains(ada));
 
@@ -193,11 +193,11 @@ public class DocumentCrudRepositoryProxyTest {
         Person ada = Person.builder()
                 .withAge(20).withName("Ada").build();
 
-        when(repository.find(Mockito.any(DocumentQuery.class)))
+        when(repository.find(Mockito.any(ColumnQuery.class)))
                 .thenReturn(singletonList(ada));
 
         Set<Person> persons = personRepository.findByAgeANDName(20, "name");
-        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
+        ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
         verify(repository).find(captor.capture());
         assertThat(persons, Matchers.contains(ada));
 
@@ -208,11 +208,11 @@ public class DocumentCrudRepositoryProxyTest {
         Person ada = Person.builder()
                 .withAge(20).withName("Ada").build();
 
-        when(repository.find(Mockito.any(DocumentQuery.class)))
+        when(repository.find(Mockito.any(ColumnQuery.class)))
                 .thenReturn(singletonList(ada));
 
         Stream<Person> persons = personRepository.findByNameANDAgeOrderByName("name", 20);
-        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
+        ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
         verify(repository).find(captor.capture());
         assertThat(persons.collect(Collectors.toList()), Matchers.contains(ada));
 
@@ -223,11 +223,11 @@ public class DocumentCrudRepositoryProxyTest {
         Person ada = Person.builder()
                 .withAge(20).withName("Ada").build();
 
-        when(repository.find(Mockito.any(DocumentQuery.class)))
+        when(repository.find(Mockito.any(ColumnQuery.class)))
                 .thenReturn(singletonList(ada));
 
         Queue<Person> persons = personRepository.findByNameANDAgeOrderByAge("name", 20);
-        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
+        ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
         verify(repository).find(captor.capture());
         assertThat(persons, Matchers.contains(ada));
 
@@ -235,18 +235,18 @@ public class DocumentCrudRepositoryProxyTest {
 
     @Test
     public void shouldDeleteByName() {
-        ArgumentCaptor<DocumentDeleteQuery> captor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
+        ArgumentCaptor<ColumnDeleteQuery> captor = ArgumentCaptor.forClass(ColumnDeleteQuery.class);
         personRepository.deleteByName("Ada");
         verify(repository).delete(captor.capture());
-        DocumentDeleteQuery deleteQuery = captor.getValue();
-        DocumentCondition condition = deleteQuery.getCondition().get();
-        assertEquals("Person", deleteQuery.getCollection());
+        ColumnDeleteQuery deleteQuery = captor.getValue();
+        ColumnCondition condition = deleteQuery.getCondition().get();
+        assertEquals("Person", deleteQuery.getColumnFamily());
         assertEquals(Condition.EQUALS, condition.getCondition());
-        assertEquals(Document.of("name", "Ada"), condition.getDocument());
+        assertEquals(Column.of("name", "Ada"), condition.getColumn());
 
     }
 
-    interface PersonRepository extends CrudRepository<Person> {
+    interface PersonRepository extends Repository<Person> {
 
         Person findByName(String name);
 

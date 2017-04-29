@@ -16,7 +16,7 @@
 package org.jnosql.artemis.column.query;
 
 
-import org.jnosql.artemis.CrudRepository;
+import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
@@ -29,7 +29,7 @@ import java.lang.reflect.ParameterizedType;
 
 
 /**
- * Proxy handle to generate {@link CrudRepository}
+ * Proxy handle to generate {@link Repository}
  *
  * @param <T> the type
  */
@@ -44,7 +44,7 @@ class ColumnCrudRepositoryProxy<T> implements InvocationHandler {
 
     private final ColumnTemplate repository;
 
-    private final ColumnCrudRepository crudRepository;
+    private final ColumnRepository crudRepository;
 
     private final ClassRepresentation classRepresentation;
 
@@ -55,7 +55,7 @@ class ColumnCrudRepositoryProxy<T> implements InvocationHandler {
 
     ColumnCrudRepositoryProxy(ColumnTemplate repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
         this.repository = repository;
-        this.crudRepository = new ColumnCrudRepository(repository);
+        this.crudRepository = new ColumnRepository(repository);
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
@@ -88,11 +88,11 @@ class ColumnCrudRepositoryProxy<T> implements InvocationHandler {
     }
 
 
-    class ColumnCrudRepository extends  AbstractColumnCrudRepository implements CrudRepository {
+    class ColumnRepository extends AbstractColumnRepository implements Repository {
 
         private final ColumnTemplate repository;
 
-        ColumnCrudRepository(ColumnTemplate repository) {
+        ColumnRepository(ColumnTemplate repository) {
             this.repository = repository;
         }
 

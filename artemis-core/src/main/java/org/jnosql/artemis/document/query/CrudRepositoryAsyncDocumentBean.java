@@ -15,7 +15,7 @@
  */
 package org.jnosql.artemis.document.query;
 
-import org.jnosql.artemis.CrudRepositoryAsync;
+import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.document.DocumentTemplateAsync;
@@ -35,9 +35,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Artemis discoveryBean to CDI extension to register {@link CrudRepositoryAsync}
+ * Artemis discoveryBean to CDI extension to register {@link RepositoryAsync}
  */
-public class CrudRepositoryAsyncDocumentBean implements Bean<CrudRepositoryAsync>, PassivationCapable {
+public class CrudRepositoryAsyncDocumentBean implements Bean<RepositoryAsync>, PassivationCapable {
 
     private final Class type;
 
@@ -85,13 +85,13 @@ public class CrudRepositoryAsyncDocumentBean implements Bean<CrudRepositoryAsync
     }
 
     @Override
-    public CrudRepositoryAsync create(CreationalContext<CrudRepositoryAsync> creationalContext) {
+    public RepositoryAsync create(CreationalContext<RepositoryAsync> creationalContext) {
         ClassRepresentations classRepresentations = getInstance(ClassRepresentations.class);
         DocumentTemplateAsync repository = provider.isEmpty() ? getInstance(DocumentTemplateAsync.class) :
                 getInstance(DocumentTemplateAsync.class, provider);
         DocumentCrudRepositoryAsyncProxy handler = new DocumentCrudRepositoryAsyncProxy(repository,
                 classRepresentations, type);
-        return (CrudRepositoryAsync) Proxy.newProxyInstance(type.getClassLoader(),
+        return (RepositoryAsync) Proxy.newProxyInstance(type.getClassLoader(),
                 new Class[]{type},
                 handler);
     }
@@ -111,7 +111,7 @@ public class CrudRepositoryAsyncDocumentBean implements Bean<CrudRepositoryAsync
 
 
     @Override
-    public void destroy(CrudRepositoryAsync instance, CreationalContext<CrudRepositoryAsync> creationalContext) {
+    public void destroy(RepositoryAsync instance, CreationalContext<RepositoryAsync> creationalContext) {
 
     }
 

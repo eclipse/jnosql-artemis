@@ -42,7 +42,7 @@ import java.util.function.Consumer;
  *
  * @param <T> the bean type
  */
-public interface CrudRepositoryAsync <T> {
+public interface RepositoryAsync<T> {
 
 
     /**

@@ -16,8 +16,8 @@
 package org.jnosql.artemis.document.spi;
 
 
-import org.jnosql.artemis.CrudRepository;
-import org.jnosql.artemis.CrudRepositoryAsync;
+import org.jnosql.artemis.Repository;
+import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.Database;
 import org.jnosql.artemis.Databases;
 import org.jnosql.artemis.document.query.CrudRepositoryAsyncDocumentBean;
@@ -42,7 +42,7 @@ import java.util.stream.Stream;
 import static org.jnosql.artemis.DatabaseType.DOCUMENT;
 
 /**
- * Extension to start up the DocumentTemplate, DocumentTemplateAsync, CrudRepository and CrudRepositoryAsync
+ * Extension to start up the DocumentTemplate, DocumentTemplateAsync, Repository and RepositoryAsync
  * from the {@link Database} qualifier
  */
 public class DocumentCollectionProducerExtension implements Extension {
@@ -58,30 +58,30 @@ public class DocumentCollectionProducerExtension implements Extension {
     private final Collection<Class<?>> crudAsyncTypes = new HashSet<>();
 
 
-    <T extends CrudRepository> void onProcessAnnotatedType(@Observes final ProcessAnnotatedType<T> repo) {
+    <T extends Repository> void onProcessAnnotatedType(@Observes final ProcessAnnotatedType<T> repo) {
         Class<T> javaClass = repo.getAnnotatedType().getJavaClass();
-        if (CrudRepository.class.equals(javaClass)) {
+        if (Repository.class.equals(javaClass)) {
             return;
         }
 
 
-        if (Stream.of(javaClass.getInterfaces()).anyMatch(CrudRepository.class::equals)
+        if (Stream.of(javaClass.getInterfaces()).anyMatch(Repository.class::equals)
                 && Modifier.isInterface(javaClass.getModifiers())) {
-            LOGGER.info("Adding a new CrudRepository as discovered on document: " + javaClass);
+            LOGGER.info("Adding a new Repository as discovered on document: " + javaClass);
             crudTypes.add(javaClass);
         }
     }
 
-    <T extends CrudRepositoryAsync> void onProcessAnnotatedTypeAsync(@Observes final ProcessAnnotatedType<T> repo) {
+    <T extends RepositoryAsync> void onProcessAnnotatedTypeAsync(@Observes final ProcessAnnotatedType<T> repo) {
         Class<T> javaClass = repo.getAnnotatedType().getJavaClass();
 
-        if (CrudRepositoryAsync.class.equals(javaClass)) {
+        if (RepositoryAsync.class.equals(javaClass)) {
             return;
         }
 
-        if (Stream.of(javaClass.getInterfaces()).anyMatch(CrudRepositoryAsync.class::equals)
+        if (Stream.of(javaClass.getInterfaces()).anyMatch(RepositoryAsync.class::equals)
                 && Modifier.isInterface(javaClass.getModifiers())) {
-            LOGGER.info("Adding a new CrudRepositoryAsync as discovered on document: " + javaClass);
+            LOGGER.info("Adding a new RepositoryAsync as discovered on document: " + javaClass);
             crudAsyncTypes.add(javaClass);
         }
     }

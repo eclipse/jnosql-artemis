@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jnosql.artemis.column.query;
+package org.jnosql.artemis.document.query;
 
 import org.jnosql.artemis.Database;
 import org.jnosql.artemis.DatabaseType;
@@ -26,26 +26,28 @@ import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 
 @RunWith(WeldJUnit4Runner.class)
-public class ColumnCrudRepositoryExtensionTest {
+public class DocumentRepositoryExtensionTest {
+
 
     @Inject
-    @Database(value = DatabaseType.COLUMN)
+    @Database(value = DatabaseType.DOCUMENT)
     private PersonRepository repository;
 
     @Inject
-    @Database(value = DatabaseType.COLUMN, provider = "columnRepositoryMock")
+    @Database(value = DatabaseType.DOCUMENT, provider = "documentRepositoryMock")
     private PersonRepository repositoryMock;
 
     @Inject
-    @Database(value = DatabaseType.COLUMN)
+    @Database(value = DatabaseType.DOCUMENT)
     private PersonRepositoryAsync repositoryAsync;
 
     @Inject
-    @Database(value = DatabaseType.COLUMN, provider = "columnRepositoryMock")
+    @Database(value = DatabaseType.DOCUMENT, provider = "documentRepositoryMock")
     private PersonRepositoryAsync repositoryMockAsync;
 
     @Test
@@ -60,6 +62,7 @@ public class ColumnCrudRepositoryExtensionTest {
         repositoryMockAsync.save(Person.builder().build());
     }
 
+
     @Test
     public void shouldIniciate() {
         assertNotNull(repository);
@@ -71,6 +74,6 @@ public class ColumnCrudRepositoryExtensionTest {
     public void shouldUseInstantion(){
         assertNotNull(repositoryMock);
         Person person = repositoryMock.save(Person.builder().build());
-        assertEquals("columnRepositoryMock", person.getName());
+        assertEquals("documentRepositoryMock", person.getName());
     }
 }

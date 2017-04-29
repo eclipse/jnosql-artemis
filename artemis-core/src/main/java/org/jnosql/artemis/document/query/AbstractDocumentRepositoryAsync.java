@@ -13,65 +13,66 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jnosql.artemis.column.query;
+package org.jnosql.artemis.document.query;
 
 
-import org.jnosql.artemis.CrudRepositoryAsync;
-import org.jnosql.artemis.column.ColumnTemplateAsync;
+import org.jnosql.artemis.RepositoryAsync;
+import org.jnosql.artemis.document.DocumentTemplateAsync;
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
 
 import java.time.Duration;
 import java.util.function.Consumer;
 
 /**
- * The template method to {@link CrudRepositoryAsync}
+ * The {@link RepositoryAsync} template method
  */
-public abstract class AbstractColumnCrudRepositoryAsync<T> implements CrudRepositoryAsync<T> {
+public abstract class AbstractDocumentRepositoryAsync implements RepositoryAsync {
 
-    protected abstract ColumnTemplateAsync getColumnRepository();
+
+    protected abstract DocumentTemplateAsync getDocumentRepository();
 
     @Override
-    public void save(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getColumnRepository().save(entity);
+    public void save(Object entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+        getDocumentRepository().save(entity);
     }
 
     @Override
-    public void save(T entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getColumnRepository().save(entity, ttl);
+    public void save(Object entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+        getDocumentRepository().save(entity, ttl);
     }
 
     @Override
     public void save(Iterable entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getColumnRepository().save(entities);
+        getDocumentRepository().save(entities);
     }
 
     @Override
     public void save(Iterable entities, Duration ttl) throws NullPointerException {
-        getColumnRepository().save(entities, ttl);
+        getDocumentRepository().save(entities, ttl);
     }
 
     @Override
     public void update(Iterable entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getColumnRepository().update(entities);
+        getDocumentRepository().update(entities);
     }
 
     @Override
     public void update(Object entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getColumnRepository().save(entity);
+        getDocumentRepository().save(entity);
     }
 
     @Override
     public void update(Object entity, Consumer callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getColumnRepository().update(entity, callBack);
+        getDocumentRepository().update(entity, callBack);
     }
 
     @Override
     public void save(Object entity, Duration ttl, Consumer callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getColumnRepository().save(entity, ttl, callBack);
+        getDocumentRepository().save(entity, ttl, callBack);
     }
 
     @Override
     public void save(Object entity, Consumer callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getColumnRepository().save(entity, callBack);
+        getDocumentRepository().save(entity, callBack);
     }
 }

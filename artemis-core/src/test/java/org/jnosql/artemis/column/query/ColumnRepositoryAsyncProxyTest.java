@@ -15,7 +15,7 @@
  */
 package org.jnosql.artemis.column.query;
 
-import org.jnosql.artemis.CrudRepositoryAsync;
+import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.Pagination;
 import org.jnosql.artemis.WeldJUnit4Runner;
@@ -47,7 +47,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 
 @RunWith(WeldJUnit4Runner.class)
-public class ColumnCrudRepositoryAsyncProxyTest {
+public class ColumnRepositoryAsyncProxyTest {
 
     private ColumnTemplateAsync repository;
 
@@ -257,7 +257,7 @@ public class ColumnCrudRepositoryAsyncProxyTest {
 
     }
 
-    interface PersonAsyncRepository extends CrudRepositoryAsync<Person> {
+    interface PersonAsyncRepository extends RepositoryAsync<Person> {
 
         void deleteByName(String name);
 

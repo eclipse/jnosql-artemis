@@ -15,7 +15,7 @@
  */
 package org.jnosql.artemis.document.query;
 
-import org.jnosql.artemis.CrudRepository;
+import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.document.DocumentTemplate;
@@ -35,9 +35,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Artemis discoveryBean to CDI extension to register {@link CrudRepository}
+ * Artemis discoveryBean to CDI extension to register {@link Repository}
  */
-public class CrudRepositoryDocumentBean implements Bean<CrudRepository>, PassivationCapable {
+public class CrudRepositoryDocumentBean implements Bean<Repository>, PassivationCapable {
 
     private final Class type;
 
@@ -85,13 +85,13 @@ public class CrudRepositoryDocumentBean implements Bean<CrudRepository>, Passiva
     }
 
     @Override
-    public CrudRepository create(CreationalContext<CrudRepository> creationalContext) {
+    public Repository create(CreationalContext<Repository> creationalContext) {
         ClassRepresentations classRepresentations = getInstance(ClassRepresentations.class);
         DocumentTemplate repository = provider.isEmpty() ? getInstance(DocumentTemplate.class) :
                 getInstance(DocumentTemplate.class, provider);
         DocumentCrudRepositoryProxy handler = new DocumentCrudRepositoryProxy(repository,
                 classRepresentations, type);
-        return (CrudRepository) Proxy.newProxyInstance(type.getClassLoader(),
+        return (Repository) Proxy.newProxyInstance(type.getClassLoader(),
                 new Class[]{type},
                 handler);
     }
@@ -111,7 +111,7 @@ public class CrudRepositoryDocumentBean implements Bean<CrudRepository>, Passiva
 
 
     @Override
-    public void destroy(CrudRepository instance, CreationalContext<CrudRepository> creationalContext) {
+    public void destroy(Repository instance, CreationalContext<Repository> creationalContext) {
 
     }
 

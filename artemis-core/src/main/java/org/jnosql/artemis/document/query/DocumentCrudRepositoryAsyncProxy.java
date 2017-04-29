@@ -16,7 +16,7 @@
 package org.jnosql.artemis.document.query;
 
 
-import org.jnosql.artemis.CrudRepositoryAsync;
+import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.document.DocumentTemplateAsync;
 import org.jnosql.artemis.reflection.ClassRepresentation;
@@ -30,7 +30,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.function.Consumer;
 
 /**
- * Proxy handle to generate {@link CrudRepositoryAsync}
+ * Proxy handle to generate {@link RepositoryAsync}
  *
  * @param <T> the type
  */
@@ -41,7 +41,7 @@ class DocumentCrudRepositoryAsyncProxy<T> implements InvocationHandler {
     private final DocumentTemplateAsync repository;
 
 
-    private final DocumentCrudRepositoryAsync crudRepository;
+    private final DocumentRepositoryAsync crudRepository;
 
     private final ClassRepresentation classRepresentation;
 
@@ -52,7 +52,7 @@ class DocumentCrudRepositoryAsyncProxy<T> implements InvocationHandler {
 
     DocumentCrudRepositoryAsyncProxy(DocumentTemplateAsync repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
         this.repository = repository;
-        this.crudRepository = new DocumentCrudRepositoryAsync(repository);
+        this.crudRepository = new DocumentRepositoryAsync(repository);
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
@@ -95,11 +95,11 @@ class DocumentCrudRepositoryAsyncProxy<T> implements InvocationHandler {
     }
 
 
-    class DocumentCrudRepositoryAsync extends AbstractDocumentCrudRepositoryAsync implements CrudRepositoryAsync {
+    class DocumentRepositoryAsync extends AbstractDocumentRepositoryAsync implements RepositoryAsync {
 
         private final DocumentTemplateAsync repository;
 
-        DocumentCrudRepositoryAsync(DocumentTemplateAsync repository) {
+        DocumentRepositoryAsync(DocumentTemplateAsync repository) {
             this.repository = repository;
         }
 

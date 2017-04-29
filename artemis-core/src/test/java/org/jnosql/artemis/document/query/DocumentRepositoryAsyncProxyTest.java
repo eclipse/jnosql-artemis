@@ -15,7 +15,7 @@
  */
 package org.jnosql.artemis.document.query;
 
-import org.jnosql.artemis.CrudRepositoryAsync;
+import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.Pagination;
 import org.jnosql.artemis.WeldJUnit4Runner;
@@ -48,7 +48,7 @@ import static org.mockito.Mockito.verify;
 
 
 @RunWith(WeldJUnit4Runner.class)
-public class DocumentCrudRepositoryAsyncProxyTest {
+public class DocumentRepositoryAsyncProxyTest {
 
     private DocumentTemplateAsync repository;
 
@@ -258,7 +258,7 @@ public class DocumentCrudRepositoryAsyncProxyTest {
 
     }
 
-    interface PersonAsyncRepository extends CrudRepositoryAsync<Person> {
+    interface PersonAsyncRepository extends RepositoryAsync<Person> {
 
         void deleteByName(String name);
 
