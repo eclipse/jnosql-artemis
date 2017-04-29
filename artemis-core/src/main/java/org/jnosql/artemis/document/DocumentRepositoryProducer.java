@@ -20,14 +20,14 @@ import org.jnosql.diana.api.document.DocumentCollectionManager;
 
 
 /**
- * The producer of {@link DocumentRepository}
+ * The producer of {@link DocumentTemplate}
  *
- * @param <T> the DocumentRepository instance
+ * @param <T> the DocumentTemplate instance
  */
-public interface DocumentRepositoryProducer<T extends DocumentRepository> {
+public interface DocumentRepositoryProducer<T extends DocumentTemplate> {
 
     /**
-     * creates a {@link DocumentRepository}
+     * creates a {@link DocumentTemplate}
      *
      * @param collectionManager the collectionManager
      * @return a new instance

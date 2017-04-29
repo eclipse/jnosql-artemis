@@ -17,7 +17,7 @@ package org.jnosql.artemis.document.query;
 
 
 import org.jnosql.artemis.CrudRepository;
-import org.jnosql.artemis.document.DocumentRepository;
+import org.jnosql.artemis.document.DocumentTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
@@ -38,7 +38,7 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
 
     private final Class<T> typeClass;
 
-    private final DocumentRepository repository;
+    private final DocumentTemplate repository;
 
 
     private final DocumentCrudRepository crudRepository;
@@ -50,7 +50,7 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
     private final DocumentQueryDeleteParser deleteQueryParser;
 
 
-    DocumentCrudRepositoryProxy(DocumentRepository repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
+    DocumentCrudRepositoryProxy(DocumentTemplate repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
         this.repository = repository;
         this.crudRepository = new DocumentCrudRepository(repository);
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
@@ -86,14 +86,14 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
 
     class DocumentCrudRepository extends AbstractDocumentCrudRepository implements CrudRepository {
 
-        private final DocumentRepository repository;
+        private final DocumentTemplate repository;
 
-        DocumentCrudRepository(DocumentRepository repository) {
+        DocumentCrudRepository(DocumentTemplate repository) {
             this.repository = repository;
         }
 
         @Override
-        protected DocumentRepository getDocumentRepository() {
+        protected DocumentTemplate getDocumentRepository() {
             return repository;
         }
     }

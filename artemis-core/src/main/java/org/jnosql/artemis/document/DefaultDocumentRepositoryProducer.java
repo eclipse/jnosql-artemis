@@ -39,13 +39,13 @@ class DefaultDocumentRepositoryProducer implements DocumentRepositoryProducer {
 
 
     @Override
-    public DocumentRepository get(DocumentCollectionManager collectionManager) throws NullPointerException {
+    public DocumentTemplate get(DocumentCollectionManager collectionManager) throws NullPointerException {
         Objects.requireNonNull(collectionManager, "collectionManager is required");
-        return new ProducerDocumentRepository(converter, collectionManager, workflow, persistManager);
+        return new ProducerDocumentTemplate(converter, collectionManager, workflow, persistManager);
     }
 
     @Vetoed
-    static class ProducerDocumentRepository extends AbstractDocumentRepository {
+    static class ProducerDocumentTemplate extends AbstractDocumentTemplate {
 
         private DocumentEntityConverter converter;
 
@@ -54,15 +54,15 @@ class DefaultDocumentRepositoryProducer implements DocumentRepositoryProducer {
         private DocumentWorkflow workflow;
         private DocumentEventPersistManager persistManager;
 
-        ProducerDocumentRepository(DocumentEntityConverter converter, DocumentCollectionManager manager,
-                                   DocumentWorkflow workflow, DocumentEventPersistManager persistManager) {
+        ProducerDocumentTemplate(DocumentEntityConverter converter, DocumentCollectionManager manager,
+                                 DocumentWorkflow workflow, DocumentEventPersistManager persistManager) {
             this.converter = converter;
             this.manager = manager;
             this.workflow = workflow;
             this.persistManager = persistManager;
         }
 
-        ProducerDocumentRepository() {
+        ProducerDocumentTemplate() {
         }
 
         @Override

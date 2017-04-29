@@ -18,7 +18,7 @@ package org.jnosql.artemis.document.query;
 import org.jnosql.artemis.CrudRepositoryAsync;
 import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
-import org.jnosql.artemis.document.DocumentRepositoryAsync;
+import org.jnosql.artemis.document.DocumentTemplateAsync;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -87,8 +87,8 @@ public class CrudRepositoryAsyncDocumentBean implements Bean<CrudRepositoryAsync
     @Override
     public CrudRepositoryAsync create(CreationalContext<CrudRepositoryAsync> creationalContext) {
         ClassRepresentations classRepresentations = getInstance(ClassRepresentations.class);
-        DocumentRepositoryAsync repository = provider.isEmpty() ? getInstance(DocumentRepositoryAsync.class) :
-                getInstance(DocumentRepositoryAsync.class, provider);
+        DocumentTemplateAsync repository = provider.isEmpty() ? getInstance(DocumentTemplateAsync.class) :
+                getInstance(DocumentTemplateAsync.class, provider);
         DocumentCrudRepositoryAsyncProxy handler = new DocumentCrudRepositoryAsyncProxy(repository,
                 classRepresentations, type);
         return (CrudRepositoryAsync) Proxy.newProxyInstance(type.getClassLoader(),

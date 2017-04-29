@@ -18,7 +18,7 @@ package org.jnosql.artemis.document.spi;
 
 import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
-import org.jnosql.artemis.document.DocumentRepositoryAsync;
+import org.jnosql.artemis.document.DocumentTemplateAsync;
 import org.jnosql.artemis.document.DocumentRepositoryAsyncProducer;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
 
@@ -33,7 +33,7 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
 
-class DocumentRepositoryAsyncBean implements Bean<DocumentRepositoryAsync>, PassivationCapable {
+class DocumentRepositoryAsyncBean implements Bean<DocumentTemplateAsync>, PassivationCapable {
 
     private final BeanManager beanManager;
 
@@ -51,14 +51,14 @@ class DocumentRepositoryAsyncBean implements Bean<DocumentRepositoryAsync>, Pass
      */
     public DocumentRepositoryAsyncBean(BeanManager beanManager, String provider) {
         this.beanManager = beanManager;
-        this.types = Collections.singleton(DocumentRepositoryAsync.class);
+        this.types = Collections.singleton(DocumentTemplateAsync.class);
         this.provider = provider;
         this.qualifiers = Collections.singleton(DatabaseQualifier.ofDocument(provider));
     }
 
     @Override
     public Class<?> getBeanClass() {
-        return DocumentRepositoryAsync.class;
+        return DocumentTemplateAsync.class;
     }
 
     @Override
@@ -72,7 +72,7 @@ class DocumentRepositoryAsyncBean implements Bean<DocumentRepositoryAsync>, Pass
     }
 
     @Override
-    public DocumentRepositoryAsync create(CreationalContext<DocumentRepositoryAsync> creationalContext) {
+    public DocumentTemplateAsync create(CreationalContext<DocumentTemplateAsync> creationalContext) {
 
         DocumentRepositoryAsyncProducer producer = getInstance(DocumentRepositoryAsyncProducer.class);
         DocumentCollectionManagerAsync manager = getManager();
@@ -101,7 +101,7 @@ class DocumentRepositoryAsyncBean implements Bean<DocumentRepositoryAsync>, Pass
 
 
     @Override
-    public void destroy(DocumentRepositoryAsync instance, CreationalContext<DocumentRepositoryAsync> creationalContext) {
+    public void destroy(DocumentTemplateAsync instance, CreationalContext<DocumentTemplateAsync> creationalContext) {
 
     }
 
@@ -137,7 +137,7 @@ class DocumentRepositoryAsyncBean implements Bean<DocumentRepositoryAsync>, Pass
 
     @Override
     public String getId() {
-        return DocumentRepositoryAsync.class.getName() + DatabaseType.COLUMN + "-" + provider;
+        return DocumentTemplateAsync.class.getName() + DatabaseType.COLUMN + "-" + provider;
     }
 
 }

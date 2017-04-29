@@ -17,7 +17,7 @@ package org.jnosql.artemis.document.query;
 
 
 import org.jnosql.artemis.CrudRepositoryAsync;
-import org.jnosql.artemis.document.DocumentRepositoryAsync;
+import org.jnosql.artemis.document.DocumentTemplateAsync;
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
 
 import java.time.Duration;
@@ -29,7 +29,7 @@ import java.util.function.Consumer;
 public abstract class AbstractDocumentCrudRepositoryAsync implements CrudRepositoryAsync {
 
 
-    protected abstract DocumentRepositoryAsync getDocumentRepository();
+    protected abstract DocumentTemplateAsync getDocumentRepository();
 
     @Override
     public void save(Object entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {

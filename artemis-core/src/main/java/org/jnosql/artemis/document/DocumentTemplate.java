@@ -32,7 +32,7 @@ import static java.util.stream.Collectors.toList;
  * This interface that represents the common operation between an entity and DocumentCollectionEntity.
  * @see org.jnosql.diana.api.document.DocumentCollectionManager
  */
-public interface DocumentRepository {
+public interface DocumentTemplate {
 
     /**
      * Saves entity
@@ -56,7 +56,7 @@ public interface DocumentRepository {
 
     /**
      * Saves entity, by default it's just run for each saving using
-     * {@link DocumentRepository#save(Object)},
+     * {@link DocumentTemplate#save(Object)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -71,7 +71,7 @@ public interface DocumentRepository {
 
     /**
      * Saves documents collection entity with time to live, by default it's just run for each saving using
-     * {@link DocumentRepository#save(Object, Duration)},
+     * {@link DocumentTemplate#save(Object, Duration)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -97,7 +97,7 @@ public interface DocumentRepository {
 
     /**
      * Updates entity, by default it's just run for each saving using
-     * {@link DocumentRepository#update(Object)},
+     * {@link DocumentTemplate#update(Object)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved

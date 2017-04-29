@@ -18,8 +18,7 @@ package org.jnosql.artemis.document.query;
 import org.hamcrest.Matchers;
 import org.jnosql.artemis.CrudRepository;
 import org.jnosql.artemis.WeldJUnit4Runner;
-import org.jnosql.artemis.document.DocumentRepository;
-import org.jnosql.artemis.document.query.DocumentCrudRepositoryProxy;
+import org.jnosql.artemis.document.DocumentTemplate;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.Condition;
@@ -56,7 +55,7 @@ import static org.mockito.Mockito.when;
 @RunWith(WeldJUnit4Runner.class)
 public class DocumentCrudRepositoryProxyTest {
 
-    private DocumentRepository repository;
+    private DocumentTemplate repository;
 
     @Inject
     private ClassRepresentations classRepresentations;
@@ -66,7 +65,7 @@ public class DocumentCrudRepositoryProxyTest {
 
     @Before
     public void setUp() {
-        this.repository = Mockito.mock(DocumentRepository.class);
+        this.repository = Mockito.mock(DocumentTemplate.class);
 
         DocumentCrudRepositoryProxy handler = new DocumentCrudRepositoryProxy(repository,
                 classRepresentations, PersonRepository.class);

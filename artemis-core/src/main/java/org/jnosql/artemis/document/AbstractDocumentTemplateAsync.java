@@ -30,10 +30,10 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
- * This class provides a skeletal implementation of the {@link DocumentRepositoryAsync} interface,
+ * This class provides a skeletal implementation of the {@link DocumentTemplateAsync} interface,
  * to minimize the effort required to implement this interface.
  */
-public abstract class AbstractDocumentRepositoryAsync implements DocumentRepositoryAsync {
+public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateAsync {
 
 
     protected abstract DocumentEntityConverter getConverter();

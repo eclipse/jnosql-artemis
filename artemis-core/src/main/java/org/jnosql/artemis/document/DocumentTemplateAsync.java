@@ -31,7 +31,7 @@ import java.util.stream.StreamSupport;
  *
  * @see org.jnosql.diana.api.document.DocumentCollectionManagerAsync
  */
-public interface DocumentRepositoryAsync {
+public interface DocumentTemplateAsync {
 
     /**
      * Saves an entity asynchronously
@@ -58,7 +58,7 @@ public interface DocumentRepositoryAsync {
 
     /**
      * Saves entities asynchronously, by default it's just run for each saving using
-     * {@link DocumentRepositoryAsync#save(Object)},
+     * {@link DocumentTemplateAsync#save(Object)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -74,7 +74,7 @@ public interface DocumentRepositoryAsync {
 
     /**
      * Saves entities asynchronously with time to live, by default it's just run for each saving using
-     * {@link DocumentRepositoryAsync#save(Object)} (Object, Duration)},
+     * {@link DocumentTemplateAsync#save(Object)} (Object, Duration)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -147,7 +147,7 @@ public interface DocumentRepositoryAsync {
 
     /**
      * Updates entities asynchronously, by default it's just run for each saving using
-     * {@link DocumentRepository#update(Object)},
+     * {@link DocumentTemplate#update(Object)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved

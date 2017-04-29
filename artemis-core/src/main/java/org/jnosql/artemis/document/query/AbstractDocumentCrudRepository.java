@@ -16,7 +16,7 @@
 package org.jnosql.artemis.document.query;
 
 import org.jnosql.artemis.CrudRepository;
-import org.jnosql.artemis.document.DocumentRepository;
+import org.jnosql.artemis.document.DocumentTemplate;
 
 import java.time.Duration;
 
@@ -25,7 +25,7 @@ import java.time.Duration;
  */
 public abstract class AbstractDocumentCrudRepository implements CrudRepository {
 
-    protected abstract DocumentRepository getDocumentRepository();
+    protected abstract DocumentTemplate getDocumentRepository();
 
     @Override
     public Object save(Object entity) throws NullPointerException {

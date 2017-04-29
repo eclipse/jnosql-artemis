@@ -29,10 +29,10 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 /**
- * This class provides a skeletal implementation of the {@link DocumentRepository} interface,
+ * This class provides a skeletal implementation of the {@link DocumentTemplate} interface,
  * to minimize the effort required to implement this interface.
  */
-public abstract class AbstractDocumentRepository implements DocumentRepository {
+public abstract class AbstractDocumentTemplate implements DocumentTemplate {
 
 
     protected abstract DocumentEntityConverter getConverter();

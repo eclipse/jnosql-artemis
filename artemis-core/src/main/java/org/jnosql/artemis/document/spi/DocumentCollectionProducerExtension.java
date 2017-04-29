@@ -42,7 +42,7 @@ import java.util.stream.Stream;
 import static org.jnosql.artemis.DatabaseType.DOCUMENT;
 
 /**
- * Extension to start up the DocumentRepository, DocumentRepositoryAsync, CrudRepository and CrudRepositoryAsync
+ * Extension to start up the DocumentTemplate, DocumentTemplateAsync, CrudRepository and CrudRepositoryAsync
  * from the {@link Database} qualifier
  */
 public class DocumentCollectionProducerExtension implements Extension {

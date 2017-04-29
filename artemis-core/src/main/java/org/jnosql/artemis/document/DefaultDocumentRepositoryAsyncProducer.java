@@ -32,24 +32,24 @@ class DefaultDocumentRepositoryAsyncProducer implements DocumentRepositoryAsyncP
     private DocumentEntityConverter converter;
 
     @Override
-    public DocumentRepositoryAsync get(DocumentCollectionManagerAsync collectionManager) throws NullPointerException {
+    public DocumentTemplateAsync get(DocumentCollectionManagerAsync collectionManager) throws NullPointerException {
         Objects.requireNonNull(collectionManager, "collectionManager is required");
-        return new ProducerAbstractDocumentRepositoryAsync(converter, collectionManager);
+        return new ProducerAbstractDocumentTemplateAsync(converter, collectionManager);
     }
 
     @Vetoed
-    static class ProducerAbstractDocumentRepositoryAsync extends AbstractDocumentRepositoryAsync {
+    static class ProducerAbstractDocumentTemplateAsync extends AbstractDocumentTemplateAsync {
 
         private DocumentEntityConverter converter;
 
         private DocumentCollectionManagerAsync manager;
 
-        ProducerAbstractDocumentRepositoryAsync(DocumentEntityConverter converter, DocumentCollectionManagerAsync manager) {
+        ProducerAbstractDocumentTemplateAsync(DocumentEntityConverter converter, DocumentCollectionManagerAsync manager) {
             this.converter = converter;
             this.manager = manager;
         }
 
-        ProducerAbstractDocumentRepositoryAsync() {
+        ProducerAbstractDocumentTemplateAsync() {
         }
 
         @Override

@@ -27,7 +27,7 @@ import static org.junit.Assert.assertNotNull;
 
 
 @RunWith(WeldJUnit4Runner.class)
-public class DefaultDocumentRepositoryProducerTest {
+public class DefaultDocumentTemplateProducerTest {
 
     @Inject
     private DocumentRepositoryProducer producer;
@@ -41,7 +41,7 @@ public class DefaultDocumentRepositoryProducerTest {
     @Test
     public void shouldReturn() {
         DocumentCollectionManager manager = Mockito.mock(DocumentCollectionManager.class);
-        DocumentRepository documentRepository = producer.get(manager);
-        assertNotNull(documentRepository);
+        DocumentTemplate documentTemplate = producer.get(manager);
+        assertNotNull(documentTemplate);
     }
 }

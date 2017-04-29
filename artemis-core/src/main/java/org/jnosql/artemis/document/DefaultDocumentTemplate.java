@@ -15,30 +15,37 @@
  */
 package org.jnosql.artemis.document;
 
-
-import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
+import org.jnosql.diana.api.document.DocumentCollectionManager;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 /**
- * The default implementation of {@link DocumentRepository}
+ * The default implementation of {@link DocumentTemplate}
  */
 @SuppressWarnings("unchecked")
-class DefaultDocumentRepositoryAsync extends AbstractDocumentRepositoryAsync {
+class DefaultDocumentTemplate extends AbstractDocumentTemplate {
 
 
     private DocumentEntityConverter converter;
 
-    private Instance<DocumentCollectionManagerAsync> manager;
+    private Instance<DocumentCollectionManager> manager;
+
+    private DocumentWorkflow workflow;
+
+    private DocumentEventPersistManager persistManager;
+
 
     @Inject
-    DefaultDocumentRepositoryAsync(DocumentEntityConverter converter, Instance<DocumentCollectionManagerAsync> manager) {
+    DefaultDocumentTemplate(DocumentEntityConverter converter, Instance<DocumentCollectionManager> manager,
+                            DocumentWorkflow workflow, DocumentEventPersistManager persistManager) {
         this.converter = converter;
         this.manager = manager;
+        this.workflow = workflow;
+        this.persistManager = persistManager;
     }
 
-    DefaultDocumentRepositoryAsync() {
+    DefaultDocumentTemplate() {
     }
 
     @Override
@@ -47,7 +54,17 @@ class DefaultDocumentRepositoryAsync extends AbstractDocumentRepositoryAsync {
     }
 
     @Override
-    protected DocumentCollectionManagerAsync getManager() {
+    protected DocumentCollectionManager getManager() {
         return manager.get();
+    }
+
+    @Override
+    protected DocumentWorkflow getWorkflow() {
+        return workflow;
+    }
+
+    @Override
+    protected DocumentEventPersistManager getPersistManager() {
+        return persistManager;
     }
 }

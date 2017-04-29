@@ -18,7 +18,7 @@ package org.jnosql.artemis.document;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.diana.api.document.Document;
-import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
+import org.jnosql.diana.api.document.DocumentCollectionManager;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentEntity;
 import org.junit.Before;
@@ -31,17 +31,17 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.time.Duration;
 import java.util.Arrays;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 
 @RunWith(WeldJUnit4Runner.class)
-public class DefaultDocumentRepositoryAsyncTest {
+public class DefaultDocumentTemplateTest {
 
     private Person person = Person.builder().
             withAge().
@@ -61,9 +61,9 @@ public class DefaultDocumentRepositoryAsyncTest {
     @Inject
     private DocumentEntityConverter converter;
 
-    private DocumentCollectionManagerAsync managerMock;
+    private DocumentCollectionManager managerMock;
 
-    private DefaultDocumentRepositoryAsync subject;
+    private DefaultDocumentTemplate subject;
 
     private ArgumentCaptor<DocumentEntity> captor;
 
@@ -72,12 +72,13 @@ public class DefaultDocumentRepositoryAsyncTest {
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
-        managerMock = Mockito.mock(DocumentCollectionManagerAsync.class);
+        managerMock = Mockito.mock(DocumentCollectionManager.class);
         documentEventPersistManager = Mockito.mock(DocumentEventPersistManager.class);
         captor = ArgumentCaptor.forClass(DocumentEntity.class);
-        Instance<DocumentCollectionManagerAsync> instance = Mockito.mock(Instance.class);
+        Instance<DocumentCollectionManager> instance = Mockito.mock(Instance.class);
         when(instance.get()).thenReturn(managerMock);
-        this.subject = new DefaultDocumentRepositoryAsync(converter, instance);
+        DefaultDocumentWorkflow workflow = new DefaultDocumentWorkflow(documentEventPersistManager, converter);
+        this.subject = new DefaultDocumentTemplate(converter, instance, workflow, documentEventPersistManager);
     }
 
     @Test
@@ -85,9 +86,16 @@ public class DefaultDocumentRepositoryAsyncTest {
         DocumentEntity document = DocumentEntity.of("Person");
         document.addAll(Stream.of(documents).collect(Collectors.toList()));
 
+        when(managerMock
+                .save(any(DocumentEntity.class)))
+                .thenReturn(document);
 
         subject.save(this.person);
-        verify(managerMock).save(captor.capture(), Mockito.any(Consumer.class));
+        verify(managerMock).save(captor.capture());
+        verify(documentEventPersistManager).firePostEntity(any(Person.class));
+        verify(documentEventPersistManager).firePreEntity(any(Person.class));
+        verify(documentEventPersistManager).firePreDocument(any(DocumentEntity.class));
+        verify(documentEventPersistManager).firePostDocument(any(DocumentEntity.class));
         DocumentEntity value = captor.getValue();
         assertEquals("Person", value.getName());
         assertEquals(4, value.getDocuments().size());
@@ -101,9 +109,16 @@ public class DefaultDocumentRepositoryAsyncTest {
         DocumentEntity document = DocumentEntity.of("Person");
         document.addAll(Stream.of(documents).collect(Collectors.toList()));
 
+        when(managerMock.save(any(DocumentEntity.class),
+                Mockito.eq(twoHours)))
+                .thenReturn(document);
 
         subject.save(this.person, twoHours);
-        verify(managerMock).save(captor.capture(), Mockito.eq(twoHours), Mockito.any(Consumer.class));
+        verify(managerMock).save(captor.capture(), Mockito.eq(twoHours));
+        verify(documentEventPersistManager).firePostEntity(any(Person.class));
+        verify(documentEventPersistManager).firePreEntity(any(Person.class));
+        verify(documentEventPersistManager).firePreDocument(any(DocumentEntity.class));
+        verify(documentEventPersistManager).firePostDocument(any(DocumentEntity.class));
         DocumentEntity value = captor.getValue();
         assertEquals("Person", value.getName());
         assertEquals(4, value.getDocuments().size());
@@ -115,9 +130,16 @@ public class DefaultDocumentRepositoryAsyncTest {
         DocumentEntity document = DocumentEntity.of("Person");
         document.addAll(Stream.of(documents).collect(Collectors.toList()));
 
+        when(managerMock
+                .update(any(DocumentEntity.class)))
+                .thenReturn(document);
 
         subject.update(this.person);
-        verify(managerMock).update(captor.capture(), Mockito.any(Consumer.class));
+        verify(managerMock).update(captor.capture());
+        verify(documentEventPersistManager).firePostEntity(any(Person.class));
+        verify(documentEventPersistManager).firePreEntity(any(Person.class));
+        verify(documentEventPersistManager).firePreDocument(any(DocumentEntity.class));
+        verify(documentEventPersistManager).firePostDocument(any(DocumentEntity.class));
         DocumentEntity value = captor.getValue();
         assertEquals("Person", value.getName());
         assertEquals(4, value.getDocuments().size());
@@ -130,4 +152,5 @@ public class DefaultDocumentRepositoryAsyncTest {
         subject.delete(query);
         verify(managerMock).delete(query);
     }
+
 }

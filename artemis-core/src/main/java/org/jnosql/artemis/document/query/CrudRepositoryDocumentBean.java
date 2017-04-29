@@ -18,7 +18,7 @@ package org.jnosql.artemis.document.query;
 import org.jnosql.artemis.CrudRepository;
 import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
-import org.jnosql.artemis.document.DocumentRepository;
+import org.jnosql.artemis.document.DocumentTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -87,8 +87,8 @@ public class CrudRepositoryDocumentBean implements Bean<CrudRepository>, Passiva
     @Override
     public CrudRepository create(CreationalContext<CrudRepository> creationalContext) {
         ClassRepresentations classRepresentations = getInstance(ClassRepresentations.class);
-        DocumentRepository repository = provider.isEmpty() ? getInstance(DocumentRepository.class) :
-                getInstance(DocumentRepository.class, provider);
+        DocumentTemplate repository = provider.isEmpty() ? getInstance(DocumentTemplate.class) :
+                getInstance(DocumentTemplate.class, provider);
         DocumentCrudRepositoryProxy handler = new DocumentCrudRepositoryProxy(repository,
                 classRepresentations, type);
         return (CrudRepository) Proxy.newProxyInstance(type.getClassLoader(),

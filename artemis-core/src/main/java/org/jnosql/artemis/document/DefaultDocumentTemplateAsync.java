@@ -15,33 +15,39 @@
  */
 package org.jnosql.artemis.document;
 
-import org.jnosql.artemis.WeldJUnit4Runner;
-import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 
+import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
+
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import static org.junit.Assert.assertNotNull;
+/**
+ * The default implementation of {@link DocumentTemplate}
+ */
+@SuppressWarnings("unchecked")
+class DefaultDocumentTemplateAsync extends AbstractDocumentTemplateAsync {
 
 
-@RunWith(WeldJUnit4Runner.class)
-public class DefaultDocumentRepositoryAsyncProducerTest {
+    private DocumentEntityConverter converter;
+
+    private Instance<DocumentCollectionManagerAsync> manager;
 
     @Inject
-    private DocumentRepositoryAsyncProducer producer;
-
-
-    @Test(expected = NullPointerException.class)
-    public void shouldReturnErrorWhenColumnFamilyManagerNull() {
-        producer.get(null);
+    DefaultDocumentTemplateAsync(DocumentEntityConverter converter, Instance<DocumentCollectionManagerAsync> manager) {
+        this.converter = converter;
+        this.manager = manager;
     }
 
-    @Test
-    public void shouldReturn() {
-        DocumentCollectionManagerAsync manager = Mockito.mock(DocumentCollectionManagerAsync.class);
-        DocumentRepositoryAsync documentRepository = producer.get(manager);
-        assertNotNull(documentRepository);
+    DefaultDocumentTemplateAsync() {
+    }
+
+    @Override
+    protected DocumentEntityConverter getConverter() {
+        return converter;
+    }
+
+    @Override
+    protected DocumentCollectionManagerAsync getManager() {
+        return manager.get();
     }
 }

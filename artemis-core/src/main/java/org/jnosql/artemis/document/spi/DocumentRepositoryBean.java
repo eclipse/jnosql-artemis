@@ -18,7 +18,7 @@ package org.jnosql.artemis.document.spi;
 
 import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
-import org.jnosql.artemis.document.DocumentRepository;
+import org.jnosql.artemis.document.DocumentTemplate;
 import org.jnosql.artemis.document.DocumentRepositoryProducer;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
 
@@ -33,7 +33,7 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
 
-class DocumentRepositoryBean implements Bean<DocumentRepository>, PassivationCapable {
+class DocumentRepositoryBean implements Bean<DocumentTemplate>, PassivationCapable {
 
     private final BeanManager beanManager;
 
@@ -51,14 +51,14 @@ class DocumentRepositoryBean implements Bean<DocumentRepository>, PassivationCap
      */
     public DocumentRepositoryBean(BeanManager beanManager, String provider) {
         this.beanManager = beanManager;
-        this.types = Collections.singleton(DocumentRepository.class);
+        this.types = Collections.singleton(DocumentTemplate.class);
         this.provider = provider;
         this.qualifiers = Collections.singleton(DatabaseQualifier.ofDocument(provider));
     }
 
     @Override
     public Class<?> getBeanClass() {
-        return DocumentRepository.class;
+        return DocumentTemplate.class;
     }
 
     @Override
@@ -72,7 +72,7 @@ class DocumentRepositoryBean implements Bean<DocumentRepository>, PassivationCap
     }
 
     @Override
-    public DocumentRepository create(CreationalContext<DocumentRepository> creationalContext) {
+    public DocumentTemplate create(CreationalContext<DocumentTemplate> creationalContext) {
 
         DocumentRepositoryProducer producer = getInstance(DocumentRepositoryProducer.class);
         DocumentCollectionManager manager = getManager();
@@ -101,7 +101,7 @@ class DocumentRepositoryBean implements Bean<DocumentRepository>, PassivationCap
 
 
     @Override
-    public void destroy(DocumentRepository instance, CreationalContext<DocumentRepository> creationalContext) {
+    public void destroy(DocumentTemplate instance, CreationalContext<DocumentTemplate> creationalContext) {
 
     }
 
@@ -137,7 +137,7 @@ class DocumentRepositoryBean implements Bean<DocumentRepository>, PassivationCap
 
     @Override
     public String getId() {
-        return DocumentRepository.class.getName() + DatabaseType.COLUMN + "-" + provider;
+        return DocumentTemplate.class.getName() + DatabaseType.COLUMN + "-" + provider;
     }
 
 }

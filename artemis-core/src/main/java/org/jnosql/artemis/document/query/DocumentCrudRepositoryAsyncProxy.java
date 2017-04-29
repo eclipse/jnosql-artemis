@@ -18,7 +18,7 @@ package org.jnosql.artemis.document.query;
 
 import org.jnosql.artemis.CrudRepositoryAsync;
 import org.jnosql.artemis.DynamicQueryException;
-import org.jnosql.artemis.document.DocumentRepositoryAsync;
+import org.jnosql.artemis.document.DocumentTemplateAsync;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
@@ -38,7 +38,7 @@ class DocumentCrudRepositoryAsyncProxy<T> implements InvocationHandler {
 
     private final Class<T> typeClass;
 
-    private final DocumentRepositoryAsync repository;
+    private final DocumentTemplateAsync repository;
 
 
     private final DocumentCrudRepositoryAsync crudRepository;
@@ -50,7 +50,7 @@ class DocumentCrudRepositoryAsyncProxy<T> implements InvocationHandler {
     private final DocumentQueryDeleteParser queryDeleteParser;
 
 
-    DocumentCrudRepositoryAsyncProxy(DocumentRepositoryAsync repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
+    DocumentCrudRepositoryAsyncProxy(DocumentTemplateAsync repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
         this.repository = repository;
         this.crudRepository = new DocumentCrudRepositoryAsync(repository);
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
@@ -97,14 +97,14 @@ class DocumentCrudRepositoryAsyncProxy<T> implements InvocationHandler {
 
     class DocumentCrudRepositoryAsync extends AbstractDocumentCrudRepositoryAsync implements CrudRepositoryAsync {
 
-        private final DocumentRepositoryAsync repository;
+        private final DocumentTemplateAsync repository;
 
-        DocumentCrudRepositoryAsync(DocumentRepositoryAsync repository) {
+        DocumentCrudRepositoryAsync(DocumentTemplateAsync repository) {
             this.repository = repository;
         }
 
         @Override
-        protected DocumentRepositoryAsync getDocumentRepository() {
+        protected DocumentTemplateAsync getDocumentRepository() {
             return repository;
         }
     }
