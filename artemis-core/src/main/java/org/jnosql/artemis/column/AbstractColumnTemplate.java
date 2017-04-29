@@ -30,9 +30,9 @@ import java.util.stream.Collectors;
 import static java.util.Objects.requireNonNull;
 
 /**
- * The template method to {@link ColumnRepository}
+ * The template method to {@link ColumnTemplate}
  */
-public abstract class AbstractColumnRepository implements ColumnRepository {
+public abstract class AbstractColumnTemplate implements ColumnTemplate {
 
 
     protected abstract ColumnEntityConverter getConverter();

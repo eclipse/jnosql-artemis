@@ -18,7 +18,7 @@ package org.jnosql.artemis.column.query;
 import org.jnosql.artemis.CrudRepositoryAsync;
 import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
-import org.jnosql.artemis.column.ColumnRepositoryAsync;
+import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -87,8 +87,8 @@ public class CrudRepositoryAsyncColumnBean implements Bean<CrudRepositoryAsync>,
     @Override
     public CrudRepositoryAsync create(CreationalContext<CrudRepositoryAsync> creationalContext) {
         ClassRepresentations classRepresentations = getInstance(ClassRepresentations.class);
-        ColumnRepositoryAsync repository = provider.isEmpty() ? getInstance(ColumnRepositoryAsync.class) :
-                getInstance(ColumnRepositoryAsync.class, provider);
+        ColumnTemplateAsync repository = provider.isEmpty() ? getInstance(ColumnTemplateAsync.class) :
+                getInstance(ColumnTemplateAsync.class, provider);
         ColumnCrudRepositoryAsyncProxy handler = new ColumnCrudRepositoryAsyncProxy(repository,
                 classRepresentations, type);
         return (CrudRepositoryAsync) Proxy.newProxyInstance(type.getClassLoader(),

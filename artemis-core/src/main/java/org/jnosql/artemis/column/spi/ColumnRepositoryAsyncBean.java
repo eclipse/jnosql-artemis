@@ -18,7 +18,7 @@ package org.jnosql.artemis.column.spi;
 
 import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
-import org.jnosql.artemis.column.ColumnRepositoryAsync;
+import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.column.ColumnRepositoryAsyncProducer;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
 
@@ -33,7 +33,7 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
 
-class ColumnRepositoryAsyncBean implements Bean<ColumnRepositoryAsync>, PassivationCapable {
+class ColumnRepositoryAsyncBean implements Bean<ColumnTemplateAsync>, PassivationCapable {
 
     private final BeanManager beanManager;
 
@@ -51,14 +51,14 @@ class ColumnRepositoryAsyncBean implements Bean<ColumnRepositoryAsync>, Passivat
      */
     public ColumnRepositoryAsyncBean(BeanManager beanManager, String provider) {
         this.beanManager = beanManager;
-        this.types = Collections.singleton(ColumnRepositoryAsync.class);
+        this.types = Collections.singleton(ColumnTemplateAsync.class);
         this.provider = provider;
         this.qualifiers = Collections.singleton(DatabaseQualifier.ofColumn(provider));
     }
 
     @Override
     public Class<?> getBeanClass() {
-        return ColumnRepositoryAsync.class;
+        return ColumnTemplateAsync.class;
     }
 
     @Override
@@ -72,7 +72,7 @@ class ColumnRepositoryAsyncBean implements Bean<ColumnRepositoryAsync>, Passivat
     }
 
     @Override
-    public ColumnRepositoryAsync create(CreationalContext<ColumnRepositoryAsync> creationalContext) {
+    public ColumnTemplateAsync create(CreationalContext<ColumnTemplateAsync> creationalContext) {
 
         ColumnRepositoryAsyncProducer producer = getInstance(ColumnRepositoryAsyncProducer.class);
         ColumnFamilyManagerAsync columnFamilyManager = getColumnFamilyManager();
@@ -101,7 +101,7 @@ class ColumnRepositoryAsyncBean implements Bean<ColumnRepositoryAsync>, Passivat
 
 
     @Override
-    public void destroy(ColumnRepositoryAsync instance, CreationalContext<ColumnRepositoryAsync> creationalContext) {
+    public void destroy(ColumnTemplateAsync instance, CreationalContext<ColumnTemplateAsync> creationalContext) {
 
     }
 
@@ -137,7 +137,7 @@ class ColumnRepositoryAsyncBean implements Bean<ColumnRepositoryAsync>, Passivat
 
     @Override
     public String getId() {
-        return ColumnRepositoryAsync.class.getName() + DatabaseType.COLUMN + "-" + provider;
+        return ColumnTemplateAsync.class.getName() + DatabaseType.COLUMN + "-" + provider;
     }
 
 }

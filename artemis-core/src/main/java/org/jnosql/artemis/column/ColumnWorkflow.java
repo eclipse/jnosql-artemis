@@ -21,7 +21,7 @@ import org.jnosql.diana.api.column.ColumnEntity;
 import java.util.function.UnaryOperator;
 
 /**
- * This implementation defines the workflow to save an Entity on {@link ColumnRepository}.
+ * This implementation defines the workflow to save an Entity on {@link ColumnTemplate}.
  * The default implementation follows:
  *  <p>{@link ColumnEventPersistManager#firePreEntity(Object)}</p>
  *  <p>{@link ColumnEventPersistManager#firePreColumnEntity(Object)}</p>
@@ -41,8 +41,8 @@ public interface ColumnWorkflow {
      * @param action the alteration to be executed on database
      * @param <T>    the entity type
      * @return after the workflow the the entity response
-     * @see ColumnRepository#save(Object, java.time.Duration) ColumnRepository#save(Object)
-     * ColumnRepository#update(Object)
+     * @see ColumnTemplate#save(Object, java.time.Duration) ColumnTemplate#save(Object)
+     * ColumnTemplate#update(Object)
      */
     <T> T flow(T entity, UnaryOperator<ColumnEntity> action) throws NullPointerException;
 

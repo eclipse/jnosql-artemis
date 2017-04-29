@@ -19,7 +19,7 @@ import org.jnosql.artemis.CrudRepositoryAsync;
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.Pagination;
 import org.jnosql.artemis.WeldJUnit4Runner;
-import org.jnosql.artemis.column.ColumnRepositoryAsync;
+import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.Condition;
@@ -49,7 +49,7 @@ import static org.mockito.Mockito.verify;
 @RunWith(WeldJUnit4Runner.class)
 public class ColumnCrudRepositoryAsyncProxyTest {
 
-    private ColumnRepositoryAsync repository;
+    private ColumnTemplateAsync repository;
 
     @Inject
     private ClassRepresentations classRepresentations;
@@ -59,7 +59,7 @@ public class ColumnCrudRepositoryAsyncProxyTest {
 
     @Before
     public void setUp() {
-        this.repository = Mockito.mock(ColumnRepositoryAsync.class);
+        this.repository = Mockito.mock(ColumnTemplateAsync.class);
 
         ColumnCrudRepositoryAsyncProxy handler = new ColumnCrudRepositoryAsyncProxy(repository,
                 classRepresentations, PersonAsyncRepository.class);

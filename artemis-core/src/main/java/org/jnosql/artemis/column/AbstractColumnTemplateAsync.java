@@ -30,9 +30,9 @@ import static java.util.stream.Collectors.toList;
 
 
 /**
- * The template method to {@link ColumnRepositoryAsync}
+ * The template method to {@link ColumnTemplateAsync}
  */
-public abstract class AbstractColumnRepositoryAsync implements ColumnRepositoryAsync {
+public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync {
 
     protected abstract ColumnEntityConverter getConverter();
 

@@ -32,7 +32,7 @@ import java.util.stream.StreamSupport;
  *
  * @see org.jnosql.diana.api.column.ColumnFamilyManagerAsync
  */
-public interface ColumnRepositoryAsync {
+public interface ColumnTemplateAsync {
 
     /**
      * Saves an entity asynchronously
@@ -59,7 +59,7 @@ public interface ColumnRepositoryAsync {
 
     /**
      * Saves entities asynchronously, by default it's just run for each saving using
-     * {@link ColumnRepository#save(Object)},
+     * {@link ColumnTemplate#save(Object)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -75,7 +75,7 @@ public interface ColumnRepositoryAsync {
 
     /**
      * Saves entities asynchronously with time to live, by default it's just run for each saving using
-     * {@link ColumnRepository#save(Object, Duration)},
+     * {@link ColumnTemplate#save(Object, Duration)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -134,7 +134,7 @@ public interface ColumnRepositoryAsync {
 
     /**
      * Updates entities asynchronously, by default it's just run for each saving using
-     * {@link ColumnRepository#update(Object)},
+     * {@link ColumnTemplate#update(Object)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved

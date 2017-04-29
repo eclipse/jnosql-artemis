@@ -16,7 +16,7 @@
 package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.CrudRepository;
-import org.jnosql.artemis.column.ColumnRepository;
+import org.jnosql.artemis.column.ColumnTemplate;
 
 import java.time.Duration;
 
@@ -25,7 +25,7 @@ import java.time.Duration;
  */
 public abstract class AbstractColumnCrudRepository implements CrudRepository {
 
-    protected abstract ColumnRepository getColumnRepository();
+    protected abstract ColumnTemplate getColumnRepository();
 
     @Override
     public Object save(Object entity) throws NullPointerException {

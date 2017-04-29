@@ -17,7 +17,7 @@ package org.jnosql.artemis.column.query;
 
 
 import org.jnosql.artemis.CrudRepository;
-import org.jnosql.artemis.column.ColumnRepository;
+import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
@@ -42,7 +42,7 @@ class ColumnCrudRepositoryProxy<T> implements InvocationHandler {
 
     private final Class<T> typeClass;
 
-    private final ColumnRepository repository;
+    private final ColumnTemplate repository;
 
     private final ColumnCrudRepository crudRepository;
 
@@ -53,7 +53,7 @@ class ColumnCrudRepositoryProxy<T> implements InvocationHandler {
     private final ColumnQueryDeleteParser deleteQueryParser;
 
 
-    ColumnCrudRepositoryProxy(ColumnRepository repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
+    ColumnCrudRepositoryProxy(ColumnTemplate repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
         this.repository = repository;
         this.crudRepository = new ColumnCrudRepository(repository);
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
@@ -90,14 +90,14 @@ class ColumnCrudRepositoryProxy<T> implements InvocationHandler {
 
     class ColumnCrudRepository extends  AbstractColumnCrudRepository implements CrudRepository {
 
-        private final ColumnRepository repository;
+        private final ColumnTemplate repository;
 
-        ColumnCrudRepository(ColumnRepository repository) {
+        ColumnCrudRepository(ColumnTemplate repository) {
             this.repository = repository;
         }
 
         @Override
-        protected ColumnRepository getColumnRepository() {
+        protected ColumnTemplate getColumnRepository() {
             return repository;
         }
     }

@@ -21,10 +21,10 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 /**
- * The default implementation of {@link ColumnRepository}
+ * The default implementation of {@link ColumnTemplate}
  */
 @SuppressWarnings("unchecked")
-class DefaultColumnRepository extends AbstractColumnRepository {
+class DefaultColumnTemplate extends AbstractColumnTemplate {
 
     private ColumnEntityConverter converter;
 
@@ -35,16 +35,16 @@ class DefaultColumnRepository extends AbstractColumnRepository {
     private ColumnEventPersistManager eventManager;
 
     @Inject
-    DefaultColumnRepository(ColumnEntityConverter converter, Instance<ColumnFamilyManager> manager,
-                            ColumnWorkflow flow,
-                            ColumnEventPersistManager eventManager) {
+    DefaultColumnTemplate(ColumnEntityConverter converter, Instance<ColumnFamilyManager> manager,
+                          ColumnWorkflow flow,
+                          ColumnEventPersistManager eventManager) {
         this.converter = converter;
         this.manager = manager;
         this.flow = flow;
         this.eventManager = eventManager;
     }
 
-    DefaultColumnRepository() {
+    DefaultColumnTemplate() {
     }
 
 

@@ -20,7 +20,7 @@ import org.jnosql.artemis.model.Person;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnEntity;
-import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
+import org.jnosql.diana.api.column.ColumnFamilyManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,16 +29,16 @@ import org.mockito.Mockito;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import java.time.Duration;
 import java.util.Arrays;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 
 @RunWith(WeldJUnit4Runner.class)
-public class DefaultColumnRepositoryAsyncTest {
+public class DefaultColumnTemplateTest {
 
     private Person person = Person.builder().
             withAge().
@@ -58,9 +58,12 @@ public class DefaultColumnRepositoryAsyncTest {
     @Inject
     private ColumnEntityConverter converter;
 
-    private ColumnFamilyManagerAsync managerMock;
+    @Inject
+    private ColumnEventPersistManager eventManager;
 
-    private DefaultColumnRepositoryAsync subject;
+    private ColumnFamilyManager managerMock;
+
+    private DefaultColumnTemplate subject;
 
     private ArgumentCaptor<ColumnEntity> captor;
 
@@ -69,12 +72,12 @@ public class DefaultColumnRepositoryAsyncTest {
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
-        managerMock = Mockito.mock(ColumnFamilyManagerAsync.class);
+        managerMock = Mockito.mock(ColumnFamilyManager.class);
         columnEventPersistManager = Mockito.mock(ColumnEventPersistManager.class);
         captor = ArgumentCaptor.forClass(ColumnEntity.class);
-        Instance<ColumnFamilyManagerAsync> instance = Mockito.mock(Instance.class);
+        Instance<ColumnFamilyManager> instance = Mockito.mock(Instance.class);
         Mockito.when(instance.get()).thenReturn(managerMock);
-        this.subject = new DefaultColumnRepositoryAsync(converter, instance);
+        this.subject = new DefaultColumnTemplate(converter, instance, new DefaultColumnWorkflow(columnEventPersistManager, converter), columnEventPersistManager);
     }
 
     @Test
@@ -82,11 +85,19 @@ public class DefaultColumnRepositoryAsyncTest {
         ColumnEntity document = ColumnEntity.of("Person");
         document.addAll(Stream.of(columns).collect(Collectors.toList()));
 
+        Mockito.when(managerMock
+                .save(Mockito.any(ColumnEntity.class)))
+                .thenReturn(document);
 
         subject.save(this.person);
-        verify(managerMock).save(captor.capture(), Mockito.any(Consumer.class));
+        verify(managerMock).save(captor.capture());
+        verify(columnEventPersistManager).firePostEntity(Mockito.any(Person.class));
+        verify(columnEventPersistManager).firePreEntity(Mockito.any(Person.class));
+        verify(columnEventPersistManager).firePreColumn(Mockito.any(ColumnEntity.class));
+        verify(columnEventPersistManager).firePostColumn(Mockito.any(ColumnEntity.class));
         ColumnEntity value = captor.getValue();
-        assertEquals(document.getName(), value.getName());
+        assertEquals("Person", value.getName());
+        assertEquals(4, value.getColumns().size());
     }
 
 
@@ -95,9 +106,20 @@ public class DefaultColumnRepositoryAsyncTest {
         ColumnEntity document = ColumnEntity.of("Person");
         document.addAll(Stream.of(columns).collect(Collectors.toList()));
 
+        Mockito.when(managerMock
+                .save(Mockito.any(ColumnEntity.class),
+                        Mockito.any(Duration.class)))
+                .thenReturn(document);
 
-        subject.save(this.person);
-        verify(managerMock).save(Mockito.any(ColumnEntity.class), Mockito.any(Consumer.class));
+        subject.save(this.person, Duration.ofHours(2));
+        verify(managerMock).save(captor.capture(), Mockito.eq(Duration.ofHours(2)));
+        verify(columnEventPersistManager).firePostEntity(Mockito.any(Person.class));
+        verify(columnEventPersistManager).firePreEntity(Mockito.any(Person.class));
+        verify(columnEventPersistManager).firePreColumn(Mockito.any(ColumnEntity.class));
+        verify(columnEventPersistManager).firePostColumn(Mockito.any(ColumnEntity.class));
+        ColumnEntity value = captor.getValue();
+        assertEquals("Person", value.getName());
+        assertEquals(4, value.getColumns().size());
     }
 
     @Test
@@ -105,11 +127,19 @@ public class DefaultColumnRepositoryAsyncTest {
         ColumnEntity document = ColumnEntity.of("Person");
         document.addAll(Stream.of(columns).collect(Collectors.toList()));
 
+        Mockito.when(managerMock
+                .update(Mockito.any(ColumnEntity.class)))
+                .thenReturn(document);
 
         subject.update(this.person);
-        verify(managerMock).update(captor.capture(), Mockito.any(Consumer.class));
+        verify(managerMock).update(captor.capture());
+        verify(columnEventPersistManager).firePostEntity(Mockito.any(Person.class));
+        verify(columnEventPersistManager).firePreEntity(Mockito.any(Person.class));
+        verify(columnEventPersistManager).firePreColumn(Mockito.any(ColumnEntity.class));
+        verify(columnEventPersistManager).firePostColumn(Mockito.any(ColumnEntity.class));
         ColumnEntity value = captor.getValue();
-        assertEquals(document.getName(), value.getName());
+        assertEquals("Person", value.getName());
+        assertEquals(4, value.getColumns().size());
     }
 
     @Test

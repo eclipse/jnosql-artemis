@@ -17,7 +17,7 @@ package org.jnosql.artemis.column.query;
 
 
 import org.jnosql.artemis.CrudRepositoryAsync;
-import org.jnosql.artemis.column.ColumnRepositoryAsync;
+import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
 
 import java.time.Duration;
@@ -28,7 +28,7 @@ import java.util.function.Consumer;
  */
 public abstract class AbstractColumnCrudRepositoryAsync<T> implements CrudRepositoryAsync<T> {
 
-    protected abstract ColumnRepositoryAsync getColumnRepository();
+    protected abstract ColumnTemplateAsync getColumnRepository();
 
     @Override
     public void save(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {

@@ -15,40 +15,34 @@
  */
 package org.jnosql.artemis.column;
 
-
+import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-/**
- * The default implementation of {@link ColumnRepositoryAsync}
- */
-@SuppressWarnings("unchecked")
-class DefaultColumnRepositoryAsync extends AbstractColumnRepositoryAsync {
+import static org.junit.Assert.assertNotNull;
 
-    private ColumnEntityConverter converter;
-
-    private Instance<ColumnFamilyManagerAsync> manager;
+@RunWith(WeldJUnit4Runner.class)
+public class DefaultColumnTemplateAsyncProducerTest {
 
 
     @Inject
-    DefaultColumnRepositoryAsync(ColumnEntityConverter converter, Instance<ColumnFamilyManagerAsync> manager) {
-        this.converter = converter;
-        this.manager = manager;
-    }
-
-    DefaultColumnRepositoryAsync() {
-    }
+    private ColumnRepositoryAsyncProducer producer;
 
 
-    @Override
-    protected ColumnEntityConverter getConverter() {
-        return converter;
+    @Test(expected = NullPointerException.class)
+    public void shouldReturnErrorWhenColumnFamilyManagerNull() {
+        producer.get(null);
     }
 
-    @Override
-    protected ColumnFamilyManagerAsync getManager() {
-        return manager.get();
+    @Test
+    public void shouldReturn() {
+        ColumnFamilyManagerAsync manager = Mockito.mock(ColumnFamilyManagerAsync.class);
+        ColumnTemplateAsync columnRepository = producer.get(manager);
+        assertNotNull(columnRepository);
     }
+
 }

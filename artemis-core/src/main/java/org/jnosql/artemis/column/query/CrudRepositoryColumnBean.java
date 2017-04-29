@@ -18,7 +18,7 @@ package org.jnosql.artemis.column.query;
 import org.jnosql.artemis.CrudRepository;
 import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
-import org.jnosql.artemis.column.ColumnRepository;
+import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -87,8 +87,8 @@ public class CrudRepositoryColumnBean implements Bean<CrudRepository>, Passivati
     @Override
     public CrudRepository create(CreationalContext<CrudRepository> creationalContext) {
         ClassRepresentations classRepresentations = getInstance(ClassRepresentations.class);
-        ColumnRepository repository = provider.isEmpty() ? getInstance(ColumnRepository.class) :
-                getInstance(ColumnRepository.class, provider);
+        ColumnTemplate repository = provider.isEmpty() ? getInstance(ColumnTemplate.class) :
+                getInstance(ColumnTemplate.class, provider);
         ColumnCrudRepositoryProxy handler = new ColumnCrudRepositoryProxy(repository,
                 classRepresentations, type);
         return (CrudRepository) Proxy.newProxyInstance(type.getClassLoader(),

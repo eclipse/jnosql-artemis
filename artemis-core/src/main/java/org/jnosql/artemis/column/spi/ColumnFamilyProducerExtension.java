@@ -42,7 +42,7 @@ import java.util.stream.Stream;
 import static org.jnosql.artemis.DatabaseType.COLUMN;
 
 /**
- * Extension to start up the ColumnRepository, ColumnRepositoryAsync, CrudRepository and CrudRepositoryAsync
+ * Extension to start up the ColumnTemplate, ColumnTemplateAsync, CrudRepository and CrudRepositoryAsync
  * from the {@link Database} qualifier
  */
 public class ColumnFamilyProducerExtension implements Extension {

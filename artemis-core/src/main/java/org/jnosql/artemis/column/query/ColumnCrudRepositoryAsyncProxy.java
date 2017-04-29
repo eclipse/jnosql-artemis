@@ -18,7 +18,7 @@ package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.CrudRepositoryAsync;
 import org.jnosql.artemis.DynamicQueryException;
-import org.jnosql.artemis.column.ColumnRepositoryAsync;
+import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
@@ -43,7 +43,7 @@ class ColumnCrudRepositoryAsyncProxy<T> implements InvocationHandler {
 
     private final Class<T> typeClass;
 
-    private final ColumnRepositoryAsync repository;
+    private final ColumnTemplateAsync repository;
 
     private final ColumnCrudRepositoryAsync crudRepository;
 
@@ -54,7 +54,7 @@ class ColumnCrudRepositoryAsyncProxy<T> implements InvocationHandler {
     private final ColumnQueryDeleteParser queryDeleteParser;
 
 
-    ColumnCrudRepositoryAsyncProxy(ColumnRepositoryAsync repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
+    ColumnCrudRepositoryAsyncProxy(ColumnTemplateAsync repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
         this.repository = repository;
         this.crudRepository = new ColumnCrudRepositoryAsync(repository);
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
@@ -107,14 +107,14 @@ class ColumnCrudRepositoryAsyncProxy<T> implements InvocationHandler {
 
     class ColumnCrudRepositoryAsync extends  AbstractColumnCrudRepositoryAsync implements CrudRepositoryAsync {
 
-        private final ColumnRepositoryAsync repository;
+        private final ColumnTemplateAsync repository;
 
-        ColumnCrudRepositoryAsync(ColumnRepositoryAsync repository) {
+        ColumnCrudRepositoryAsync(ColumnTemplateAsync repository) {
             this.repository = repository;
         }
 
         @Override
-        protected ColumnRepositoryAsync getColumnRepository() {
+        protected ColumnTemplateAsync getColumnRepository() {
             return repository;
         }
     }

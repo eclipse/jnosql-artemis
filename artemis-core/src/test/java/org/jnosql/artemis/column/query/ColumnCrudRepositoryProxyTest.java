@@ -18,7 +18,7 @@ package org.jnosql.artemis.column.query;
 import org.hamcrest.Matchers;
 import org.jnosql.artemis.CrudRepository;
 import org.jnosql.artemis.WeldJUnit4Runner;
-import org.jnosql.artemis.column.ColumnRepository;
+import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.Condition;
@@ -55,7 +55,7 @@ import static org.mockito.Mockito.when;
 @RunWith(WeldJUnit4Runner.class)
 public class ColumnCrudRepositoryProxyTest {
 
-    private ColumnRepository repository;
+    private ColumnTemplate repository;
 
     @Inject
     private ClassRepresentations classRepresentations;
@@ -65,7 +65,7 @@ public class ColumnCrudRepositoryProxyTest {
 
     @Before
     public void setUp() {
-        this.repository = Mockito.mock(ColumnRepository.class);
+        this.repository = Mockito.mock(ColumnTemplate.class);
 
         ColumnCrudRepositoryProxy handler = new ColumnCrudRepositoryProxy(repository,
                 classRepresentations, PersonRepository.class);

@@ -26,7 +26,7 @@ import javax.inject.Inject;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(WeldJUnit4Runner.class)
-public class DefaultColumnRepositoryProducerTest {
+public class DefaultColumnTemplateProducerTest {
 
     @Inject
     private ColumnRepositoryProducer producer;
@@ -40,7 +40,7 @@ public class DefaultColumnRepositoryProducerTest {
     @Test
     public void shouldReturn() {
         ColumnFamilyManager manager = Mockito.mock(ColumnFamilyManager.class);
-        ColumnRepository columnRepository = producer.get(manager);
-        assertNotNull(columnRepository);
+        ColumnTemplate columnTemplate = producer.get(manager);
+        assertNotNull(columnTemplate);
     }
 }

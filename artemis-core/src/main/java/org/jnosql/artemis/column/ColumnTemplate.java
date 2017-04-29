@@ -32,7 +32,7 @@ import java.util.stream.StreamSupport;
  * and {@link org.jnosql.diana.api.column.ColumnEntity}
  * @see org.jnosql.diana.api.column.ColumnFamilyManager
  */
-public interface ColumnRepository {
+public interface ColumnTemplate {
 
     /**
      * Saves entity
@@ -60,7 +60,7 @@ public interface ColumnRepository {
 
     /**
      * Saves entity, by default it's just run for each saving using
-     * {@link ColumnRepository#save(Object)}},
+     * {@link ColumnTemplate#save(Object)}},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -75,7 +75,7 @@ public interface ColumnRepository {
 
     /**
      * Saves documents collection entity with time to live, by default it's just run for each saving using
-     * {@link ColumnRepository#save(Object, Duration)},
+     * {@link ColumnTemplate#save(Object, Duration)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -103,7 +103,7 @@ public interface ColumnRepository {
 
     /**
      * Saves entity, by default it's just run for each saving using
-     * {@link ColumnRepository#update(Object)}},
+     * {@link ColumnTemplate#update(Object)}},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be updated
