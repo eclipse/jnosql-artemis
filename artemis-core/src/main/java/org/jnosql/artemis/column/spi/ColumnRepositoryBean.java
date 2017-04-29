@@ -18,7 +18,7 @@ package org.jnosql.artemis.column.spi;
 
 import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
-import org.jnosql.artemis.column.ColumnRepository;
+import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.column.ColumnRepositoryProducer;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
 
@@ -33,7 +33,7 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
 
-class ColumnRepositoryBean implements Bean<ColumnRepository>, PassivationCapable {
+class ColumnRepositoryBean implements Bean<ColumnTemplate>, PassivationCapable {
 
     private final BeanManager beanManager;
 
@@ -51,14 +51,14 @@ class ColumnRepositoryBean implements Bean<ColumnRepository>, PassivationCapable
      */
     public ColumnRepositoryBean(BeanManager beanManager, String provider) {
         this.beanManager = beanManager;
-        this.types = Collections.singleton(ColumnRepository.class);
+        this.types = Collections.singleton(ColumnTemplate.class);
         this.provider = provider;
         this.qualifiers = Collections.singleton(DatabaseQualifier.ofColumn(provider));
     }
 
     @Override
     public Class<?> getBeanClass() {
-        return ColumnRepository.class;
+        return ColumnTemplate.class;
     }
 
     @Override
@@ -72,7 +72,7 @@ class ColumnRepositoryBean implements Bean<ColumnRepository>, PassivationCapable
     }
 
     @Override
-    public ColumnRepository create(CreationalContext<ColumnRepository> creationalContext) {
+    public ColumnTemplate create(CreationalContext<ColumnTemplate> creationalContext) {
 
         ColumnRepositoryProducer producer = getInstance(ColumnRepositoryProducer.class);
         ColumnFamilyManager columnFamilyManager = getColumnFamilyManager();
@@ -101,7 +101,7 @@ class ColumnRepositoryBean implements Bean<ColumnRepository>, PassivationCapable
 
 
     @Override
-    public void destroy(ColumnRepository instance, CreationalContext<ColumnRepository> creationalContext) {
+    public void destroy(ColumnTemplate instance, CreationalContext<ColumnTemplate> creationalContext) {
 
     }
 
@@ -137,7 +137,7 @@ class ColumnRepositoryBean implements Bean<ColumnRepository>, PassivationCapable
 
     @Override
     public String getId() {
-        return ColumnRepository.class.getName() + DatabaseType.COLUMN + "-" + provider;
+        return ColumnTemplate.class.getName() + DatabaseType.COLUMN + "-" + provider;
     }
 
 }

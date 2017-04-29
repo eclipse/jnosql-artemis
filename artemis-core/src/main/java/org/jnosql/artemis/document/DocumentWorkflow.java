@@ -21,7 +21,7 @@ import org.jnosql.diana.api.document.DocumentEntity;
 import java.util.function.UnaryOperator;
 
 /**
- * This implementation defines the workflow to save an Entity on {@link DocumentRepository}.
+ * This implementation defines the workflow to save an Entity on {@link DocumentTemplate}.
  * The default implementation follows:
  *  <p>{@link DocumentEventPersistManager#firePreEntity(Object)}</p>
  *  <p>{@link DocumentEventPersistManager#firePreDocumentEntity(Object)}</p>
@@ -41,8 +41,8 @@ public interface DocumentWorkflow {
      * @param action the alteration to be executed on database
      * @param <T>    the entity type
      * @return after the workflow the the entity response
-     * @see DocumentRepository#save(Object, java.time.Duration) DocumentRepository#save(Object)
-     * DocumentRepository#update(Object)
+     * @see DocumentTemplate#save(Object, java.time.Duration) DocumentTemplate#save(Object)
+     * DocumentTemplate#update(Object)
      */
     <T> T flow(T entity, UnaryOperator<DocumentEntity> action) throws NullPointerException;
 }

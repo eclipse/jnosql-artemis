@@ -15,10 +15,10 @@
  */
 package org.jnosql.artemis.column.query;
 
-import org.jnosql.artemis.CrudRepositoryAsync;
+import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
-import org.jnosql.artemis.column.ColumnRepositoryAsync;
+import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -35,9 +35,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Artemis discoveryBean to CDI extension to register {@link CrudRepositoryAsync}
+ * Artemis discoveryBean to CDI extension to register {@link RepositoryAsync}
  */
-public class CrudRepositoryAsyncColumnBean implements Bean<CrudRepositoryAsync>, PassivationCapable {
+public class CrudRepositoryAsyncColumnBean implements Bean<RepositoryAsync>, PassivationCapable {
 
     private final Class type;
 
@@ -85,13 +85,13 @@ public class CrudRepositoryAsyncColumnBean implements Bean<CrudRepositoryAsync>,
     }
 
     @Override
-    public CrudRepositoryAsync create(CreationalContext<CrudRepositoryAsync> creationalContext) {
+    public RepositoryAsync create(CreationalContext<RepositoryAsync> creationalContext) {
         ClassRepresentations classRepresentations = getInstance(ClassRepresentations.class);
-        ColumnRepositoryAsync repository = provider.isEmpty() ? getInstance(ColumnRepositoryAsync.class) :
-                getInstance(ColumnRepositoryAsync.class, provider);
+        ColumnTemplateAsync repository = provider.isEmpty() ? getInstance(ColumnTemplateAsync.class) :
+                getInstance(ColumnTemplateAsync.class, provider);
         ColumnCrudRepositoryAsyncProxy handler = new ColumnCrudRepositoryAsyncProxy(repository,
                 classRepresentations, type);
-        return (CrudRepositoryAsync) Proxy.newProxyInstance(type.getClassLoader(),
+        return (RepositoryAsync) Proxy.newProxyInstance(type.getClassLoader(),
                 new Class[]{type},
                 handler);
     }
@@ -111,7 +111,7 @@ public class CrudRepositoryAsyncColumnBean implements Bean<CrudRepositoryAsync>,
 
 
     @Override
-    public void destroy(CrudRepositoryAsync instance, CreationalContext<CrudRepositoryAsync> creationalContext) {
+    public void destroy(RepositoryAsync instance, CreationalContext<RepositoryAsync> creationalContext) {
 
     }
 

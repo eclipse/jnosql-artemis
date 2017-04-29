@@ -15,7 +15,7 @@
  */
 package org.jnosql.artemis.document.query;
 
-import org.jnosql.artemis.document.DocumentRepository;
+import org.jnosql.artemis.document.DocumentTemplate;
 import org.jnosql.diana.api.document.DocumentQuery;
 
 import java.lang.reflect.Method;
@@ -37,7 +37,7 @@ final class ReturnTypeConverterUtil {
     }
 
 
-    static Object returnObject(DocumentQuery query, DocumentRepository repository, Class typeClass, Method method) {
+    static Object returnObject(DocumentQuery query, DocumentTemplate repository, Class typeClass, Method method) {
         Class<?> returnType = method.getReturnType();
 
         if (typeClass.equals(returnType)) {

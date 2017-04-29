@@ -15,10 +15,10 @@
  */
 package org.jnosql.artemis.column.query;
 
-import org.jnosql.artemis.CrudRepository;
+import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
-import org.jnosql.artemis.column.ColumnRepository;
+import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -35,9 +35,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Artemis discoveryBean to CDI extension to register {@link CrudRepository}
+ * Artemis discoveryBean to CDI extension to register {@link Repository}
  */
-public class CrudRepositoryColumnBean implements Bean<CrudRepository>, PassivationCapable {
+public class CrudRepositoryColumnBean implements Bean<Repository>, PassivationCapable {
 
     private final Class type;
 
@@ -85,13 +85,13 @@ public class CrudRepositoryColumnBean implements Bean<CrudRepository>, Passivati
     }
 
     @Override
-    public CrudRepository create(CreationalContext<CrudRepository> creationalContext) {
+    public Repository create(CreationalContext<Repository> creationalContext) {
         ClassRepresentations classRepresentations = getInstance(ClassRepresentations.class);
-        ColumnRepository repository = provider.isEmpty() ? getInstance(ColumnRepository.class) :
-                getInstance(ColumnRepository.class, provider);
+        ColumnTemplate repository = provider.isEmpty() ? getInstance(ColumnTemplate.class) :
+                getInstance(ColumnTemplate.class, provider);
         ColumnCrudRepositoryProxy handler = new ColumnCrudRepositoryProxy(repository,
                 classRepresentations, type);
-        return (CrudRepository) Proxy.newProxyInstance(type.getClassLoader(),
+        return (Repository) Proxy.newProxyInstance(type.getClassLoader(),
                 new Class[]{type},
                 handler);
     }
@@ -111,7 +111,7 @@ public class CrudRepositoryColumnBean implements Bean<CrudRepository>, Passivati
 
 
     @Override
-    public void destroy(CrudRepository instance, CreationalContext<CrudRepository> creationalContext) {
+    public void destroy(Repository instance, CreationalContext<Repository> creationalContext) {
 
     }
 

@@ -17,7 +17,7 @@ package org.jnosql.artemis;
 
 
 /**
- * The root exception to dynamic query on {@link CrudRepository}
+ * The root exception to dynamic query on {@link Repository}
  */
 public class DynamicQueryException extends ArtemisException {
 

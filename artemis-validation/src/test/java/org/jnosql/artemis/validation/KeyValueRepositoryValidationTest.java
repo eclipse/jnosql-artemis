@@ -15,7 +15,7 @@
  */
 package org.jnosql.artemis.validation;
 
-import org.jnosql.artemis.key.KeyValueRepository;
+import org.jnosql.artemis.key.KeyValueTemplate;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +32,7 @@ import static java.util.Collections.singletonList;
 public class KeyValueRepositoryValidationTest {
 
     @Inject
-    private KeyValueRepository repository;
+    private KeyValueTemplate repository;
 
 
     @Test

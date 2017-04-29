@@ -17,7 +17,7 @@ package org.jnosql.artemis.key.query;
 
 import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
-import org.jnosql.artemis.key.KeyValueRepository;
+import org.jnosql.artemis.key.KeyValueTemplate;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
@@ -35,7 +35,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Artemis discoveryBean to CDI extension to register {@link KeyValueRepository}
+ * Artemis discoveryBean to CDI extension to register {@link KeyValueTemplate}
  */
 public class KeyValueRepositoryBean implements Bean<KeyValueCrudRepository>, PassivationCapable {
 
@@ -89,8 +89,8 @@ public class KeyValueRepositoryBean implements Bean<KeyValueCrudRepository>, Pas
 
     @Override
     public KeyValueCrudRepository create(CreationalContext<KeyValueCrudRepository> creationalContext) {
-        KeyValueRepository repository = provider.isEmpty() ? getInstance(KeyValueRepository.class) :
-                getInstance(KeyValueRepository.class, provider);
+        KeyValueTemplate repository = provider.isEmpty() ? getInstance(KeyValueTemplate.class) :
+                getInstance(KeyValueTemplate.class, provider);
         KeyValueCrudRepositoryProxy handler = new KeyValueCrudRepositoryProxy(type, repository);
         return (KeyValueCrudRepository) Proxy.newProxyInstance(type.getClassLoader(),
                 new Class[]{type},

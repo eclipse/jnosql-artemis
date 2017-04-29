@@ -16,8 +16,8 @@
 package org.jnosql.artemis;
 
 
-import org.jnosql.artemis.document.DocumentRepository;
-import org.jnosql.artemis.document.DocumentRepositoryAsync;
+import org.jnosql.artemis.document.DocumentTemplate;
+import org.jnosql.artemis.document.DocumentTemplateAsync;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.model.User;
 import org.jnosql.diana.api.Value;
@@ -89,11 +89,11 @@ public class MockProducer {
 
     @Produces
     @Database(value = DatabaseType.DOCUMENT, provider = "documentRepositoryMock")
-    public DocumentRepository getDocumentRepository() {
-        DocumentRepository documentRepository = mock(DocumentRepository.class);
-        when(documentRepository.save(Mockito.any(Person.class))).thenReturn(Person.builder()
+    public DocumentTemplate getDocumentRepository() {
+        DocumentTemplate documentTemplate = mock(DocumentTemplate.class);
+        when(documentTemplate.save(Mockito.any(Person.class))).thenReturn(Person.builder()
                 .withName("documentRepositoryMock").build());
-        return documentRepository;
+        return documentTemplate;
     }
 
 
@@ -122,8 +122,8 @@ public class MockProducer {
 
     @Produces
     @Database(value = DatabaseType.DOCUMENT, provider = "documentRepositoryMock")
-    public DocumentRepositoryAsync getDocumentRepositoryAsync() {
-        return mock(DocumentRepositoryAsync.class);
+    public DocumentTemplateAsync getDocumentRepositoryAsync() {
+        return mock(DocumentTemplateAsync.class);
     }
 
 

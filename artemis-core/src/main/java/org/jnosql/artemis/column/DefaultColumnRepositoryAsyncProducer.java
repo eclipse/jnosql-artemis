@@ -31,24 +31,24 @@ class DefaultColumnRepositoryAsyncProducer implements ColumnRepositoryAsyncProdu
     private ColumnEntityConverter converter;
 
     @Override
-    public ColumnRepositoryAsync get(ColumnFamilyManagerAsync columnFamilyManager) throws NullPointerException {
+    public ColumnTemplateAsync get(ColumnFamilyManagerAsync columnFamilyManager) throws NullPointerException {
         Objects.requireNonNull(columnFamilyManager, "columnFamilyManager is required");
-        return new ProducerColumnRepositoryAsync(converter, columnFamilyManager);
+        return new ProducerColumnTemplateAsync(converter, columnFamilyManager);
     }
 
     @Vetoed
-    static class ProducerColumnRepositoryAsync extends AbstractColumnRepositoryAsync {
+    static class ProducerColumnTemplateAsync extends AbstractColumnTemplateAsync {
 
         private ColumnEntityConverter converter;
 
         private ColumnFamilyManagerAsync columnFamilyManager;
 
-        ProducerColumnRepositoryAsync(ColumnEntityConverter converter, ColumnFamilyManagerAsync columnFamilyManager) {
+        ProducerColumnTemplateAsync(ColumnEntityConverter converter, ColumnFamilyManagerAsync columnFamilyManager) {
             this.converter = converter;
             this.columnFamilyManager = columnFamilyManager;
         }
 
-        ProducerColumnRepositoryAsync() {
+        ProducerColumnTemplateAsync() {
         }
 
         @Override

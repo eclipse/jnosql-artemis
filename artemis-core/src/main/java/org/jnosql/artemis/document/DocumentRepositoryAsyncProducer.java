@@ -20,14 +20,14 @@ import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
 
 
 /**
- * The producer of {@link DocumentRepositoryAsync}
+ * The producer of {@link DocumentTemplateAsync}
  *
- * @param <T> the DocumentRepositoryAsync instance
+ * @param <T> the DocumentTemplateAsync instance
  */
-public interface DocumentRepositoryAsyncProducer<T extends DocumentRepositoryAsync> {
+public interface DocumentRepositoryAsyncProducer<T extends DocumentTemplateAsync> {
 
     /**
-     * creates a {@link DocumentRepository}
+     * creates a {@link DocumentTemplate}
      *
      * @param collectionManager the collectionManager
      * @return a new instance

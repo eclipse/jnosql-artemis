@@ -39,14 +39,14 @@ class DefaultColumnRepositoryProducer implements ColumnRepositoryProducer {
 
 
     @Override
-    public ColumnRepository get(ColumnFamilyManager columnFamilyManager) throws NullPointerException {
+    public ColumnTemplate get(ColumnFamilyManager columnFamilyManager) throws NullPointerException {
         Objects.requireNonNull(columnFamilyManager, "columnFamilyManager is required");
-        return new ProducerColumnRepository(converter, columnWorkflow, columnFamilyManager, eventManager);
+        return new ProducerColumnTemplate(converter, columnWorkflow, columnFamilyManager, eventManager);
     }
 
 
     @Vetoed
-    static class ProducerColumnRepository extends AbstractColumnRepository {
+    static class ProducerColumnTemplate extends AbstractColumnTemplate {
 
         private ColumnEntityConverter converter;
 
@@ -56,15 +56,15 @@ class DefaultColumnRepositoryProducer implements ColumnRepositoryProducer {
 
         private ColumnEventPersistManager eventManager;
 
-        ProducerColumnRepository(ColumnEntityConverter converter, ColumnWorkflow columnWorkflow,
-                                 ColumnFamilyManager columnFamilyManager, ColumnEventPersistManager eventManager) {
+        ProducerColumnTemplate(ColumnEntityConverter converter, ColumnWorkflow columnWorkflow,
+                               ColumnFamilyManager columnFamilyManager, ColumnEventPersistManager eventManager) {
             this.converter = converter;
             this.columnWorkflow = columnWorkflow;
             this.columnFamilyManager = columnFamilyManager;
             this.eventManager = eventManager;
         }
 
-        ProducerColumnRepository() {
+        ProducerColumnTemplate() {
         }
 
         @Override

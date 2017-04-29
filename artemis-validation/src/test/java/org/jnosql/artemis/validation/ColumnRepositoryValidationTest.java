@@ -15,7 +15,7 @@
  */
 package org.jnosql.artemis.validation;
 
-import org.jnosql.artemis.column.ColumnRepository;
+import org.jnosql.artemis.column.ColumnTemplate;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +32,7 @@ import static java.util.Collections.singletonList;
 public class ColumnRepositoryValidationTest {
 
     @Inject
-    private ColumnRepository repository;
+    private ColumnTemplate repository;
 
 
     @Test

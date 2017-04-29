@@ -16,9 +16,9 @@
 package org.jnosql.artemis.column.query;
 
 
-import org.jnosql.artemis.CrudRepositoryAsync;
+import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.DynamicQueryException;
-import org.jnosql.artemis.column.ColumnRepositoryAsync;
+import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
@@ -30,7 +30,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.function.Consumer;
 
 /**
- * Proxy handle to generate {@link CrudRepositoryAsync}
+ * Proxy handle to generate {@link RepositoryAsync}
  *
  * @param <T> the type
  */
@@ -43,9 +43,9 @@ class ColumnCrudRepositoryAsyncProxy<T> implements InvocationHandler {
 
     private final Class<T> typeClass;
 
-    private final ColumnRepositoryAsync repository;
+    private final ColumnTemplateAsync repository;
 
-    private final ColumnCrudRepositoryAsync crudRepository;
+    private final ColumnRepositoryAsync crudRepository;
 
     private final ClassRepresentation classRepresentation;
 
@@ -54,9 +54,9 @@ class ColumnCrudRepositoryAsyncProxy<T> implements InvocationHandler {
     private final ColumnQueryDeleteParser queryDeleteParser;
 
 
-    ColumnCrudRepositoryAsyncProxy(ColumnRepositoryAsync repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
+    ColumnCrudRepositoryAsyncProxy(ColumnTemplateAsync repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
         this.repository = repository;
-        this.crudRepository = new ColumnCrudRepositoryAsync(repository);
+        this.crudRepository = new ColumnRepositoryAsync(repository);
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
@@ -105,16 +105,16 @@ class ColumnCrudRepositoryAsyncProxy<T> implements InvocationHandler {
     }
 
 
-    class ColumnCrudRepositoryAsync extends  AbstractColumnCrudRepositoryAsync implements CrudRepositoryAsync {
+    class ColumnRepositoryAsync extends AbstractColumnRepositoryAsync implements RepositoryAsync {
 
-        private final ColumnRepositoryAsync repository;
+        private final ColumnTemplateAsync repository;
 
-        ColumnCrudRepositoryAsync(ColumnRepositoryAsync repository) {
+        ColumnRepositoryAsync(ColumnTemplateAsync repository) {
             this.repository = repository;
         }
 
         @Override
-        protected ColumnRepositoryAsync getColumnRepository() {
+        protected ColumnTemplateAsync getColumnRepository() {
             return repository;
         }
     }

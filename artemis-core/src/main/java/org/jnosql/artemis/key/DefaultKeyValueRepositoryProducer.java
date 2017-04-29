@@ -30,13 +30,13 @@ class DefaultKeyValueRepositoryProducer implements KeyValueRepositoryProducer {
     private KeyValueWorkflow flow;
 
     @Override
-    public KeyValueRepository get(BucketManager manager) throws NullPointerException {
+    public KeyValueTemplate get(BucketManager manager) throws NullPointerException {
         Objects.requireNonNull(manager, "manager is required");
-        return new ProducerKeyValueRepository(converter, flow, manager);
+        return new ProducerKeyValueTemplate(converter, flow, manager);
     }
 
     @Vetoed
-    static class ProducerKeyValueRepository extends AbstractKeyValueRepository {
+    static class ProducerKeyValueTemplate extends AbstractKeyValueTemplate {
 
         private KeyValueEntityConverter converter;
 
@@ -44,13 +44,13 @@ class DefaultKeyValueRepositoryProducer implements KeyValueRepositoryProducer {
 
         private BucketManager manager;
 
-        ProducerKeyValueRepository(KeyValueEntityConverter converter, KeyValueWorkflow flow, BucketManager manager) {
+        ProducerKeyValueTemplate(KeyValueEntityConverter converter, KeyValueWorkflow flow, BucketManager manager) {
             this.converter = converter;
             this.flow = flow;
             this.manager = manager;
         }
 
-        ProducerKeyValueRepository() {
+        ProducerKeyValueTemplate() {
         }
 
         @Override

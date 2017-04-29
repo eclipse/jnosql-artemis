@@ -18,8 +18,8 @@ package org.jnosql.artemis.column.spi;
 import org.jnosql.artemis.Database;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.WeldJUnit4Runner;
-import org.jnosql.artemis.column.ColumnRepository;
-import org.jnosql.artemis.column.ColumnRepositoryAsync;
+import org.jnosql.artemis.column.ColumnTemplate;
+import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.model.Person;
 import org.junit.Assert;
 import org.junit.Test;
@@ -34,17 +34,17 @@ public class ColumnFamilyProducerExtensionTest {
 
     @Inject
     @Database(value = DatabaseType.COLUMN, provider = "columnRepositoryMock")
-    private ColumnRepository managerMock;
+    private ColumnTemplate managerMock;
 
     @Inject
-    private ColumnRepository manager;
+    private ColumnTemplate manager;
 
     @Inject
     @Database(value = DatabaseType.COLUMN, provider = "columnRepositoryMock")
-    private ColumnRepositoryAsync managerMockAsync;
+    private ColumnTemplateAsync managerMockAsync;
 
     @Inject
-    private ColumnRepositoryAsync managerAsync;
+    private ColumnTemplateAsync managerAsync;
 
     @Test
     public void shouldInstance() {

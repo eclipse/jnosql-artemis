@@ -16,8 +16,8 @@
 package org.jnosql.artemis.document.query;
 
 
-import org.jnosql.artemis.CrudRepository;
-import org.jnosql.artemis.document.DocumentRepository;
+import org.jnosql.artemis.Repository;
+import org.jnosql.artemis.document.DocumentTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
@@ -30,7 +30,7 @@ import java.lang.reflect.ParameterizedType;
 
 
 /**
- * Proxy handle to generate {@link CrudRepository}
+ * Proxy handle to generate {@link Repository}
  *
  * @param <T> the type
  */
@@ -38,10 +38,10 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
 
     private final Class<T> typeClass;
 
-    private final DocumentRepository repository;
+    private final DocumentTemplate repository;
 
 
-    private final DocumentCrudRepository crudRepository;
+    private final DocumentRepository crudRepository;
 
     private final ClassRepresentation classRepresentation;
 
@@ -50,9 +50,9 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
     private final DocumentQueryDeleteParser deleteQueryParser;
 
 
-    DocumentCrudRepositoryProxy(DocumentRepository repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
+    DocumentCrudRepositoryProxy(DocumentTemplate repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
         this.repository = repository;
-        this.crudRepository = new DocumentCrudRepository(repository);
+        this.crudRepository = new DocumentRepository(repository);
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
@@ -84,16 +84,16 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
     }
 
 
-    class DocumentCrudRepository extends AbstractDocumentCrudRepository implements CrudRepository {
+    class DocumentRepository extends AbstractDocumentRepository implements Repository {
 
-        private final DocumentRepository repository;
+        private final DocumentTemplate repository;
 
-        DocumentCrudRepository(DocumentRepository repository) {
+        DocumentRepository(DocumentTemplate repository) {
             this.repository = repository;
         }
 
         @Override
-        protected DocumentRepository getDocumentRepository() {
+        protected DocumentTemplate getDocumentRepository() {
             return repository;
         }
     }

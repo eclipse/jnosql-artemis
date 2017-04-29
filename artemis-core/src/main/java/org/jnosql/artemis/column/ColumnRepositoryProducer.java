@@ -19,11 +19,11 @@ package org.jnosql.artemis.column;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
 
 /**
- * The producer of {@link ColumnRepository}
+ * The producer of {@link ColumnTemplate}
  *
- * @param <T> the ColumnRepository instance
+ * @param <T> the ColumnTemplate instance
  */
-public interface ColumnRepositoryProducer<T extends ColumnRepository> {
+public interface ColumnRepositoryProducer<T extends ColumnTemplate> {
 
     /**
      * creates a {@link ColumnFamilyManager}

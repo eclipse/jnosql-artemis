@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
 
 
 /**
- * Defines which interpreter will be used on {@link CrudRepository}
+ * Defines which interpreter will be used on {@link Repository}
  * with {@link Database}
  */
 @Retention(RetentionPolicy.RUNTIME)

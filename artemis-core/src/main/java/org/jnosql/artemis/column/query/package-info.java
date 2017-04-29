@@ -15,7 +15,7 @@
  */
 
 /**
- * This package has the implementation to dynamic query to both {@link org.jnosql.artemis.CrudRepository}
- * and {@link org.jnosql.artemis.CrudRepositoryAsync} on COlumn database.
+ * This package has the implementation to dynamic query to both {@link org.jnosql.artemis.Repository}
+ * and {@link org.jnosql.artemis.RepositoryAsync} on COlumn database.
  */
 package org.jnosql.artemis.column.query;

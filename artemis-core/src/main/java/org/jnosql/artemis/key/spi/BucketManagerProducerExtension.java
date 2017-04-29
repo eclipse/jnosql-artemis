@@ -39,7 +39,7 @@ import java.util.stream.Stream;
 import static org.jnosql.artemis.DatabaseType.KEY_VALUE;
 
 /**
- * Extension to start up {@link org.jnosql.artemis.key.KeyValueRepository} and {@link KeyValueCrudRepository}
+ * Extension to start up {@link org.jnosql.artemis.key.KeyValueTemplate} and {@link KeyValueCrudRepository}
  * from the {@link javax.enterprise.inject.Default} and {@link Database} qualifier
  */
 public class BucketManagerProducerExtension implements Extension {

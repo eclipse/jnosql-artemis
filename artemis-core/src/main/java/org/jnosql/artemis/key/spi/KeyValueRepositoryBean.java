@@ -18,7 +18,7 @@ package org.jnosql.artemis.key.spi;
 
 import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
-import org.jnosql.artemis.key.KeyValueRepository;
+import org.jnosql.artemis.key.KeyValueTemplate;
 import org.jnosql.artemis.key.KeyValueRepositoryProducer;
 import org.jnosql.diana.api.key.BucketManager;
 
@@ -33,7 +33,7 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
 
-class KeyValueRepositoryBean implements Bean<KeyValueRepository>, PassivationCapable {
+class KeyValueRepositoryBean implements Bean<KeyValueTemplate>, PassivationCapable {
 
     private final BeanManager beanManager;
 
@@ -51,14 +51,14 @@ class KeyValueRepositoryBean implements Bean<KeyValueRepository>, PassivationCap
      */
     public KeyValueRepositoryBean(BeanManager beanManager, String provider) {
         this.beanManager = beanManager;
-        this.types = Collections.singleton(KeyValueRepository.class);
+        this.types = Collections.singleton(KeyValueTemplate.class);
         this.provider = provider;
         this.qualifiers = Collections.singleton(DatabaseQualifier.ofKeyValue(provider));
     }
 
     @Override
     public Class<?> getBeanClass() {
-        return KeyValueRepository.class;
+        return KeyValueTemplate.class;
     }
 
     @Override
@@ -72,7 +72,7 @@ class KeyValueRepositoryBean implements Bean<KeyValueRepository>, PassivationCap
     }
 
     @Override
-    public KeyValueRepository create(CreationalContext<KeyValueRepository> creationalContext) {
+    public KeyValueTemplate create(CreationalContext<KeyValueTemplate> creationalContext) {
 
         KeyValueRepositoryProducer producer = getInstance(KeyValueRepositoryProducer.class);
         BucketManager manager = getManager();
@@ -101,7 +101,7 @@ class KeyValueRepositoryBean implements Bean<KeyValueRepository>, PassivationCap
 
 
     @Override
-    public void destroy(KeyValueRepository instance, CreationalContext<KeyValueRepository> creationalContext) {
+    public void destroy(KeyValueTemplate instance, CreationalContext<KeyValueTemplate> creationalContext) {
 
     }
 
@@ -137,7 +137,7 @@ class KeyValueRepositoryBean implements Bean<KeyValueRepository>, PassivationCap
 
     @Override
     public String getId() {
-        return KeyValueRepository.class.getName() + DatabaseType.COLUMN + "-" + provider;
+        return KeyValueTemplate.class.getName() + DatabaseType.COLUMN + "-" + provider;
     }
 
 }

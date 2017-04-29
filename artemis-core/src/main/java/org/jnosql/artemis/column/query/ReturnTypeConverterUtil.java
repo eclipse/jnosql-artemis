@@ -15,7 +15,7 @@
  */
 package org.jnosql.artemis.column.query;
 
-import org.jnosql.artemis.column.ColumnRepository;
+import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.diana.api.column.ColumnQuery;
 
 import java.lang.reflect.Method;
@@ -37,7 +37,7 @@ public final class ReturnTypeConverterUtil {
     }
 
 
-    public static Object returnObject(ColumnQuery query, ColumnRepository repository, Class typeClass, Method method) {
+    public static Object returnObject(ColumnQuery query, ColumnTemplate repository, Class typeClass, Method method) {
         Class<?> returnType = method.getReturnType();
 
         if (typeClass.equals(returnType)) {

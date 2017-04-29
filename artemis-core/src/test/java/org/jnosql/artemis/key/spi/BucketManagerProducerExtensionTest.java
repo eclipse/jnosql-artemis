@@ -19,7 +19,7 @@ import org.jnosql.artemis.Database;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.UserRepository;
 import org.jnosql.artemis.WeldJUnit4Runner;
-import org.jnosql.artemis.key.KeyValueRepository;
+import org.jnosql.artemis.key.KeyValueTemplate;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.model.User;
 import org.junit.Test;
@@ -33,11 +33,11 @@ import static org.junit.Assert.assertEquals;
 public class BucketManagerProducerExtensionTest {
 
     @Inject
-    private KeyValueRepository repository;
+    private KeyValueTemplate repository;
 
     @Inject
     @Database(value = DatabaseType.KEY_VALUE, provider = "keyvalueMock")
-    private KeyValueRepository repositoryMock;
+    private KeyValueTemplate repositoryMock;
 
     @Inject
     private UserRepository userRepository;
