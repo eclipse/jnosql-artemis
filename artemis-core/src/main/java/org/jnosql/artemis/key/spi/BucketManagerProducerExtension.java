@@ -18,6 +18,7 @@ package org.jnosql.artemis.key.spi;
 
 import org.jnosql.artemis.Database;
 import org.jnosql.artemis.Databases;
+import org.jnosql.artemis.key.KeyValueTemplate;
 import org.jnosql.artemis.key.query.KeyValueCrudRepository;
 import org.jnosql.artemis.key.query.KeyValueRepositoryBean;
 import org.jnosql.diana.api.key.BucketManager;
@@ -39,7 +40,7 @@ import java.util.stream.Stream;
 import static org.jnosql.artemis.DatabaseType.KEY_VALUE;
 
 /**
- * Extension to start up {@link org.jnosql.artemis.key.KeyValueRepository} and {@link KeyValueCrudRepository}
+ * Extension to start up {@link KeyValueTemplate} and {@link KeyValueCrudRepository}
  * from the {@link javax.enterprise.inject.Default} and {@link Database} qualifier
  */
 public class BucketManagerProducerExtension implements Extension {

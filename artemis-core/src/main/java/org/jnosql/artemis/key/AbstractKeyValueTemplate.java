@@ -28,10 +28,10 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
- * This class provides a skeletal implementation of the {@link KeyValueRepository} interface,
+ * This class provides a skeletal implementation of the {@link KeyValueTemplate} interface,
  * to minimize the effort required to implement this interface.
  */
-public abstract class AbstractKeyValueRepository implements KeyValueRepository {
+public abstract class AbstractKeyValueTemplate implements KeyValueTemplate {
 
     protected abstract KeyValueEntityConverter getConverter();
 

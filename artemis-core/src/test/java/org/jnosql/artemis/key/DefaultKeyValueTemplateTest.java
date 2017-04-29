@@ -32,7 +32,7 @@ import static org.junit.Assert.assertEquals;
 
 
 @RunWith(WeldJUnit4Runner.class)
-public class DefaultKeyValueRepositoryTest {
+public class DefaultKeyValueTemplateTest {
 
     @Inject
     private KeyValueEntityConverter converter;
@@ -44,7 +44,7 @@ public class DefaultKeyValueRepositoryTest {
 
     private ArgumentCaptor<KeyValueEntity> captor;
 
-    private KeyValueRepository subject;
+    private KeyValueTemplate subject;
 
 
     @Before
@@ -53,7 +53,7 @@ public class DefaultKeyValueRepositoryTest {
         Instance<BucketManager> instance = Mockito.mock(Instance.class);
         Mockito.when(instance.get()).thenReturn(manager);
         captor = ArgumentCaptor.forClass(KeyValueEntity.class);
-        this.subject = new DefaultKeyValueRepository(converter, instance, flow);
+        this.subject = new DefaultKeyValueTemplate(converter, instance, flow);
     }
 
 

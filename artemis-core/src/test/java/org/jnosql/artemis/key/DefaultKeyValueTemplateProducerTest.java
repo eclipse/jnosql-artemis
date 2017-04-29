@@ -26,7 +26,7 @@ import javax.inject.Inject;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(WeldJUnit4Runner.class)
-public class DefaultKeyValueRepositoryProducerTest {
+public class DefaultKeyValueTemplateProducerTest {
 
 
     @Inject
@@ -41,7 +41,7 @@ public class DefaultKeyValueRepositoryProducerTest {
     @Test
     public void shouldReturn() {
         BucketManager manager = Mockito.mock(BucketManager.class);
-        KeyValueRepository repository = producer.get(manager);
+        KeyValueTemplate repository = producer.get(manager);
         assertNotNull(repository);
     }
 }

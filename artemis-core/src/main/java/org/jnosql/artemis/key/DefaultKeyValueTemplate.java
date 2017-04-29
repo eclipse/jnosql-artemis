@@ -21,7 +21,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 
-class DefaultKeyValueRepository extends AbstractKeyValueRepository {
+class DefaultKeyValueTemplate extends AbstractKeyValueTemplate {
 
     private KeyValueEntityConverter converter;
 
@@ -31,13 +31,13 @@ class DefaultKeyValueRepository extends AbstractKeyValueRepository {
     private KeyValueWorkflow flow;
 
     @Inject
-    DefaultKeyValueRepository(KeyValueEntityConverter converter, Instance<BucketManager> manager, KeyValueWorkflow flow) {
+    DefaultKeyValueTemplate(KeyValueEntityConverter converter, Instance<BucketManager> manager, KeyValueWorkflow flow) {
         this.converter = converter;
         this.manager = manager;
         this.flow = flow;
     }
 
-    DefaultKeyValueRepository() {
+    DefaultKeyValueTemplate() {
     }
 
     @Override

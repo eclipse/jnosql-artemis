@@ -19,14 +19,14 @@ package org.jnosql.artemis.key;
 import org.jnosql.diana.api.key.BucketManager;
 
 /**
- * The producer of {@link KeyValueRepository}
+ * The producer of {@link KeyValueTemplate}
  *
- * @param <T> the KeyValueRepository instance
+ * @param <T> the KeyValueTemplate instance
  */
-public interface KeyValueRepositoryProducer<T extends KeyValueRepository> {
+public interface KeyValueRepositoryProducer<T extends KeyValueTemplate> {
 
     /**
-     * creates a {@link KeyValueRepository}
+     * creates a {@link KeyValueTemplate}
      *
      * @param manager the manager
      * @return a new instance

@@ -28,7 +28,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * This interface that represents the common operation between an entity and KeyValueEntity
  */
-public interface KeyValueRepository {
+public interface KeyValueTemplate {
     /**
      * Saves the entity
      *

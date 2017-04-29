@@ -16,7 +16,7 @@
 package org.jnosql.artemis.key.query;
 
 import org.hamcrest.Matchers;
-import org.jnosql.artemis.key.KeyValueRepository;
+import org.jnosql.artemis.key.KeyValueTemplate;
 import org.jnosql.artemis.model.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +40,7 @@ import static org.junit.Assert.assertThat;
 public class KeyValueCrudRepositoryProxyTest {
 
     @Mock
-    private KeyValueRepository repository;
+    private KeyValueTemplate repository;
 
     private UserRepository userRepository;
 

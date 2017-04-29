@@ -16,7 +16,7 @@
 package org.jnosql.artemis.key.query;
 
 
-import org.jnosql.artemis.key.KeyValueRepository;
+import org.jnosql.artemis.key.KeyValueTemplate;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -28,11 +28,11 @@ class KeyValueCrudRepositoryProxy<T> implements InvocationHandler {
 
     private final Class<T> typeClass;
 
-    private final KeyValueRepository repository;
+    private final KeyValueTemplate repository;
 
     private final DefaultKeyValueCrudRepository crudRepository;
 
-    KeyValueCrudRepositoryProxy(Class<?> repositoryType, KeyValueRepository repository) {
+    KeyValueCrudRepositoryProxy(Class<?> repositoryType, KeyValueTemplate repository) {
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.repository = repository;
@@ -48,9 +48,9 @@ class KeyValueCrudRepositoryProxy<T> implements InvocationHandler {
 
         private final Class<T> typeClass;
 
-        private final KeyValueRepository repository;
+        private final KeyValueTemplate repository;
 
-        public DefaultKeyValueCrudRepository(Class<T> typeClass, KeyValueRepository repository) {
+        public DefaultKeyValueCrudRepository(Class<T> typeClass, KeyValueTemplate repository) {
             this.typeClass = typeClass;
             this.repository = repository;
         }
