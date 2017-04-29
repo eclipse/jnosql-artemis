@@ -23,7 +23,7 @@ import java.util.Optional;
  * Interface to generic CRUD operations to key value type.
  * @param <T>  the bean type.
  */
-public interface KeyValueCrudRepository<T> {
+public interface KeyValueRepository<T> {
 
     /**
      * Saves the entity

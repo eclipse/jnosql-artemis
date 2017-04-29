@@ -30,13 +30,13 @@ class KeyValueCrudRepositoryProxy<T> implements InvocationHandler {
 
     private final KeyValueTemplate repository;
 
-    private final DefaultKeyValueCrudRepository crudRepository;
+    private final DefaultKeyValueRepository crudRepository;
 
     KeyValueCrudRepositoryProxy(Class<?> repositoryType, KeyValueTemplate repository) {
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.repository = repository;
-        this.crudRepository = new DefaultKeyValueCrudRepository(typeClass, repository);
+        this.crudRepository = new DefaultKeyValueRepository(typeClass, repository);
     }
 
     @Override
@@ -44,13 +44,13 @@ class KeyValueCrudRepositoryProxy<T> implements InvocationHandler {
         return method.invoke(crudRepository, args);
     }
 
-    class DefaultKeyValueCrudRepository implements KeyValueCrudRepository {
+    class DefaultKeyValueRepository implements KeyValueRepository {
 
         private final Class<T> typeClass;
 
         private final KeyValueTemplate repository;
 
-        public DefaultKeyValueCrudRepository(Class<T> typeClass, KeyValueTemplate repository) {
+        public DefaultKeyValueRepository(Class<T> typeClass, KeyValueTemplate repository) {
             this.typeClass = typeClass;
             this.repository = repository;
         }

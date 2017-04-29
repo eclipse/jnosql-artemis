@@ -18,7 +18,7 @@ package org.jnosql.artemis.key.spi;
 
 import org.jnosql.artemis.Database;
 import org.jnosql.artemis.Databases;
-import org.jnosql.artemis.key.query.KeyValueCrudRepository;
+import org.jnosql.artemis.key.query.KeyValueRepository;
 import org.jnosql.artemis.key.query.KeyValueRepositoryBean;
 import org.jnosql.diana.api.key.BucketManager;
 
@@ -39,7 +39,7 @@ import java.util.stream.Stream;
 import static org.jnosql.artemis.DatabaseType.KEY_VALUE;
 
 /**
- * Extension to start up {@link org.jnosql.artemis.key.KeyValueTemplate} and {@link KeyValueCrudRepository}
+ * Extension to start up {@link org.jnosql.artemis.key.KeyValueTemplate} and {@link KeyValueRepository}
  * from the {@link javax.enterprise.inject.Default} and {@link Database} qualifier
  */
 public class BucketManagerProducerExtension implements Extension {
@@ -54,16 +54,16 @@ public class BucketManagerProducerExtension implements Extension {
         Databases.addDatabase(pp, KEY_VALUE, databases);
     }
 
-    <T extends KeyValueCrudRepository> void onProcessAnnotatedType(@Observes final ProcessAnnotatedType<T> repo) {
+    <T extends KeyValueRepository> void onProcessAnnotatedType(@Observes final ProcessAnnotatedType<T> repo) {
         Class<T> javaClass = repo.getAnnotatedType().getJavaClass();
 
-        if (KeyValueCrudRepository.class.equals(javaClass)) {
+        if (KeyValueRepository.class.equals(javaClass)) {
             return;
         }
 
-        if (Stream.of(javaClass.getInterfaces()).anyMatch(KeyValueCrudRepository.class::equals)
+        if (Stream.of(javaClass.getInterfaces()).anyMatch(KeyValueRepository.class::equals)
                 && Modifier.isInterface(javaClass.getModifiers())) {
-            LOGGER.info("Adding a new KeyValueCrudRepository as discovered on Column: " + javaClass);
+            LOGGER.info("Adding a new KeyValueRepository as discovered on Column: " + javaClass);
             crudTypes.add(repo.getAnnotatedType().getJavaClass());
         }
     }

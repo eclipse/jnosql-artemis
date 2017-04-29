@@ -138,7 +138,7 @@ public class KeyValueRepositoryProxyTest {
         assertThat(userRepository.get(keys), Matchers.containsInAnyOrder(user, user2));
     }
 
-    interface UserRepository extends KeyValueCrudRepository<User> {
+    interface UserRepository extends KeyValueRepository<User> {
 
     }
 

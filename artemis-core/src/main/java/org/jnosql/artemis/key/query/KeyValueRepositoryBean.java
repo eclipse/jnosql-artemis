@@ -37,7 +37,7 @@ import java.util.Set;
 /**
  * Artemis discoveryBean to CDI extension to register {@link KeyValueTemplate}
  */
-public class KeyValueRepositoryBean implements Bean<KeyValueCrudRepository>, PassivationCapable {
+public class KeyValueRepositoryBean implements Bean<KeyValueRepository>, PassivationCapable {
 
     private final Class type;
 
@@ -88,11 +88,11 @@ public class KeyValueRepositoryBean implements Bean<KeyValueCrudRepository>, Pas
     }
 
     @Override
-    public KeyValueCrudRepository create(CreationalContext<KeyValueCrudRepository> creationalContext) {
+    public KeyValueRepository create(CreationalContext<KeyValueRepository> creationalContext) {
         KeyValueTemplate repository = provider.isEmpty() ? getInstance(KeyValueTemplate.class) :
                 getInstance(KeyValueTemplate.class, provider);
         KeyValueCrudRepositoryProxy handler = new KeyValueCrudRepositoryProxy(type, repository);
-        return (KeyValueCrudRepository) Proxy.newProxyInstance(type.getClassLoader(),
+        return (KeyValueRepository) Proxy.newProxyInstance(type.getClassLoader(),
                 new Class[]{type},
                 handler);
     }
@@ -112,7 +112,7 @@ public class KeyValueRepositoryBean implements Bean<KeyValueCrudRepository>, Pas
 
 
     @Override
-    public void destroy(KeyValueCrudRepository instance, CreationalContext<KeyValueCrudRepository> creationalContext) {
+    public void destroy(KeyValueRepository instance, CreationalContext<KeyValueRepository> creationalContext) {
 
     }
 
