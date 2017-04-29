@@ -15,8 +15,7 @@
  */
 package org.jnosql.artemis.validation;
 
-import org.jnosql.artemis.document.DocumentRepository;
-import org.jnosql.artemis.key.KeyValueRepository;
+import org.jnosql.artemis.document.DocumentTemplate;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +32,7 @@ import static java.util.Collections.singletonList;
 public class DocumentRepositoryValidationTest {
 
     @Inject
-    private DocumentRepository repository;
+    private DocumentTemplate repository;
 
 
     @Test
