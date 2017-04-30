@@ -80,10 +80,10 @@ class DocumentCrudRepositoryAsyncProxy<T> implements InvocationHandler {
             case DELETE_BY:
                 DocumentDeleteQuery deleteQuery = queryDeleteParser.parse(methodName, args, classRepresentation);
                 return executeDelete(args, deleteQuery);
-            case DOCUMENT_QUERY:
+            case QUERY:
                 DocumentQuery documentQuery = getDocumentQuery(args).get();
                 return executeQuery(getCallBack(args), documentQuery);
-            case DOCUMENT_DELETE:
+            case QUERY_DELETE:
                 return executeDelete(args, getDocumentDeleteQuery(args).get());
             default:
                 return null;

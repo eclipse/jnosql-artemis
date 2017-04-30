@@ -79,10 +79,10 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
             case DELETE_BY:
                 template.delete(deleteQueryParser.parse(methodName, args, classRepresentation));
                 return null;
-            case DOCUMENT_QUERY:
+            case QUERY:
                 DocumentQuery documentQuery = getDocumentQuery(args).get();
                 return returnObject(documentQuery, template, typeClass, method);
-            case DOCUMENT_DELETE:
+            case QUERY_DELETE:
                 DocumentDeleteQuery deleteQuery = getDocumentDeleteQuery(args).get();
                 template.delete(deleteQuery);
                 return null;

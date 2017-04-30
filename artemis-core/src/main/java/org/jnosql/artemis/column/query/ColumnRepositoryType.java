@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jnosql.artemis.document.query;
-
+package org.jnosql.artemis.column.query;
 
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentQuery;
@@ -23,12 +22,11 @@ import java.lang.reflect.Method;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-enum DocumentRepositoryType {
-
+enum ColumnRepositoryType {
     DEFAULT, FIND_BY, DELETE_BY, QUERY, QUERY_DELETE, UNKNOWN;
 
 
-    static DocumentRepositoryType of(Method method, Object[] args) {
+    static ColumnRepositoryType of(Method method, Object[] args) {
         String methodName = method.getName();
         switch (methodName) {
             case "save":
