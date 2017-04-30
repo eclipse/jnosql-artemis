@@ -16,106 +16,68 @@
 package org.jnosql.artemis.document.query;
 
 
-import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.document.DocumentTemplateAsync;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.diana.api.document.DocumentDeleteQuery;
-import org.jnosql.diana.api.document.DocumentQuery;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
-import java.util.function.Consumer;
-
-import static org.jnosql.artemis.document.query.DocumentRepositoryType.getDeleteQuery;
-import static org.jnosql.artemis.document.query.DocumentRepositoryType.getQuery;
 
 /**
  * Proxy handle to generate {@link RepositoryAsync}
  *
  * @param <T> the type
  */
-class DocumentRepositoryAsyncProxy<T> implements InvocationHandler {
+class DocumentRepositoryAsyncProxy<T> extends AbstractDocumentRepositoryAsyncProxy {
 
     private final Class<T> typeClass;
 
-    private final DocumentTemplateAsync templateAsync;
+    private final DocumentTemplateAsync template;
 
 
-    private final DocumentRepositoryAsync crudRepository;
+    private final DocumentRepositoryAsync repository;
 
     private final ClassRepresentation classRepresentation;
 
     private final DocumentQueryParser queryParser;
 
-    private final DocumentQueryDeleteParser queryDeleteParser;
+    private final DocumentQueryDeleteParser deleteParser;
 
 
-    DocumentRepositoryAsyncProxy(DocumentTemplateAsync templateAsync, ClassRepresentations classRepresentations, Class<?> repositoryType) {
-        this.templateAsync = templateAsync;
-        this.crudRepository = new DocumentRepositoryAsync(templateAsync);
+    DocumentRepositoryAsyncProxy(DocumentTemplateAsync template, ClassRepresentations classRepresentations, Class<?> repositoryType) {
+        this.template = template;
+        this.repository = new DocumentRepositoryAsync(template);
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
         this.queryParser = new DocumentQueryParser();
-        this.queryDeleteParser = new DocumentQueryDeleteParser();
+        this.deleteParser = new DocumentQueryDeleteParser();
     }
-
 
     @Override
-    public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
-
-
-        String methodName = method.getName();
-        DocumentRepositoryType type = DocumentRepositoryType.of(method, args);
-
-        switch (type) {
-            case DEFAULT:
-                return method.invoke(crudRepository, args);
-            case FIND_BY:
-                DocumentQuery query = queryParser.parse(methodName, args, classRepresentation);
-                return executeQuery(getCallBack(args), query);
-            case DELETE_BY:
-                DocumentDeleteQuery deleteQuery = queryDeleteParser.parse(methodName, args, classRepresentation);
-                return executeDelete(args, deleteQuery);
-            case QUERY:
-                DocumentQuery documentQuery = getQuery(args).get();
-                return executeQuery(getCallBack(args), documentQuery);
-            case QUERY_DELETE:
-                return executeDelete(args, getDeleteQuery(args).get());
-            default:
-                return Void.class;
-        }
-
+    protected RepositoryAsync getRepository() {
+        return repository;
     }
 
-    private Object executeDelete(Object[] args, DocumentDeleteQuery query1) {
-        Object callBack = getCallBack(args);
-        if (Consumer.class.isInstance(callBack)) {
-            templateAsync.delete(query1, Consumer.class.cast(callBack));
-        } else {
-            templateAsync.delete(query1);
-        }
-        return Void.class;
+    @Override
+    protected DocumentQueryParser getQueryParser() {
+        return queryParser;
     }
 
-    private Object getCallBack(Object[] args) {
-        return args[args.length - 1];
+    @Override
+    protected DocumentTemplateAsync getTemplate() {
+        return template;
     }
 
-    private Object executeQuery(Object arg, DocumentQuery query) {
-        Object callBack = arg;
-        if (Consumer.class.isInstance(callBack)) {
-            templateAsync.find(query, Consumer.class.cast(callBack));
-        } else {
-            throw new DynamicQueryException("On find async method you must put a java.util.function.Consumer" +
-                    " as end parameter as callback");
-        }
-        return Void.class;
+    @Override
+    protected DocumentQueryDeleteParser getDeleteParser() {
+        return deleteParser;
     }
 
+    @Override
+    protected ClassRepresentation getClassRepresentation() {
+        return classRepresentation;
+    }
 
     class DocumentRepositoryAsync extends AbstractDocumentRepositoryAsync implements RepositoryAsync {
 
