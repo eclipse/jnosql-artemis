@@ -25,35 +25,35 @@ import java.time.Duration;
  */
 public abstract class AbstractDocumentRepository implements Repository {
 
-    protected abstract DocumentTemplate getDocumentRepository();
+    protected abstract DocumentTemplate getDocumentTemplate();
 
     @Override
     public Object save(Object entity) throws NullPointerException {
-        return getDocumentRepository().save(entity);
+        return getDocumentTemplate().save(entity);
     }
 
     @Override
     public Object save(Object entity, Duration ttl) {
-        return getDocumentRepository().save(entity, ttl);
+        return getDocumentTemplate().save(entity, ttl);
     }
 
     @Override
     public Iterable save(Iterable entities) throws NullPointerException {
-        return getDocumentRepository().save(entities);
+        return getDocumentTemplate().save(entities);
     }
 
     @Override
     public Iterable save(Iterable entities, Duration ttl) throws NullPointerException {
-        return getDocumentRepository().save(entities, ttl);
+        return getDocumentTemplate().save(entities, ttl);
     }
 
     @Override
     public Object update(Object entity) {
-        return getDocumentRepository().update(entity);
+        return getDocumentTemplate().update(entity);
     }
 
     @Override
     public Iterable update(Iterable entities) throws NullPointerException {
-        return getDocumentRepository().update(entities);
+        return getDocumentTemplate().update(entities);
     }
 }

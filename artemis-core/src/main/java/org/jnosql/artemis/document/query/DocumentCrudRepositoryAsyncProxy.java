@@ -29,6 +29,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.function.Consumer;
 
+import static org.jnosql.artemis.document.query.DocumentRepositoryType.getDocumentDeleteQuery;
+import static org.jnosql.artemis.document.query.DocumentRepositoryType.getDocumentQuery;
+
 /**
  * Proxy handle to generate {@link RepositoryAsync}
  *
@@ -75,14 +78,27 @@ class DocumentCrudRepositoryAsyncProxy<T> implements InvocationHandler {
                 DocumentQuery query = queryParser.parse(methodName, args, classRepresentation);
                 return executeQuery(getCallBack(args), query);
             case DELETE_BY:
-                return executeDeleteBy(args, methodName);
+                DocumentDeleteQuery deleteQuery = queryDeleteParser.parse(methodName, args, classRepresentation);
+                return executeDelete(args, deleteQuery);
             case DOCUMENT_QUERY:
-                DocumentQuery documentQuery = DocumentRepositoryType.getDocumentQuery(args).get();
+                DocumentQuery documentQuery = getDocumentQuery(args).get();
                 return executeQuery(getCallBack(args), documentQuery);
+            case DOCUMENT_DELETE:
+                return executeDelete(args, getDocumentDeleteQuery(args).get());
             default:
                 return null;
         }
 
+    }
+
+    private Object executeDelete(Object[] args, DocumentDeleteQuery query1) {
+        Object callBack = getCallBack(args);
+        if (Consumer.class.isInstance(callBack)) {
+            repository.delete(query1, Consumer.class.cast(callBack));
+        } else {
+            repository.delete(query1);
+        }
+        return Void.class;
     }
 
     private Object getCallBack(Object[] args) {
@@ -96,17 +112,6 @@ class DocumentCrudRepositoryAsyncProxy<T> implements InvocationHandler {
         } else {
             throw new DynamicQueryException("On find async method you must put a java.util.function.Consumer" +
                     " as end parameter as callback");
-        }
-        return Void.class;
-    }
-
-    private Object executeDeleteBy(Object[] args, String methodName) {
-        Object callBack = getCallBack(args);
-        DocumentDeleteQuery query = queryDeleteParser.parse(methodName, args, classRepresentation);
-        if (Consumer.class.isInstance(callBack)) {
-            repository.delete(query, Consumer.class.cast(callBack));
-        } else {
-            repository.delete(query);
         }
         return Void.class;
     }

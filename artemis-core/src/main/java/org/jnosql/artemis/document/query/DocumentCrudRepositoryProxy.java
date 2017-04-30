@@ -20,11 +20,16 @@ import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.document.DocumentTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentQuery;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+
+import static org.jnosql.artemis.document.query.DocumentRepositoryType.getDocumentDeleteQuery;
+import static org.jnosql.artemis.document.query.DocumentRepositoryType.getDocumentQuery;
+import static org.jnosql.artemis.document.query.ReturnTypeConverterUtil.returnObject;
 
 
 /**
@@ -70,13 +75,17 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
                 return method.invoke(crudRepository, args);
             case FIND_BY:
                 DocumentQuery query = queryParser.parse(methodName, args, classRepresentation);
-                return ReturnTypeConverterUtil.returnObject(query, repository, typeClass, method);
+                return returnObject(query, repository, typeClass, method);
             case DELETE_BY:
                 repository.delete(deleteQueryParser.parse(methodName, args, classRepresentation));
                 return null;
             case DOCUMENT_QUERY:
-                DocumentQuery documentQuery = DocumentRepositoryType.getDocumentQuery(args).get();
-                return ReturnTypeConverterUtil.returnObject(documentQuery, repository, typeClass, method);
+                DocumentQuery documentQuery = getDocumentQuery(args).get();
+                return returnObject(documentQuery, repository, typeClass, method);
+            case DOCUMENT_DELETE:
+                DocumentDeleteQuery deleteQuery = getDocumentDeleteQuery(args).get();
+                repository.delete(deleteQuery);
+                return null;
             default:
                 return null;
         }
@@ -85,15 +94,15 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
 
     class DocumentRepository extends AbstractDocumentRepository implements Repository {
 
-        private final DocumentTemplate repository;
+        private final DocumentTemplate template;
 
-        DocumentRepository(DocumentTemplate repository) {
-            this.repository = repository;
+        DocumentRepository(DocumentTemplate template) {
+            this.template = template;
         }
 
         @Override
-        protected DocumentTemplate getDocumentRepository() {
-            return repository;
+        protected DocumentTemplate getDocumentTemplate() {
+            return template;
         }
     }
 }
