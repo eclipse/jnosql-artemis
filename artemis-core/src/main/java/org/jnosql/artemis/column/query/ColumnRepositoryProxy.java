@@ -76,7 +76,7 @@ class ColumnRepositoryProxy<T> extends AbstractColumnRepositoryProxy {
 
     @Override
     protected ColumnTemplate getTemplate() {
-        return null;
+        return template;
     }
 
 

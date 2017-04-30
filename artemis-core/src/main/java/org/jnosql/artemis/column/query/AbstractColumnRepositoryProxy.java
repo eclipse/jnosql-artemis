@@ -30,7 +30,7 @@ import static org.jnosql.artemis.column.query.ColumnRepositoryType.getQuery;
 import static org.jnosql.artemis.column.query.ReturnTypeConverterUtil.returnObject;
 
 /**
- * Template method to {@link Repository} to column
+ * Template method to {@link Repository} proxy on column
  * @param <T>
  */
 public abstract class AbstractColumnRepositoryProxy<T> implements InvocationHandler {
