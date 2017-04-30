@@ -86,7 +86,7 @@ class DocumentRepositoryAsyncProxy<T> implements InvocationHandler {
             case QUERY_DELETE:
                 return executeDelete(args, getDeleteQuery(args).get());
             default:
-                return null;
+                return Void.class;
         }
 
     }

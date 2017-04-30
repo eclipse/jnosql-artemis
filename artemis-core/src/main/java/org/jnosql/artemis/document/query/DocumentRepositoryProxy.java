@@ -20,16 +20,8 @@ import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.document.DocumentTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.diana.api.document.DocumentDeleteQuery;
-import org.jnosql.diana.api.document.DocumentQuery;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
-
-import static org.jnosql.artemis.document.query.DocumentRepositoryType.getDeleteQuery;
-import static org.jnosql.artemis.document.query.DocumentRepositoryType.getQuery;
-import static org.jnosql.artemis.document.query.ReturnTypeConverterUtil.returnObject;
 
 
 /**
@@ -37,14 +29,13 @@ import static org.jnosql.artemis.document.query.ReturnTypeConverterUtil.returnOb
  *
  * @param <T> the type
  */
-class DocumentRepositoryProxy<T> implements InvocationHandler {
+class DocumentRepositoryProxy<T> extends AbstractDocumentRepositoryProxy<T> {
 
     private final Class<T> typeClass;
 
     private final DocumentTemplate template;
 
-
-    private final DocumentRepository crudRepository;
+    private final DocumentRepository repository;
 
     private final ClassRepresentation classRepresentation;
 
@@ -55,7 +46,7 @@ class DocumentRepositoryProxy<T> implements InvocationHandler {
 
     DocumentRepositoryProxy(DocumentTemplate template, ClassRepresentations classRepresentations, Class<?> repositoryType) {
         this.template = template;
-        this.crudRepository = new DocumentRepository(template);
+        this.repository = new DocumentRepository(template);
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
@@ -65,30 +56,28 @@ class DocumentRepositoryProxy<T> implements InvocationHandler {
 
 
     @Override
-    public Object invoke(Object o, Method method, Object[] args) throws Throwable {
+    protected Repository getRepository() {
+        return repository;
+    }
 
-        String methodName = method.getName();
-        DocumentRepositoryType type = DocumentRepositoryType.of(method, args);
+    @Override
+    protected DocumentQueryParser getQueryParser() {
+        return queryParser;
+    }
 
-        switch (type) {
-            case DEFAULT:
-                return method.invoke(crudRepository, args);
-            case FIND_BY:
-                DocumentQuery query = queryParser.parse(methodName, args, classRepresentation);
-                return returnObject(query, template, typeClass, method);
-            case DELETE_BY:
-                template.delete(deleteQueryParser.parse(methodName, args, classRepresentation));
-                return null;
-            case QUERY:
-                DocumentQuery documentQuery = getQuery(args).get();
-                return returnObject(documentQuery, template, typeClass, method);
-            case QUERY_DELETE:
-                DocumentDeleteQuery deleteQuery = getDeleteQuery(args).get();
-                template.delete(deleteQuery);
-                return null;
-            default:
-                return null;
-        }
+    @Override
+    protected DocumentTemplate getTemplate() {
+        return template;
+    }
+
+    @Override
+    protected DocumentQueryDeleteParser getDeleteParser() {
+        return deleteQueryParser;
+    }
+
+    @Override
+    protected ClassRepresentation getClassRepresentation() {
+        return classRepresentation;
     }
 
 
