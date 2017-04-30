@@ -46,7 +46,7 @@ public abstract class AbstractColumnRepositoryProxy<T> implements InvocationHand
     protected abstract ColumnTemplate getTemplate();
 
     @Override
-    public Object invoke(Object o, Method method, Object[] args) throws Throwable {
+    public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
         String methodName = method.getName();
         ColumnRepositoryType type = ColumnRepositoryType.of(method, args);
         Class<?> typeClass = getClassRepresentation().getClassInstance();

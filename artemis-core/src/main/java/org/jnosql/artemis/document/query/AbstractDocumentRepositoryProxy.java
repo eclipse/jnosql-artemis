@@ -49,7 +49,7 @@ public abstract class AbstractDocumentRepositoryProxy<T> implements InvocationHa
 
 
     @Override
-    public Object invoke(Object o, Method method, Object[] args) throws Throwable {
+    public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
 
         String methodName = method.getName();
         DocumentRepositoryType type = DocumentRepositoryType.of(method, args);
