@@ -25,35 +25,35 @@ import java.time.Duration;
  */
 public abstract class AbstractColumnRepository implements Repository {
 
-    protected abstract ColumnTemplate getColumnRepository();
+    protected abstract ColumnTemplate getTemplate();
 
     @Override
     public Object save(Object entity) throws NullPointerException {
-        return getColumnRepository().save(entity);
+        return getTemplate().save(entity);
     }
 
     @Override
     public Object save(Object entity, Duration ttl) {
-        return getColumnRepository().save(entity, ttl);
+        return getTemplate().save(entity, ttl);
     }
 
     @Override
     public Iterable save(Iterable entities) throws NullPointerException {
-        return getColumnRepository().save(entities);
+        return getTemplate().save(entities);
     }
 
     @Override
     public Iterable save(Iterable entities, Duration ttl) throws NullPointerException {
-        return getColumnRepository().save(entities, ttl);
+        return getTemplate().save(entities, ttl);
     }
 
     @Override
     public Object update(Object entity) {
-        return getColumnRepository().update(entity);
+        return getTemplate().update(entity);
     }
 
     @Override
     public Iterable update(Iterable entities) throws NullPointerException {
-        return getColumnRepository().update(entities);
+        return getTemplate().update(entities);
     }
 }

@@ -29,50 +29,50 @@ import java.util.function.Consumer;
 public abstract class AbstractDocumentRepositoryAsync implements RepositoryAsync {
 
 
-    protected abstract DocumentTemplateAsync getDocumentTemplate();
+    protected abstract DocumentTemplateAsync getTemplate();
 
     @Override
     public void save(Object entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getDocumentTemplate().save(entity);
+        getTemplate().save(entity);
     }
 
     @Override
     public void save(Object entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getDocumentTemplate().save(entity, ttl);
+        getTemplate().save(entity, ttl);
     }
 
     @Override
     public void save(Iterable entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getDocumentTemplate().save(entities);
+        getTemplate().save(entities);
     }
 
     @Override
     public void save(Iterable entities, Duration ttl) throws NullPointerException {
-        getDocumentTemplate().save(entities, ttl);
+        getTemplate().save(entities, ttl);
     }
 
     @Override
     public void update(Iterable entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getDocumentTemplate().update(entities);
+        getTemplate().update(entities);
     }
 
     @Override
     public void update(Object entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getDocumentTemplate().save(entity);
+        getTemplate().save(entity);
     }
 
     @Override
     public void update(Object entity, Consumer callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getDocumentTemplate().update(entity, callBack);
+        getTemplate().update(entity, callBack);
     }
 
     @Override
     public void save(Object entity, Duration ttl, Consumer callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getDocumentTemplate().save(entity, ttl, callBack);
+        getTemplate().save(entity, ttl, callBack);
     }
 
     @Override
     public void save(Object entity, Consumer callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getDocumentTemplate().save(entity, callBack);
+        getTemplate().save(entity, callBack);
     }
 }

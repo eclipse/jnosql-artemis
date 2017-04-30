@@ -27,6 +27,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 
+import static org.jnosql.artemis.column.query.ReturnTypeConverterUtil.returnObject;
+
 
 /**
  * Proxy handle to generate {@link Repository}
@@ -42,7 +44,7 @@ class ColumnRepositoryProxy<T> implements InvocationHandler {
 
     private final Class<T> typeClass;
 
-    private final ColumnTemplate repository;
+    private final ColumnTemplate template;
 
     private final ColumnRepository crudRepository;
 
@@ -53,9 +55,9 @@ class ColumnRepositoryProxy<T> implements InvocationHandler {
     private final ColumnQueryDeleteParser deleteQueryParser;
 
 
-    ColumnRepositoryProxy(ColumnTemplate repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
-        this.repository = repository;
-        this.crudRepository = new ColumnRepository(repository);
+    ColumnRepositoryProxy(ColumnTemplate template, ClassRepresentations classRepresentations, Class<?> repositoryType) {
+        this.template = template;
+        this.crudRepository = new ColumnRepository(template);
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
@@ -67,38 +69,40 @@ class ColumnRepositoryProxy<T> implements InvocationHandler {
     @Override
     public Object invoke(Object o, Method method, Object[] args) throws Throwable {
         String methodName = method.getName();
-        switch (methodName) {
-            case SAVE:
-            case UPDATE:
+        ColumnRepositoryType type = ColumnRepositoryType.of(method, args);
+        switch (type) {
+            case DEFAULT:
                 return method.invoke(crudRepository, args);
+            case FIND_BY:
+                ColumnQuery query = queryParser.parse(methodName, args, classRepresentation);
+                return returnObject(query, template, typeClass, method);
+            case DELETE_BY:
+                ColumnDeleteQuery deleteQuery = deleteQueryParser.parse(methodName, args, classRepresentation);
+                template.delete(deleteQuery);
+                return Void.class;
+            case QUERY:
+                ColumnQuery columnQuery = ColumnRepositoryType.getColumnQuery(args).get();
+                return returnObject(columnQuery, template, typeClass, method);
+            case QUERY_DELETE:
+
             default:
-        }
+                return Void.class;
 
-        if (methodName.startsWith(FIND_BY)) {
-            ColumnQuery query = queryParser.parse(methodName, args, classRepresentation);
-            return ReturnTypeConverterUtil.returnObject(query, repository, typeClass, method);
         }
-
-        if (methodName.startsWith(DELETE_BY)) {
-            ColumnDeleteQuery query = deleteQueryParser.parse(methodName, args, classRepresentation);
-            repository.delete(query);
-            return null;
-        }
-        return null;
     }
 
 
     class ColumnRepository extends AbstractColumnRepository implements Repository {
 
-        private final ColumnTemplate repository;
+        private final ColumnTemplate template;
 
-        ColumnRepository(ColumnTemplate repository) {
-            this.repository = repository;
+        ColumnRepository(ColumnTemplate template) {
+            this.template = template;
         }
 
         @Override
-        protected ColumnTemplate getColumnRepository() {
-            return repository;
+        protected ColumnTemplate getTemplate() {
+            return template;
         }
     }
 }

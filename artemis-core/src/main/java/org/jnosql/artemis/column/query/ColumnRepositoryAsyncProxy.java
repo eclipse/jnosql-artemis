@@ -114,7 +114,7 @@ class ColumnRepositoryAsyncProxy<T> implements InvocationHandler {
         }
 
         @Override
-        protected ColumnTemplateAsync getColumnRepository() {
+        protected ColumnTemplateAsync getTemplate() {
             return repository;
         }
     }

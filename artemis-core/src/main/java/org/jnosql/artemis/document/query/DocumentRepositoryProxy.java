@@ -101,7 +101,7 @@ class DocumentRepositoryProxy<T> implements InvocationHandler {
         }
 
         @Override
-        protected DocumentTemplate getDocumentTemplate() {
+        protected DocumentTemplate getTemplate() {
             return template;
         }
     }

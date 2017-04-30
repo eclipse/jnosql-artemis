@@ -52,20 +52,20 @@ enum ColumnRepositoryType {
     }
 
     private static boolean isQuery(Object[] args) {
-        return getDocumentQuery(args).isPresent();
+        return getColumnQuery(args).isPresent();
     }
 
     private static boolean isQueryDelete(Object[] args) {
-        return getDocumentDeleteQuery(args).isPresent();
+        return getColumnDeleteQuery(args).isPresent();
     }
 
-    static Optional<ColumnQuery> getDocumentQuery(Object[] args) {
+    static Optional<ColumnQuery> getColumnQuery(Object[] args) {
         return Stream.of(args)
                 .filter(ColumnQuery.class::isInstance).map(ColumnQuery.class::cast)
                 .findFirst();
     }
 
-    static Optional<ColumnDeleteQuery> getDocumentDeleteQuery(Object[] args) {
+    static Optional<ColumnDeleteQuery> getColumnDeleteQuery(Object[] args) {
         return Stream.of(args)
                 .filter(ColumnDeleteQuery.class::isInstance)
                 .map(ColumnDeleteQuery.class::cast)
