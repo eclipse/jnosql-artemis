@@ -41,7 +41,7 @@ class DocumentCrudRepositoryAsyncProxy<T> implements InvocationHandler {
 
     private final Class<T> typeClass;
 
-    private final DocumentTemplateAsync repository;
+    private final DocumentTemplateAsync templateAsync;
 
 
     private final DocumentRepositoryAsync crudRepository;
@@ -53,9 +53,9 @@ class DocumentCrudRepositoryAsyncProxy<T> implements InvocationHandler {
     private final DocumentQueryDeleteParser queryDeleteParser;
 
 
-    DocumentCrudRepositoryAsyncProxy(DocumentTemplateAsync repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
-        this.repository = repository;
-        this.crudRepository = new DocumentRepositoryAsync(repository);
+    DocumentCrudRepositoryAsyncProxy(DocumentTemplateAsync templateAsync, ClassRepresentations classRepresentations, Class<?> repositoryType) {
+        this.templateAsync = templateAsync;
+        this.crudRepository = new DocumentRepositoryAsync(templateAsync);
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
@@ -94,9 +94,9 @@ class DocumentCrudRepositoryAsyncProxy<T> implements InvocationHandler {
     private Object executeDelete(Object[] args, DocumentDeleteQuery query1) {
         Object callBack = getCallBack(args);
         if (Consumer.class.isInstance(callBack)) {
-            repository.delete(query1, Consumer.class.cast(callBack));
+            templateAsync.delete(query1, Consumer.class.cast(callBack));
         } else {
-            repository.delete(query1);
+            templateAsync.delete(query1);
         }
         return Void.class;
     }
@@ -108,7 +108,7 @@ class DocumentCrudRepositoryAsyncProxy<T> implements InvocationHandler {
     private Object executeQuery(Object arg, DocumentQuery query) {
         Object callBack = arg;
         if (Consumer.class.isInstance(callBack)) {
-            repository.find(query, Consumer.class.cast(callBack));
+            templateAsync.find(query, Consumer.class.cast(callBack));
         } else {
             throw new DynamicQueryException("On find async method you must put a java.util.function.Consumer" +
                     " as end parameter as callback");
@@ -119,15 +119,15 @@ class DocumentCrudRepositoryAsyncProxy<T> implements InvocationHandler {
 
     class DocumentRepositoryAsync extends AbstractDocumentRepositoryAsync implements RepositoryAsync {
 
-        private final DocumentTemplateAsync repository;
+        private final DocumentTemplateAsync template;
 
-        DocumentRepositoryAsync(DocumentTemplateAsync repository) {
-            this.repository = repository;
+        DocumentRepositoryAsync(DocumentTemplateAsync template) {
+            this.template = template;
         }
 
         @Override
-        protected DocumentTemplateAsync getDocumentRepository() {
-            return repository;
+        protected DocumentTemplateAsync getDocumentTemplate() {
+            return template;
         }
     }
 }

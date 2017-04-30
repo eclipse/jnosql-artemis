@@ -41,7 +41,7 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
 
     private final Class<T> typeClass;
 
-    private final DocumentTemplate repository;
+    private final DocumentTemplate template;
 
 
     private final DocumentRepository crudRepository;
@@ -53,9 +53,9 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
     private final DocumentQueryDeleteParser deleteQueryParser;
 
 
-    DocumentCrudRepositoryProxy(DocumentTemplate repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
-        this.repository = repository;
-        this.crudRepository = new DocumentRepository(repository);
+    DocumentCrudRepositoryProxy(DocumentTemplate template, ClassRepresentations classRepresentations, Class<?> repositoryType) {
+        this.template = template;
+        this.crudRepository = new DocumentRepository(template);
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
@@ -75,16 +75,16 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
                 return method.invoke(crudRepository, args);
             case FIND_BY:
                 DocumentQuery query = queryParser.parse(methodName, args, classRepresentation);
-                return returnObject(query, repository, typeClass, method);
+                return returnObject(query, template, typeClass, method);
             case DELETE_BY:
-                repository.delete(deleteQueryParser.parse(methodName, args, classRepresentation));
+                template.delete(deleteQueryParser.parse(methodName, args, classRepresentation));
                 return null;
             case DOCUMENT_QUERY:
                 DocumentQuery documentQuery = getDocumentQuery(args).get();
-                return returnObject(documentQuery, repository, typeClass, method);
+                return returnObject(documentQuery, template, typeClass, method);
             case DOCUMENT_DELETE:
                 DocumentDeleteQuery deleteQuery = getDocumentDeleteQuery(args).get();
-                repository.delete(deleteQuery);
+                template.delete(deleteQuery);
                 return null;
             default:
                 return null;
