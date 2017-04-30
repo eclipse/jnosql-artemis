@@ -15,9 +15,9 @@
  */
 package org.jnosql.artemis.column.query;
 
-import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.Pagination;
+import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.model.Person;
@@ -42,6 +42,7 @@ import java.util.function.Consumer;
 
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.jnosql.diana.api.column.ColumnCondition.eq;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
@@ -257,6 +258,35 @@ public class ColumnRepositoryAsyncProxyTest {
 
     }
 
+    @Test
+    public void shouldExecuteQuery() {
+        Consumer<List<Person>> callback = v -> {
+        };
+
+        ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
+        ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
+        ColumnQuery query = ColumnQuery.of("Person")
+                .and(eq(Column.of("name", "Ada")));
+
+        personRepository.query(query, callback);
+        verify(repository).find(captor.capture(), consumerCaptor.capture());
+        ColumnQuery queryCaptor = captor.getValue();
+        ColumnCondition condition = query.getCondition().get();
+        assertEquals(query, queryCaptor);
+        assertEquals(callback, consumerCaptor.getValue());
+    }
+
+    @Test
+    public void shouldExecuteDeleteQuery() {
+        ArgumentCaptor<ColumnDeleteQuery> captor = ArgumentCaptor.forClass(ColumnDeleteQuery.class);
+        ColumnDeleteQuery deleteQuery = ColumnDeleteQuery.of("Person")
+                .and(eq(Column.of("name", "Ada")));
+
+        personRepository.deleteQuery(deleteQuery);
+        verify(repository).delete(captor.capture());
+        assertEquals(deleteQuery, captor.getValue());
+    }
+
     interface PersonAsyncRepository extends RepositoryAsync<Person> {
 
         void deleteByName(String name);
@@ -272,6 +302,10 @@ public class ColumnRepositoryAsyncProxyTest {
         void findByName(String name, Sort sort, Consumer<List<Person>> callBack);
 
         void findByName(String name, Sort sort, Pagination pagination, Consumer<List<Person>> callBack);
+
+        void query(ColumnQuery query, Consumer<List<Person>> callBack);
+
+        void deleteQuery(ColumnDeleteQuery query);
     }
 
 }
