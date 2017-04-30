@@ -28,7 +28,7 @@ import static org.jnosql.artemis.column.query.ColumnQueryParserUtil.toCondition;
 
 /**
  * Class the returns a {@link ColumnQuery}
- * on {@link ColumnCrudRepositoryProxy}
+ * on {@link ColumnRepositoryProxy}
  */
 public class ColumnQueryParser {
 

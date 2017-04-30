@@ -16,9 +16,8 @@
 package org.jnosql.artemis.column.query;
 
 
-import org.jnosql.artemis.RepositoryAsync;
-import org.jnosql.artemis.DynamicQueryException;
-import org.jnosql.artemis.column.ColumnTemplateAsync;
+import org.jnosql.artemis.Repository;
+import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
@@ -27,14 +26,14 @@ import org.jnosql.diana.api.column.ColumnQuery;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
-import java.util.function.Consumer;
+
 
 /**
- * Proxy handle to generate {@link RepositoryAsync}
+ * Proxy handle to generate {@link Repository}
  *
  * @param <T> the type
  */
-class ColumnCrudRepositoryAsyncProxy<T> implements InvocationHandler {
+class ColumnRepositoryProxy<T> implements InvocationHandler {
 
     private static final String SAVE = "save";
     private static final String UPDATE = "update";
@@ -43,31 +42,30 @@ class ColumnCrudRepositoryAsyncProxy<T> implements InvocationHandler {
 
     private final Class<T> typeClass;
 
-    private final ColumnTemplateAsync repository;
+    private final ColumnTemplate repository;
 
-    private final ColumnRepositoryAsync crudRepository;
+    private final ColumnRepository crudRepository;
 
     private final ClassRepresentation classRepresentation;
 
     private final ColumnQueryParser queryParser;
 
-    private final ColumnQueryDeleteParser queryDeleteParser;
+    private final ColumnQueryDeleteParser deleteQueryParser;
 
 
-    ColumnCrudRepositoryAsyncProxy(ColumnTemplateAsync repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
+    ColumnRepositoryProxy(ColumnTemplate repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
         this.repository = repository;
-        this.crudRepository = new ColumnRepositoryAsync(repository);
+        this.crudRepository = new ColumnRepository(repository);
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
         this.queryParser = new ColumnQueryParser();
-        this.queryDeleteParser = new ColumnQueryDeleteParser();
+        this.deleteQueryParser = new ColumnQueryDeleteParser();
     }
 
 
     @Override
-    public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
-
+    public Object invoke(Object o, Method method, Object[] args) throws Throwable {
         String methodName = method.getName();
         switch (methodName) {
             case SAVE:
@@ -76,45 +74,30 @@ class ColumnCrudRepositoryAsyncProxy<T> implements InvocationHandler {
             default:
         }
 
-
         if (methodName.startsWith(FIND_BY)) {
             ColumnQuery query = queryParser.parse(methodName, args, classRepresentation);
-            Object callBack = args[args.length - 1];
-            if (Consumer.class.isInstance(callBack)) {
-                repository.find(query, Consumer.class.cast(callBack));
-                return null;
-            }
-
-            throw new DynamicQueryException("On find async method you must put a java.util.function.Consumer" +
-                    " as end parameter as callback");
+            return ReturnTypeConverterUtil.returnObject(query, repository, typeClass, method);
         }
 
         if (methodName.startsWith(DELETE_BY)) {
-            Object callBack = args[args.length - 1];
-            ColumnDeleteQuery query = queryDeleteParser.parse(methodName, args, classRepresentation);
-            if (Consumer.class.isInstance(callBack)) {
-                repository.delete(query, Consumer.class.cast(callBack));
-                return null;
-            }
-
+            ColumnDeleteQuery query = deleteQueryParser.parse(methodName, args, classRepresentation);
             repository.delete(query);
             return null;
         }
-
         return null;
     }
 
 
-    class ColumnRepositoryAsync extends AbstractColumnRepositoryAsync implements RepositoryAsync {
+    class ColumnRepository extends AbstractColumnRepository implements Repository {
 
-        private final ColumnTemplateAsync repository;
+        private final ColumnTemplate repository;
 
-        ColumnRepositoryAsync(ColumnTemplateAsync repository) {
+        ColumnRepository(ColumnTemplate repository) {
             this.repository = repository;
         }
 
         @Override
-        protected ColumnTemplateAsync getColumnRepository() {
+        protected ColumnTemplate getColumnRepository() {
             return repository;
         }
     }

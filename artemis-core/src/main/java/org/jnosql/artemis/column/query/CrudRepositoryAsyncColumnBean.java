@@ -89,7 +89,7 @@ public class CrudRepositoryAsyncColumnBean implements Bean<RepositoryAsync>, Pas
         ClassRepresentations classRepresentations = getInstance(ClassRepresentations.class);
         ColumnTemplateAsync repository = provider.isEmpty() ? getInstance(ColumnTemplateAsync.class) :
                 getInstance(ColumnTemplateAsync.class, provider);
-        ColumnCrudRepositoryAsyncProxy handler = new ColumnCrudRepositoryAsyncProxy(repository,
+        ColumnRepositoryAsyncProxy handler = new ColumnRepositoryAsyncProxy(repository,
                 classRepresentations, type);
         return (RepositoryAsync) Proxy.newProxyInstance(type.getClassLoader(),
                 new Class[]{type},

@@ -15,8 +15,8 @@
  */
 package org.jnosql.artemis.column.query;
 
-import org.jnosql.diana.api.document.DocumentDeleteQuery;
-import org.jnosql.diana.api.document.DocumentQuery;
+import org.jnosql.diana.api.column.ColumnDeleteQuery;
+import org.jnosql.diana.api.column.ColumnQuery;
 
 import java.lang.reflect.Method;
 import java.util.Optional;
@@ -35,11 +35,11 @@ enum ColumnRepositoryType {
             default:
         }
 
-        if (isDocumentType(args)) {
+        if (isQuery(args)) {
             return QUERY;
         }
 
-        if (isDocumentDeleteType(args)) {
+        if (isQueryDelete(args)) {
             return QUERY_DELETE;
         }
 
@@ -51,24 +51,24 @@ enum ColumnRepositoryType {
         return UNKNOWN;
     }
 
-    private static boolean isDocumentType(Object[] args) {
+    private static boolean isQuery(Object[] args) {
         return getDocumentQuery(args).isPresent();
     }
 
-    private static boolean isDocumentDeleteType(Object[] args) {
+    private static boolean isQueryDelete(Object[] args) {
         return getDocumentDeleteQuery(args).isPresent();
     }
 
-    static Optional<DocumentQuery> getDocumentQuery(Object[] args) {
+    static Optional<ColumnQuery> getDocumentQuery(Object[] args) {
         return Stream.of(args)
-                .filter(DocumentQuery.class::isInstance).map(DocumentQuery.class::cast)
+                .filter(ColumnQuery.class::isInstance).map(ColumnQuery.class::cast)
                 .findFirst();
     }
 
-    static Optional<DocumentDeleteQuery> getDocumentDeleteQuery(Object[] args) {
+    static Optional<ColumnDeleteQuery> getDocumentDeleteQuery(Object[] args) {
         return Stream.of(args)
-                .filter(DocumentDeleteQuery.class::isInstance)
-                .map(DocumentDeleteQuery.class::cast)
+                .filter(ColumnDeleteQuery.class::isInstance)
+                .map(ColumnDeleteQuery.class::cast)
                 .findFirst();
     }
 

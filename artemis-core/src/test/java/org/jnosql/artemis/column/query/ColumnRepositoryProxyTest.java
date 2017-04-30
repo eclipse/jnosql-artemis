@@ -67,7 +67,7 @@ public class ColumnRepositoryProxyTest {
     public void setUp() {
         this.repository = Mockito.mock(ColumnTemplate.class);
 
-        ColumnCrudRepositoryProxy handler = new ColumnCrudRepositoryProxy(repository,
+        ColumnRepositoryProxy handler = new ColumnRepositoryProxy(repository,
                 classRepresentations, PersonRepository.class);
 
         when(repository.save(any(Person.class))).thenReturn(Person.builder().build());

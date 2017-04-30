@@ -37,11 +37,11 @@ enum DocumentRepositoryType {
             default:
         }
 
-        if (isDocumentType(args)) {
+        if (isQuery(args)) {
             return QUERY;
         }
 
-        if (isDocumentDeleteType(args)) {
+        if (isQueryDelete(args)) {
             return QUERY_DELETE;
         }
 
@@ -53,11 +53,11 @@ enum DocumentRepositoryType {
         return UNKNOWN;
     }
 
-    private static boolean isDocumentType(Object[] args) {
+    private static boolean isQuery(Object[] args) {
         return getDocumentQuery(args).isPresent();
     }
 
-    private static boolean isDocumentDeleteType(Object[] args) {
+    private static boolean isQueryDelete(Object[] args) {
         return getDocumentDeleteQuery(args).isPresent();
     }
 
