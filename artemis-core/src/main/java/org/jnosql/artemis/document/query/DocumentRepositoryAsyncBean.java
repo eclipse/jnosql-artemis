@@ -37,7 +37,7 @@ import java.util.Set;
 /**
  * Artemis discoveryBean to CDI extension to register {@link RepositoryAsync}
  */
-public class CrudRepositoryAsyncDocumentBean implements Bean<RepositoryAsync>, PassivationCapable {
+public class DocumentRepositoryAsyncBean implements Bean<RepositoryAsync>, PassivationCapable {
 
     private final Class type;
 
@@ -56,7 +56,7 @@ public class CrudRepositoryAsyncDocumentBean implements Bean<RepositoryAsync>, P
      * @param beanManager the beanManager
      * @param provider    the provider name, that must be a
      */
-    public CrudRepositoryAsyncDocumentBean(Class type, BeanManager beanManager, String provider) {
+    public DocumentRepositoryAsyncBean(Class type, BeanManager beanManager, String provider) {
         this.type = type;
         this.beanManager = beanManager;
         this.types = Collections.singleton(type);
@@ -89,7 +89,7 @@ public class CrudRepositoryAsyncDocumentBean implements Bean<RepositoryAsync>, P
         ClassRepresentations classRepresentations = getInstance(ClassRepresentations.class);
         DocumentTemplateAsync repository = provider.isEmpty() ? getInstance(DocumentTemplateAsync.class) :
                 getInstance(DocumentTemplateAsync.class, provider);
-        DocumentCrudRepositoryAsyncProxy handler = new DocumentCrudRepositoryAsyncProxy(repository,
+        DocumentRepositoryAsyncProxy handler = new DocumentRepositoryAsyncProxy(repository,
                 classRepresentations, type);
         return (RepositoryAsync) Proxy.newProxyInstance(type.getClassLoader(),
                 new Class[]{type},

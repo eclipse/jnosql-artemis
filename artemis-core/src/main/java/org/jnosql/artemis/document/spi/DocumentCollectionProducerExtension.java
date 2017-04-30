@@ -20,8 +20,8 @@ import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.Database;
 import org.jnosql.artemis.Databases;
-import org.jnosql.artemis.document.query.CrudRepositoryAsyncDocumentBean;
-import org.jnosql.artemis.document.query.CrudRepositoryDocumentBean;
+import org.jnosql.artemis.document.query.DocumentRepositoryAsyncBean;
+import org.jnosql.artemis.document.query.RepositoryDocumentBean;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
 
@@ -104,22 +104,22 @@ public class DocumentCollectionProducerExtension implements Extension {
         });
 
         databasesAsync.forEach(type -> {
-            final DocumentRepositoryAsyncBean bean = new DocumentRepositoryAsyncBean(beanManager, type.provider());
+            final org.jnosql.artemis.document.spi.DocumentRepositoryAsyncBean bean = new org.jnosql.artemis.document.spi.DocumentRepositoryAsyncBean(beanManager, type.provider());
             afterBeanDiscovery.addBean(bean);
         });
 
         crudTypes.forEach(type -> {
-            afterBeanDiscovery.addBean(new CrudRepositoryDocumentBean(type, beanManager, ""));
+            afterBeanDiscovery.addBean(new RepositoryDocumentBean(type, beanManager, ""));
             databases.forEach(database -> {
-                final CrudRepositoryDocumentBean bean = new CrudRepositoryDocumentBean(type, beanManager, database.provider());
+                final RepositoryDocumentBean bean = new RepositoryDocumentBean(type, beanManager, database.provider());
                 afterBeanDiscovery.addBean(bean);
             });
         });
 
         crudAsyncTypes.forEach(type -> {
-            afterBeanDiscovery.addBean(new CrudRepositoryAsyncDocumentBean(type, beanManager, ""));
+            afterBeanDiscovery.addBean(new DocumentRepositoryAsyncBean(type, beanManager, ""));
             databasesAsync.forEach(database -> {
-                final CrudRepositoryAsyncDocumentBean bean = new CrudRepositoryAsyncDocumentBean(type, beanManager, database.provider());
+                final DocumentRepositoryAsyncBean bean = new DocumentRepositoryAsyncBean(type, beanManager, database.provider());
                 afterBeanDiscovery.addBean(bean);
             });
         });

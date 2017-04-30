@@ -63,7 +63,7 @@ public class DocumentRepositoryAsyncProxyTest {
     public void setUp() {
         this.repository = Mockito.mock(DocumentTemplateAsync.class);
 
-        DocumentCrudRepositoryAsyncProxy handler = new DocumentCrudRepositoryAsyncProxy(repository,
+        DocumentRepositoryAsyncProxy handler = new DocumentRepositoryAsyncProxy(repository,
                 classRepresentations, PersonAsyncRepository.class);
 
 

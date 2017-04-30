@@ -37,7 +37,7 @@ import static org.jnosql.artemis.document.query.ReturnTypeConverterUtil.returnOb
  *
  * @param <T> the type
  */
-class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
+class DocumentRepositoryProxy<T> implements InvocationHandler {
 
     private final Class<T> typeClass;
 
@@ -53,7 +53,7 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
     private final DocumentQueryDeleteParser deleteQueryParser;
 
 
-    DocumentCrudRepositoryProxy(DocumentTemplate template, ClassRepresentations classRepresentations, Class<?> repositoryType) {
+    DocumentRepositoryProxy(DocumentTemplate template, ClassRepresentations classRepresentations, Class<?> repositoryType) {
         this.template = template;
         this.crudRepository = new DocumentRepository(template);
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])

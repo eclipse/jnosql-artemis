@@ -37,7 +37,7 @@ import java.util.Set;
 /**
  * Artemis discoveryBean to CDI extension to register {@link Repository}
  */
-public class CrudRepositoryDocumentBean implements Bean<Repository>, PassivationCapable {
+public class RepositoryDocumentBean implements Bean<Repository>, PassivationCapable {
 
     private final Class type;
 
@@ -56,7 +56,7 @@ public class CrudRepositoryDocumentBean implements Bean<Repository>, Passivation
      * @param beanManager the beanManager
      * @param provider    the provider name, that must be a
      */
-    public CrudRepositoryDocumentBean(Class type, BeanManager beanManager, String provider) {
+    public RepositoryDocumentBean(Class type, BeanManager beanManager, String provider) {
         this.type = type;
         this.beanManager = beanManager;
         this.types = Collections.singleton(type);
@@ -89,7 +89,7 @@ public class CrudRepositoryDocumentBean implements Bean<Repository>, Passivation
         ClassRepresentations classRepresentations = getInstance(ClassRepresentations.class);
         DocumentTemplate repository = provider.isEmpty() ? getInstance(DocumentTemplate.class) :
                 getInstance(DocumentTemplate.class, provider);
-        DocumentCrudRepositoryProxy handler = new DocumentCrudRepositoryProxy(repository,
+        DocumentRepositoryProxy handler = new DocumentRepositoryProxy(repository,
                 classRepresentations, type);
         return (Repository) Proxy.newProxyInstance(type.getClassLoader(),
                 new Class[]{type},

@@ -68,7 +68,7 @@ public class DocumentRepositoryProxyTest {
     public void setUp() {
         this.repository = Mockito.mock(DocumentTemplate.class);
 
-        DocumentCrudRepositoryProxy handler = new DocumentCrudRepositoryProxy(repository,
+        DocumentRepositoryProxy handler = new DocumentRepositoryProxy(repository,
                 classRepresentations, PersonRepository.class);
 
         when(repository.save(any(Person.class))).thenReturn(Person.builder().build());

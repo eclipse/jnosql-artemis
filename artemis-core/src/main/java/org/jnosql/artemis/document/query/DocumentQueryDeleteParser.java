@@ -25,7 +25,7 @@ import static org.jnosql.artemis.document.query.DocumentQueryParserUtil.toCondit
 
 /**
  * Class the returns a {@link DocumentDeleteQuery}
- * on {@link DocumentCrudRepositoryProxy}
+ * on {@link DocumentRepositoryProxy}
  */
 public class DocumentQueryDeleteParser {
 

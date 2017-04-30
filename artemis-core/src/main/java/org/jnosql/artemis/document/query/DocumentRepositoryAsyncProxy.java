@@ -37,7 +37,7 @@ import static org.jnosql.artemis.document.query.DocumentRepositoryType.getDocume
  *
  * @param <T> the type
  */
-class DocumentCrudRepositoryAsyncProxy<T> implements InvocationHandler {
+class DocumentRepositoryAsyncProxy<T> implements InvocationHandler {
 
     private final Class<T> typeClass;
 
@@ -53,7 +53,7 @@ class DocumentCrudRepositoryAsyncProxy<T> implements InvocationHandler {
     private final DocumentQueryDeleteParser queryDeleteParser;
 
 
-    DocumentCrudRepositoryAsyncProxy(DocumentTemplateAsync templateAsync, ClassRepresentations classRepresentations, Class<?> repositoryType) {
+    DocumentRepositoryAsyncProxy(DocumentTemplateAsync templateAsync, ClassRepresentations classRepresentations, Class<?> repositoryType) {
         this.templateAsync = templateAsync;
         this.crudRepository = new DocumentRepositoryAsync(templateAsync);
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
