@@ -37,11 +37,11 @@ public final class ReturnTypeConverterUtil {
     }
 
 
-    public static Object returnObject(ColumnQuery query, ColumnTemplate repository, Class typeClass, Method method) {
+    public static Object returnObject(ColumnQuery query, ColumnTemplate template, Class typeClass, Method method) {
         Class<?> returnType = method.getReturnType();
 
         if (typeClass.equals(returnType)) {
-            Optional<Object> optional = repository.singleResult(query);
+            Optional<Object> optional = template.singleResult(query);
             if (optional.isPresent()) {
                 return optional.get();
             } else {
@@ -49,20 +49,20 @@ public final class ReturnTypeConverterUtil {
             }
 
         } else if (Optional.class.equals(returnType)) {
-            return repository.singleResult(query);
+            return template.singleResult(query);
         } else if (List.class.equals(returnType)
                 || Iterable.class.equals(returnType)
                 || Collection.class.equals(returnType)) {
-            return repository.find(query);
+            return template.find(query);
         } else if (Set.class.equals(returnType)) {
-            return new HashSet<>(repository.find(query));
+            return new HashSet<>(template.find(query));
         } else if (Queue.class.equals(returnType)) {
-            return new PriorityQueue<>(repository.find(query));
+            return new PriorityQueue<>(template.find(query));
         } else if (Stream.class.equals(returnType)) {
-            return repository.find(query).stream();
+            return template.find(query).stream();
         }
 
-        return repository.find(query);
+        return template.find(query);
     }
 
 }

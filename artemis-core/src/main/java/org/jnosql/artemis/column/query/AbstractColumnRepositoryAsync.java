@@ -28,50 +28,50 @@ import java.util.function.Consumer;
  */
 public abstract class AbstractColumnRepositoryAsync<T> implements RepositoryAsync<T> {
 
-    protected abstract ColumnTemplateAsync getColumnRepository();
+    protected abstract ColumnTemplateAsync getTemplate();
 
     @Override
     public void save(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getColumnRepository().save(entity);
+        getTemplate().save(entity);
     }
 
     @Override
     public void save(T entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getColumnRepository().save(entity, ttl);
+        getTemplate().save(entity, ttl);
     }
 
     @Override
     public void save(Iterable entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getColumnRepository().save(entities);
+        getTemplate().save(entities);
     }
 
     @Override
     public void save(Iterable entities, Duration ttl) throws NullPointerException {
-        getColumnRepository().save(entities, ttl);
+        getTemplate().save(entities, ttl);
     }
 
     @Override
     public void update(Iterable entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getColumnRepository().update(entities);
+        getTemplate().update(entities);
     }
 
     @Override
     public void update(Object entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getColumnRepository().save(entity);
+        getTemplate().save(entity);
     }
 
     @Override
     public void update(Object entity, Consumer callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getColumnRepository().update(entity, callBack);
+        getTemplate().update(entity, callBack);
     }
 
     @Override
     public void save(Object entity, Duration ttl, Consumer callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getColumnRepository().save(entity, ttl, callBack);
+        getTemplate().save(entity, ttl, callBack);
     }
 
     @Override
     public void save(Object entity, Consumer callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getColumnRepository().save(entity, callBack);
+        getTemplate().save(entity, callBack);
     }
 }

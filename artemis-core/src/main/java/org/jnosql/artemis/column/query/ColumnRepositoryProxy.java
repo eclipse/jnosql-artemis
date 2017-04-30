@@ -27,22 +27,21 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 
+import static org.jnosql.artemis.column.query.ColumnRepositoryType.getDeleteQuery;
+import static org.jnosql.artemis.column.query.ColumnRepositoryType.getQuery;
+import static org.jnosql.artemis.column.query.ReturnTypeConverterUtil.returnObject;
+
 
 /**
  * Proxy handle to generate {@link Repository}
  *
  * @param <T> the type
  */
-class ColumnCrudRepositoryProxy<T> implements InvocationHandler {
-
-    private static final String SAVE = "save";
-    private static final String UPDATE = "update";
-    private static final String FIND_BY = "findBy";
-    private static final String DELETE_BY = "deleteBy";
+class ColumnRepositoryProxy<T> implements InvocationHandler {
 
     private final Class<T> typeClass;
 
-    private final ColumnTemplate repository;
+    private final ColumnTemplate template;
 
     private final ColumnRepository crudRepository;
 
@@ -53,9 +52,9 @@ class ColumnCrudRepositoryProxy<T> implements InvocationHandler {
     private final ColumnQueryDeleteParser deleteQueryParser;
 
 
-    ColumnCrudRepositoryProxy(ColumnTemplate repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
-        this.repository = repository;
-        this.crudRepository = new ColumnRepository(repository);
+    ColumnRepositoryProxy(ColumnTemplate template, ClassRepresentations classRepresentations, Class<?> repositoryType) {
+        this.template = template;
+        this.crudRepository = new ColumnRepository(template);
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
@@ -67,38 +66,42 @@ class ColumnCrudRepositoryProxy<T> implements InvocationHandler {
     @Override
     public Object invoke(Object o, Method method, Object[] args) throws Throwable {
         String methodName = method.getName();
-        switch (methodName) {
-            case SAVE:
-            case UPDATE:
+        ColumnRepositoryType type = ColumnRepositoryType.of(method, args);
+        switch (type) {
+            case DEFAULT:
                 return method.invoke(crudRepository, args);
+            case FIND_BY:
+                ColumnQuery query = queryParser.parse(methodName, args, classRepresentation);
+                return returnObject(query, template, typeClass, method);
+            case DELETE_BY:
+                ColumnDeleteQuery deleteQuery = deleteQueryParser.parse(methodName, args, classRepresentation);
+                template.delete(deleteQuery);
+                return Void.class;
+            case QUERY:
+                ColumnQuery columnQuery = getQuery(args).get();
+                return returnObject(columnQuery, template, typeClass, method);
+            case QUERY_DELETE:
+                ColumnDeleteQuery columnDeleteQuery = getDeleteQuery(args).get();
+                template.delete(columnDeleteQuery);
+                return Void.class;
             default:
-        }
+                return Void.class;
 
-        if (methodName.startsWith(FIND_BY)) {
-            ColumnQuery query = queryParser.parse(methodName, args, classRepresentation);
-            return ReturnTypeConverterUtil.returnObject(query, repository, typeClass, method);
         }
-
-        if (methodName.startsWith(DELETE_BY)) {
-            ColumnDeleteQuery query = deleteQueryParser.parse(methodName, args, classRepresentation);
-            repository.delete(query);
-            return null;
-        }
-        return null;
     }
 
 
     class ColumnRepository extends AbstractColumnRepository implements Repository {
 
-        private final ColumnTemplate repository;
+        private final ColumnTemplate template;
 
-        ColumnRepository(ColumnTemplate repository) {
-            this.repository = repository;
+        ColumnRepository(ColumnTemplate template) {
+            this.template = template;
         }
 
         @Override
-        protected ColumnTemplate getColumnRepository() {
-            return repository;
+        protected ColumnTemplate getTemplate() {
+            return template;
         }
     }
 }

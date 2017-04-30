@@ -16,8 +16,8 @@
 package org.jnosql.artemis.column.query;
 
 
-import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.DynamicQueryException;
+import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
@@ -34,16 +34,11 @@ import java.util.function.Consumer;
  *
  * @param <T> the type
  */
-class ColumnCrudRepositoryAsyncProxy<T> implements InvocationHandler {
-
-    private static final String SAVE = "save";
-    private static final String UPDATE = "update";
-    private static final String FIND_BY = "findBy";
-    private static final String DELETE_BY = "deleteBy";
+class ColumnRepositoryAsyncProxy<T> implements InvocationHandler {
 
     private final Class<T> typeClass;
 
-    private final ColumnTemplateAsync repository;
+    private final ColumnTemplateAsync template;
 
     private final ColumnRepositoryAsync crudRepository;
 
@@ -54,9 +49,9 @@ class ColumnCrudRepositoryAsyncProxy<T> implements InvocationHandler {
     private final ColumnQueryDeleteParser queryDeleteParser;
 
 
-    ColumnCrudRepositoryAsyncProxy(ColumnTemplateAsync repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
-        this.repository = repository;
-        this.crudRepository = new ColumnRepositoryAsync(repository);
+    ColumnRepositoryAsyncProxy(ColumnTemplateAsync template, ClassRepresentations classRepresentations, Class<?> repositoryType) {
+        this.template = template;
+        this.crudRepository = new ColumnRepositoryAsync(template);
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
@@ -69,53 +64,64 @@ class ColumnCrudRepositoryAsyncProxy<T> implements InvocationHandler {
     public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
 
         String methodName = method.getName();
-        switch (methodName) {
-            case SAVE:
-            case UPDATE:
+        ColumnRepositoryType type = ColumnRepositoryType.of(method, args);
+
+        switch (type) {
+            case DEFAULT:
                 return method.invoke(crudRepository, args);
-            default:
+            case FIND_BY:
+                ColumnQuery query = queryParser.parse(methodName, args, classRepresentation);
+                return executeQuery(getCallBack(args), query);
+            case DELETE_BY:
+                ColumnDeleteQuery deleteQuery = queryDeleteParser.parse(methodName, args, classRepresentation);
+                return executeDelete(getCallBack(args), deleteQuery);
+            case QUERY:
+                ColumnQuery columnQuery = ColumnRepositoryType.getQuery(args).get();
+                return executeQuery(getCallBack(args), columnQuery);
+            case QUERY_DELETE:
+                return executeDelete(args, ColumnRepositoryType.getDeleteQuery(args).get());
+                default:
+                    return null;
         }
+    }
 
-
-        if (methodName.startsWith(FIND_BY)) {
-            ColumnQuery query = queryParser.parse(methodName, args, classRepresentation);
-            Object callBack = args[args.length - 1];
-            if (Consumer.class.isInstance(callBack)) {
-                repository.find(query, Consumer.class.cast(callBack));
-                return null;
-            }
-
-            throw new DynamicQueryException("On find async method you must put a java.util.function.Consumer" +
-                    " as end parameter as callback");
+    private Object executeDelete(Object arg, ColumnDeleteQuery deleteQuery) {
+        Object callBack = arg;
+        if (Consumer.class.isInstance(callBack)) {
+            template.delete(deleteQuery, Consumer.class.cast(callBack));
+            return Void.class;
         }
+        template.delete(deleteQuery);
+        return Void.class;
+    }
 
-        if (methodName.startsWith(DELETE_BY)) {
-            Object callBack = args[args.length - 1];
-            ColumnDeleteQuery query = queryDeleteParser.parse(methodName, args, classRepresentation);
-            if (Consumer.class.isInstance(callBack)) {
-                repository.delete(query, Consumer.class.cast(callBack));
-                return null;
-            }
+    private Object getCallBack(Object[] args) {
+        return args[args.length - 1];
+    }
 
-            repository.delete(query);
+    private Object executeQuery(Object arg, ColumnQuery query) {
+        Object callBack = arg;
+        if (Consumer.class.isInstance(callBack)) {
+            template.find(query, Consumer.class.cast(callBack));
             return null;
         }
 
-        return null;
+        throw new DynamicQueryException("On find async method you must put a java.util.function.Consumer" +
+                " as end parameter as callback");
     }
 
 
     class ColumnRepositoryAsync extends AbstractColumnRepositoryAsync implements RepositoryAsync {
 
-        private final ColumnTemplateAsync repository;
+        private final ColumnTemplateAsync template;
 
         ColumnRepositoryAsync(ColumnTemplateAsync repository) {
-            this.repository = repository;
+            this.template = repository;
         }
 
         @Override
-        protected ColumnTemplateAsync getColumnRepository() {
-            return repository;
+        protected ColumnTemplateAsync getTemplate() {
+            return template;
         }
     }
 }

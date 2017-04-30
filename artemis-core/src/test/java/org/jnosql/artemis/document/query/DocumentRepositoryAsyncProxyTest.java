@@ -42,6 +42,7 @@ import java.util.function.Consumer;
 
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.jnosql.diana.api.document.DocumentCondition.eq;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
@@ -62,7 +63,7 @@ public class DocumentRepositoryAsyncProxyTest {
     public void setUp() {
         this.repository = Mockito.mock(DocumentTemplateAsync.class);
 
-        DocumentCrudRepositoryAsyncProxy handler = new DocumentCrudRepositoryAsyncProxy(repository,
+        DocumentRepositoryAsyncProxy handler = new DocumentRepositoryAsyncProxy(repository,
                 classRepresentations, PersonAsyncRepository.class);
 
 
@@ -258,6 +259,35 @@ public class DocumentRepositoryAsyncProxyTest {
 
     }
 
+    @Test
+    public void shouldExecuteQuery() {
+        Consumer<List<Person>> callback = v -> {
+        };
+
+        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
+        ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
+        DocumentQuery query = DocumentQuery.of("Person")
+                .with(eq(Document.of("name", "Ada")));
+
+        personRepository.query(query, callback);
+        verify(repository).find(captor.capture(), consumerCaptor.capture());
+        DocumentQuery queryCaptor = captor.getValue();
+        DocumentCondition condition = query.getCondition().get();
+        assertEquals(query, queryCaptor);
+        assertEquals(callback, consumerCaptor.getValue());
+    }
+
+    @Test
+    public void shouldExecuteDeleteQuery() {
+        ArgumentCaptor<DocumentDeleteQuery> captor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
+        DocumentDeleteQuery deleteQuery = DocumentDeleteQuery.of("Person")
+                .and(eq(Document.of("name", "Ada")));
+
+        personRepository.deleteQuery(deleteQuery);
+        verify(repository).delete(captor.capture());
+        assertEquals(deleteQuery, captor.getValue());
+    }
+
     interface PersonAsyncRepository extends RepositoryAsync<Person> {
 
         void deleteByName(String name);
@@ -273,6 +303,10 @@ public class DocumentRepositoryAsyncProxyTest {
         void findByName(String name, Sort sort, Consumer<List<Person>> callBack);
 
         void findByName(String name, Sort sort, Pagination pagination, Consumer<List<Person>> callBack);
+
+        void query(DocumentQuery query, Consumer<List<Person>> callBack);
+
+        void deleteQuery(DocumentDeleteQuery query);
     }
 
 }

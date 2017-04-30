@@ -33,7 +33,7 @@ import static org.jnosql.diana.api.Sort.SortType.DESC;
 
 /**
  * Class the returns a {@link org.jnosql.diana.api.document.DocumentQuery}
- * on {@link DocumentCrudRepositoryProxy}
+ * on {@link DocumentRepositoryProxy}
  */
 public class DocumentQueryParser {
 

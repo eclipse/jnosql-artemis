@@ -44,6 +44,7 @@ import java.util.stream.Stream;
 
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.jnosql.diana.api.document.DocumentCondition.eq;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -67,7 +68,7 @@ public class DocumentRepositoryProxyTest {
     public void setUp() {
         this.repository = Mockito.mock(DocumentTemplate.class);
 
-        DocumentCrudRepositoryProxy handler = new DocumentCrudRepositoryProxy(repository,
+        DocumentRepositoryProxy handler = new DocumentRepositoryProxy(repository,
                 classRepresentations, PersonRepository.class);
 
         when(repository.save(any(Person.class))).thenReturn(Person.builder().build());
@@ -246,6 +247,32 @@ public class DocumentRepositoryProxyTest {
 
     }
 
+    @Test
+    public void shouldExecuteQuery() {
+        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
+        Person ada = Person.builder()
+                .withAge(20).withName("Ada").build();
+        when(repository.singleResult(Mockito.any(DocumentQuery.class)))
+                .thenReturn(Optional.of(ada));
+
+        DocumentQuery query = DocumentQuery.of("Person").with(eq(Document.of("name", "Ada")));
+        Person person = personRepository.query(query);
+        verify(repository).singleResult(captor.capture());
+        assertEquals(ada, person);
+        assertEquals(query, captor.getValue());
+
+    }
+
+    @Test
+    public void shouldDeleteQuery() {
+        ArgumentCaptor<DocumentDeleteQuery> captor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
+        DocumentDeleteQuery query = DocumentDeleteQuery.of("Person").and(eq(Document.of("name", "Ada")));
+        personRepository.deleteQuery(query);
+        verify(repository).delete(captor.capture());
+        assertEquals(query, captor.getValue());
+
+    }
+
     interface PersonRepository extends Repository<Person> {
 
         Person findByName(String name);
@@ -261,5 +288,10 @@ public class DocumentRepositoryProxyTest {
         Stream<Person> findByNameANDAgeOrderByName(String name, Integer age);
 
         Queue<Person> findByNameANDAgeOrderByAge(String name, Integer age);
+
+
+        Person query(DocumentQuery query);
+
+        void deleteQuery(DocumentDeleteQuery query);
     }
 }

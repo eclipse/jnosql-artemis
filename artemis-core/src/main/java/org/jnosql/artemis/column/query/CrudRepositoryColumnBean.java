@@ -89,7 +89,7 @@ public class CrudRepositoryColumnBean implements Bean<Repository>, PassivationCa
         ClassRepresentations classRepresentations = getInstance(ClassRepresentations.class);
         ColumnTemplate repository = provider.isEmpty() ? getInstance(ColumnTemplate.class) :
                 getInstance(ColumnTemplate.class, provider);
-        ColumnCrudRepositoryProxy handler = new ColumnCrudRepositoryProxy(repository,
+        ColumnRepositoryProxy handler = new ColumnRepositoryProxy(repository,
                 classRepresentations, type);
         return (Repository) Proxy.newProxyInstance(type.getClassLoader(),
                 new Class[]{type},

@@ -44,6 +44,7 @@ import java.util.stream.Stream;
 
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.jnosql.diana.api.column.ColumnCondition.eq;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -67,7 +68,7 @@ public class ColumnRepositoryProxyTest {
     public void setUp() {
         this.repository = Mockito.mock(ColumnTemplate.class);
 
-        ColumnCrudRepositoryProxy handler = new ColumnCrudRepositoryProxy(repository,
+        ColumnRepositoryProxy handler = new ColumnRepositoryProxy(repository,
                 classRepresentations, PersonRepository.class);
 
         when(repository.save(any(Person.class))).thenReturn(Person.builder().build());
@@ -246,6 +247,32 @@ public class ColumnRepositoryProxyTest {
 
     }
 
+    @Test
+    public void shouldExecuteQuery() {
+        ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
+        Person ada = Person.builder()
+                .withAge(20).withName("Ada").build();
+        when(repository.singleResult(Mockito.any(ColumnQuery.class)))
+                .thenReturn(Optional.of(ada));
+
+        ColumnQuery query = ColumnQuery.of("Person").and(eq(Column.of("name", "Ada")));
+        Person person = personRepository.query(query);
+        verify(repository).singleResult(captor.capture());
+        assertEquals(ada, person);
+        assertEquals(query, captor.getValue());
+
+    }
+
+    @Test
+    public void shouldDeleteQuery() {
+        ArgumentCaptor<ColumnDeleteQuery> captor = ArgumentCaptor.forClass(ColumnDeleteQuery.class);
+        ColumnDeleteQuery query = ColumnDeleteQuery.of("Person").and(eq(Column.of("name", "Ada")));
+        personRepository.deleteQuery(query);
+        verify(repository).delete(captor.capture());
+        assertEquals(query, captor.getValue());
+
+    }
+
     interface PersonRepository extends Repository<Person> {
 
         Person findByName(String name);
@@ -261,5 +288,9 @@ public class ColumnRepositoryProxyTest {
         Stream<Person> findByNameANDAgeOrderByName(String name, Integer age);
 
         Queue<Person> findByNameANDAgeOrderByAge(String name, Integer age);
+
+        Person query(ColumnQuery query);
+
+        void deleteQuery(ColumnDeleteQuery query);
     }
 }

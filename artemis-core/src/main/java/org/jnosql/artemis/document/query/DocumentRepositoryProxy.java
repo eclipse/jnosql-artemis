@@ -27,6 +27,9 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 
+import static org.jnosql.artemis.document.query.DocumentRepositoryType.getDeleteQuery;
+import static org.jnosql.artemis.document.query.DocumentRepositoryType.getQuery;
+import static org.jnosql.artemis.document.query.ReturnTypeConverterUtil.returnObject;
 
 
 /**
@@ -34,11 +37,11 @@ import java.lang.reflect.ParameterizedType;
  *
  * @param <T> the type
  */
-class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
+class DocumentRepositoryProxy<T> implements InvocationHandler {
 
     private final Class<T> typeClass;
 
-    private final DocumentTemplate repository;
+    private final DocumentTemplate template;
 
 
     private final DocumentRepository crudRepository;
@@ -50,9 +53,9 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
     private final DocumentQueryDeleteParser deleteQueryParser;
 
 
-    DocumentCrudRepositoryProxy(DocumentTemplate repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
-        this.repository = repository;
-        this.crudRepository = new DocumentRepository(repository);
+    DocumentRepositoryProxy(DocumentTemplate template, ClassRepresentations classRepresentations, Class<?> repositoryType) {
+        this.template = template;
+        this.crudRepository = new DocumentRepository(template);
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
@@ -65,36 +68,41 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
     public Object invoke(Object o, Method method, Object[] args) throws Throwable {
 
         String methodName = method.getName();
-        switch (methodName) {
-            case "save":
-            case "update":
-                return method.invoke(crudRepository, args);
-            default:
+        DocumentRepositoryType type = DocumentRepositoryType.of(method, args);
 
+        switch (type) {
+            case DEFAULT:
+                return method.invoke(crudRepository, args);
+            case FIND_BY:
+                DocumentQuery query = queryParser.parse(methodName, args, classRepresentation);
+                return returnObject(query, template, typeClass, method);
+            case DELETE_BY:
+                template.delete(deleteQueryParser.parse(methodName, args, classRepresentation));
+                return null;
+            case QUERY:
+                DocumentQuery documentQuery = getQuery(args).get();
+                return returnObject(documentQuery, template, typeClass, method);
+            case QUERY_DELETE:
+                DocumentDeleteQuery deleteQuery = getDeleteQuery(args).get();
+                template.delete(deleteQuery);
+                return null;
+            default:
+                return null;
         }
-        if (methodName.startsWith("findBy")) {
-            DocumentQuery query = queryParser.parse(methodName, args, classRepresentation);
-            return ReturnTypeConverterUtil.returnObject(query, repository, typeClass, method);
-        } else if (methodName.startsWith("deleteBy")) {
-            DocumentDeleteQuery query = deleteQueryParser.parse(methodName, args, classRepresentation);
-            repository.delete(query);
-            return null;
-        }
-        return null;
     }
 
 
     class DocumentRepository extends AbstractDocumentRepository implements Repository {
 
-        private final DocumentTemplate repository;
+        private final DocumentTemplate template;
 
-        DocumentRepository(DocumentTemplate repository) {
-            this.repository = repository;
+        DocumentRepository(DocumentTemplate template) {
+            this.template = template;
         }
 
         @Override
-        protected DocumentTemplate getDocumentRepository() {
-            return repository;
+        protected DocumentTemplate getTemplate() {
+            return template;
         }
     }
 }
