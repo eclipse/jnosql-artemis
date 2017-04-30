@@ -20,13 +20,11 @@ import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.document.DocumentTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentQuery;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
-
 
 
 /**
@@ -65,22 +63,23 @@ class DocumentCrudRepositoryProxy<T> implements InvocationHandler {
     public Object invoke(Object o, Method method, Object[] args) throws Throwable {
 
         String methodName = method.getName();
-        switch (methodName) {
-            case "save":
-            case "update":
-                return method.invoke(crudRepository, args);
-            default:
+        DocumentRepositoryType type = DocumentRepositoryType.of(method, args);
 
+        switch (type) {
+            case DEFAULT:
+                return method.invoke(crudRepository, args);
+            case FIND_BY:
+                DocumentQuery query = queryParser.parse(methodName, args, classRepresentation);
+                return ReturnTypeConverterUtil.returnObject(query, repository, typeClass, method);
+            case DELETE_BY:
+                repository.delete(deleteQueryParser.parse(methodName, args, classRepresentation));
+                return null;
+            case DOCUMENT_QUERY:
+                DocumentQuery documentQuery = DocumentRepositoryType.getDocumentQuery(args).get();
+                return ReturnTypeConverterUtil.returnObject(documentQuery, repository, typeClass, method);
+            default:
+                return null;
         }
-        if (methodName.startsWith("findBy")) {
-            DocumentQuery query = queryParser.parse(methodName, args, classRepresentation);
-            return ReturnTypeConverterUtil.returnObject(query, repository, typeClass, method);
-        } else if (methodName.startsWith("deleteBy")) {
-            DocumentDeleteQuery query = deleteQueryParser.parse(methodName, args, classRepresentation);
-            repository.delete(query);
-            return null;
-        }
-        return null;
     }
 
 
