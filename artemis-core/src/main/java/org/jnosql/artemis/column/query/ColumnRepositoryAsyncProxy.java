@@ -38,7 +38,7 @@ class ColumnRepositoryAsyncProxy<T> implements InvocationHandler {
 
     private final Class<T> typeClass;
 
-    private final ColumnTemplateAsync repository;
+    private final ColumnTemplateAsync template;
 
     private final ColumnRepositoryAsync crudRepository;
 
@@ -49,9 +49,9 @@ class ColumnRepositoryAsyncProxy<T> implements InvocationHandler {
     private final ColumnQueryDeleteParser queryDeleteParser;
 
 
-    ColumnRepositoryAsyncProxy(ColumnTemplateAsync repository, ClassRepresentations classRepresentations, Class<?> repositoryType) {
-        this.repository = repository;
-        this.crudRepository = new ColumnRepositoryAsync(repository);
+    ColumnRepositoryAsyncProxy(ColumnTemplateAsync template, ClassRepresentations classRepresentations, Class<?> repositoryType) {
+        this.template = template;
+        this.crudRepository = new ColumnRepositoryAsync(template);
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
@@ -88,10 +88,10 @@ class ColumnRepositoryAsyncProxy<T> implements InvocationHandler {
     private Object executeDelete(Object arg, ColumnDeleteQuery deleteQuery) {
         Object callBack = arg;
         if (Consumer.class.isInstance(callBack)) {
-            repository.delete(deleteQuery, Consumer.class.cast(callBack));
+            template.delete(deleteQuery, Consumer.class.cast(callBack));
             return Void.class;
         }
-        repository.delete(deleteQuery);
+        template.delete(deleteQuery);
         return Void.class;
     }
 
@@ -102,7 +102,7 @@ class ColumnRepositoryAsyncProxy<T> implements InvocationHandler {
     private Object executeQuery(Object arg, ColumnQuery query) {
         Object callBack = arg;
         if (Consumer.class.isInstance(callBack)) {
-            repository.find(query, Consumer.class.cast(callBack));
+            template.find(query, Consumer.class.cast(callBack));
             return null;
         }
 
@@ -113,15 +113,15 @@ class ColumnRepositoryAsyncProxy<T> implements InvocationHandler {
 
     class ColumnRepositoryAsync extends AbstractColumnRepositoryAsync implements RepositoryAsync {
 
-        private final ColumnTemplateAsync repository;
+        private final ColumnTemplateAsync template;
 
         ColumnRepositoryAsync(ColumnTemplateAsync repository) {
-            this.repository = repository;
+            this.template = repository;
         }
 
         @Override
         protected ColumnTemplateAsync getTemplate() {
-            return repository;
+            return template;
         }
     }
 }
