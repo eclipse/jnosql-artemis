@@ -29,8 +29,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.function.Consumer;
 
-import static org.jnosql.artemis.document.query.DocumentRepositoryType.getDocumentDeleteQuery;
-import static org.jnosql.artemis.document.query.DocumentRepositoryType.getDocumentQuery;
+import static org.jnosql.artemis.document.query.DocumentRepositoryType.getDeleteQuery;
+import static org.jnosql.artemis.document.query.DocumentRepositoryType.getQuery;
 
 /**
  * Proxy handle to generate {@link RepositoryAsync}
@@ -81,10 +81,10 @@ class DocumentRepositoryAsyncProxy<T> implements InvocationHandler {
                 DocumentDeleteQuery deleteQuery = queryDeleteParser.parse(methodName, args, classRepresentation);
                 return executeDelete(args, deleteQuery);
             case QUERY:
-                DocumentQuery documentQuery = getDocumentQuery(args).get();
+                DocumentQuery documentQuery = getQuery(args).get();
                 return executeQuery(getCallBack(args), documentQuery);
             case QUERY_DELETE:
-                return executeDelete(args, getDocumentDeleteQuery(args).get());
+                return executeDelete(args, getDeleteQuery(args).get());
             default:
                 return null;
         }

@@ -54,20 +54,20 @@ enum DocumentRepositoryType {
     }
 
     private static boolean isQuery(Object[] args) {
-        return getDocumentQuery(args).isPresent();
+        return getQuery(args).isPresent();
     }
 
     private static boolean isQueryDelete(Object[] args) {
-        return getDocumentDeleteQuery(args).isPresent();
+        return getDeleteQuery(args).isPresent();
     }
 
-    static Optional<DocumentQuery> getDocumentQuery(Object[] args) {
+    static Optional<DocumentQuery> getQuery(Object[] args) {
         return Stream.of(args)
                 .filter(DocumentQuery.class::isInstance).map(DocumentQuery.class::cast)
                 .findFirst();
     }
 
-    static Optional<DocumentDeleteQuery> getDocumentDeleteQuery(Object[] args) {
+    static Optional<DocumentDeleteQuery> getDeleteQuery(Object[] args) {
         return Stream.of(args)
                 .filter(DocumentDeleteQuery.class::isInstance)
                 .map(DocumentDeleteQuery.class::cast)

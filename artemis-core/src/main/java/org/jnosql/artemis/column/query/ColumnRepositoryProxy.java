@@ -27,6 +27,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 
+import static org.jnosql.artemis.column.query.ColumnRepositoryType.getDeleteQuery;
+import static org.jnosql.artemis.column.query.ColumnRepositoryType.getQuery;
 import static org.jnosql.artemis.column.query.ReturnTypeConverterUtil.returnObject;
 
 
@@ -81,10 +83,12 @@ class ColumnRepositoryProxy<T> implements InvocationHandler {
                 template.delete(deleteQuery);
                 return Void.class;
             case QUERY:
-                ColumnQuery columnQuery = ColumnRepositoryType.getColumnQuery(args).get();
+                ColumnQuery columnQuery = getQuery(args).get();
                 return returnObject(columnQuery, template, typeClass, method);
             case QUERY_DELETE:
-
+                ColumnDeleteQuery columnDeleteQuery = getDeleteQuery(args).get();
+                template.delete(columnDeleteQuery);
+                return Void.class;
             default:
                 return Void.class;
 
