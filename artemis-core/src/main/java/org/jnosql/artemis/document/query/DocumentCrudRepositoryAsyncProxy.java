@@ -16,8 +16,8 @@
 package org.jnosql.artemis.document.query;
 
 
-import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.DynamicQueryException;
+import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.document.DocumentTemplateAsync;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
@@ -64,34 +64,51 @@ class DocumentCrudRepositoryAsyncProxy<T> implements InvocationHandler {
     @Override
     public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
 
-        String methodName = method.getName();
-        switch (methodName) {
-            case "save":
-            case "update":
-                return method.invoke(crudRepository, args);
-            default:
 
+        String methodName = method.getName();
+        DocumentRepositoryType type = DocumentRepositoryType.of(method, args);
+
+        switch (type) {
+            case DEFAULT:
+                return method.invoke(crudRepository, args);
+            case FIND_BY:
+                DocumentQuery query = queryParser.parse(methodName, args, classRepresentation);
+                return executeQuery(getCallBack(args), query);
+            case DELETE_BY:
+                return executeDeleteBy(args, methodName);
+            case DOCUMENT_QUERY:
+                DocumentQuery documentQuery = DocumentRepositoryType.getDocumentQuery(args).get();
+                return executeQuery(getCallBack(args), documentQuery);
+            default:
+                return null;
         }
-        if (methodName.startsWith("findBy")) {
-            DocumentQuery query = queryParser.parse(methodName, args, classRepresentation);
-            Object callBack = args[args.length - 1];
-            if (Consumer.class.isInstance(callBack)) {
-                repository.find(query, Consumer.class.cast(callBack));
-            } else {
-                throw new DynamicQueryException("On find async method you must put a java.util.function.Consumer" +
-                        " as end parameter as callback");
-            }
-        } else if (methodName.startsWith("deleteBy")) {
-            Object callBack = args[args.length - 1];
-            DocumentDeleteQuery query = queryDeleteParser.parse(methodName, args, classRepresentation);
-            if (Consumer.class.isInstance(callBack)) {
-                repository.delete(query, Consumer.class.cast(callBack));
-            } else {
-                repository.delete(query);
-            }
-            return null;
+
+    }
+
+    private Object getCallBack(Object[] args) {
+        return args[args.length - 1];
+    }
+
+    private Object executeQuery(Object arg, DocumentQuery query) {
+        Object callBack = arg;
+        if (Consumer.class.isInstance(callBack)) {
+            repository.find(query, Consumer.class.cast(callBack));
+        } else {
+            throw new DynamicQueryException("On find async method you must put a java.util.function.Consumer" +
+                    " as end parameter as callback");
         }
-        return null;
+        return Void.class;
+    }
+
+    private Object executeDeleteBy(Object[] args, String methodName) {
+        Object callBack = getCallBack(args);
+        DocumentDeleteQuery query = queryDeleteParser.parse(methodName, args, classRepresentation);
+        if (Consumer.class.isInstance(callBack)) {
+            repository.delete(query, Consumer.class.cast(callBack));
+        } else {
+            repository.delete(query);
+        }
+        return Void.class;
     }
 
 
