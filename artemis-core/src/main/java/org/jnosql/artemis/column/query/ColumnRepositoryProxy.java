@@ -39,11 +39,6 @@ import static org.jnosql.artemis.column.query.ReturnTypeConverterUtil.returnObje
  */
 class ColumnRepositoryProxy<T> implements InvocationHandler {
 
-    private static final String SAVE = "save";
-    private static final String UPDATE = "update";
-    private static final String FIND_BY = "findBy";
-    private static final String DELETE_BY = "deleteBy";
-
     private final Class<T> typeClass;
 
     private final ColumnTemplate template;
