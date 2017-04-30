@@ -30,6 +30,11 @@ import java.util.function.Consumer;
 import static org.jnosql.artemis.document.query.DocumentRepositoryType.getDeleteQuery;
 import static org.jnosql.artemis.document.query.DocumentRepositoryType.getQuery;
 
+/**
+ * The template method to {@link RepositoryAsync} to Document
+ *
+ * @param <T> the class type
+ */
 public abstract class AbstractDocumentRepositoryAsyncProxy<T> implements InvocationHandler {
 
 
