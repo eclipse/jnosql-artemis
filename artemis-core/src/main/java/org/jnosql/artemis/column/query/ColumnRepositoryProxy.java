@@ -20,16 +20,8 @@ import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.diana.api.column.ColumnDeleteQuery;
-import org.jnosql.diana.api.column.ColumnQuery;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
-
-import static org.jnosql.artemis.column.query.ColumnRepositoryType.getDeleteQuery;
-import static org.jnosql.artemis.column.query.ColumnRepositoryType.getQuery;
-import static org.jnosql.artemis.column.query.ReturnTypeConverterUtil.returnObject;
 
 
 /**
@@ -37,57 +29,54 @@ import static org.jnosql.artemis.column.query.ReturnTypeConverterUtil.returnObje
  *
  * @param <T> the type
  */
-class ColumnRepositoryProxy<T> implements InvocationHandler {
+class ColumnRepositoryProxy<T> extends AbstractColumnRepositoryProxy {
 
     private final Class<T> typeClass;
 
     private final ColumnTemplate template;
 
-    private final ColumnRepository crudRepository;
+    private final ColumnRepository repository;
 
     private final ClassRepresentation classRepresentation;
 
     private final ColumnQueryParser queryParser;
 
-    private final ColumnQueryDeleteParser deleteQueryParser;
+    private final ColumnQueryDeleteParser deleteParser;
 
 
     ColumnRepositoryProxy(ColumnTemplate template, ClassRepresentations classRepresentations, Class<?> repositoryType) {
         this.template = template;
-        this.crudRepository = new ColumnRepository(template);
+        this.repository = new ColumnRepository(template);
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
         this.queryParser = new ColumnQueryParser();
-        this.deleteQueryParser = new ColumnQueryDeleteParser();
+        this.deleteParser = new ColumnQueryDeleteParser();
     }
 
+    @Override
+    protected Repository getRepository() {
+        return repository;
+    }
 
     @Override
-    public Object invoke(Object o, Method method, Object[] args) throws Throwable {
-        String methodName = method.getName();
-        ColumnRepositoryType type = ColumnRepositoryType.of(method, args);
-        switch (type) {
-            case DEFAULT:
-                return method.invoke(crudRepository, args);
-            case FIND_BY:
-                ColumnQuery query = queryParser.parse(methodName, args, classRepresentation);
-                return returnObject(query, template, typeClass, method);
-            case DELETE_BY:
-                ColumnDeleteQuery deleteQuery = deleteQueryParser.parse(methodName, args, classRepresentation);
-                template.delete(deleteQuery);
-                return Void.class;
-            case QUERY:
-                ColumnQuery columnQuery = getQuery(args).get();
-                return returnObject(columnQuery, template, typeClass, method);
-            case QUERY_DELETE:
-                ColumnDeleteQuery columnDeleteQuery = getDeleteQuery(args).get();
-                template.delete(columnDeleteQuery);
-                return Void.class;
-            default:
-                return Void.class;
+    protected ClassRepresentation getClassRepresentation() {
+        return classRepresentation;
+    }
 
-        }
+    @Override
+    protected ColumnQueryParser getQueryParser() {
+        return queryParser;
+    }
+
+    @Override
+    protected ColumnQueryDeleteParser getDeleteParser() {
+        return deleteParser;
+    }
+
+    @Override
+    protected ColumnTemplate getTemplate() {
+        return null;
     }
 
 
