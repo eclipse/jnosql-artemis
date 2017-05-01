@@ -30,7 +30,7 @@ public class DefaultKeyValueTemplateProducerTest {
 
 
     @Inject
-    private KeyValueRepositoryProducer producer;
+    private KeyValueTemplateProducer producer;
 
 
     @Test(expected = NullPointerException.class)

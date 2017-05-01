@@ -22,7 +22,7 @@ import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 import java.util.Objects;
 
-class DefaultKeyValueRepositoryProducer implements KeyValueRepositoryProducer {
+class DefaultKeyValueTemplateProducer implements KeyValueTemplateProducer {
 
     @Inject
     private KeyValueEntityConverter converter;

@@ -19,7 +19,7 @@ package org.jnosql.artemis.document.spi;
 import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.document.DocumentTemplate;
-import org.jnosql.artemis.document.DocumentRepositoryProducer;
+import org.jnosql.artemis.document.DocumentTemplateProducer;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -74,7 +74,7 @@ class DocumentRepositoryBean implements Bean<DocumentTemplate>, PassivationCapab
     @Override
     public DocumentTemplate create(CreationalContext<DocumentTemplate> creationalContext) {
 
-        DocumentRepositoryProducer producer = getInstance(DocumentRepositoryProducer.class);
+        DocumentTemplateProducer producer = getInstance(DocumentTemplateProducer.class);
         DocumentCollectionManager manager = getManager();
         return producer.get(manager);
     }

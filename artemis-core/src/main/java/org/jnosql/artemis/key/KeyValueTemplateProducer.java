@@ -23,7 +23,7 @@ import org.jnosql.diana.api.key.BucketManager;
  *
  * @param <T> the KeyValueTemplate instance
  */
-public interface KeyValueRepositoryProducer<T extends KeyValueTemplate> {
+public interface KeyValueTemplateProducer<T extends KeyValueTemplate> {
 
     /**
      * creates a {@link KeyValueTemplate}

@@ -29,7 +29,7 @@ import static org.junit.Assert.assertNotNull;
 public class DefaultColumnTemplateProducerTest {
 
     @Inject
-    private ColumnRepositoryProducer producer;
+    private ColumnTemplateProducer producer;
 
 
     @Test(expected = NullPointerException.class)

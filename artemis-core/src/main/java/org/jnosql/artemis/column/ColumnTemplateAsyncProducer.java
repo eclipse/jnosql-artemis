@@ -23,7 +23,7 @@ import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
  *
  * @param <T> the ColumnTemplate instance
  */
-public interface ColumnRepositoryAsyncProducer<T extends ColumnTemplateAsync> {
+public interface ColumnTemplateAsyncProducer<T extends ColumnTemplateAsync> {
 
     /**
      * creates a {@link ColumnFamilyManagerAsync}

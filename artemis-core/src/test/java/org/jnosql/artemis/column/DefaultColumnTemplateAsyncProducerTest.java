@@ -30,7 +30,7 @@ public class DefaultColumnTemplateAsyncProducerTest {
 
 
     @Inject
-    private ColumnRepositoryAsyncProducer producer;
+    private ColumnTemplateAsyncProducer producer;
 
 
     @Test(expected = NullPointerException.class)

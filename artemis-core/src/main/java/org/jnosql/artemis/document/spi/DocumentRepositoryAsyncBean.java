@@ -19,7 +19,7 @@ package org.jnosql.artemis.document.spi;
 import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.document.DocumentTemplateAsync;
-import org.jnosql.artemis.document.DocumentRepositoryAsyncProducer;
+import org.jnosql.artemis.document.DocumentTemplateAsyncProducer;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -74,7 +74,7 @@ class DocumentRepositoryAsyncBean implements Bean<DocumentTemplateAsync>, Passiv
     @Override
     public DocumentTemplateAsync create(CreationalContext<DocumentTemplateAsync> creationalContext) {
 
-        DocumentRepositoryAsyncProducer producer = getInstance(DocumentRepositoryAsyncProducer.class);
+        DocumentTemplateAsyncProducer producer = getInstance(DocumentTemplateAsyncProducer.class);
         DocumentCollectionManagerAsync manager = getManager();
         return producer.get(manager);
     }

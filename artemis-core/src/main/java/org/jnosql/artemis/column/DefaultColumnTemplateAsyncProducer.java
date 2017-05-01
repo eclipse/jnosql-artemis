@@ -23,9 +23,9 @@ import javax.inject.Inject;
 import java.util.Objects;
 
 /**
- * The default implementation of {@link ColumnRepositoryAsyncProducer}
+ * The default implementation of {@link ColumnTemplateAsyncProducer}
  */
-class DefaultColumnRepositoryAsyncProducer implements ColumnRepositoryAsyncProducer {
+class DefaultColumnTemplateAsyncProducer implements ColumnTemplateAsyncProducer {
 
     @Inject
     private ColumnEntityConverter converter;

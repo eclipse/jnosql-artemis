@@ -23,9 +23,9 @@ import javax.inject.Inject;
 import java.util.Objects;
 
 /**
- * The default implementation of {@link ColumnRepositoryProducer}
+ * The default implementation of {@link ColumnTemplateProducer}
  */
-class DefaultColumnRepositoryProducer implements ColumnRepositoryProducer {
+class DefaultColumnTemplateProducer implements ColumnTemplateProducer {
 
 
     @Inject

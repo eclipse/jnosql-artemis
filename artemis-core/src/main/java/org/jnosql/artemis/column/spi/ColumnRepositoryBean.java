@@ -19,7 +19,7 @@ package org.jnosql.artemis.column.spi;
 import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.column.ColumnTemplate;
-import org.jnosql.artemis.column.ColumnRepositoryProducer;
+import org.jnosql.artemis.column.ColumnTemplateProducer;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -74,7 +74,7 @@ class ColumnRepositoryBean implements Bean<ColumnTemplate>, PassivationCapable {
     @Override
     public ColumnTemplate create(CreationalContext<ColumnTemplate> creationalContext) {
 
-        ColumnRepositoryProducer producer = getInstance(ColumnRepositoryProducer.class);
+        ColumnTemplateProducer producer = getInstance(ColumnTemplateProducer.class);
         ColumnFamilyManager columnFamilyManager = getColumnFamilyManager();
         return producer.get(columnFamilyManager);
     }

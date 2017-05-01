@@ -19,7 +19,7 @@ package org.jnosql.artemis.key.spi;
 import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.key.KeyValueTemplate;
-import org.jnosql.artemis.key.KeyValueRepositoryProducer;
+import org.jnosql.artemis.key.KeyValueTemplateProducer;
 import org.jnosql.diana.api.key.BucketManager;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -74,7 +74,7 @@ class KeyValueRepositoryBean implements Bean<KeyValueTemplate>, PassivationCapab
     @Override
     public KeyValueTemplate create(CreationalContext<KeyValueTemplate> creationalContext) {
 
-        KeyValueRepositoryProducer producer = getInstance(KeyValueRepositoryProducer.class);
+        KeyValueTemplateProducer producer = getInstance(KeyValueTemplateProducer.class);
         BucketManager manager = getManager();
         return producer.get(manager);
     }

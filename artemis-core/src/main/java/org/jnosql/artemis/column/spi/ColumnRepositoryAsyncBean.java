@@ -19,7 +19,7 @@ package org.jnosql.artemis.column.spi;
 import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.column.ColumnTemplateAsync;
-import org.jnosql.artemis.column.ColumnRepositoryAsyncProducer;
+import org.jnosql.artemis.column.ColumnTemplateAsyncProducer;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -74,7 +74,7 @@ class ColumnRepositoryAsyncBean implements Bean<ColumnTemplateAsync>, Passivatio
     @Override
     public ColumnTemplateAsync create(CreationalContext<ColumnTemplateAsync> creationalContext) {
 
-        ColumnRepositoryAsyncProducer producer = getInstance(ColumnRepositoryAsyncProducer.class);
+        ColumnTemplateAsyncProducer producer = getInstance(ColumnTemplateAsyncProducer.class);
         ColumnFamilyManagerAsync columnFamilyManager = getColumnFamilyManager();
         return producer.get(columnFamilyManager);
     }

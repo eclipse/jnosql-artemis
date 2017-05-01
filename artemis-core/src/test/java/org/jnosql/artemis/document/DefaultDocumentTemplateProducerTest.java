@@ -30,7 +30,7 @@ import static org.junit.Assert.assertNotNull;
 public class DefaultDocumentTemplateProducerTest {
 
     @Inject
-    private DocumentRepositoryProducer producer;
+    private DocumentTemplateProducer producer;
 
 
     @Test(expected = NullPointerException.class)

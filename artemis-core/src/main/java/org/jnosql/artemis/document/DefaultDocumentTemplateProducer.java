@@ -23,9 +23,9 @@ import javax.inject.Inject;
 import java.util.Objects;
 
 /**
- * The default implementation of {@link DocumentRepositoryProducer}
+ * The default implementation of {@link DocumentTemplateProducer}
  */
-class DefaultDocumentRepositoryProducer implements DocumentRepositoryProducer {
+class DefaultDocumentTemplateProducer implements DocumentTemplateProducer {
 
 
     @Inject

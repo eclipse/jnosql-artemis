@@ -23,9 +23,9 @@ import javax.inject.Inject;
 import java.util.Objects;
 
 /**
- * The default implementation of {@link DocumentRepositoryAsyncProducer}
+ * The default implementation of {@link DocumentTemplateAsyncProducer}
  */
-class DefaultDocumentRepositoryAsyncProducer implements DocumentRepositoryAsyncProducer {
+class DefaultDocumentTemplateAsyncProducer implements DocumentTemplateAsyncProducer {
 
 
     @Inject

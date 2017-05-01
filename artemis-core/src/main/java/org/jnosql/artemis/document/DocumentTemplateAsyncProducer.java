@@ -24,7 +24,7 @@ import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
  *
  * @param <T> the DocumentTemplateAsync instance
  */
-public interface DocumentRepositoryAsyncProducer<T extends DocumentTemplateAsync> {
+public interface DocumentTemplateAsyncProducer<T extends DocumentTemplateAsync> {
 
     /**
      * creates a {@link DocumentTemplate}
