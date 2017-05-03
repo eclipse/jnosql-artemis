@@ -47,13 +47,4 @@ public abstract class AbstractColumnRepository implements Repository {
         return getTemplate().insert(entities, ttl);
     }
 
-    @Override
-    public Object update(Object entity) {
-        return getTemplate().update(entity);
-    }
-
-    @Override
-    public Iterable update(Iterable entities) throws NullPointerException {
-        return getTemplate().update(entities);
-    }
 }

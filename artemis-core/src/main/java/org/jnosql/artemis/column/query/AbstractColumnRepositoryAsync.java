@@ -51,21 +51,6 @@ public abstract class AbstractColumnRepositoryAsync<T> implements RepositoryAsyn
     }
 
     @Override
-    public void update(Iterable entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getTemplate().update(entities);
-    }
-
-    @Override
-    public void update(Object entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getTemplate().insert(entity);
-    }
-
-    @Override
-    public void update(Object entity, Consumer callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getTemplate().update(entity, callBack);
-    }
-
-    @Override
     public void save(Object entity, Duration ttl, Consumer callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
         getTemplate().insert(entity, ttl, callBack);
     }

@@ -80,23 +80,4 @@ public interface Repository<T> {
      */
     Iterable<T> save(Iterable<T> entities, Duration ttl) throws NullPointerException;
 
-    /**
-     * Updates a entity
-     *
-     * @param entity entity to be updated
-     * @return the entity updated
-     */
-    T update(T entity);
-
-    /**
-     * Updates entities,
-     * each NoSQL vendor might replace to a more appropriate one.
-     *
-     * @param entities entities to be saved
-     * @return the entity saved
-     * @throws NullPointerException when entities is null
-     */
-    Iterable<T> update(Iterable<T> entities) throws NullPointerException;
-
-
 }

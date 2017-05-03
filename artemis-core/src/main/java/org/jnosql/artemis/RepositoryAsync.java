@@ -117,43 +117,4 @@ public interface RepositoryAsync<T> {
      */
     <T> void save(T entity, Duration ttl, Consumer<T> callBack) throws
             ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
-
-    /**
-     * Updates an entity asynchronously
-     *
-     * @param entity   entity to be updated
-     * @param callBack the callback, when the process is finished will call this instance returning
-     *                 the updated entity within parametersa
-     * @param <T>      the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
-     * @throws NullPointerException          when either entity or callback are null
-     */
-    <T> void update(T entity, Consumer<T> callBack) throws
-            ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
-
-
-    /**
-     * Updates an entity asynchronously
-     *
-     * @param entity entity to be updated
-     * @param <T>    the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
-     * @throws NullPointerException          when entity is null
-     */
-    <T> void update(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
-
-
-    /**
-     * Updates entities asynchronously
-     * each NoSQL vendor might replace to a more appropriate one.
-     *
-     * @param entities entities to be saved
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
-     * @throws NullPointerException          when entities is null
-     */
-    void update(Iterable<T> entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
-
 }
