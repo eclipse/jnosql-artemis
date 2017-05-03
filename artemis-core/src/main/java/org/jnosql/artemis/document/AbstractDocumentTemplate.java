@@ -46,7 +46,7 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
     @Override
     public <T> T save(T entity) throws NullPointerException {
         Objects.requireNonNull(entity, "entity is required");
-        UnaryOperator<DocumentEntity> saveAction = e -> getManager().save(e);
+        UnaryOperator<DocumentEntity> saveAction = e -> getManager().insert(e);
         return getWorkflow().flow(entity, saveAction);
     }
 
@@ -55,7 +55,7 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
     public <T> T save(T entity, Duration ttl) {
         Objects.requireNonNull(entity, "entity is required");
         Objects.requireNonNull(ttl, "ttl is required");
-        UnaryOperator<DocumentEntity> saveAction = e -> getManager().save(e, ttl);
+        UnaryOperator<DocumentEntity> saveAction = e -> getManager().insert(e, ttl);
         return getWorkflow().flow(entity, saveAction);
     }
 
@@ -81,7 +81,7 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
     public <T> List<T> find(DocumentQuery query) throws NullPointerException {
         Objects.requireNonNull(query, "query is required");
         getPersistManager().firePreQuery(query);
-        List<DocumentEntity> entities = getManager().find(query);
+        List<DocumentEntity> entities = getManager().select(query);
         Function<DocumentEntity, T> function = e -> getConverter().toEntity(e);
         return entities.stream().map(function).collect(Collectors.toList());
     }

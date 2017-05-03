@@ -57,7 +57,7 @@ public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateA
         requireNonNull(entity, "entity is required");
         requireNonNull(callBack, "callBack is required");
         Consumer<DocumentEntity> dianaCallBack = c -> callBack.accept((T) getConverter().toEntity(entity.getClass(), c));
-        getManager().save(getConverter().toDocument(entity), dianaCallBack);
+        getManager().insert(getConverter().toDocument(entity), dianaCallBack);
     }
 
     @Override
@@ -66,7 +66,7 @@ public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateA
         requireNonNull(ttl, "ttl is required");
         requireNonNull(callBack, "callBack is required");
         Consumer<DocumentEntity> dianaCallBack = c -> callBack.accept((T) getConverter().toEntity(entity.getClass(), c));
-        getManager().save(getConverter().toDocument(entity), ttl, dianaCallBack);
+        getManager().insert(getConverter().toDocument(entity), ttl, dianaCallBack);
     }
 
     @Override
@@ -107,6 +107,6 @@ public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateA
                         .map(getConverter()::toEntity)
                         .map(o -> (T) o)
                         .collect(toList()));
-        getManager().find(query, dianaCallBack);
+        getManager().select(query, dianaCallBack);
     }
 }
