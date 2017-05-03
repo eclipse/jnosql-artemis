@@ -23,7 +23,6 @@ import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
 import org.jnosql.diana.api.document.DocumentEntity;
 import org.jnosql.diana.api.key.BucketManager;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import javax.enterprise.inject.Produces;
@@ -52,7 +51,7 @@ public class ManagerProducerProducer {
         entity.add(Document.of("salary", BigDecimal.TEN));
         entity.add(Document.of("phones", Arrays.asList("22342342")));
 
-        when(collectionManager.save(Mockito.any(DocumentEntity.class))).thenReturn(entity);
+        when(collectionManager.insert(Mockito.any(DocumentEntity.class))).thenReturn(entity);
         when(collectionManager.update(Mockito.any(DocumentEntity.class))).thenReturn(entity);
         return collectionManager;
     }
@@ -67,7 +66,7 @@ public class ManagerProducerProducer {
         entity.add(Column.of("salary", BigDecimal.TEN));
         entity.add(Column.of("phones", Arrays.asList("22342342")));
 
-        when(columnFamilyManager.save(Mockito.any(ColumnEntity.class))).thenReturn(entity);
+        when(columnFamilyManager.insert(Mockito.any(ColumnEntity.class))).thenReturn(entity);
         when(columnFamilyManager.update(Mockito.any(ColumnEntity.class))).thenReturn(entity);
 
 
