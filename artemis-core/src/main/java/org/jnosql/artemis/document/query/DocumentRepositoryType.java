@@ -31,7 +31,7 @@ enum DocumentRepositoryType {
     static DocumentRepositoryType of(Method method, Object[] args) {
         String methodName = method.getName();
         switch (methodName) {
-            case "insert":
+            case "save":
             case "update":
                 return DEFAULT;
             default:
