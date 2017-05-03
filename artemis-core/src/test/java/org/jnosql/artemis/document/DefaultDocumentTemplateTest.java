@@ -87,11 +87,11 @@ public class DefaultDocumentTemplateTest {
         document.addAll(Stream.of(documents).collect(Collectors.toList()));
 
         when(managerMock
-                .save(any(DocumentEntity.class)))
+                .insert(any(DocumentEntity.class)))
                 .thenReturn(document);
 
         subject.save(this.person);
-        verify(managerMock).save(captor.capture());
+        verify(managerMock).insert(captor.capture());
         verify(documentEventPersistManager).firePostEntity(any(Person.class));
         verify(documentEventPersistManager).firePreEntity(any(Person.class));
         verify(documentEventPersistManager).firePreDocument(any(DocumentEntity.class));
@@ -109,12 +109,12 @@ public class DefaultDocumentTemplateTest {
         DocumentEntity document = DocumentEntity.of("Person");
         document.addAll(Stream.of(documents).collect(Collectors.toList()));
 
-        when(managerMock.save(any(DocumentEntity.class),
+        when(managerMock.insert(any(DocumentEntity.class),
                 Mockito.eq(twoHours)))
                 .thenReturn(document);
 
         subject.save(this.person, twoHours);
-        verify(managerMock).save(captor.capture(), Mockito.eq(twoHours));
+        verify(managerMock).insert(captor.capture(), Mockito.eq(twoHours));
         verify(documentEventPersistManager).firePostEntity(any(Person.class));
         verify(documentEventPersistManager).firePreEntity(any(Person.class));
         verify(documentEventPersistManager).firePreDocument(any(DocumentEntity.class));

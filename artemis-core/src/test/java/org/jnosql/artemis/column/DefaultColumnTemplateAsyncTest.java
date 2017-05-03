@@ -84,7 +84,7 @@ public class DefaultColumnTemplateAsyncTest {
 
 
         subject.save(this.person);
-        verify(managerMock).save(captor.capture(), Mockito.any(Consumer.class));
+        verify(managerMock).insert(captor.capture(), Mockito.any(Consumer.class));
         ColumnEntity value = captor.getValue();
         assertEquals(document.getName(), value.getName());
     }
@@ -97,7 +97,7 @@ public class DefaultColumnTemplateAsyncTest {
 
 
         subject.save(this.person);
-        verify(managerMock).save(Mockito.any(ColumnEntity.class), Mockito.any(Consumer.class));
+        verify(managerMock).insert(Mockito.any(ColumnEntity.class), Mockito.any(Consumer.class));
     }
 
     @Test

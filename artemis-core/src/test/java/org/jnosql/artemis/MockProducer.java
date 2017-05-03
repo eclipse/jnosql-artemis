@@ -46,7 +46,7 @@ public class MockProducer {
         entity.add(Document.of("name", "Default"));
         entity.add(Document.of("age", 10));
         DocumentCollectionManager manager = mock(DocumentCollectionManager.class);
-        when(manager.save(Mockito.any(DocumentEntity.class))).thenReturn(entity);
+        when(manager.insert(Mockito.any(DocumentEntity.class))).thenReturn(entity);
         return manager;
 
     }
@@ -58,7 +58,7 @@ public class MockProducer {
         entity.add(Document.of("name", "documentRepositoryMock"));
         entity.add(Document.of("age", 10));
         DocumentCollectionManager manager = mock(DocumentCollectionManager.class);
-        when(manager.save(Mockito.any(DocumentEntity.class))).thenReturn(entity);
+        when(manager.insert(Mockito.any(DocumentEntity.class))).thenReturn(entity);
         return manager;
 
     }
@@ -69,7 +69,7 @@ public class MockProducer {
         entity.add(org.jnosql.diana.api.column.Column.of("name", "Default"));
         entity.add(org.jnosql.diana.api.column.Column.of("age", 10));
         ColumnFamilyManager manager = mock(ColumnFamilyManager.class);
-        when(manager.save(Mockito.any(ColumnEntity.class))).thenReturn(entity);
+        when(manager.insert(Mockito.any(ColumnEntity.class))).thenReturn(entity);
         return manager;
 
     }
@@ -81,7 +81,7 @@ public class MockProducer {
         entity.add(org.jnosql.diana.api.column.Column.of("name", "columnRepositoryMock"));
         entity.add(org.jnosql.diana.api.column.Column.of("age", 10));
         ColumnFamilyManager manager = mock(ColumnFamilyManager.class);
-        when(manager.save(Mockito.any(ColumnEntity.class))).thenReturn(entity);
+        when(manager.insert(Mockito.any(ColumnEntity.class))).thenReturn(entity);
         return manager;
 
     }
