@@ -127,18 +127,6 @@ public class ColumnRepositoryAsyncProxyTest {
         assertThat(persons, containsInAnyOrder(person));
     }
 
-    @Test
-    public void shouldUpdateItarable() {
-        ArgumentCaptor<Iterable> captor = ArgumentCaptor.forClass(Iterable.class);
-        Person person = Person.builder().withName("Ada")
-                .withId(10L)
-                .withPhones(singletonList("123123"))
-                .build();
-        personRepository.update(singletonList(person));
-        verify(repository).update(captor.capture());
-        Iterable<Person> persons = captor.getValue();
-        assertThat(persons, containsInAnyOrder(person));
-    }
 
     @Test
     public void shouldDeleteByName() {

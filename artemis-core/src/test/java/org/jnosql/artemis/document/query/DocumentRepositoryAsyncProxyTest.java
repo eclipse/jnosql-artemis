@@ -129,19 +129,6 @@ public class DocumentRepositoryAsyncProxyTest {
     }
 
     @Test
-    public void shouldUpdateItarable() {
-        ArgumentCaptor<Iterable> captor = ArgumentCaptor.forClass(Iterable.class);
-        Person person = Person.builder().withName("Ada")
-                .withId(10L)
-                .withPhones(singletonList("123123"))
-                .build();
-        personRepository.update(singletonList(person));
-        verify(repository).update(captor.capture());
-        Iterable<Person> persons = captor.getValue();
-        assertThat(persons, containsInAnyOrder(person));
-    }
-
-    @Test
     public void shouldDeleteByName() {
         ArgumentCaptor<DocumentDeleteQuery> captor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
         personRepository.deleteByName("name");

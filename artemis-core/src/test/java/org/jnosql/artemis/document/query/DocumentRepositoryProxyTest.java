@@ -108,18 +108,6 @@ public class DocumentRepositoryProxyTest {
     }
 
 
-    @Test
-    public void shouldUpdate() {
-        ArgumentCaptor<Person> captor = ArgumentCaptor.forClass(Person.class);
-        Person person = Person.builder().withName("Ada")
-                .withId(10L)
-                .withPhones(singletonList("123123"))
-                .build();
-        assertNotNull(personRepository.update(person));
-        verify(repository).update(captor.capture());
-        Person value = captor.getValue();
-        assertEquals(person, value);
-    }
 
 
     @Test
@@ -131,19 +119,6 @@ public class DocumentRepositoryProxyTest {
                 .build();
         personRepository.save(singletonList(person));
         verify(repository).insert(captor.capture());
-        Iterable<Person> persons = captor.getValue();
-        assertThat(persons, containsInAnyOrder(person));
-    }
-
-    @Test
-    public void shouldUpdateItarable() {
-        ArgumentCaptor<Iterable> captor = ArgumentCaptor.forClass(Iterable.class);
-        Person person = Person.builder().withName("Ada")
-                .withId(10L)
-                .withPhones(singletonList("123123"))
-                .build();
-        personRepository.update(singletonList(person));
-        verify(repository).update(captor.capture());
         Iterable<Person> persons = captor.getValue();
         assertThat(persons, containsInAnyOrder(person));
     }
