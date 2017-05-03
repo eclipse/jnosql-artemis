@@ -71,8 +71,8 @@ public class DocumentRepositoryProxyTest {
         DocumentRepositoryProxy handler = new DocumentRepositoryProxy(repository,
                 classRepresentations, PersonRepository.class);
 
-        when(repository.save(any(Person.class))).thenReturn(Person.builder().build());
-        when(repository.save(any(Person.class), any(Duration.class))).thenReturn(Person.builder().build());
+        when(repository.insert(any(Person.class))).thenReturn(Person.builder().build());
+        when(repository.insert(any(Person.class), any(Duration.class))).thenReturn(Person.builder().build());
         when(repository.update(any(Person.class))).thenReturn(Person.builder().build());
         personRepository = (PersonRepository) Proxy.newProxyInstance(PersonRepository.class.getClassLoader(),
                 new Class[]{PersonRepository.class},
@@ -88,7 +88,7 @@ public class DocumentRepositoryProxyTest {
                 .withPhones(singletonList("123123"))
                 .build();
         assertNotNull(personRepository.save(person));
-        verify(repository).save(captor.capture());
+        verify(repository).insert(captor.capture());
         Person value = captor.getValue();
         assertEquals(person, value);
     }
@@ -102,7 +102,7 @@ public class DocumentRepositoryProxyTest {
                 .withPhones(singletonList("123123"))
                 .build();
         assertNotNull(personRepository.save(person, Duration.ofHours(2)));
-        verify(repository).save(captor.capture(), Mockito.eq(Duration.ofHours(2)));
+        verify(repository).insert(captor.capture(), Mockito.eq(Duration.ofHours(2)));
         Person value = captor.getValue();
         assertEquals(person, value);
     }
@@ -130,7 +130,7 @@ public class DocumentRepositoryProxyTest {
                 .withPhones(singletonList("123123"))
                 .build();
         personRepository.save(singletonList(person));
-        verify(repository).save(captor.capture());
+        verify(repository).insert(captor.capture());
         Iterable<Person> persons = captor.getValue();
         assertThat(persons, containsInAnyOrder(person));
     }
@@ -179,12 +179,12 @@ public class DocumentRepositoryProxyTest {
         Person ada = Person.builder()
                 .withAge(20).withName("Ada").build();
 
-        when(repository.find(Mockito.any(DocumentQuery.class)))
+        when(repository.select(Mockito.any(DocumentQuery.class)))
                 .thenReturn(singletonList(ada));
 
         List<Person> persons = personRepository.findByNameANDAge("name", 20);
         ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
-        verify(repository).find(captor.capture());
+        verify(repository).select(captor.capture());
         assertThat(persons, Matchers.contains(ada));
 
     }
@@ -194,12 +194,12 @@ public class DocumentRepositoryProxyTest {
         Person ada = Person.builder()
                 .withAge(20).withName("Ada").build();
 
-        when(repository.find(Mockito.any(DocumentQuery.class)))
+        when(repository.select(Mockito.any(DocumentQuery.class)))
                 .thenReturn(singletonList(ada));
 
         Set<Person> persons = personRepository.findByAgeANDName(20, "name");
         ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
-        verify(repository).find(captor.capture());
+        verify(repository).select(captor.capture());
         assertThat(persons, Matchers.contains(ada));
 
     }
@@ -209,12 +209,12 @@ public class DocumentRepositoryProxyTest {
         Person ada = Person.builder()
                 .withAge(20).withName("Ada").build();
 
-        when(repository.find(Mockito.any(DocumentQuery.class)))
+        when(repository.select(Mockito.any(DocumentQuery.class)))
                 .thenReturn(singletonList(ada));
 
         Stream<Person> persons = personRepository.findByNameANDAgeOrderByName("name", 20);
         ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
-        verify(repository).find(captor.capture());
+        verify(repository).select(captor.capture());
         assertThat(persons.collect(Collectors.toList()), Matchers.contains(ada));
 
     }
@@ -224,12 +224,12 @@ public class DocumentRepositoryProxyTest {
         Person ada = Person.builder()
                 .withAge(20).withName("Ada").build();
 
-        when(repository.find(Mockito.any(DocumentQuery.class)))
+        when(repository.select(Mockito.any(DocumentQuery.class)))
                 .thenReturn(singletonList(ada));
 
         Queue<Person> persons = personRepository.findByNameANDAgeOrderByAge("name", 20);
         ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
-        verify(repository).find(captor.capture());
+        verify(repository).select(captor.capture());
         assertThat(persons, Matchers.contains(ada));
 
     }

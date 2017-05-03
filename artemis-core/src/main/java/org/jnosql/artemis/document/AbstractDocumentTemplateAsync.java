@@ -41,19 +41,19 @@ public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateA
     protected abstract DocumentCollectionManagerAsync getManager();
 
     @Override
-    public <T> void save(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        save(entity, t -> {
+    public <T> void insert(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+        insert(entity, t -> {
         });
     }
 
     @Override
-    public <T> void save(T entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        save(entity, ttl, t -> {
+    public <T> void insert(T entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+        insert(entity, ttl, t -> {
         });
     }
 
     @Override
-    public <T> void save(T entity, Consumer<T> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public <T> void insert(T entity, Consumer<T> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
         requireNonNull(entity, "entity is required");
         requireNonNull(callBack, "callBack is required");
         Consumer<DocumentEntity> dianaCallBack = c -> callBack.accept((T) getConverter().toEntity(entity.getClass(), c));
@@ -61,7 +61,7 @@ public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateA
     }
 
     @Override
-    public <T> void save(T entity, Duration ttl, Consumer<T> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public <T> void insert(T entity, Duration ttl, Consumer<T> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
         requireNonNull(entity, "entity is required");
         requireNonNull(ttl, "ttl is required");
         requireNonNull(callBack, "callBack is required");
@@ -98,7 +98,7 @@ public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateA
     }
 
     @Override
-    public <T> void find(DocumentQuery query, Consumer<List<T>> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public <T> void select(DocumentQuery query, Consumer<List<T>> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
         requireNonNull(query, "query is required");
         requireNonNull(callBack, "callBack is required");
 

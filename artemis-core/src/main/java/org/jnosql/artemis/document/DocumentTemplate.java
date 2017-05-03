@@ -42,7 +42,7 @@ public interface DocumentTemplate {
      * @return the entity saved
      * @throws NullPointerException when document is null
      */
-    <T> T save(T entity) throws NullPointerException;
+    <T> T insert(T entity) throws NullPointerException;
 
     /**
      * Saves entity with time to live
@@ -52,11 +52,11 @@ public interface DocumentTemplate {
      * @param ttl    the time to live
      * @return the entity saved
      */
-    <T> T save(T entity, Duration ttl);
+    <T> T insert(T entity, Duration ttl);
 
     /**
      * Saves entity, by default it's just run for each saving using
-     * {@link DocumentTemplate#save(Object)},
+     * {@link DocumentTemplate#insert(Object)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -64,14 +64,14 @@ public interface DocumentTemplate {
      * @return the entity saved
      * @throws NullPointerException when entities is null
      */
-    default <T> Iterable<T> save(Iterable<T> entities) throws NullPointerException {
+    default <T> Iterable<T> insert(Iterable<T> entities) throws NullPointerException {
         Objects.requireNonNull(entities, "entities is required");
-        return StreamSupport.stream(entities.spliterator(), false).map(this::save).collect(toList());
+        return StreamSupport.stream(entities.spliterator(), false).map(this::insert).collect(toList());
     }
 
     /**
      * Saves documents collection entity with time to live, by default it's just run for each saving using
-     * {@link DocumentTemplate#save(Object, Duration)},
+     * {@link DocumentTemplate#insert(Object, Duration)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -80,10 +80,10 @@ public interface DocumentTemplate {
      * @return the entity saved
      * @throws NullPointerException when entities is null
      */
-    default <T> Iterable<T> save(Iterable<T> entities, Duration ttl) throws NullPointerException {
+    default <T> Iterable<T> insert(Iterable<T> entities, Duration ttl) throws NullPointerException {
         Objects.requireNonNull(entities, "entities is required");
         Objects.requireNonNull(ttl, "ttl is required");
-        return StreamSupport.stream(entities.spliterator(), false).map(d -> save(d, ttl)).collect(toList());
+        return StreamSupport.stream(entities.spliterator(), false).map(d -> insert(d, ttl)).collect(toList());
     }
 
     /**
@@ -125,7 +125,7 @@ public interface DocumentTemplate {
      * @return entities found by query
      * @throws NullPointerException when query is null
      */
-    <T> List<T> find(DocumentQuery query) throws NullPointerException;
+    <T> List<T> select(DocumentQuery query) throws NullPointerException;
 
     /**
      * Returns a single entity from query
@@ -137,7 +137,7 @@ public interface DocumentTemplate {
      * @throws NullPointerException     when query is null
      */
     default <T> Optional<T> singleResult(DocumentQuery query) throws NonUniqueResultException {
-        List<T> entities = find(query);
+        List<T> entities = select(query);
         if (entities.isEmpty()) {
             return Optional.empty();
         }

@@ -91,7 +91,7 @@ public class MockProducer {
     @Database(value = DatabaseType.DOCUMENT, provider = "documentRepositoryMock")
     public DocumentTemplate getDocumentRepository() {
         DocumentTemplate documentTemplate = mock(DocumentTemplate.class);
-        when(documentTemplate.save(Mockito.any(Person.class))).thenReturn(Person.builder()
+        when(documentTemplate.insert(Mockito.any(Person.class))).thenReturn(Person.builder()
                 .withName("documentRepositoryMock").build());
         return documentTemplate;
     }

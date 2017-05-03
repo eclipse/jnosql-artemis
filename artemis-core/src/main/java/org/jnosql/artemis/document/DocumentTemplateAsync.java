@@ -42,7 +42,7 @@ public interface DocumentTemplateAsync {
      * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when entity are null
      */
-    <T> void save(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
+    <T> void insert(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
 
     /**
      * Saves an entity asynchronously with time to live
@@ -54,11 +54,11 @@ public interface DocumentTemplateAsync {
      * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when either entity or ttl are null
      */
-    <T> void save(T entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
+    <T> void insert(T entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
 
     /**
      * Saves entities asynchronously, by default it's just run for each saving using
-     * {@link DocumentTemplateAsync#save(Object)},
+     * {@link DocumentTemplateAsync#insert(Object)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -67,14 +67,14 @@ public interface DocumentTemplateAsync {
      * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when entities is null
      */
-    default <T> void save(Iterable<T> entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    default <T> void insert(Iterable<T> entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
         Objects.requireNonNull(entities, "entities is required");
-        StreamSupport.stream(entities.spliterator(), false).forEach(this::save);
+        StreamSupport.stream(entities.spliterator(), false).forEach(this::insert);
     }
 
     /**
      * Saves entities asynchronously with time to live, by default it's just run for each saving using
-     * {@link DocumentTemplateAsync#save(Object)} (Object, Duration)},
+     * {@link DocumentTemplateAsync#insert(Object)} (Object, Duration)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -84,10 +84,10 @@ public interface DocumentTemplateAsync {
      * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when either entities or ttl are null
      */
-    default <T> void save(Iterable<T> entities, Duration ttl) throws NullPointerException {
+    default <T> void insert(Iterable<T> entities, Duration ttl) throws NullPointerException {
         Objects.requireNonNull(entities, "entities is required");
         Objects.requireNonNull(ttl, "ttl is required");
-        StreamSupport.stream(entities.spliterator(), false).forEach(d -> save(d, ttl));
+        StreamSupport.stream(entities.spliterator(), false).forEach(d -> insert(d, ttl));
     }
 
     /**
@@ -101,7 +101,7 @@ public interface DocumentTemplateAsync {
      * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when either entity or callBack are null
      */
-    <T> void save(T entity, Consumer<T> callBack) throws
+    <T> void insert(T entity, Consumer<T> callBack) throws
             ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
 
     /**
@@ -116,7 +116,7 @@ public interface DocumentTemplateAsync {
      * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when either entity or ttl or callBack are null
      */
-    <T> void save(T entity, Duration ttl, Consumer<T> callBack) throws
+    <T> void insert(T entity, Duration ttl, Consumer<T> callBack) throws
             ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
 
     /**
@@ -196,6 +196,6 @@ public interface DocumentTemplateAsync {
      * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when either query or callback are null
      */
-    <T> void find(DocumentQuery query, Consumer<List<T>> callBack) throws
+    <T> void select(DocumentQuery query, Consumer<List<T>> callBack) throws
             ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
 }

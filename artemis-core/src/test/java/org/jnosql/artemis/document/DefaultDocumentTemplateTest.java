@@ -90,7 +90,7 @@ public class DefaultDocumentTemplateTest {
                 .insert(any(DocumentEntity.class)))
                 .thenReturn(document);
 
-        subject.save(this.person);
+        subject.insert(this.person);
         verify(managerMock).insert(captor.capture());
         verify(documentEventPersistManager).firePostEntity(any(Person.class));
         verify(documentEventPersistManager).firePreEntity(any(Person.class));
@@ -113,7 +113,7 @@ public class DefaultDocumentTemplateTest {
                 Mockito.eq(twoHours)))
                 .thenReturn(document);
 
-        subject.save(this.person, twoHours);
+        subject.insert(this.person, twoHours);
         verify(managerMock).insert(captor.capture(), Mockito.eq(twoHours));
         verify(documentEventPersistManager).firePostEntity(any(Person.class));
         verify(documentEventPersistManager).firePreEntity(any(Person.class));

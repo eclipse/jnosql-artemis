@@ -44,7 +44,7 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
     protected abstract DocumentEventPersistManager getPersistManager();
 
     @Override
-    public <T> T save(T entity) throws NullPointerException {
+    public <T> T insert(T entity) throws NullPointerException {
         Objects.requireNonNull(entity, "entity is required");
         UnaryOperator<DocumentEntity> saveAction = e -> getManager().insert(e);
         return getWorkflow().flow(entity, saveAction);
@@ -52,7 +52,7 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
 
 
     @Override
-    public <T> T save(T entity, Duration ttl) {
+    public <T> T insert(T entity, Duration ttl) {
         Objects.requireNonNull(entity, "entity is required");
         Objects.requireNonNull(ttl, "ttl is required");
         UnaryOperator<DocumentEntity> saveAction = e -> getManager().insert(e, ttl);
@@ -78,7 +78,7 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
     }
 
     @Override
-    public <T> List<T> find(DocumentQuery query) throws NullPointerException {
+    public <T> List<T> select(DocumentQuery query) throws NullPointerException {
         Objects.requireNonNull(query, "query is required");
         getPersistManager().firePreQuery(query);
         List<DocumentEntity> entities = getManager().select(query);

@@ -86,7 +86,7 @@ public class DefaultDocumentTemplateAsyncTest {
         document.addAll(Stream.of(documents).collect(Collectors.toList()));
 
 
-        subject.save(this.person);
+        subject.insert(this.person);
         verify(managerMock).insert(captor.capture(), Mockito.any(Consumer.class));
         DocumentEntity value = captor.getValue();
         assertEquals("Person", value.getName());
@@ -102,7 +102,7 @@ public class DefaultDocumentTemplateAsyncTest {
         document.addAll(Stream.of(documents).collect(Collectors.toList()));
 
 
-        subject.save(this.person, twoHours);
+        subject.insert(this.person, twoHours);
         verify(managerMock).insert(captor.capture(), Mockito.eq(twoHours), Mockito.any(Consumer.class));
         DocumentEntity value = captor.getValue();
         assertEquals("Person", value.getName());
