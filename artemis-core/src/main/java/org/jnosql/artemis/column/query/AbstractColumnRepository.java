@@ -29,22 +29,22 @@ public abstract class AbstractColumnRepository implements Repository {
 
     @Override
     public Object save(Object entity) throws NullPointerException {
-        return getTemplate().save(entity);
+        return getTemplate().insert(entity);
     }
 
     @Override
     public Object save(Object entity, Duration ttl) {
-        return getTemplate().save(entity, ttl);
+        return getTemplate().insert(entity, ttl);
     }
 
     @Override
     public Iterable save(Iterable entities) throws NullPointerException {
-        return getTemplate().save(entities);
+        return getTemplate().insert(entities);
     }
 
     @Override
     public Iterable save(Iterable entities, Duration ttl) throws NullPointerException {
-        return getTemplate().save(entities, ttl);
+        return getTemplate().insert(entities, ttl);
     }
 
     @Override

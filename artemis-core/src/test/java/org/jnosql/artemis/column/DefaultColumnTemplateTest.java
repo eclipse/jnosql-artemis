@@ -89,7 +89,7 @@ public class DefaultColumnTemplateTest {
                 .insert(Mockito.any(ColumnEntity.class)))
                 .thenReturn(document);
 
-        subject.save(this.person);
+        subject.insert(this.person);
         verify(managerMock).insert(captor.capture());
         verify(columnEventPersistManager).firePostEntity(Mockito.any(Person.class));
         verify(columnEventPersistManager).firePreEntity(Mockito.any(Person.class));
@@ -111,7 +111,7 @@ public class DefaultColumnTemplateTest {
                         Mockito.any(Duration.class)))
                 .thenReturn(document);
 
-        subject.save(this.person, Duration.ofHours(2));
+        subject.insert(this.person, Duration.ofHours(2));
         verify(managerMock).insert(captor.capture(), Mockito.eq(Duration.ofHours(2)));
         verify(columnEventPersistManager).firePostEntity(Mockito.any(Person.class));
         verify(columnEventPersistManager).firePreEntity(Mockito.any(Person.class));

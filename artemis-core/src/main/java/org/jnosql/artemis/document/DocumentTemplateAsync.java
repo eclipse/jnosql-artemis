@@ -39,7 +39,7 @@ public interface DocumentTemplateAsync {
      * @param entity entity to be saved
      * @param <T>    the instance type
      * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
+     * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when entity are null
      */
     <T> void save(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
@@ -51,7 +51,7 @@ public interface DocumentTemplateAsync {
      * @param <T>    the instance type
      * @param ttl    the time to live
      * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
+     * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when either entity or ttl are null
      */
     <T> void save(T entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
@@ -64,7 +64,7 @@ public interface DocumentTemplateAsync {
      * @param entities entities to be saved
      * @param <T>      the instance type
      * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
+     * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when entities is null
      */
     default <T> void save(Iterable<T> entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
@@ -81,7 +81,7 @@ public interface DocumentTemplateAsync {
      * @param <T>      the instance type
      * @param ttl      time to live
      * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
+     * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when either entities or ttl are null
      */
     default <T> void save(Iterable<T> entities, Duration ttl) throws NullPointerException {
@@ -98,7 +98,7 @@ public interface DocumentTemplateAsync {
      *                 the saved entity within parameters
      * @param <T>      the instance type
      * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
+     * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when either entity or callBack are null
      */
     <T> void save(T entity, Consumer<T> callBack) throws
@@ -113,7 +113,7 @@ public interface DocumentTemplateAsync {
      *                 the saved entity within parameters
      * @param <T>      the instance type
      * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
+     * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when either entity or ttl or callBack are null
      */
     <T> void save(T entity, Duration ttl, Consumer<T> callBack) throws
@@ -127,7 +127,7 @@ public interface DocumentTemplateAsync {
      *                 the updated entity within parametersa
      * @param <T>      the instance type
      * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
+     * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when either entity or callback are null
      */
     <T> void update(T entity, Consumer<T> callBack) throws
@@ -140,7 +140,7 @@ public interface DocumentTemplateAsync {
      * @param entity entity to be updated
      * @param <T>    the instance type
      * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
+     * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when entity is null
      */
     <T> void update(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
@@ -153,7 +153,7 @@ public interface DocumentTemplateAsync {
      * @param entities entities to be saved
      * @param <T>      the instance type
      * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
+     * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when entities is null
      */
     default <T> void update(Iterable<T> entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
@@ -166,7 +166,7 @@ public interface DocumentTemplateAsync {
      *
      * @param query query to delete an entity
      * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
+     * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when query is null
      */
     void delete(DocumentDeleteQuery query) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
@@ -188,12 +188,12 @@ public interface DocumentTemplateAsync {
     /**
      * Finds entities from query asynchronously
      *
-     * @param query    query to find entities
+     * @param query    query to select entities
      * @param <T>      the instance type
      * @param callBack the callback, when the process is finished will call this instance returning
      *                 the result of query within parameters
      * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
+     * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when either query or callback are null
      */
     <T> void find(DocumentQuery query, Consumer<List<T>> callBack) throws

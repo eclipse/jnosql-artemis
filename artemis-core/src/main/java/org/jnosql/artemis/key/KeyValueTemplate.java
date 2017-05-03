@@ -32,7 +32,7 @@ public interface KeyValueTemplate {
     /**
      * Saves the entity
      *
-     * @param entity the entity to be save
+     * @param entity the entity to be insert
      * @param <T>    the entity type
      * @throws NullPointerException when entity is null
      */
@@ -41,7 +41,7 @@ public interface KeyValueTemplate {
     /**
      * Saves the entity with time to live
      *
-     * @param entity the entity to be save
+     * @param entity the entity to be insert
      * @param ttl    the defined time to live
      * @param <T>    the entity type
      * @throws NullPointerException          when entity is null
@@ -52,7 +52,7 @@ public interface KeyValueTemplate {
     /**
      * Saves the {@link Iterable} of entities
      *
-     * @param entities keys to be save
+     * @param entities keys to be insert
      * @param <T>      the entity type
      * @throws NullPointerException when the iterable is null
      */
@@ -64,7 +64,7 @@ public interface KeyValueTemplate {
     /**
      * Saves the {@link Iterable} of entities with a defined time to live
      *
-     * @param entities entities to be save
+     * @param entities entities to be insert
      * @param ttl      the time to entity expire
      * @param <T>      the entity type
      * @throws NullPointerException          when the iterable is null

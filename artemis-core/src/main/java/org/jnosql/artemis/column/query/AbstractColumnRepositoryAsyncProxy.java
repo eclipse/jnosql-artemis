@@ -86,11 +86,11 @@ public abstract class AbstractColumnRepositoryAsyncProxy<T> implements Invocatio
     private Object executeQuery(Object arg, ColumnQuery query) {
         Object callBack = arg;
         if (Consumer.class.isInstance(callBack)) {
-            getTemplate().find(query, Consumer.class.cast(callBack));
+            getTemplate().select(query, Consumer.class.cast(callBack));
             return null;
         }
 
-        throw new DynamicQueryException("On find async method you must put a java.util.function.Consumer" +
+        throw new DynamicQueryException("On select async method you must put a java.util.function.Consumer" +
                 " as end parameter as callback");
     }
 

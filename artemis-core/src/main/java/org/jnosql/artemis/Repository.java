@@ -22,7 +22,7 @@ import java.time.Duration;
  * Interface to generic CRUD operations on a repository for a specific type.
  * The query builder mechanism built into Artemis repository infrastructure is useful for building constraining queries
  * over entities of the repository. The mechanism strips the prefixes is defined by:
- * <p>findBy: to find any information T</p>
+ * <p>findBy: to select any information T</p>
  * <p>deleteBy: To delete any information T</p>
  * Artemis has some keywords on method:
  * <p><b>And</b></p>

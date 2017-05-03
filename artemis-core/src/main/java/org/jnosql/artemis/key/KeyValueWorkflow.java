@@ -21,7 +21,7 @@ import org.jnosql.diana.api.key.KeyValueEntity;
 import java.util.function.UnaryOperator;
 
 /**
- * This implementation defines the workflow to save an Entity on {@link KeyValueTemplate}.
+ * This implementation defines the workflow to insert an Entity on {@link KeyValueTemplate}.
  * The default implementation follows:
  *  <p>{@link KeyValueEventPersistManager#firePreEntity(Object)}</p>
  *  <p>{@link KeyValueEventPersistManager#firePreKeyValueEntity(Object)}</p>

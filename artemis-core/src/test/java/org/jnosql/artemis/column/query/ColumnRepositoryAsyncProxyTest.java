@@ -79,8 +79,8 @@ public class ColumnRepositoryAsyncProxyTest {
                 .withId(10L)
                 .withPhones(singletonList("123123"))
                 .build();
-        repository.save(person);
-        verify(repository).save(captor.capture());
+        repository.insert(person);
+        verify(repository).insert(captor.capture());
         Person value = captor.getValue();
         assertEquals(person, value);
     }
@@ -93,8 +93,8 @@ public class ColumnRepositoryAsyncProxyTest {
                 .withId(10L)
                 .withPhones(singletonList("123123"))
                 .build();
-        repository.save(person, Duration.ofHours(2));
-        verify(repository).save(captor.capture(), Mockito.eq(Duration.ofHours(2)));
+        repository.insert(person, Duration.ofHours(2));
+        verify(repository).insert(captor.capture(), Mockito.eq(Duration.ofHours(2)));
         Person value = captor.getValue();
         assertEquals(person, value);
     }
@@ -122,7 +122,7 @@ public class ColumnRepositoryAsyncProxyTest {
                 .withPhones(singletonList("123123"))
                 .build();
         personRepository.save(singletonList(person));
-        verify(repository).save(captor.capture());
+        verify(repository).insert(captor.capture());
         Iterable<Person> persons = captor.getValue();
         assertThat(persons, containsInAnyOrder(person));
     }
@@ -185,7 +185,7 @@ public class ColumnRepositoryAsyncProxyTest {
         ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
 
         personRepository.findByName("name", callback);
-        verify(repository).find(captor.capture(), consumerCaptor.capture());
+        verify(repository).select(captor.capture(), consumerCaptor.capture());
         ColumnQuery query = captor.getValue();
         ColumnCondition condition = query.getCondition().get();
         assertEquals("Person", query.getColumnFamily());
@@ -205,7 +205,7 @@ public class ColumnRepositoryAsyncProxyTest {
         ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
 
         personRepository.findByName("name", sort, callback);
-        verify(repository).find(captor.capture(), consumerCaptor.capture());
+        verify(repository).select(captor.capture(), consumerCaptor.capture());
         ColumnQuery query = captor.getValue();
         ColumnCondition condition = query.getCondition().get();
         assertEquals("Person", query.getColumnFamily());
@@ -226,7 +226,7 @@ public class ColumnRepositoryAsyncProxyTest {
         ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
 
         personRepository.findByName("name", sort, pagination, callback);
-        verify(repository).find(captor.capture(), consumerCaptor.capture());
+        verify(repository).select(captor.capture(), consumerCaptor.capture());
         ColumnQuery query = captor.getValue();
         ColumnCondition condition = query.getCondition().get();
         assertEquals("Person", query.getColumnFamily());
@@ -247,7 +247,7 @@ public class ColumnRepositoryAsyncProxyTest {
         ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
 
         personRepository.findByNameOrderByAgeDesc("name", callback);
-        verify(repository).find(captor.capture(), consumerCaptor.capture());
+        verify(repository).select(captor.capture(), consumerCaptor.capture());
         ColumnQuery query = captor.getValue();
         ColumnCondition condition = query.getCondition().get();
         assertEquals("Person", query.getColumnFamily());
@@ -269,7 +269,7 @@ public class ColumnRepositoryAsyncProxyTest {
                 .and(eq(Column.of("name", "Ada")));
 
         personRepository.query(query, callback);
-        verify(repository).find(captor.capture(), consumerCaptor.capture());
+        verify(repository).select(captor.capture(), consumerCaptor.capture());
         ColumnQuery queryCaptor = captor.getValue();
         ColumnCondition condition = query.getCondition().get();
         assertEquals(query, queryCaptor);

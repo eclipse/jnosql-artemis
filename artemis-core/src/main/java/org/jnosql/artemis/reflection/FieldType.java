@@ -29,7 +29,7 @@ public enum FieldType {
     EMBEDDED, MAP, COLLECTION, DEFAULT;
 
     /**
-     * find you the kind of annotation on field and then define a enum type, follow the sequences:
+     * select you the kind of annotation on field and then define a enum type, follow the sequences:
      * <ul>
      * <li>Collection</li>
      * <li>Map</li>

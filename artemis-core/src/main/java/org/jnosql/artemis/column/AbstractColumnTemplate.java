@@ -45,7 +45,7 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
 
 
     @Override
-    public <T> T save(T entity) throws NullPointerException {
+    public <T> T insert(T entity) throws NullPointerException {
         requireNonNull(entity, "entity is required");
         UnaryOperator<ColumnEntity> save = e -> getManager().insert(e);
         return getFlow().flow(entity, save);
@@ -53,7 +53,7 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
 
 
     @Override
-    public <T> T save(T entity, Duration ttl) {
+    public <T> T insert(T entity, Duration ttl) {
         requireNonNull(entity, "entity is required");
         requireNonNull(ttl, "ttl is required");
         UnaryOperator<ColumnEntity> save = e -> getManager().insert(e, ttl);
@@ -78,7 +78,7 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
 
 
     @Override
-    public <T> List<T> find(ColumnQuery query) throws NullPointerException {
+    public <T> List<T> select(ColumnQuery query) throws NullPointerException {
         requireNonNull(query, "query is required");
         getEventManager().firePreQuery(query);
         List<ColumnEntity> entities = getManager().select(query);

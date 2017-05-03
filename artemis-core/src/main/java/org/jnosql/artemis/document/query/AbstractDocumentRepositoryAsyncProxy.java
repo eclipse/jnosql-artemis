@@ -94,7 +94,7 @@ public abstract class AbstractDocumentRepositoryAsyncProxy<T> implements Invocat
         if (Consumer.class.isInstance(callBack)) {
             getTemplate().find(query, Consumer.class.cast(callBack));
         } else {
-            throw new DynamicQueryException("On find async method you must put a java.util.function.Consumer" +
+            throw new DynamicQueryException("On select async method you must put a java.util.function.Consumer" +
                     " as end parameter as callback");
         }
         return Void.class;

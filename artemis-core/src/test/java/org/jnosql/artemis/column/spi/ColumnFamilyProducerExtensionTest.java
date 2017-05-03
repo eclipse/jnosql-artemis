@@ -54,8 +54,8 @@ public class ColumnFamilyProducerExtensionTest {
 
     @Test
     public void shouldSave() {
-        Person person = manager.save(Person.builder().build());
-        Person personMock = managerMock.save(Person.builder().build());
+        Person person = manager.insert(Person.builder().build());
+        Person personMock = managerMock.insert(Person.builder().build());
 
         assertEquals("Default", person.getName());
         assertEquals("columnRepositoryMock", personMock.getName());
@@ -63,7 +63,7 @@ public class ColumnFamilyProducerExtensionTest {
 
     @Test
     public void shouldSaveAsync() {
-        managerAsync.save(Person.builder().build());
-        managerMockAsync.save(Person.builder().build());
+        managerAsync.insert(Person.builder().build());
+        managerMockAsync.insert(Person.builder().build());
     }
 }

@@ -53,16 +53,16 @@ public final class ReturnTypeConverterUtil {
         } else if (List.class.equals(returnType)
                 || Iterable.class.equals(returnType)
                 || Collection.class.equals(returnType)) {
-            return template.find(query);
+            return template.select(query);
         } else if (Set.class.equals(returnType)) {
-            return new HashSet<>(template.find(query));
+            return new HashSet<>(template.select(query));
         } else if (Queue.class.equals(returnType)) {
-            return new PriorityQueue<>(template.find(query));
+            return new PriorityQueue<>(template.select(query));
         } else if (Stream.class.equals(returnType)) {
-            return template.find(query).stream();
+            return template.select(query).stream();
         }
 
-        return template.find(query);
+        return template.select(query);
     }
 
 }
