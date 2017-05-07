@@ -17,6 +17,7 @@ package org.jnosql.artemis;
 
 
 import java.time.Duration;
+import java.util.Optional;
 
 /**
  * Interface to generic CRUD operations on a repository for a specific type.
@@ -39,7 +40,7 @@ import java.time.Duration;
  *
  * @param <T> the bean type
  */
-public interface Repository<T> {
+public interface Repository<T, ID> {
 
     /**
      * Saves entity
@@ -79,5 +80,57 @@ public interface Repository<T> {
      * @throws NullPointerException when entities is null
      */
     Iterable<T> save(Iterable<T> entities, Duration ttl) throws NullPointerException;
+
+    /**
+     * Deletes the entity with the given id.
+     *
+     * @param id
+     * @throws NullPointerException
+     */
+    void deleteById(ID id) throws NullPointerException;
+
+    /**
+     * Deletes the given entities.
+     *
+     * @param entities the entities
+     * @throws NullPointerException when entities is null
+     */
+    void delete(Iterable<T> entities) throws NullPointerException;
+
+    /**
+     * Deletes the entity given the entity
+     *
+     * @param entity the entity
+     * @throws NullPointerException when entity is null
+     */
+    void delete(T entity) throws NullPointerException;
+
+    /**
+     * Finds an entity given the id
+     *
+     * @param id the id
+     * @return the entity given the ID
+     * @throws NullPointerException when id is null
+     */
+    Optional<T> findById(ID id) throws NullPointerException;
+
+    /**
+     * Finds the entities given ids
+     *
+     * @param ids the ids
+     * @return the entities from ids
+     * @throws NullPointerException when the id is null
+     */
+    Iterable<T> findById(Iterable<ID> ids) throws NullPointerException;
+
+    /**
+     * Returns whether an entity with the given id exists.
+     *
+     * @param id the id
+     * @return if the entity does exist or not
+     * @throws NullPointerException when id is null
+     */
+    boolean existsById(ID id) throws NullPointerException;
+
 
 }
