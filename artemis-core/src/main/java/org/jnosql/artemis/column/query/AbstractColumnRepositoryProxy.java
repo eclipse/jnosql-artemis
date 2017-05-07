@@ -31,13 +31,15 @@ import static org.jnosql.artemis.column.query.ReturnTypeConverterUtil.returnObje
 
 /**
  * Template method to {@link Repository} proxy on column
- * @param <T>
+ *
+ * @param <T>  the entity type
+ * @param <ID> the ID entity
  */
-public abstract class AbstractColumnRepositoryProxy<T> implements InvocationHandler {
+public abstract class AbstractColumnRepositoryProxy<T, ID> implements InvocationHandler {
 
     protected abstract Repository getRepository();
 
-    protected abstract  ClassRepresentation getClassRepresentation();
+    protected abstract ClassRepresentation getClassRepresentation();
 
     protected abstract ColumnQueryParser getQueryParser();
 

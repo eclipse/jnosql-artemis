@@ -29,7 +29,7 @@ import java.lang.reflect.ParameterizedType;
  *
  * @param <T> the type
  */
-class ColumnRepositoryProxy<T> extends AbstractColumnRepositoryProxy {
+class ColumnRepositoryProxy<T, ID> extends AbstractColumnRepositoryProxy {
 
     private final Class<T> typeClass;
 

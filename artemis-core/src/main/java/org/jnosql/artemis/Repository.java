@@ -38,7 +38,8 @@ import java.util.Optional;
  * <p><b>OrderBy____Desc</b></p>
  * <p><b>OrderBy_____ASC</b></p>
  *
- * @param <T> the bean type
+ * @param <T>  the bean type
+ * @param <ID> the ID type
  */
 public interface Repository<T, ID> {
 

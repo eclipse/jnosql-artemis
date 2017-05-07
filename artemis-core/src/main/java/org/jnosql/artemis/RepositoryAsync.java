@@ -41,7 +41,8 @@ import java.util.function.Consumer;
  * <p><b>OrderBy____Desc</b></p>
  * <p><b>OrderBy_____ASC</b></p>
  *
- * @param <T> the bean type
+ * @param <T>  the bean type
+ * @param <ID> the ID type
  */
 public interface RepositoryAsync<T, ID> {
 
