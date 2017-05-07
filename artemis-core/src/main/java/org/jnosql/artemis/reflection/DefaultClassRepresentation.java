@@ -48,7 +48,7 @@ class DefaultClassRepresentation implements ClassRepresentation {
     private final Optional<FieldRepresentation> id;
 
     DefaultClassRepresentation(String name, List<String> fieldsName, Class<?> classInstance,
-                               List<FieldRepresentation> fields, Constructor constructor, FieldRepresentation id) {
+                               List<FieldRepresentation> fields, Constructor constructor) {
         this.name = name;
         this.fieldsName = fieldsName;
         this.classInstance = classInstance;

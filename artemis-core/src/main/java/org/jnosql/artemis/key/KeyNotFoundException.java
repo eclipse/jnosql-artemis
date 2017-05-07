@@ -16,11 +16,10 @@
 package org.jnosql.artemis.key;
 
 import org.jnosql.artemis.ArtemisException;
-import org.jnosql.artemis.Id;
 
 /**
  * When The Entity is converted to {@link org.jnosql.diana.api.key.KeyValueEntity},
- * this entity must have a field with {@link Id} annotation. If this entity
+ * this entity must have a field with {@link org.jnosql.artemis.Id} annotation. If this entity
  * hasn't this information an exception will be launch.
  */
 public class KeyNotFoundException extends ArtemisException {
