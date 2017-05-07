@@ -77,7 +77,7 @@ public class ClassConverterTest {
     @Test
     public void shouldReturnFalseWhenThereIsNotKey(){
         ClassRepresentation classRepresentation = classConverter.create(Director.class);
-        boolean allMatch = classRepresentation.getFields().stream().allMatch(f -> !f.isKey());
+        boolean allMatch = classRepresentation.getFields().stream().allMatch(f -> !f.isId());
         assertTrue(allMatch);
     }
 
@@ -87,7 +87,7 @@ public class ClassConverterTest {
         ClassRepresentation classRepresentation = classConverter.create(User.class);
         List<FieldRepresentation> fields = classRepresentation.getFields();
 
-        Predicate<FieldRepresentation> hasKeyAnnotation = FieldRepresentation::isKey;
+        Predicate<FieldRepresentation> hasKeyAnnotation = FieldRepresentation::isId;
         assertTrue(fields.stream().anyMatch(hasKeyAnnotation));
         FieldRepresentation fieldRepresentation = fields.stream().filter(hasKeyAnnotation).findFirst().get();
         assertEquals("nickname", fieldRepresentation.getName());

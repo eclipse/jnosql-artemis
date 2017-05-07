@@ -16,6 +16,7 @@
 package org.jnosql.artemis.key;
 
 
+import org.jnosql.artemis.Id;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.key.KeyValueEntity;
 
@@ -29,7 +30,7 @@ public interface KeyValueEntityConverter {
      *
      * @param entityInstance the instnace
      * @return a {@link KeyValueEntity} instance
-     * @throws KeyNotFoundException when the entityInstance hasn't a field with {@link org.jnosql.artemis.Key}
+     * @throws KeyNotFoundException when the entityInstance hasn't a field with {@link Id}
      * @throws NullPointerException when the entityInstance is null
      */
     <T> KeyValueEntity<T> toKeyValue(Object entityInstance) throws KeyNotFoundException, NullPointerException;
@@ -41,7 +42,7 @@ public interface KeyValueEntityConverter {
      * @param entity      the {@link KeyValueEntity} to be converted
      * @param <T>         the entity type
      * @return the instance from {@link KeyValueEntity}
-     * @throws KeyNotFoundException when the entityInstance hasn't a field with {@link org.jnosql.artemis.Key}
+     * @throws KeyNotFoundException when the entityInstance hasn't a field with {@link Id}
      * @throws NullPointerException when the entityInstance is null
      */
     <T> T toEntity(Class<T> entityClass, KeyValueEntity<?> entity) throws KeyNotFoundException, NullPointerException;
@@ -53,7 +54,7 @@ public interface KeyValueEntityConverter {
      * @param value      the {@link KeyValueEntity} to be converted
      * @param <T>         the entity type
      * @return the instance from {@link KeyValueEntity}
-     * @throws KeyNotFoundException when the entityInstance hasn't a field with {@link org.jnosql.artemis.Key}
+     * @throws KeyNotFoundException when the entityInstance hasn't a field with {@link Id}
      * @throws NullPointerException when the entityInstance is null
      */
     <T> T toEntity(Class<T> entityClass, Value value) throws KeyNotFoundException, NullPointerException;

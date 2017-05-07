@@ -16,7 +16,7 @@
 package org.jnosql.artemis.model;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.jnosql.artemis.Key;
+import org.jnosql.artemis.Id;
 
 import java.util.Objects;
 
@@ -25,7 +25,7 @@ import static org.apache.commons.lang3.builder.ToStringStyle.SHORT_PREFIX_STYLE;
 
 public class User {
 
-    @Key
+    @Id
     private String nickname;
 
     private String name;

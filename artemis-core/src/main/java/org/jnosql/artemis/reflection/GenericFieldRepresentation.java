@@ -40,7 +40,7 @@ public class GenericFieldRepresentation extends AbstractFieldRepresentation {
     }
 
     @Override
-    public boolean isKey() {
+    public boolean isId() {
         return false;
     }
 

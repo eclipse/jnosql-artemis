@@ -45,7 +45,7 @@ class DefaultKeyValueEntityConverter implements KeyValueEntityConverter {
         Class<?> clazz = entityInstance.getClass();
         ClassRepresentation representation = classRepresentations.get(clazz);
 
-        FieldRepresentation key = getKey(clazz, representation);
+        FieldRepresentation key = getId(clazz, representation);
         Object value = reflections.getValue(entityInstance, key.getField());
         requireNonNull(value, String.format("The key field %s is required", key.getName()));
 
@@ -60,7 +60,7 @@ class DefaultKeyValueEntityConverter implements KeyValueEntityConverter {
         if (Objects.isNull(t)) {
             return null;
         }
-        FieldRepresentation key = getKey(entityClass, classRepresentations.get(entityClass));
+        FieldRepresentation key = getId(entityClass, classRepresentations.get(entityClass));
         Object keyValue = reflections.getValue(t, key.getField());
         if (Objects.isNull(keyValue) || !keyValue.equals(entity.getKey())) {
             reflections.setValue(t, key.getField(), entity.getKey());
@@ -77,9 +77,9 @@ class DefaultKeyValueEntityConverter implements KeyValueEntityConverter {
         return t;
     }
 
-    private FieldRepresentation getKey(Class<?> clazz, ClassRepresentation representation) {
+    private FieldRepresentation getId(Class<?> clazz, ClassRepresentation representation) {
         List<FieldRepresentation> fields = representation.getFields();
-        return fields.stream().filter(FieldRepresentation::isKey)
+        return fields.stream().filter(FieldRepresentation::isId)
                 .findFirst().orElseThrow(() -> KeyNotFoundException.newInstance(clazz));
     }
 }

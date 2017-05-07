@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 import java.util.Optional;
 
 import org.jnosql.artemis.AttributeConverter;
+import org.jnosql.artemis.Id;
 import org.jnosql.diana.api.Value;
 
 /**
@@ -69,11 +70,11 @@ public interface FieldRepresentation extends Serializable {
     Object getValue(Value value);
 
     /**
-     * Returns true is the field is annotated with {@link org.jnosql.artemis.Key}
+     * Returns true is the field is annotated with {@link Id}
      *
-     * @return true is annotated with {@link org.jnosql.artemis.Key}
+     * @return true is annotated with {@link Id}
      */
-    boolean isKey();
+    boolean isId();
 
     /**
      * Returns the converter class

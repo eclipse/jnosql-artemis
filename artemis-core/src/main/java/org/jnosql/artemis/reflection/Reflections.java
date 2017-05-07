@@ -18,7 +18,7 @@ package org.jnosql.artemis.reflection;
 import org.apache.commons.lang3.StringUtils;
 import org.jnosql.artemis.Column;
 import org.jnosql.artemis.Entity;
-import org.jnosql.artemis.Key;
+import org.jnosql.artemis.Id;
 import org.jnosql.artemis.MappedSuperclass;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -232,7 +232,7 @@ public class Reflections {
             fields.addAll(getFields(classEntity.getSuperclass()));
         }
         Predicate<Field> hasColumnAnnotation = f -> f.getAnnotation(Column.class) != null;
-        Predicate<Field> hasKeyAnnotation = f -> f.getAnnotation(Key.class) != null;
+        Predicate<Field> hasKeyAnnotation = f -> f.getAnnotation(Id.class) != null;
 
         Stream.of(classEntity.getDeclaredFields())
                 .filter(hasColumnAnnotation.or(hasKeyAnnotation))
