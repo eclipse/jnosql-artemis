@@ -58,7 +58,7 @@ public interface Repository<T, ID> {
      * @param ttl    the time to live
      * @return the entity saved
      */
-    T save(T entity, Duration ttl);
+    T save(T entity, Duration ttl) throws NullPointerException;
 
     /**
      * Saves entity

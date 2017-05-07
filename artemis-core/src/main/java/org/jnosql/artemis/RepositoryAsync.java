@@ -19,6 +19,7 @@ package org.jnosql.artemis;
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
 
 import java.time.Duration;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
@@ -42,7 +43,7 @@ import java.util.function.Consumer;
  *
  * @param <T> the bean type
  */
-public interface RepositoryAsync<T> {
+public interface RepositoryAsync<T, ID> {
 
 
     /**
@@ -117,4 +118,56 @@ public interface RepositoryAsync<T> {
      */
     <T> void save(T entity, Duration ttl, Consumer<T> callBack) throws
             ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
+
+    /**
+     * Deletes the entity with the given id.
+     *
+     * @param id
+     * @throws NullPointerException
+     */
+    void deleteById(ID id) throws NullPointerException;
+
+    /**
+     * Deletes the given entities.
+     *
+     * @param entities the entities
+     * @throws NullPointerException when entities is null
+     */
+    void delete(Iterable<T> entities) throws NullPointerException;
+
+    /**
+     * Deletes the entity given the entity
+     *
+     * @param entity the entity
+     * @throws NullPointerException when entity is null
+     */
+    void delete(T entity) throws NullPointerException;
+
+    /**
+     * Finds an entity given the id
+     *
+     * @param id       the id
+     * @param callBack the callback
+     * @throws NullPointerException when id is null
+     */
+    void findById(ID id, Consumer<Optional<T>> callBack) throws NullPointerException;
+
+    /**
+     * Finds the entities given ids
+     *
+     * @param ids      the ids
+     * @param callBack the callback
+     * @throws NullPointerException when the id is null
+     */
+    void findById(Iterable<ID> ids, Consumer<Iterable<T>> callBack) throws NullPointerException;
+
+    /**
+     * Returns whether an entity with the given id exists.
+     *
+     * @param id       the id
+     * @param callBack the callback
+     * @throws NullPointerException when id is null
+     */
+    void existsById(ID id, Consumer<Boolean> callBack) throws NullPointerException;
 }
+
