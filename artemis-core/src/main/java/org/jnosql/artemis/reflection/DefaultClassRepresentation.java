@@ -22,6 +22,7 @@ import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
@@ -44,8 +45,10 @@ class DefaultClassRepresentation implements ClassRepresentation {
 
     private final Map<String, FieldRepresentation> fieldsGroupedByName;
 
+    private final Optional<FieldRepresentation> id;
+
     DefaultClassRepresentation(String name, List<String> fieldsName, Class<?> classInstance,
-                               List<FieldRepresentation> fields, Constructor constructor) {
+                               List<FieldRepresentation> fields, Constructor constructor, FieldRepresentation id) {
         this.name = name;
         this.fieldsName = fieldsName;
         this.classInstance = classInstance;
@@ -57,6 +60,7 @@ class DefaultClassRepresentation implements ClassRepresentation {
         this.javaFieldGroupedByColumn = fields.stream()
                 .collect(toMap(FieldRepresentation::getFieldName,
                         FieldRepresentation::getName));
+        this.id = fields.stream().filter(FieldRepresentation::isId).findFirst();
     }
 
     @Override
@@ -95,6 +99,11 @@ class DefaultClassRepresentation implements ClassRepresentation {
     @Override
     public Map<String, FieldRepresentation> getFieldsGroupByName() {
         return fieldsGroupedByName;
+    }
+
+    @Override
+    public Optional<FieldRepresentation> getId() {
+        return null;
     }
 
     @Override
