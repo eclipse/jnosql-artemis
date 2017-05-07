@@ -17,7 +17,6 @@ package org.jnosql.artemis.reflection;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jnosql.artemis.Column;
-import org.jnosql.artemis.Embeddable;
 import org.jnosql.artemis.Entity;
 import org.jnosql.artemis.Id;
 import org.jnosql.artemis.MappedSuperclass;
