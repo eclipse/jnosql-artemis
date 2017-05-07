@@ -22,6 +22,7 @@ import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.Optional;
 
 
 /**
@@ -91,6 +92,36 @@ class ColumnRepositoryProxy<T, ID> extends AbstractColumnRepositoryProxy {
         @Override
         protected ColumnTemplate getTemplate() {
             return template;
+        }
+
+        @Override
+        public void deleteById(Object id) throws NullPointerException {
+
+        }
+
+        @Override
+        public void delete(Iterable entities) throws NullPointerException {
+
+        }
+
+        @Override
+        public void delete(Object entity) throws NullPointerException {
+
+        }
+
+        @Override
+        public Optional findById(Object o) throws NullPointerException {
+            return null;
+        }
+
+        @Override
+        public Iterable findById(Iterable iterable) throws NullPointerException {
+            return null;
+        }
+
+        @Override
+        public boolean existsById(Object o) throws NullPointerException {
+            return false;
         }
     }
 }
