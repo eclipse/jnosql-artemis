@@ -130,6 +130,7 @@ class DefaultClassRepresentation implements ClassRepresentation {
                 .append("fieldsName", fieldsName)
                 .append("classInstance", classInstance)
                 .append("fields", fields)
+                .append("id", id)
                 .append("constructor", constructor)
                 .toString();
     }
