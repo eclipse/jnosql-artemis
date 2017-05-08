@@ -39,7 +39,7 @@ import static java.util.stream.StreamSupport.stream;
 /**
  * The {@link Repository} template method
  */
-public abstract class AbstractColumnRepository implements Repository {
+public abstract class AbstractColumnRepository<T, ID> implements Repository<T, ID> {
 
     private static final Supplier<IdNotFoundException> KEY_NOT_FOUND_EXCEPTION_SUPPLIER = ()
             -> new IdNotFoundException("To use this resource you must annotaded a fiel with @org.jnosql.artemisId");
@@ -51,27 +51,27 @@ public abstract class AbstractColumnRepository implements Repository {
     protected abstract Reflections getReflections();
 
     @Override
-    public Object save(Object entity) throws NullPointerException {
+    public T save(T entity) throws NullPointerException {
         return getTemplate().insert(entity);
     }
 
     @Override
-    public Object save(Object entity, Duration ttl) {
+    public T save(T entity, Duration ttl) {
         return getTemplate().insert(entity, ttl);
     }
 
     @Override
-    public Iterable save(Iterable entities) throws NullPointerException {
+    public Iterable<T> save(Iterable<T> entities) throws NullPointerException {
         return getTemplate().insert(entities);
     }
 
     @Override
-    public Iterable save(Iterable entities, Duration ttl) throws NullPointerException {
+    public Iterable<T> save(Iterable<T> entities, Duration ttl) throws NullPointerException {
         return getTemplate().insert(entities, ttl);
     }
 
     @Override
-    public void deleteById(Object id) throws NullPointerException {
+    public void deleteById(ID id) throws NullPointerException {
         requireNonNull(id, "is is required");
         ColumnDeleteQuery query = ColumnDeleteQuery.of(getClassRepresentation().getName());
         String columnName = this.getIdField().getName();
@@ -79,27 +79,27 @@ public abstract class AbstractColumnRepository implements Repository {
     }
 
     @Override
-    public void deleteById(Iterable ids) throws NullPointerException {
+    public void deleteById(Iterable<ID> ids) throws NullPointerException {
         requireNonNull(ids, "ids is required");
         ids.forEach(this::deleteById);
     }
 
     @Override
-    public void delete(Iterable entities) throws NullPointerException {
+    public void delete(Iterable<T> entities) throws NullPointerException {
         requireNonNull(entities, "entities is required");
         entities.forEach(this::delete);
     }
 
     @Override
-    public void delete(Object entity) throws NullPointerException {
+    public void delete(T entity) throws NullPointerException {
         requireNonNull(entity, "entity is required");
         Object idValue = getReflections().getValue(entity, this.getIdField().getField());
         requireNonNull(idValue, "id value is required");
-        deleteById(idValue);
+        deleteById((ID) idValue);
     }
 
     @Override
-    public Optional findById(Object id) throws NullPointerException {
+    public Optional findById(ID id) throws NullPointerException {
         requireNonNull(id, "id is required");
 
         ColumnQuery query = ColumnQuery.of(getClassRepresentation().getName());
@@ -109,7 +109,7 @@ public abstract class AbstractColumnRepository implements Repository {
     }
 
     @Override
-    public Iterable findById(Iterable ids) throws NullPointerException {
+    public Iterable<T> findById(Iterable<ID> ids) throws NullPointerException {
         requireNonNull(ids, "ids is required");
         return (Iterable) stream(ids.spliterator(), false)
                 .flatMap(optionalToStream()).collect(Collectors.toList());
@@ -121,13 +121,13 @@ public abstract class AbstractColumnRepository implements Repository {
 
     private Function optionalToStream() {
         return id -> {
-            Optional entity = this.findById(id);
+            Optional entity = this.findById((ID) id);
             return entity.isPresent() ? Stream.of(entity.get()) : Stream.empty();
         };
     }
 
     @Override
-    public boolean existsById(Object id) throws NullPointerException {
+    public boolean existsById(ID id) throws NullPointerException {
         return findById(id).isPresent();
     }
 

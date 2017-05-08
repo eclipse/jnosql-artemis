@@ -26,7 +26,7 @@ import java.util.function.Consumer;
 /**
  * The template method to {@link RepositoryAsync}
  */
-public abstract class AbstractColumnRepositoryAsync<T> implements RepositoryAsync<T> {
+public abstract class AbstractColumnRepositoryAsync<T, ID> implements RepositoryAsync<T, ID> {
 
     protected abstract ColumnTemplateAsync getTemplate();
 
