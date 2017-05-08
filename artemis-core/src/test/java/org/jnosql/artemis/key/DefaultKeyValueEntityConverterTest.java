@@ -38,7 +38,7 @@ public class DefaultKeyValueEntityConverterTest {
         converter.toKeyValue(null);
     }
 
-    @Test(expected = KeyNotFoundException.class)
+    @Test(expected = IdNotFoundException.class)
     public void shouldReturnErrorWhenThereIsNotKeyAnnotation() {
         converter.toKeyValue(Actor.actorBuilder().build());
     }
@@ -67,7 +67,7 @@ public class DefaultKeyValueEntityConverterTest {
         converter.toEntity(null, KeyValueEntity.of("user", new User("nickname", "name", 21)));
     }
 
-    @Test(expected = KeyNotFoundException.class)
+    @Test(expected = IdNotFoundException.class)
     public void shouldReturnErrorWhenTheKeyIsMissing() {
         converter.toEntity(Actor.class, KeyValueEntity.of("user", Actor.actorBuilder().build()));
     }

@@ -69,7 +69,7 @@ class DefaultKeyValueEntityConverter implements KeyValueEntityConverter {
     }
 
     @Override
-    public <T> T toEntity(Class<T> entityClass, Value value) throws KeyNotFoundException, NullPointerException {
+    public <T> T toEntity(Class<T> entityClass, Value value) throws IdNotFoundException, NullPointerException {
         T t = value.get(entityClass);
         if (Objects.isNull(t)) {
             return null;
@@ -80,6 +80,6 @@ class DefaultKeyValueEntityConverter implements KeyValueEntityConverter {
     private FieldRepresentation getId(Class<?> clazz, ClassRepresentation representation) {
         List<FieldRepresentation> fields = representation.getFields();
         return fields.stream().filter(FieldRepresentation::isId)
-                .findFirst().orElseThrow(() -> KeyNotFoundException.newInstance(clazz));
+                .findFirst().orElseThrow(() -> IdNotFoundException.newInstance(clazz));
     }
 }

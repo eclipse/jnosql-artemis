@@ -22,20 +22,20 @@ import org.jnosql.artemis.ArtemisException;
  * this entity must have a field with {@link org.jnosql.artemis.Id} annotation. If this entity
  * hasn't this information an exception will be launch.
  */
-public class KeyNotFoundException extends ArtemisException {
+public class IdNotFoundException extends ArtemisException {
 
     /**
      * New exception instance with the exception message
      *
      * @param message the exception message
      */
-    public KeyNotFoundException(String message) {
+    public IdNotFoundException(String message) {
         super(message);
     }
 
 
-    static KeyNotFoundException newInstance(Class<?> clazz) {
+    static IdNotFoundException newInstance(Class<?> clazz) {
         String message = "The entity " + clazz + " must have a field annoted with @Id";
-        return new KeyNotFoundException(message);
+        return new IdNotFoundException(message);
     }
 }

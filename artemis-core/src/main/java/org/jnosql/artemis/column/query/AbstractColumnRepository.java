@@ -17,7 +17,7 @@ package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.column.ColumnTemplate;
-import org.jnosql.artemis.key.KeyNotFoundException;
+import org.jnosql.artemis.key.IdNotFoundException;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.FieldRepresentation;
 import org.jnosql.artemis.reflection.Reflections;
@@ -41,8 +41,8 @@ import static java.util.stream.StreamSupport.stream;
  */
 public abstract class AbstractColumnRepository implements Repository {
 
-    private static final Supplier<KeyNotFoundException> KEY_NOT_FOUND_EXCEPTION_SUPPLIER = ()
-            -> new KeyNotFoundException("To use this resource you must annotaded a fiel with @org.jnosql.artemisId");
+    private static final Supplier<IdNotFoundException> KEY_NOT_FOUND_EXCEPTION_SUPPLIER = ()
+            -> new IdNotFoundException("To use this resource you must annotaded a fiel with @org.jnosql.artemisId");
 
     protected abstract ColumnTemplate getTemplate();
 
