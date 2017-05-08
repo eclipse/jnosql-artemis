@@ -15,6 +15,7 @@
  */
 package org.jnosql.artemis.key;
 
+import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Actor;
 import org.jnosql.artemis.model.User;

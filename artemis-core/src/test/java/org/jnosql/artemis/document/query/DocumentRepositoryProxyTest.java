@@ -248,7 +248,7 @@ public class DocumentRepositoryProxyTest {
 
     }
 
-    interface PersonRepository extends Repository<Person> {
+    interface PersonRepository extends Repository<Person, Long> {
 
         Person findByName(String name);
 

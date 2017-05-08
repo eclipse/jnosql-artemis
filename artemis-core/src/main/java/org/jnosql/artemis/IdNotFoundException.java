@@ -32,7 +32,7 @@ public class IdNotFoundException extends ArtemisException {
     }
 
 
-    static IdNotFoundException newInstance(Class<?> clazz) {
+    public static IdNotFoundException newInstance(Class<?> clazz) {
         String message = "The entity " + clazz + " must have a field annoted with @Id";
         return new IdNotFoundException(message);
     }

@@ -22,6 +22,7 @@ import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.Optional;
 
 
 /**
@@ -92,6 +93,41 @@ class DocumentRepositoryProxy<T> extends AbstractDocumentRepositoryProxy<T> {
         @Override
         protected DocumentTemplate getTemplate() {
             return template;
+        }
+
+        @Override
+        public void deleteById(Object o) throws NullPointerException {
+
+        }
+
+        @Override
+        public void deleteById(Iterable iterable) throws NullPointerException {
+
+        }
+
+        @Override
+        public void delete(Iterable entities) throws NullPointerException {
+
+        }
+
+        @Override
+        public void delete(Object entity) throws NullPointerException {
+
+        }
+
+        @Override
+        public Optional findById(Object o) throws NullPointerException {
+            return null;
+        }
+
+        @Override
+        public Iterable findById(Iterable iterable) throws NullPointerException {
+            return null;
+        }
+
+        @Override
+        public boolean existsById(Object o) throws NullPointerException {
+            return false;
         }
     }
 }

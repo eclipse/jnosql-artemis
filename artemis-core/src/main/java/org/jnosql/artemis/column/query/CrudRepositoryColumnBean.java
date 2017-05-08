@@ -20,6 +20,7 @@ import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.Reflections;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
@@ -89,8 +90,9 @@ public class CrudRepositoryColumnBean implements Bean<Repository>, PassivationCa
         ClassRepresentations classRepresentations = getInstance(ClassRepresentations.class);
         ColumnTemplate repository = provider.isEmpty() ? getInstance(ColumnTemplate.class) :
                 getInstance(ColumnTemplate.class, provider);
+        Reflections reflections = getInstance(Reflections.class);
         ColumnRepositoryProxy handler = new ColumnRepositoryProxy(repository,
-                classRepresentations, type);
+                classRepresentations, type, reflections);
         return (Repository) Proxy.newProxyInstance(type.getClassLoader(),
                 new Class[]{type},
                 handler);

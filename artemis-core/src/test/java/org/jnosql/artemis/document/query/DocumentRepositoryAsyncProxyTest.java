@@ -275,7 +275,7 @@ public class DocumentRepositoryAsyncProxyTest {
         assertEquals(deleteQuery, captor.getValue());
     }
 
-    interface PersonAsyncRepository extends RepositoryAsync<Person> {
+    interface PersonAsyncRepository extends RepositoryAsync<Person, Long> {
 
         void deleteByName(String name);
 

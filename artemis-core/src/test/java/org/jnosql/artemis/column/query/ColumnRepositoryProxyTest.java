@@ -21,6 +21,7 @@ import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.Condition;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnCondition;
@@ -61,6 +62,9 @@ public class ColumnRepositoryProxyTest {
     @Inject
     private ClassRepresentations classRepresentations;
 
+    @Inject
+    private Reflections reflections;
+
     private PersonRepository personRepository;
 
 
@@ -69,7 +73,7 @@ public class ColumnRepositoryProxyTest {
         this.repository = Mockito.mock(ColumnTemplate.class);
 
         ColumnRepositoryProxy handler = new ColumnRepositoryProxy(repository,
-                classRepresentations, PersonRepository.class);
+                classRepresentations, PersonRepository.class, reflections);
 
         when(repository.insert(any(Person.class))).thenReturn(Person.builder().build());
         when(repository.insert(any(Person.class), any(Duration.class))).thenReturn(Person.builder().build());
@@ -248,7 +252,7 @@ public class ColumnRepositoryProxyTest {
 
     }
 
-    interface PersonRepository extends Repository<Person> {
+    interface PersonRepository extends Repository<Person, Long> {
 
         Person findByName(String name);
 

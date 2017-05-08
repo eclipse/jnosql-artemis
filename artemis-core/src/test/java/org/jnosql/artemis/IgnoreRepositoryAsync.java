@@ -16,5 +16,5 @@
 package org.jnosql.artemis;
 
 
-public interface IgnoreRepositoryAsync<T> extends RepositoryAsync<T> {
+public interface IgnoreRepositoryAsync<T, ID> extends RepositoryAsync<T, ID> {
 }

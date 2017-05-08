@@ -22,6 +22,7 @@ import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.function.Consumer;
 
 /**
  * Proxy handle to generate {@link RepositoryAsync}
@@ -90,6 +91,36 @@ class ColumnRepositoryAsyncProxy<T> extends AbstractColumnRepositoryAsyncProxy<T
         @Override
         protected ColumnTemplateAsync getTemplate() {
             return template;
+        }
+
+        @Override
+        public void deleteById(Object o) throws NullPointerException {
+
+        }
+
+        @Override
+        public void delete(Iterable entities) throws NullPointerException {
+
+        }
+
+        @Override
+        public void delete(Object entity) throws NullPointerException {
+
+        }
+
+        @Override
+        public void existsById(Object o, Consumer callBack) throws NullPointerException {
+
+        }
+
+        @Override
+        public void findById(Iterable iterable, Consumer callBack) throws NullPointerException {
+
+        }
+
+        @Override
+        public void findById(Object o, Consumer callBack) throws NullPointerException {
+
         }
     }
 }

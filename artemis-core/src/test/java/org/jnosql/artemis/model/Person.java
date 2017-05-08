@@ -23,13 +23,14 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jnosql.artemis.Column;
 import org.jnosql.artemis.Entity;
+import org.jnosql.artemis.Id;
 import org.jnosql.artemis.MappedSuperclass;
 
 @Entity
 @MappedSuperclass
 public class Person {
 
-    @Column("_id")
+    @Id
     private long id;
 
     @Column
