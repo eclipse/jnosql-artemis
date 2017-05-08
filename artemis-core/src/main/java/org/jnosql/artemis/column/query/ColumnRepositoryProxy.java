@@ -18,11 +18,27 @@ package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.column.ColumnTemplate;
+import org.jnosql.artemis.key.KeyNotFoundException;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.Reflections;
+import org.jnosql.diana.api.column.Column;
+import org.jnosql.diana.api.column.ColumnCondition;
+import org.jnosql.diana.api.column.ColumnDeleteQuery;
+import org.jnosql.diana.api.column.ColumnQuery;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.StreamSupport.stream;
 
 
 /**
@@ -32,11 +48,16 @@ import java.util.Optional;
  */
 class ColumnRepositoryProxy<T, ID> extends AbstractColumnRepositoryProxy {
 
+    private static final Supplier<KeyNotFoundException> KEY_NOT_FOUND_EXCEPTION_SUPPLIER = ()
+            -> new KeyNotFoundException("To use this resource you must annotaded a fiel with @org.jnosql.artemisId");
+
     private final Class<T> typeClass;
 
     private final ColumnTemplate template;
 
     private final ColumnRepository repository;
+
+    private final Reflections reflections;
 
     private final ClassRepresentation classRepresentation;
 
@@ -45,12 +66,13 @@ class ColumnRepositoryProxy<T, ID> extends AbstractColumnRepositoryProxy {
     private final ColumnQueryDeleteParser deleteParser;
 
 
-    ColumnRepositoryProxy(ColumnTemplate template, ClassRepresentations classRepresentations, Class<?> repositoryType) {
+    ColumnRepositoryProxy(ColumnTemplate template, ClassRepresentations classRepresentations, Class<?> repositoryType, Reflections reflections) {
         this.template = template;
-        this.repository = new ColumnRepository(template);
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
+        this.repository = new ColumnRepository(template, classRepresentation);
+        this.reflections = reflections;
         this.queryParser = new ColumnQueryParser();
         this.deleteParser = new ColumnQueryDeleteParser();
     }
@@ -85,8 +107,14 @@ class ColumnRepositoryProxy<T, ID> extends AbstractColumnRepositoryProxy {
 
         private final ColumnTemplate template;
 
-        ColumnRepository(ColumnTemplate template) {
+        private final ClassRepresentation classRepresentation;
+
+        private final Optional<FieldRepresentation> idField;
+
+        ColumnRepository(ColumnTemplate template, ClassRepresentation classRepresentation) {
             this.template = template;
+            this.classRepresentation = classRepresentation;
+            this.idField = classRepresentation.getId();
         }
 
         @Override
@@ -96,32 +124,60 @@ class ColumnRepositoryProxy<T, ID> extends AbstractColumnRepositoryProxy {
 
         @Override
         public void deleteById(Object id) throws NullPointerException {
+            requireNonNull(id, "is is required");
+            ColumnDeleteQuery query = ColumnDeleteQuery.of(classRepresentation.getName());
+            String columnName = this.idField.orElseThrow(KEY_NOT_FOUND_EXCEPTION_SUPPLIER).getName();
+            query.with(ColumnCondition.eq(Column.of(columnName, id)));
+        }
 
+        @Override
+        public void deleteById(Iterable ids) throws NullPointerException {
+            requireNonNull(ids, "ids is required");
+            ids.forEach(this::deleteById);
         }
 
         @Override
         public void delete(Iterable entities) throws NullPointerException {
-
+            requireNonNull(entities, "entities is required");
+            entities.forEach(this::delete);
         }
 
         @Override
         public void delete(Object entity) throws NullPointerException {
-
+            requireNonNull(entity, "entity is required");
+            Object idValue = reflections.getValue(entity, idField.orElseThrow(KEY_NOT_FOUND_EXCEPTION_SUPPLIER)
+                    .getField());
+            requireNonNull(idValue, "id value is required");
+            deleteById(idValue);
         }
 
         @Override
-        public Optional findById(Object o) throws NullPointerException {
-            return null;
+        public Optional findById(Object id) throws NullPointerException {
+            requireNonNull(id, "id is required");
+
+            ColumnQuery query = ColumnQuery.of(classRepresentation.getName());
+            String columnName = this.idField.orElseThrow(KEY_NOT_FOUND_EXCEPTION_SUPPLIER).getName();
+            query.with(ColumnCondition.eq(Column.of(columnName, id)));
+            return template.singleResult(query);
         }
 
         @Override
-        public Iterable findById(Iterable iterable) throws NullPointerException {
-            return null;
+        public Iterable findById(Iterable ids) throws NullPointerException {
+            requireNonNull(ids, "ids is required");
+            return (Iterable) stream(ids.spliterator(), false)
+                    .flatMap(optionalToStream()).collect(Collectors.toList());
+        }
+
+        private Function optionalToStream() {
+            return id -> {
+                Optional entity = this.findById(id);
+                return entity.isPresent() ? Stream.of(entity.get()) : Stream.empty();
+            };
         }
 
         @Override
-        public boolean existsById(Object o) throws NullPointerException {
-            return false;
+        public boolean existsById(Object id) throws NullPointerException {
+            return findById(id).isPresent();
         }
     }
 }
