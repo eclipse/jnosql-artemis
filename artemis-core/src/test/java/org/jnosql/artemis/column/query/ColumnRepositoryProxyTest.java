@@ -91,7 +91,9 @@ public class ColumnRepositoryProxyTest {
 
 
     @Test
-    public void shouldSave() {
+    public void shouldSaveUsingInsertWhenDataDoesNotExist() {
+        when(template.singleResult(Mockito.any(ColumnQuery.class))).thenReturn(Optional.empty());
+
         ArgumentCaptor<Person> captor = ArgumentCaptor.forClass(Person.class);
         Person person = Person.builder().withName("Ada")
                 .withId(10L)
@@ -103,9 +105,26 @@ public class ColumnRepositoryProxyTest {
         assertEquals(person, value);
     }
 
+    @Test
+    public void shouldSaveUsingUpdateWhenDataExists() {
+        when(template.singleResult(Mockito.any(ColumnQuery.class))).thenReturn(Optional.of(Person.builder().build()));
+
+        ArgumentCaptor<Person> captor = ArgumentCaptor.forClass(Person.class);
+        Person person = Person.builder().withName("Ada")
+                .withId(10L)
+                .withPhones(singletonList("123123"))
+                .build();
+        assertNotNull(personRepository.save(person));
+        verify(template).update(captor.capture());
+        Person value = captor.getValue();
+        assertEquals(person, value);
+    }
+
 
     @Test
-    public void shouldSaveWithTTl() {
+    public void shouldSaveWithTTlUsingInsertWhenDataDoesNotExist() {
+        when(template.singleResult(Mockito.any(ColumnQuery.class))).thenReturn(Optional.empty());
+
         ArgumentCaptor<Person> captor = ArgumentCaptor.forClass(Person.class);
         Person person = Person.builder().withName("Ada")
                 .withId(10L)
