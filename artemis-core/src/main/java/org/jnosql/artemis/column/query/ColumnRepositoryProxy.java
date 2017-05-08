@@ -28,7 +28,8 @@ import java.lang.reflect.ParameterizedType;
 /**
  * Proxy handle to generate {@link Repository}
  *
- * @param <T> the type
+ * @param <T>  the type
+ * @param <ID> the ID type
  */
 class ColumnRepositoryProxy<T, ID> extends AbstractColumnRepositoryProxy {
 

@@ -64,7 +64,13 @@ public abstract class AbstractColumnRepository<T, ID> implements Repository<T, I
 
     @Override
     public T save(T entity, Duration ttl) {
-        return getTemplate().insert(entity, ttl);
+        Objects.requireNonNull(entity, "Entity is required");
+        Object id = getReflections().getValue(entity, getIdField().getField());
+        if (existsById((ID) id)) {
+            return getTemplate().update(entity);
+        } else {
+            return getTemplate().insert(entity, ttl);
+        }
     }
 
     @Override
@@ -83,6 +89,7 @@ public abstract class AbstractColumnRepository<T, ID> implements Repository<T, I
         ColumnDeleteQuery query = ColumnDeleteQuery.of(getClassRepresentation().getName());
         String columnName = this.getIdField().getName();
         query.with(ColumnCondition.eq(Column.of(columnName, id)));
+        getTemplate().delete(query);
     }
 
     @Override
