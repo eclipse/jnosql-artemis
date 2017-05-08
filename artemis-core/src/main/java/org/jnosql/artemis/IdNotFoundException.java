@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jnosql.artemis.key;
+package org.jnosql.artemis;
 
 import org.jnosql.artemis.ArtemisException;
 
