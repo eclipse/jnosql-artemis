@@ -15,9 +15,9 @@
  */
 package org.jnosql.artemis.column.query;
 
+import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.column.ColumnTemplate;
-import org.jnosql.artemis.key.IdNotFoundException;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.FieldRepresentation;
 import org.jnosql.artemis.reflection.Reflections;

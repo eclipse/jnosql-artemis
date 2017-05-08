@@ -15,8 +15,6 @@
  */
 package org.jnosql.artemis;
 
-import org.jnosql.artemis.ArtemisException;
-
 /**
  * When The Entity is converted to {@link org.jnosql.diana.api.key.KeyValueEntity},
  * this entity must have a field with {@link org.jnosql.artemis.Id} annotation. If this entity
