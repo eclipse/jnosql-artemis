@@ -240,13 +240,24 @@ public class Reflections {
         return fields;
     }
 
-    public boolean isMappedSuperclass(Class<?> class1) {
-        return class1.getSuperclass().getAnnotation(MappedSuperclass.class) != null;
+    public boolean isMappedSuperclass(Class<?> classEntity) {
+        return classEntity.getSuperclass().getAnnotation(MappedSuperclass.class) != null;
+    }
+
+    public boolean isIdField(Field field) {
+        return field.getAnnotation(Id.class) != null;
     }
 
     public String getColumnName(Field field) {
         return Optional.ofNullable(field.getAnnotation(Column.class))
                 .map(Column::value)
+                .filter(StringUtils::isNotBlank)
+                .orElse(field.getName());
+    }
+
+    public String getIdName(Field field) {
+        return Optional.ofNullable(field.getAnnotation(Id.class))
+                .map(Id::value)
                 .filter(StringUtils::isNotBlank)
                 .orElse(field.getName());
     }

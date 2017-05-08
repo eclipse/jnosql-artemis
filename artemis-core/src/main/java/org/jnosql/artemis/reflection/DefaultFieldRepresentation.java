@@ -32,9 +32,9 @@ public class DefaultFieldRepresentation extends AbstractFieldRepresentation {
 
     private final boolean id;
 
-    DefaultFieldRepresentation(FieldType type, Field field, String name, Class<? extends AttributeConverter> converter) {
+    DefaultFieldRepresentation(FieldType type, Field field, String name, Class<? extends AttributeConverter> converter, boolean id) {
         super(type, field, name, converter);
-        this.id = field.getDeclaredAnnotation(Id.class) != null;
+        this.id = id;
     }
 
     @Override

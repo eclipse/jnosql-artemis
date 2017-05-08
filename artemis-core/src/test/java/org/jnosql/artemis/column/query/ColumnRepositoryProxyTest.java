@@ -27,6 +27,7 @@ import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnCondition;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnQuery;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -250,6 +251,18 @@ public class ColumnRepositoryProxyTest {
         verify(repository).delete(captor.capture());
         assertEquals(query, captor.getValue());
 
+    }
+
+    @Test
+    public void shouldFindById() {
+        ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
+        personRepository.findById(10L);
+        verify(repository).singleResult(captor.capture());
+
+        ColumnQuery query = captor.getValue();
+
+        assertEquals("Person", query.getColumnFamily());
+        assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), query.getCondition().get());
     }
 
     interface PersonRepository extends Repository<Person, Long> {

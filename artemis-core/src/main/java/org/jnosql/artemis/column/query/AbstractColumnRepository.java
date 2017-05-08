@@ -27,6 +27,7 @@ import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnQuery;
 
 import java.time.Duration;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -52,7 +53,13 @@ public abstract class AbstractColumnRepository<T, ID> implements Repository<T, I
 
     @Override
     public T save(T entity) throws NullPointerException {
-        return getTemplate().insert(entity);
+        Objects.requireNonNull(entity, "Entity is required");
+        Object id = getReflections().getValue(entity, getIdField().getField());
+        if (existsById((ID) id)) {
+            return getTemplate().update(entity);
+        } else {
+            return getTemplate().insert(entity);
+        }
     }
 
     @Override
@@ -99,7 +106,7 @@ public abstract class AbstractColumnRepository<T, ID> implements Repository<T, I
     }
 
     @Override
-    public Optional findById(ID id) throws NullPointerException {
+    public Optional<T> findById(ID id) throws NullPointerException {
         requireNonNull(id, "id is required");
 
         ColumnQuery query = ColumnQuery.of(getClassRepresentation().getName());

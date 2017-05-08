@@ -103,7 +103,7 @@ class DefaultClassRepresentation implements ClassRepresentation {
 
     @Override
     public Optional<FieldRepresentation> getId() {
-        return null;
+        return id;
     }
 
     @Override
