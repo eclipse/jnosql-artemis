@@ -22,6 +22,7 @@ import org.jnosql.artemis.model.Director;
 import org.jnosql.artemis.model.Machine;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.model.User;
+import org.jnosql.artemis.model.Worker;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -76,7 +77,7 @@ public class ClassConverterTest {
 
     @Test
     public void shouldReturnFalseWhenThereIsNotKey(){
-        ClassRepresentation classRepresentation = classConverter.create(Director.class);
+        ClassRepresentation classRepresentation = classConverter.create(Worker.class);
         boolean allMatch = classRepresentation.getFields().stream().allMatch(f -> !f.isId());
         assertTrue(allMatch);
     }
@@ -90,7 +91,7 @@ public class ClassConverterTest {
         Predicate<FieldRepresentation> hasKeyAnnotation = FieldRepresentation::isId;
         assertTrue(fields.stream().anyMatch(hasKeyAnnotation));
         FieldRepresentation fieldRepresentation = fields.stream().filter(hasKeyAnnotation).findFirst().get();
-        assertEquals("nickname", fieldRepresentation.getName());
+        assertEquals("_id", fieldRepresentation.getName());
         assertEquals(DEFAULT, fieldRepresentation.getType());
 
     }
