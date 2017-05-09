@@ -42,11 +42,7 @@ public final class ReturnTypeConverterUtil {
 
         if (typeClass.equals(returnType)) {
             Optional<Object> optional = template.singleResult(query);
-            if (optional.isPresent()) {
-                return optional.get();
-            } else {
-                return null;
-            }
+            return optional.orElse(null);
 
         } else if (Optional.class.equals(returnType)) {
             return template.singleResult(query);
