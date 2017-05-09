@@ -17,14 +17,18 @@ package org.jnosql.artemis.document;
 
 
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
+import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentQuery;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.StreamSupport;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * This interface that represents the common operation between an entity and DocumentCollectionEntity.
@@ -68,7 +72,7 @@ public interface DocumentTemplateAsync {
      * @throws NullPointerException          when entities is null
      */
     default <T> void insert(Iterable<T> entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        Objects.requireNonNull(entities, "entities is required");
+        requireNonNull(entities, "entities is required");
         StreamSupport.stream(entities.spliterator(), false).forEach(this::insert);
     }
 
@@ -85,8 +89,8 @@ public interface DocumentTemplateAsync {
      * @throws NullPointerException          when either entities or ttl are null
      */
     default <T> void insert(Iterable<T> entities, Duration ttl) throws NullPointerException {
-        Objects.requireNonNull(entities, "entities is required");
-        Objects.requireNonNull(ttl, "ttl is required");
+        requireNonNull(entities, "entities is required");
+        requireNonNull(ttl, "ttl is required");
         StreamSupport.stream(entities.spliterator(), false).forEach(d -> insert(d, ttl));
     }
 
@@ -157,7 +161,7 @@ public interface DocumentTemplateAsync {
      * @throws NullPointerException          when entities is null
      */
     default <T> void update(Iterable<T> entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        Objects.requireNonNull(entities, "entities is required");
+        requireNonNull(entities, "entities is required");
         StreamSupport.stream(entities.spliterator(), false).forEach(this::update);
     }
 
@@ -198,4 +202,34 @@ public interface DocumentTemplateAsync {
      */
     <T> void select(DocumentQuery query, Consumer<List<T>> callBack) throws
             ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
+
+
+    /**
+     * Execute a query to consume an unique result
+     *
+     * @param query    the query
+     * @param callBack the callback
+     * @param <T>      the type
+     * @throws ExecuteAsyncQueryException    when there is a async error
+     * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
+     * @throws NullPointerException          when either query or callback are null
+     * @throws NonUniqueResultException      when it returns more than one result
+     */
+    default <T> void singleResult(DocumentQuery query, Consumer<Optional<T>> callBack) throws
+            ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException, NonUniqueResultException {
+
+        requireNonNull(callBack, "callBack is required");
+
+        Consumer<List<T>> singleCallBack = entities -> {
+            if (entities.isEmpty()) {
+                callBack.accept(Optional.empty());
+            } else if (entities.size() == 1) {
+                callBack.accept(Optional.of(entities.get(0)));
+            } else {
+                throw new NonUniqueResultException("The query returns more than one entity, query: " + query);
+            }
+        };
+        select(query, singleCallBack);
+
+    }
 }
