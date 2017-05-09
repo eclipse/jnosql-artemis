@@ -18,37 +18,119 @@ package org.jnosql.artemis.document.query;
 
 import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.document.DocumentTemplateAsync;
+import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
+import org.jnosql.diana.api.document.Document;
+import org.jnosql.diana.api.document.DocumentCondition;
+import org.jnosql.diana.api.document.DocumentDeleteQuery;
+import org.jnosql.diana.api.document.DocumentQuery;
 
 import java.time.Duration;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
+
+import static java.util.Objects.requireNonNull;
+import static org.jnosql.artemis.IdNotFoundException.KEY_NOT_FOUND_EXCEPTION_SUPPLIER;
 
 /**
  * The {@link RepositoryAsync} template method
  */
-public abstract class AbstractDocumentRepositoryAsync implements RepositoryAsync {
+public abstract class AbstractDocumentRepositoryAsync<T, ID> implements RepositoryAsync<T, ID> {
 
 
     protected abstract DocumentTemplateAsync getTemplate();
 
+    protected abstract Reflections getReflections();
+
+    protected abstract ClassRepresentation getClassRepresentation();
+
+
     @Override
-    public void save(Object entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getTemplate().insert(entity);
+    public void save(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+        Objects.requireNonNull(entity, "Entity is required");
+        Object id = getReflections().getValue(entity, getIdField().getField());
+        Consumer<Boolean> callBack = exist -> {
+            if (exist) {
+                getTemplate().update(entity);
+            } else {
+                getTemplate().insert(entity);
+            }
+        };
+        existsById((ID) id, callBack);
     }
 
     @Override
-    public void save(Object entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getTemplate().insert(entity, ttl);
+    public void save(T entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+        Objects.requireNonNull(entity, "Entity is required");
+        Object id = getReflections().getValue(entity, getIdField().getField());
+        Consumer<Boolean> callBack = exist -> {
+            if (exist) {
+                getTemplate().update(entity);
+            } else {
+                getTemplate().insert(entity, ttl);
+            }
+        };
+        existsById((ID) id, callBack);
     }
 
     @Override
-    public void save(Iterable entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getTemplate().insert(entities);
+    public void save(Iterable<T> entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+        Objects.requireNonNull(entities, "entities is required");
+        entities.forEach(this::save);
     }
 
     @Override
-    public void save(Iterable entities, Duration ttl) throws NullPointerException {
-        getTemplate().insert(entities, ttl);
+    public void save(Iterable<T> entities, Duration ttl) throws NullPointerException {
+        Objects.requireNonNull(entities, "entities is required");
+        Objects.requireNonNull(ttl, "ttl is required");
+        entities.forEach(e -> save(e, ttl));
+    }
+
+    @Override
+    public void deleteById(ID id) throws NullPointerException {
+        requireNonNull(id, "is is required");
+        DocumentDeleteQuery query = DocumentDeleteQuery.of(getClassRepresentation().getName());
+        String documentName = this.getIdField().getName();
+        query.with(DocumentCondition.eq(Document.of(documentName, id)));
+        getTemplate().delete(query);
+    }
+
+    @Override
+    public void delete(Iterable<T> entities) throws NullPointerException {
+        requireNonNull(entities, "entities is required");
+        entities.forEach(this::delete);
+    }
+
+    @Override
+    public void delete(T entity) throws NullPointerException {
+        requireNonNull(entity, "entity is required");
+        Object idValue = getReflections().getValue(entity, this.getIdField().getField());
+        requireNonNull(idValue, "id value is required");
+        deleteById((ID) idValue);
+    }
+
+    @Override
+    public void existsById(ID id, Consumer<Boolean> callBack) throws NullPointerException {
+        Consumer<Optional<T>> as = o -> callBack.accept(o.isPresent());
+        findById(id, as);
+    }
+
+
+    @Override
+    public void findById(ID id, Consumer<Optional<T>> callBack) throws NullPointerException {
+        requireNonNull(id, "id is required");
+        requireNonNull(callBack, "callBack is required");
+        DocumentQuery query = DocumentQuery.of(getClassRepresentation().getName());
+        String columnName = this.getIdField().getName();
+        query.with(DocumentCondition.eq(Document.of(columnName, id)));
+        getTemplate().singleResult(query, callBack);
+    }
+
+    private FieldRepresentation getIdField() {
+        return getClassRepresentation().getId().orElseThrow(KEY_NOT_FOUND_EXCEPTION_SUPPLIER);
     }
 
 }

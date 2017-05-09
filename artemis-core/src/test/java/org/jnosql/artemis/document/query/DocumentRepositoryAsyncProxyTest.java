@@ -15,13 +15,14 @@
  */
 package org.jnosql.artemis.document.query;
 
-import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.Pagination;
+import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.document.DocumentTemplateAsync;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.Condition;
 import org.jnosql.diana.api.Sort;
 import org.jnosql.diana.api.document.Document;
@@ -32,39 +33,45 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 import javax.inject.Inject;
 import java.lang.reflect.Proxy;
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.jnosql.diana.api.document.DocumentCondition.eq;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 
 @RunWith(WeldJUnit4Runner.class)
 public class DocumentRepositoryAsyncProxyTest {
 
-    private DocumentTemplateAsync repository;
+    private DocumentTemplateAsync template;
 
     @Inject
     private ClassRepresentations classRepresentations;
+
+    @Inject
+    private Reflections reflections;
 
     private PersonAsyncRepository personRepository;
 
 
     @Before
     public void setUp() {
-        this.repository = Mockito.mock(DocumentTemplateAsync.class);
+        this.template = Mockito.mock(DocumentTemplateAsync.class);
 
-        DocumentRepositoryAsyncProxy handler = new DocumentRepositoryAsyncProxy(repository,
-                classRepresentations, PersonAsyncRepository.class);
+        DocumentRepositoryAsyncProxy handler = new DocumentRepositoryAsyncProxy(template,
+                classRepresentations, PersonAsyncRepository.class, reflections);
 
 
         personRepository = (PersonAsyncRepository) Proxy.newProxyInstance(PersonAsyncRepository.class.getClassLoader(),
@@ -74,14 +81,37 @@ public class DocumentRepositoryAsyncProxyTest {
 
 
     @Test
-    public void shouldSave() {
+    public void shouldSaveUsingInsertWhenThereIsNotData() {
         ArgumentCaptor<Person> captor = ArgumentCaptor.forClass(Person.class);
+        ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
+
         Person person = Person.builder().withName("Ada")
                 .withId(10L)
                 .withPhones(singletonList("123123"))
                 .build();
-        repository.insert(person);
-        verify(repository).insert(captor.capture());
+        personRepository.save(person);
+        verify(template).singleResult(Mockito.any(DocumentQuery.class), consumerCaptor.capture());
+        Consumer consumer = consumerCaptor.getValue();
+        consumer.accept(Optional.empty());
+        verify(template).insert(captor.capture());
+        Person value = captor.getValue();
+        assertEquals(person, value);
+    }
+
+    @Test
+    public void shouldSaveUsingUpdateWhenThereIsData() {
+        ArgumentCaptor<Person> captor = ArgumentCaptor.forClass(Person.class);
+        ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
+
+        Person person = Person.builder().withName("Ada")
+                .withId(10L)
+                .withPhones(singletonList("123123"))
+                .build();
+        personRepository.save(person);
+        verify(template).singleResult(Mockito.any(DocumentQuery.class), consumerCaptor.capture());
+        Consumer consumer = consumerCaptor.getValue();
+        consumer.accept(Optional.of(Person.builder().build()));
+        verify(template).update(captor.capture());
         Person value = captor.getValue();
         assertEquals(person, value);
     }
@@ -94,45 +124,19 @@ public class DocumentRepositoryAsyncProxyTest {
                 .withId(10L)
                 .withPhones(singletonList("123123"))
                 .build();
-        repository.insert(person, Duration.ofHours(2));
-        verify(repository).insert(captor.capture(), Mockito.eq(Duration.ofHours(2)));
+        template.insert(person, Duration.ofHours(2));
+        verify(template).insert(captor.capture(), Matchers.eq(Duration.ofHours(2)));
         Person value = captor.getValue();
         assertEquals(person, value);
     }
 
 
-    @Test
-    public void shouldUpdate() {
-        ArgumentCaptor<Person> captor = ArgumentCaptor.forClass(Person.class);
-        Person person = Person.builder().withName("Ada")
-                .withId(10L)
-                .withPhones(singletonList("123123"))
-                .build();
-        repository.update(person);
-        verify(repository).update(captor.capture());
-        Person value = captor.getValue();
-        assertEquals(person, value);
-    }
-
-
-    @Test
-    public void shouldSaveItarable() {
-        ArgumentCaptor<Iterable> captor = ArgumentCaptor.forClass(Iterable.class);
-        Person person = Person.builder().withName("Ada")
-                .withId(10L)
-                .withPhones(singletonList("123123"))
-                .build();
-        personRepository.save(singletonList(person));
-        verify(repository).insert(captor.capture());
-        Iterable<Person> persons = captor.getValue();
-        assertThat(persons, containsInAnyOrder(person));
-    }
 
     @Test
     public void shouldDeleteByName() {
         ArgumentCaptor<DocumentDeleteQuery> captor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
         personRepository.deleteByName("name");
-        verify(repository).delete(captor.capture());
+        verify(template).delete(captor.capture());
         DocumentDeleteQuery query = captor.getValue();
         DocumentCondition condition = query.getCondition().get();
         assertEquals("Person", query.getCollection());
@@ -149,7 +153,7 @@ public class DocumentRepositoryAsyncProxyTest {
         Consumer<Void> voidConsumer = v -> {
         };
         personRepository.deleteByName("name", voidConsumer);
-        verify(repository).delete(captor.capture(), consumerCaptor.capture());
+        verify(template).delete(captor.capture(), consumerCaptor.capture());
         DocumentDeleteQuery query = captor.getValue();
         DocumentCondition condition = query.getCondition().get();
         assertEquals("Person", query.getCollection());
@@ -173,7 +177,7 @@ public class DocumentRepositoryAsyncProxyTest {
         ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
 
         personRepository.findByName("name", callback);
-        verify(repository).select(captor.capture(), consumerCaptor.capture());
+        verify(template).select(captor.capture(), consumerCaptor.capture());
         DocumentQuery query = captor.getValue();
         DocumentCondition condition = query.getCondition().get();
         assertEquals("Person", query.getCollection());
@@ -193,7 +197,7 @@ public class DocumentRepositoryAsyncProxyTest {
         ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
 
         personRepository.findByName("name", sort, callback);
-        verify(repository).select(captor.capture(), consumerCaptor.capture());
+        verify(template).select(captor.capture(), consumerCaptor.capture());
         DocumentQuery query = captor.getValue();
         DocumentCondition condition = query.getCondition().get();
         assertEquals("Person", query.getCollection());
@@ -214,7 +218,7 @@ public class DocumentRepositoryAsyncProxyTest {
         ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
 
         personRepository.findByName("name", sort, pagination, callback);
-        verify(repository).select(captor.capture(), consumerCaptor.capture());
+        verify(template).select(captor.capture(), consumerCaptor.capture());
         DocumentQuery query = captor.getValue();
         DocumentCondition condition = query.getCondition().get();
         assertEquals("Person", query.getCollection());
@@ -235,7 +239,7 @@ public class DocumentRepositoryAsyncProxyTest {
         ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
 
         personRepository.findByNameOrderByAgeDesc("name", callback);
-        verify(repository).select(captor.capture(), consumerCaptor.capture());
+        verify(template).select(captor.capture(), consumerCaptor.capture());
         DocumentQuery query = captor.getValue();
         DocumentCondition condition = query.getCondition().get();
         assertEquals("Person", query.getCollection());
@@ -257,23 +261,92 @@ public class DocumentRepositoryAsyncProxyTest {
                 .with(eq(Document.of("name", "Ada")));
 
         personRepository.query(query, callback);
-        verify(repository).select(captor.capture(), consumerCaptor.capture());
+        verify(template).select(captor.capture(), consumerCaptor.capture());
         DocumentQuery queryCaptor = captor.getValue();
         DocumentCondition condition = query.getCondition().get();
         assertEquals(query, queryCaptor);
         assertEquals(callback, consumerCaptor.getValue());
     }
 
+    //
     @Test
     public void shouldExecuteDeleteQuery() {
         ArgumentCaptor<DocumentDeleteQuery> captor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
         DocumentDeleteQuery deleteQuery = DocumentDeleteQuery.of("Person")
-                .and(eq(Document.of("name", "Ada")));
+                .and(DocumentCondition.eq(Document.of("name", "Ada")));
 
         personRepository.deleteQuery(deleteQuery);
-        verify(repository).delete(captor.capture());
+        verify(template).delete(captor.capture());
         assertEquals(deleteQuery, captor.getValue());
     }
+
+    @Test
+    public void shouldFindById() {
+        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
+        Consumer<Optional<Person>> callBack = p -> {};
+        personRepository.findById(10L, callBack);
+        verify(template).singleResult(captor.capture(), Matchers.eq(callBack));
+
+        DocumentQuery query = captor.getValue();
+
+        assertEquals("Person", query.getCollection());
+        assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), query.getCondition().get());
+    }
+
+
+    @Test
+    public void shouldDeleteById() {
+        ArgumentCaptor<DocumentDeleteQuery> captor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
+        personRepository.deleteById(10L);
+        verify(template).delete(captor.capture());
+
+        DocumentDeleteQuery query = captor.getValue();
+
+        assertEquals("Person", query.getCollection());
+        assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), query.getCondition().get());
+    }
+
+    @Test
+    public void shouldDeleteByEntity() {
+
+        ArgumentCaptor<DocumentDeleteQuery> captor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
+        personRepository.delete(Person.builder().withId(10L).build());
+        verify(template).delete(captor.capture());
+
+        DocumentDeleteQuery query = captor.getValue();
+
+        assertEquals("Person", query.getCollection());
+        assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), query.getCondition().get());
+    }
+
+    @Test
+    public void shouldDeleteByEntities() {
+
+        ArgumentCaptor<DocumentDeleteQuery> captor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
+        Person person = Person.builder().withId(10L).build();
+        personRepository.delete(singletonList(person));
+        verify(template).delete(captor.capture());
+
+        DocumentDeleteQuery query = captor.getValue();
+
+        assertEquals("Person", query.getCollection());
+        assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), query.getCondition().get());
+
+        personRepository.delete(asList(person, person, person));
+        verify(template, times(4)).delete(any(DocumentDeleteQuery.class));
+    }
+
+    @Test
+    public void shouldExistsById() {
+        Consumer<Boolean> callback = v -> {
+        };
+        personRepository.existsById(10L, callback);
+        verify(template).singleResult(any(DocumentQuery.class), any(Consumer.class));
+
+
+    }
+
+
 
     interface PersonAsyncRepository extends RepositoryAsync<Person, Long> {
 
