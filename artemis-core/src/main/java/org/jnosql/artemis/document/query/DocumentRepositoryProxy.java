@@ -23,7 +23,6 @@ import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.Reflections;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.Optional;
 
 
 /**

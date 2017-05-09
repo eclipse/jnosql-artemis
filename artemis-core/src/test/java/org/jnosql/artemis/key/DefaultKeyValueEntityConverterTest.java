@@ -19,6 +19,7 @@ import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Actor;
 import org.jnosql.artemis.model.User;
+import org.jnosql.artemis.model.Worker;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.key.KeyValueEntity;
 import org.junit.Test;
@@ -41,7 +42,7 @@ public class DefaultKeyValueEntityConverterTest {
 
     @Test(expected = IdNotFoundException.class)
     public void shouldReturnErrorWhenThereIsNotKeyAnnotation() {
-        converter.toKeyValue(Actor.actorBuilder().build());
+        converter.toKeyValue(new Worker());
     }
 
     @Test(expected = NullPointerException.class)
@@ -70,7 +71,7 @@ public class DefaultKeyValueEntityConverterTest {
 
     @Test(expected = IdNotFoundException.class)
     public void shouldReturnErrorWhenTheKeyIsMissing() {
-        converter.toEntity(Actor.class, KeyValueEntity.of("user", Actor.actorBuilder().build()));
+        converter.toEntity(Worker.class, KeyValueEntity.of("worker", new Worker()));
     }
 
     @Test

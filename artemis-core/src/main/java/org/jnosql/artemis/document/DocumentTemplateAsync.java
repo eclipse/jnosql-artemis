@@ -23,7 +23,6 @@ import org.jnosql.diana.api.document.DocumentQuery;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.StreamSupport;

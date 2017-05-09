@@ -16,13 +16,12 @@
 package org.jnosql.artemis.reflection;
 
 
-import java.lang.reflect.Field;
-import java.util.Objects;
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jnosql.artemis.AttributeConverter;
-import org.jnosql.artemis.Id;
+
+import java.lang.reflect.Field;
+import java.util.Objects;
 
 /**
  * Class that represents {@link FieldRepresentation} a default field
