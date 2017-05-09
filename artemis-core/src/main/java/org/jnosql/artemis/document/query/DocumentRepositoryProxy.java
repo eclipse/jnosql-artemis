@@ -20,6 +20,7 @@ import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.document.DocumentTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.Reflections;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.Optional;
@@ -45,12 +46,13 @@ class DocumentRepositoryProxy<T> extends AbstractDocumentRepositoryProxy<T> {
     private final DocumentQueryDeleteParser deleteQueryParser;
 
 
-    DocumentRepositoryProxy(DocumentTemplate template, ClassRepresentations classRepresentations, Class<?> repositoryType) {
+    DocumentRepositoryProxy(DocumentTemplate template, ClassRepresentations classRepresentations,
+                            Class<?> repositoryType, Reflections reflections) {
         this.template = template;
-        this.repository = new DocumentRepository(template);
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
+        this.repository = new DocumentRepository(template, classRepresentation, reflections);
         this.queryParser = new DocumentQueryParser();
         this.deleteQueryParser = new DocumentQueryDeleteParser();
     }
@@ -86,8 +88,14 @@ class DocumentRepositoryProxy<T> extends AbstractDocumentRepositoryProxy<T> {
 
         private final DocumentTemplate template;
 
-        DocumentRepository(DocumentTemplate template) {
+        private final ClassRepresentation classRepresentation;
+
+        private final Reflections reflections;
+
+        DocumentRepository(DocumentTemplate template, ClassRepresentation classRepresentation, Reflections reflections) {
             this.template = template;
+            this.classRepresentation = classRepresentation;
+            this.reflections = reflections;
         }
 
         @Override
@@ -96,38 +104,15 @@ class DocumentRepositoryProxy<T> extends AbstractDocumentRepositoryProxy<T> {
         }
 
         @Override
-        public void deleteById(Object o) throws NullPointerException {
-
+        protected ClassRepresentation getClassRepresentation() {
+            return classRepresentation;
         }
 
         @Override
-        public void deleteById(Iterable iterable) throws NullPointerException {
-
+        protected Reflections getReflections() {
+            return reflections;
         }
 
-        @Override
-        public void delete(Iterable entities) throws NullPointerException {
 
-        }
-
-        @Override
-        public void delete(Object entity) throws NullPointerException {
-
-        }
-
-        @Override
-        public Optional findById(Object o) throws NullPointerException {
-            return null;
-        }
-
-        @Override
-        public Iterable findById(Iterable iterable) throws NullPointerException {
-            return null;
-        }
-
-        @Override
-        public boolean existsById(Object o) throws NullPointerException {
-            return false;
-        }
     }
 }

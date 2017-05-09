@@ -21,7 +21,11 @@ import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.document.DocumentTemplate;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.Condition;
+import org.jnosql.diana.api.column.Column;
+import org.jnosql.diana.api.column.ColumnCondition;
+import org.jnosql.diana.api.column.ColumnQuery;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
@@ -42,72 +46,97 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.jnosql.diana.api.document.DocumentCondition.eq;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(WeldJUnit4Runner.class)
 public class DocumentRepositoryProxyTest {
 
-    private DocumentTemplate repository;
+    private DocumentTemplate template;
 
     @Inject
     private ClassRepresentations classRepresentations;
+
+    @Inject
+    private Reflections reflections;
 
     private PersonRepository personRepository;
 
 
     @Before
     public void setUp() {
-        this.repository = Mockito.mock(DocumentTemplate.class);
+        this.template = Mockito.mock(DocumentTemplate.class);
 
-        DocumentRepositoryProxy handler = new DocumentRepositoryProxy(repository,
-                classRepresentations, PersonRepository.class);
+        DocumentRepositoryProxy handler = new DocumentRepositoryProxy(template,
+                classRepresentations, PersonRepository.class, reflections);
 
-        when(repository.insert(any(Person.class))).thenReturn(Person.builder().build());
-        when(repository.insert(any(Person.class), any(Duration.class))).thenReturn(Person.builder().build());
-        when(repository.update(any(Person.class))).thenReturn(Person.builder().build());
+        when(template.insert(any(Person.class))).thenReturn(Person.builder().build());
+        when(template.insert(any(Person.class), any(Duration.class))).thenReturn(Person.builder().build());
+        when(template.update(any(Person.class))).thenReturn(Person.builder().build());
         personRepository = (PersonRepository) Proxy.newProxyInstance(PersonRepository.class.getClassLoader(),
                 new Class[]{PersonRepository.class},
                 handler);
     }
 
 
+
     @Test
-    public void shouldSave() {
+    public void shouldSaveUsingInsertWhenDataDoesNotExist() {
+        when(template.singleResult(Mockito.any(DocumentQuery.class))).thenReturn(Optional.empty());
+
         ArgumentCaptor<Person> captor = ArgumentCaptor.forClass(Person.class);
         Person person = Person.builder().withName("Ada")
                 .withId(10L)
                 .withPhones(singletonList("123123"))
                 .build();
         assertNotNull(personRepository.save(person));
-        verify(repository).insert(captor.capture());
+        verify(template).insert(captor.capture());
+        Person value = captor.getValue();
+        assertEquals(person, value);
+    }
+
+    @Test
+    public void shouldSaveUsingUpdateWhenDataExists() {
+        when(template.singleResult(Mockito.any(DocumentQuery.class))).thenReturn(Optional.of(Person.builder().build()));
+
+        ArgumentCaptor<Person> captor = ArgumentCaptor.forClass(Person.class);
+        Person person = Person.builder().withName("Ada")
+                .withId(10L)
+                .withPhones(singletonList("123123"))
+                .build();
+        assertNotNull(personRepository.save(person));
+        verify(template).update(captor.capture());
         Person value = captor.getValue();
         assertEquals(person, value);
     }
 
 
     @Test
-    public void shouldSaveWithTTl() {
+    public void shouldSaveWithTTlUsingInsertWhenDataDoesNotExist() {
+        when(template.singleResult(Mockito.any(DocumentQuery.class))).thenReturn(Optional.empty());
+
         ArgumentCaptor<Person> captor = ArgumentCaptor.forClass(Person.class);
         Person person = Person.builder().withName("Ada")
                 .withId(10L)
                 .withPhones(singletonList("123123"))
                 .build();
         assertNotNull(personRepository.save(person, Duration.ofHours(2)));
-        verify(repository).insert(captor.capture(), Mockito.eq(Duration.ofHours(2)));
+        verify(template).insert(captor.capture(), Mockito.eq(Duration.ofHours(2)));
         Person value = captor.getValue();
         assertEquals(person, value);
     }
-
-
 
 
     @Test
@@ -118,7 +147,7 @@ public class DocumentRepositoryProxyTest {
                 .withPhones(singletonList("123123"))
                 .build();
         personRepository.save(singletonList(person));
-        verify(repository).insert(captor.capture());
+        verify(template).insert(captor.capture());
         Iterable<Person> persons = captor.getValue();
         assertThat(persons, containsInAnyOrder(person));
     }
@@ -127,13 +156,13 @@ public class DocumentRepositoryProxyTest {
     @Test
     public void shouldFindByNameInstance() {
 
-        when(repository.singleResult(Mockito.any(DocumentQuery.class))).thenReturn(Optional
+        when(template.singleResult(Mockito.any(DocumentQuery.class))).thenReturn(Optional
                 .of(Person.builder().build()));
 
         personRepository.findByName("name");
 
         ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
-        verify(repository).singleResult(captor.capture());
+        verify(template).singleResult(captor.capture());
         DocumentQuery query = captor.getValue();
         DocumentCondition condition = query.getCondition().get();
         assertEquals("Person", query.getCollection());
@@ -141,7 +170,7 @@ public class DocumentRepositoryProxyTest {
         assertEquals(Document.of("name", "name"), condition.getDocument());
 
         assertNotNull(personRepository.findByName("name"));
-        when(repository.singleResult(Mockito.any(DocumentQuery.class))).thenReturn(Optional
+        when(template.singleResult(Mockito.any(DocumentQuery.class))).thenReturn(Optional
                 .empty());
 
         assertNull(personRepository.findByName("name"));
@@ -154,12 +183,12 @@ public class DocumentRepositoryProxyTest {
         Person ada = Person.builder()
                 .withAge(20).withName("Ada").build();
 
-        when(repository.select(Mockito.any(DocumentQuery.class)))
+        when(template.select(Mockito.any(DocumentQuery.class)))
                 .thenReturn(singletonList(ada));
 
         List<Person> persons = personRepository.findByNameANDAge("name", 20);
         ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
-        verify(repository).select(captor.capture());
+        verify(template).select(captor.capture());
         assertThat(persons, Matchers.contains(ada));
 
     }
@@ -169,12 +198,12 @@ public class DocumentRepositoryProxyTest {
         Person ada = Person.builder()
                 .withAge(20).withName("Ada").build();
 
-        when(repository.select(Mockito.any(DocumentQuery.class)))
+        when(template.select(Mockito.any(DocumentQuery.class)))
                 .thenReturn(singletonList(ada));
 
         Set<Person> persons = personRepository.findByAgeANDName(20, "name");
         ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
-        verify(repository).select(captor.capture());
+        verify(template).select(captor.capture());
         assertThat(persons, Matchers.contains(ada));
 
     }
@@ -184,12 +213,12 @@ public class DocumentRepositoryProxyTest {
         Person ada = Person.builder()
                 .withAge(20).withName("Ada").build();
 
-        when(repository.select(Mockito.any(DocumentQuery.class)))
+        when(template.select(Mockito.any(DocumentQuery.class)))
                 .thenReturn(singletonList(ada));
 
         Stream<Person> persons = personRepository.findByNameANDAgeOrderByName("name", 20);
         ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
-        verify(repository).select(captor.capture());
+        verify(template).select(captor.capture());
         assertThat(persons.collect(Collectors.toList()), Matchers.contains(ada));
 
     }
@@ -199,12 +228,12 @@ public class DocumentRepositoryProxyTest {
         Person ada = Person.builder()
                 .withAge(20).withName("Ada").build();
 
-        when(repository.select(Mockito.any(DocumentQuery.class)))
+        when(template.select(Mockito.any(DocumentQuery.class)))
                 .thenReturn(singletonList(ada));
 
         Queue<Person> persons = personRepository.findByNameANDAgeOrderByAge("name", 20);
         ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
-        verify(repository).select(captor.capture());
+        verify(template).select(captor.capture());
         assertThat(persons, Matchers.contains(ada));
 
     }
@@ -213,7 +242,7 @@ public class DocumentRepositoryProxyTest {
     public void shouldDeleteByName() {
         ArgumentCaptor<DocumentDeleteQuery> captor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
         personRepository.deleteByName("Ada");
-        verify(repository).delete(captor.capture());
+        verify(template).delete(captor.capture());
         DocumentDeleteQuery deleteQuery = captor.getValue();
         DocumentCondition condition = deleteQuery.getCondition().get();
         assertEquals("Person", deleteQuery.getCollection());
@@ -227,12 +256,12 @@ public class DocumentRepositoryProxyTest {
         ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
         Person ada = Person.builder()
                 .withAge(20).withName("Ada").build();
-        when(repository.singleResult(Mockito.any(DocumentQuery.class)))
+        when(template.singleResult(Mockito.any(DocumentQuery.class)))
                 .thenReturn(Optional.of(ada));
 
         DocumentQuery query = DocumentQuery.of("Person").with(eq(Document.of("name", "Ada")));
         Person person = personRepository.query(query);
-        verify(repository).singleResult(captor.capture());
+        verify(template).singleResult(captor.capture());
         assertEquals(ada, person);
         assertEquals(query, captor.getValue());
 
@@ -243,10 +272,107 @@ public class DocumentRepositoryProxyTest {
         ArgumentCaptor<DocumentDeleteQuery> captor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
         DocumentDeleteQuery query = DocumentDeleteQuery.of("Person").and(eq(Document.of("name", "Ada")));
         personRepository.deleteQuery(query);
-        verify(repository).delete(captor.capture());
+        verify(template).delete(captor.capture());
         assertEquals(query, captor.getValue());
 
     }
+
+    @Test
+    public void shouldFindById() {
+        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
+        personRepository.findById(10L);
+        verify(template).singleResult(captor.capture());
+
+        DocumentQuery query = captor.getValue();
+
+        assertEquals("Person", query.getCollection());
+        assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), query.getCondition().get());
+    }
+
+    @Test
+    public void shouldFindByIds() {
+        when(template.singleResult(any(DocumentQuery.class))).thenReturn(Optional.of(Person.builder().build()));
+        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
+        personRepository.findById(singletonList(10L));
+        verify(template).singleResult(captor.capture());
+
+        DocumentQuery query = captor.getValue();
+
+        assertEquals("Person", query.getCollection());
+        assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), query.getCondition().get());
+        personRepository.findById(asList(1L, 2L, 3L));
+        verify(template, times(4)).singleResult(any(DocumentQuery.class));
+    }
+
+    @Test
+    public void shouldDeleteById() {
+        ArgumentCaptor<DocumentDeleteQuery> captor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
+        personRepository.deleteById(10L);
+        verify(template).delete(captor.capture());
+
+        DocumentDeleteQuery query = captor.getValue();
+
+        assertEquals("Person", query.getCollection());
+        assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), query.getCondition().get());
+    }
+
+    @Test
+    public void shouldDeleteByIds() {
+        ArgumentCaptor<DocumentDeleteQuery> captor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
+        personRepository.deleteById(singletonList(10L));
+        verify(template).delete(captor.capture());
+
+        DocumentDeleteQuery query = captor.getValue();
+
+        assertEquals("Person", query.getCollection());
+        assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), query.getCondition().get());
+
+        personRepository.deleteById(asList(1L, 2L, 3L));
+        verify(template, times(4)).delete(any(DocumentDeleteQuery.class));
+    }
+
+    @Test
+    public void shouldDeleteByEntity() {
+
+        ArgumentCaptor<DocumentDeleteQuery> captor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
+        personRepository.delete(Person.builder().withId(10L).build());
+        verify(template).delete(captor.capture());
+
+        DocumentDeleteQuery query = captor.getValue();
+
+        assertEquals("Person", query.getCollection());
+        assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), query.getCondition().get());
+    }
+
+    @Test
+    public void shouldDeleteByEntities() {
+
+        ArgumentCaptor<DocumentDeleteQuery> captor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
+        Person person = Person.builder().withId(10L).build();
+        personRepository.delete(singletonList(person));
+        verify(template).delete(captor.capture());
+
+        DocumentDeleteQuery query = captor.getValue();
+
+        assertEquals("Person", query.getCollection());
+        assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), query.getCondition().get());
+
+        personRepository.delete(asList(person, person, person));
+        verify(template, times(4)).delete(any(DocumentDeleteQuery.class));
+    }
+
+    @Test
+    public void shouldContainsById() {
+        when(template.singleResult(any(DocumentQuery.class))).thenReturn(Optional.of(Person.builder().build()));
+
+        assertTrue(personRepository.existsById(10L));
+        Mockito.verify(template).singleResult(any(DocumentQuery.class));
+
+        when(template.singleResult(any(DocumentQuery.class))).thenReturn(Optional.empty());
+        assertFalse(personRepository.existsById(10L));
+
+    }
+
 
     interface PersonRepository extends Repository<Person, Long> {
 
