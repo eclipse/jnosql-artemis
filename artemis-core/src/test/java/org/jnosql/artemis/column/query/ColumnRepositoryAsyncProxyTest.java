@@ -44,17 +44,12 @@ import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.jnosql.diana.api.column.ColumnCondition.eq;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(WeldJUnit4Runner.class)
 public class ColumnRepositoryAsyncProxyTest {

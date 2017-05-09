@@ -15,15 +15,15 @@
  */
 package org.jnosql.artemis.reflection;
 
-import java.lang.reflect.Field;
-import javax.inject.Inject;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Actor;
 import org.jnosql.artemis.model.Movie;
 import org.jnosql.artemis.model.Person;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import javax.inject.Inject;
+import java.lang.reflect.Field;
 
 import static org.junit.Assert.assertEquals;
 
