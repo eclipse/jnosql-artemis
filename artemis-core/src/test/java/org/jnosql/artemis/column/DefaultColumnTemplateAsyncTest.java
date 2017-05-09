@@ -64,13 +64,11 @@ public class DefaultColumnTemplateAsyncTest {
 
     private ArgumentCaptor<ColumnEntity> captor;
 
-    private ColumnEventPersistManager columnEventPersistManager;
-
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
         managerMock = Mockito.mock(ColumnFamilyManagerAsync.class);
-        columnEventPersistManager = Mockito.mock(ColumnEventPersistManager.class);
+        ColumnEventPersistManager columnEventPersistManager = Mockito.mock(ColumnEventPersistManager.class);
         captor = ArgumentCaptor.forClass(ColumnEntity.class);
         Instance<ColumnFamilyManagerAsync> instance = Mockito.mock(Instance.class);
         Mockito.when(instance.get()).thenReturn(managerMock);

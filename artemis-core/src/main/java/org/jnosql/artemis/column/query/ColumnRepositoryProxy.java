@@ -34,8 +34,6 @@ import java.lang.reflect.ParameterizedType;
 class ColumnRepositoryProxy<T, ID> extends AbstractColumnRepositoryProxy {
 
 
-    private final Class<T> typeClass;
-
     private final ColumnTemplate template;
 
     private final ColumnRepository repository;
@@ -51,7 +49,7 @@ class ColumnRepositoryProxy<T, ID> extends AbstractColumnRepositoryProxy {
 
     ColumnRepositoryProxy(ColumnTemplate template, ClassRepresentations classRepresentations, Class<?> repositoryType, Reflections reflections) {
         this.template = template;
-        this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
+        Class<T> typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
         this.repository = new ColumnRepository(template, classRepresentation);

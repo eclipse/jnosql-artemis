@@ -67,13 +67,11 @@ public class DefaultDocumentTemplateAsyncTest {
 
     private ArgumentCaptor<DocumentEntity> captor;
 
-    private DocumentEventPersistManager documentEventPersistManager;
-
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
         managerMock = Mockito.mock(DocumentCollectionManagerAsync.class);
-        documentEventPersistManager = Mockito.mock(DocumentEventPersistManager.class);
+        DocumentEventPersistManager documentEventPersistManager = Mockito.mock(DocumentEventPersistManager.class);
         captor = ArgumentCaptor.forClass(DocumentEntity.class);
         Instance<DocumentCollectionManagerAsync> instance = Mockito.mock(Instance.class);
         when(instance.get()).thenReturn(managerMock);

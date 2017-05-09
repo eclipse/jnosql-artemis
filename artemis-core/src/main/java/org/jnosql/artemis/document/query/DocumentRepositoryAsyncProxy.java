@@ -31,8 +31,6 @@ import java.lang.reflect.ParameterizedType;
  */
 class DocumentRepositoryAsyncProxy<T> extends AbstractDocumentRepositoryAsyncProxy {
 
-    private final Class<T> typeClass;
-
     private final DocumentTemplateAsync template;
 
 
@@ -48,7 +46,7 @@ class DocumentRepositoryAsyncProxy<T> extends AbstractDocumentRepositoryAsyncPro
     DocumentRepositoryAsyncProxy(DocumentTemplateAsync template, ClassRepresentations classRepresentations,
                                  Class<?> repositoryType, Reflections reflections) {
         this.template = template;
-        this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
+        Class<T> typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
         this.repository = new DocumentRepositoryAsync(template, classRepresentation, reflections);

@@ -32,8 +32,6 @@ import java.lang.reflect.ParameterizedType;
  */
 class DocumentRepositoryProxy<T> extends AbstractDocumentRepositoryProxy<T> {
 
-    private final Class<T> typeClass;
-
     private final DocumentTemplate template;
 
     private final DocumentRepository repository;
@@ -48,7 +46,7 @@ class DocumentRepositoryProxy<T> extends AbstractDocumentRepositoryProxy<T> {
     DocumentRepositoryProxy(DocumentTemplate template, ClassRepresentations classRepresentations,
                             Class<?> repositoryType, Reflections reflections) {
         this.template = template;
-        this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
+        Class<T> typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
         this.repository = new DocumentRepository(template, classRepresentation, reflections);
