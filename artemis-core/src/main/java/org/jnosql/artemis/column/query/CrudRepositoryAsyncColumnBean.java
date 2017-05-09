@@ -20,6 +20,7 @@ import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.Reflections;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
@@ -89,8 +90,10 @@ public class CrudRepositoryAsyncColumnBean implements Bean<RepositoryAsync>, Pas
         ClassRepresentations classRepresentations = getInstance(ClassRepresentations.class);
         ColumnTemplateAsync repository = provider.isEmpty() ? getInstance(ColumnTemplateAsync.class) :
                 getInstance(ColumnTemplateAsync.class, provider);
+        Reflections reflections = getInstance(Reflections.class);
+
         ColumnRepositoryAsyncProxy handler = new ColumnRepositoryAsyncProxy(repository,
-                classRepresentations, type);
+                classRepresentations, type, reflections);
         return (RepositoryAsync) Proxy.newProxyInstance(type.getClassLoader(),
                 new Class[]{type},
                 handler);

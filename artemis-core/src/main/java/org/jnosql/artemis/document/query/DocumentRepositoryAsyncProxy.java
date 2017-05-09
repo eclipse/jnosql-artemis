@@ -114,11 +114,6 @@ class DocumentRepositoryAsyncProxy<T> extends AbstractDocumentRepositoryAsyncPro
         }
 
         @Override
-        public void findById(Iterable iterable, Consumer callBack) throws NullPointerException {
-
-        }
-
-        @Override
         public void findById(Object o, Consumer callBack) throws NullPointerException {
 
         }
