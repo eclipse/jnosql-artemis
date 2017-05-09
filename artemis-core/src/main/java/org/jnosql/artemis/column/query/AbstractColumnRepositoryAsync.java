@@ -29,6 +29,7 @@ import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnQuery;
 
 import java.time.Duration;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -52,36 +53,47 @@ public abstract class AbstractColumnRepositoryAsync<T, ID> implements Repository
 
     @Override
     public void save(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getTemplate().insert(entity);
+        Objects.requireNonNull(entity, "Entity is required");
+        Object id = getReflections().getValue(entity, getIdField().getField());
+        Consumer<Boolean> callBack = exist -> {
+            if (exist) {
+                getTemplate().update(entity);
+            } else {
+                getTemplate().insert(entity);
+            }
+        };
+        existsById((ID) id, callBack);
     }
 
     @Override
     public void save(T entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getTemplate().insert(entity, ttl);
+        Objects.requireNonNull(entity, "Entity is required");
+        Object id = getReflections().getValue(entity, getIdField().getField());
+        Consumer<Boolean> callBack = exist -> {
+            if (exist) {
+                getTemplate().update(entity);
+            } else {
+                getTemplate().insert(entity, ttl);
+            }
+        };
+        existsById((ID) id, callBack);
     }
 
     @Override
-    public void save(Iterable entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getTemplate().insert(entities);
+    public void save(Iterable<T> entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+        Objects.requireNonNull(entities, "entities is required");
+        entities.forEach(this::save);
     }
 
     @Override
-    public void save(Iterable entities, Duration ttl) throws NullPointerException {
-        getTemplate().insert(entities, ttl);
+    public void save(Iterable<T> entities, Duration ttl) throws NullPointerException {
+        Objects.requireNonNull(entities, "entities is required");
+        Objects.requireNonNull(ttl, "ttl is required");
+        entities.forEach(e -> save(e, ttl));
     }
 
     @Override
-    public void save(Object entity, Duration ttl, Consumer callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getTemplate().insert(entity, ttl, callBack);
-    }
-
-    @Override
-    public void save(Object entity, Consumer callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getTemplate().insert(entity, callBack);
-    }
-
-    @Override
-    public void deleteById(Object id) throws NullPointerException {
+    public void deleteById(ID id) throws NullPointerException {
         requireNonNull(id, "is is required");
         ColumnDeleteQuery query = ColumnDeleteQuery.of(getClassRepresentation().getName());
         String columnName = this.getIdField().getName();
@@ -90,28 +102,28 @@ public abstract class AbstractColumnRepositoryAsync<T, ID> implements Repository
     }
 
     @Override
-    public void delete(Iterable entities) throws NullPointerException {
+    public void delete(Iterable<T> entities) throws NullPointerException {
         requireNonNull(entities, "entities is required");
         entities.forEach(this::delete);
     }
 
     @Override
-    public void delete(Object entity) throws NullPointerException {
+    public void delete(T entity) throws NullPointerException {
         requireNonNull(entity, "entity is required");
         Object idValue = getReflections().getValue(entity, this.getIdField().getField());
         requireNonNull(idValue, "id value is required");
-        deleteById(idValue);
+        deleteById((ID) idValue);
     }
 
     @Override
-    public void existsById(Object id, Consumer callBack) throws NullPointerException {
-        Consumer<Optional> as = o -> callBack.accept(o.isPresent());
+    public void existsById(ID id, Consumer<Boolean> callBack) throws NullPointerException {
+        Consumer<Optional<T>> as = o -> callBack.accept(o.isPresent());
         findById(id, as);
     }
 
 
     @Override
-    public void findById(Object id, Consumer callBack) throws NullPointerException {
+    public void findById(ID id, Consumer<Optional<T>> callBack) throws NullPointerException {
         requireNonNull(id, "id is required");
         requireNonNull(callBack, "callBack is required");
         ColumnQuery query = ColumnQuery.of(getClassRepresentation().getName());

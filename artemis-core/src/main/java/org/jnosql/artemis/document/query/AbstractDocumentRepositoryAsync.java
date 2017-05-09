@@ -51,13 +51,4 @@ public abstract class AbstractDocumentRepositoryAsync implements RepositoryAsync
         getTemplate().insert(entities, ttl);
     }
 
-    @Override
-    public void save(Object entity, Duration ttl, Consumer callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getTemplate().insert(entity, ttl, callBack);
-    }
-
-    @Override
-    public void save(Object entity, Consumer callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        getTemplate().insert(entity, callBack);
-    }
 }

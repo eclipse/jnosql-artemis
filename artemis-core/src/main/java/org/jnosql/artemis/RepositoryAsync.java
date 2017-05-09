@@ -91,34 +91,6 @@ public interface RepositoryAsync<T, ID> {
      */
     void save(Iterable<T> entities, Duration ttl) throws NullPointerException;
 
-    /**
-     * Saves an entity asynchronously
-     *
-     * @param entity   entity to be saved
-     * @param callBack the callback, when the process is finished will call this instance returning
-     *                 the saved entity within parameters
-     * @param <T>      the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
-     * @throws NullPointerException          when either entity or callBack are null
-     */
-    <T> void save(T entity, Consumer<T> callBack) throws
-            ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
-
-    /**
-     * Saves an entity asynchronously with time to live
-     *
-     * @param entity   entity to be saved
-     * @param ttl      time to live
-     * @param callBack the callback, when the process is finished will call this instance returning
-     *                 the saved entity within parameters
-     * @param <T>      the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
-     * @throws NullPointerException          when either entity or ttl or callBack are null
-     */
-    <T> void save(T entity, Duration ttl, Consumer<T> callBack) throws
-            ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
 
     /**
      * Deletes the entity with the given id.
