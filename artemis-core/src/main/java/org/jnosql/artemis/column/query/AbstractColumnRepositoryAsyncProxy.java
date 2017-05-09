@@ -70,9 +70,8 @@ public abstract class AbstractColumnRepositoryAsyncProxy<T> implements Invocatio
     }
 
     private Object executeDelete(Object arg, ColumnDeleteQuery deleteQuery) {
-        Object callBack = arg;
-        if (Consumer.class.isInstance(callBack)) {
-            getTemplate().delete(deleteQuery, Consumer.class.cast(callBack));
+        if (Consumer.class.isInstance(arg)) {
+            getTemplate().delete(deleteQuery, Consumer.class.cast(arg));
             return Void.class;
         }
         getTemplate().delete(deleteQuery);
