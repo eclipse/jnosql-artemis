@@ -84,9 +84,8 @@ public abstract class AbstractColumnRepositoryAsyncProxy<T> implements Invocatio
     }
 
     private Object executeQuery(Object arg, ColumnQuery query) {
-        Object callBack = arg;
-        if (Consumer.class.isInstance(callBack)) {
-            getTemplate().select(query, Consumer.class.cast(callBack));
+        if (Consumer.class.isInstance(arg)) {
+            getTemplate().select(query, Consumer.class.cast(arg));
             return null;
         }
 

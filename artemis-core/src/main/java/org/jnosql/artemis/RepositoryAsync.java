@@ -95,8 +95,8 @@ public interface RepositoryAsync<T, ID> {
     /**
      * Deletes the entity with the given id.
      *
-     * @param id
-     * @throws NullPointerException
+     * @param id the id
+     * @throws NullPointerException when id is null
      */
     void deleteById(ID id) throws NullPointerException;
 
