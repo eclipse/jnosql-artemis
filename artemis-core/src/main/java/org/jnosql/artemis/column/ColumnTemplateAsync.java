@@ -17,14 +17,18 @@ package org.jnosql.artemis.column;
 
 
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
+import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnQuery;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.StreamSupport;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * This interface that represents the common operation between an entity
@@ -198,4 +202,33 @@ public interface ColumnTemplateAsync {
      */
     <T> void select(ColumnQuery query, Consumer<List<T>> callBack) throws
             ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
+
+    /**
+     * Execute a query to consume an unique result
+     *
+     * @param query    the query
+     * @param callBack the callback
+     * @param <T>      the type
+     * @throws ExecuteAsyncQueryException    when there is a async error
+     * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
+     * @throws NullPointerException          when either query or callback are null
+     * @throws NonUniqueResultException      when it returns more than one result
+     */
+    default <T> void singleResult(ColumnQuery query, Consumer<Optional<T>> callBack) throws
+            ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException, NonUniqueResultException {
+
+        requireNonNull(callBack, "callBack is required");
+
+        Consumer<List<T>> singleCallBack = entities -> {
+            if (entities.isEmpty()) {
+                callBack.accept(Optional.empty());
+            } else if (entities.size() == 1) {
+                callBack.accept(Optional.of(entities.get(0)));
+            } else {
+                throw new NonUniqueResultException("The query returns more than one entity, query: " + query);
+            }
+        };
+        select(query, singleCallBack);
+
+    }
 }
