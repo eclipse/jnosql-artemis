@@ -16,7 +16,6 @@
 package org.jnosql.artemis.column.query;
 
 
-import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.reflection.ClassRepresentation;
@@ -32,17 +31,14 @@ import java.time.Duration;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
+import static org.jnosql.artemis.IdNotFoundException.KEY_NOT_FOUND_EXCEPTION_SUPPLIER;
 
 /**
  * The template method to {@link RepositoryAsync}
  */
 public abstract class AbstractColumnRepositoryAsync<T, ID> implements RepositoryAsync<T, ID> {
-
-    private static final Supplier<IdNotFoundException> KEY_NOT_FOUND_EXCEPTION_SUPPLIER = ()
-            -> new IdNotFoundException("To use this resource you must annotaded a fiel with @org.jnosql.artemisId");
 
     protected abstract ColumnTemplateAsync getTemplate();
 

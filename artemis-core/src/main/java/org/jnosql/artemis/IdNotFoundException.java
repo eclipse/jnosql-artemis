@@ -15,6 +15,8 @@
  */
 package org.jnosql.artemis;
 
+import java.util.function.Supplier;
+
 /**
  * When The Entity is converted to {@link org.jnosql.diana.api.key.KeyValueEntity},
  * this entity must have a field with {@link org.jnosql.artemis.Id} annotation. If this entity
@@ -22,6 +24,8 @@ package org.jnosql.artemis;
  */
 public class IdNotFoundException extends ArtemisException {
 
+    public static final Supplier<IdNotFoundException> KEY_NOT_FOUND_EXCEPTION_SUPPLIER = ()
+            -> new IdNotFoundException("To use this resource you must annotaded a fiel with @org.jnosql.artemisId");
     /**
      * New exception instance with the exception message
      *
