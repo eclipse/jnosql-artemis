@@ -16,24 +16,13 @@
 package org.jnosql.artemis.column.query;
 
 
-import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.artemis.reflection.FieldRepresentation;
 import org.jnosql.artemis.reflection.Reflections;
-import org.jnosql.diana.api.column.Column;
-import org.jnosql.diana.api.column.ColumnCondition;
-import org.jnosql.diana.api.column.ColumnDeleteQuery;
-import org.jnosql.diana.api.column.ColumnQuery;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * Proxy handle to generate {@link RepositoryAsync}
@@ -55,12 +44,13 @@ class ColumnRepositoryAsyncProxy<T> extends AbstractColumnRepositoryAsyncProxy<T
     private final ColumnQueryDeleteParser deleteParser;
 
 
-    ColumnRepositoryAsyncProxy(ColumnTemplateAsync template, ClassRepresentations classRepresentations, Class<?> repositoryType) {
+    ColumnRepositoryAsyncProxy(ColumnTemplateAsync template, ClassRepresentations classRepresentations,
+                               Class<?> repositoryType, Reflections reflections) {
         this.template = template;
-        this.repository = new ColumnRepositoryAsync(template);
         this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
+        this.repository = new ColumnRepositoryAsync(template, reflections, classRepresentation);
         this.queryParser = new ColumnQueryParser();
         this.deleteParser = new ColumnQueryDeleteParser();
     }
@@ -92,8 +82,7 @@ class ColumnRepositoryAsyncProxy<T> extends AbstractColumnRepositoryAsyncProxy<T
 
 
     class ColumnRepositoryAsync extends AbstractColumnRepositoryAsync implements RepositoryAsync {
-        private static final Supplier<IdNotFoundException> KEY_NOT_FOUND_EXCEPTION_SUPPLIER = ()
-                -> new IdNotFoundException("To use this resource you must annotaded a fiel with @org.jnosql.artemisId");
+
 
         private final ColumnTemplateAsync template;
 
@@ -113,51 +102,15 @@ class ColumnRepositoryAsyncProxy<T> extends AbstractColumnRepositoryAsyncProxy<T
         }
 
         @Override
-        public void deleteById(Object id) throws NullPointerException {
-            requireNonNull(id, "is is required");
-            ColumnDeleteQuery query = ColumnDeleteQuery.of(getClassRepresentation().getName());
-            String columnName = this.getIdField().getName();
-            query.with(ColumnCondition.eq(Column.of(columnName, id)));
-            getTemplate().delete(query);
+        protected Reflections getReflections() {
+            return reflections;
         }
 
         @Override
-        public void delete(Iterable entities) throws NullPointerException {
-            requireNonNull(entities, "entities is required");
-            entities.forEach(this::delete);
+        protected ClassRepresentation getClassRepresentation() {
+            return classRepresentation;
         }
 
-        @Override
-        public void delete(Object entity) throws NullPointerException {
-            requireNonNull(entity, "entity is required");
-            Object idValue = reflections.getValue(entity, this.getIdField().getField());
-            requireNonNull(idValue, "id value is required");
-            deleteById(idValue);
-        }
 
-        @Override
-        public void existsById(Object id, Consumer callBack) throws NullPointerException {
-
-        }
-
-        @Override
-        public void findById(Iterable ids, Consumer callBack) throws NullPointerException {
-
-        }
-
-        @Override
-        public void findById(Object id, Consumer callBack) throws NullPointerException {
-            requireNonNull(id, "id is required");
-
-            ColumnQuery query = ColumnQuery.of(getClassRepresentation().getName());
-            String columnName = this.getIdField().getName();
-            query.with(ColumnCondition.eq(Column.of(columnName, id)));
-            Consumer<List<?>> as;
-            getTemplate().select(query, as);
-        }
-
-        private FieldRepresentation getIdField() {
-            return getClassRepresentation().getId().orElseThrow(KEY_NOT_FOUND_EXCEPTION_SUPPLIER);
-        }
     }
 }

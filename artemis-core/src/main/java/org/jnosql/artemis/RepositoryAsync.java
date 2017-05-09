@@ -153,14 +153,6 @@ public interface RepositoryAsync<T, ID> {
      */
     void findById(ID id, Consumer<Optional<T>> callBack) throws NullPointerException;
 
-    /**
-     * Finds the entities given ids
-     *
-     * @param ids      the ids
-     * @param callBack the callback
-     * @throws NullPointerException when the id is null
-     */
-    void findById(Iterable<ID> ids, Consumer<Iterable<T>> callBack) throws NullPointerException;
 
     /**
      * Returns whether an entity with the given id exists.

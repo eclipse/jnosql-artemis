@@ -16,19 +16,39 @@
 package org.jnosql.artemis.column.query;
 
 
+import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.column.ColumnTemplateAsync;
+import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
+import org.jnosql.diana.api.column.Column;
+import org.jnosql.diana.api.column.ColumnCondition;
+import org.jnosql.diana.api.column.ColumnDeleteQuery;
+import org.jnosql.diana.api.column.ColumnQuery;
 
 import java.time.Duration;
+import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * The template method to {@link RepositoryAsync}
  */
 public abstract class AbstractColumnRepositoryAsync<T, ID> implements RepositoryAsync<T, ID> {
 
+    private static final Supplier<IdNotFoundException> KEY_NOT_FOUND_EXCEPTION_SUPPLIER = ()
+            -> new IdNotFoundException("To use this resource you must annotaded a fiel with @org.jnosql.artemisId");
+
     protected abstract ColumnTemplateAsync getTemplate();
+
+    protected abstract Reflections getReflections();
+
+    protected abstract ClassRepresentation getClassRepresentation();
+
 
     @Override
     public void save(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
@@ -58,5 +78,49 @@ public abstract class AbstractColumnRepositoryAsync<T, ID> implements Repository
     @Override
     public void save(Object entity, Consumer callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
         getTemplate().insert(entity, callBack);
+    }
+
+    @Override
+    public void deleteById(Object id) throws NullPointerException {
+        requireNonNull(id, "is is required");
+        ColumnDeleteQuery query = ColumnDeleteQuery.of(getClassRepresentation().getName());
+        String columnName = this.getIdField().getName();
+        query.with(ColumnCondition.eq(Column.of(columnName, id)));
+        getTemplate().delete(query);
+    }
+
+    @Override
+    public void delete(Iterable entities) throws NullPointerException {
+        requireNonNull(entities, "entities is required");
+        entities.forEach(this::delete);
+    }
+
+    @Override
+    public void delete(Object entity) throws NullPointerException {
+        requireNonNull(entity, "entity is required");
+        Object idValue = getReflections().getValue(entity, this.getIdField().getField());
+        requireNonNull(idValue, "id value is required");
+        deleteById(idValue);
+    }
+
+    @Override
+    public void existsById(Object id, Consumer callBack) throws NullPointerException {
+        Consumer<Optional> as = o -> callBack.accept(o.isPresent());
+        findById(id, as);
+    }
+
+
+    @Override
+    public void findById(Object id, Consumer callBack) throws NullPointerException {
+        requireNonNull(id, "id is required");
+        requireNonNull(callBack, "callBack is required");
+        ColumnQuery query = ColumnQuery.of(getClassRepresentation().getName());
+        String columnName = this.getIdField().getName();
+        query.with(ColumnCondition.eq(Column.of(columnName, id)));
+        getTemplate().singleResult(query, callBack);
+    }
+
+    private FieldRepresentation getIdField() {
+        return getClassRepresentation().getId().orElseThrow(KEY_NOT_FOUND_EXCEPTION_SUPPLIER);
     }
 }
