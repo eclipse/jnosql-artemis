@@ -22,8 +22,8 @@ import javax.inject.Inject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Objects;
 
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
 @ApplicationScoped
@@ -60,10 +60,12 @@ class ClassConverter {
         FieldType fieldType = FieldType.of(field);
         reflections.makeAccessible(field);
         Convert convert = field.getAnnotation(Convert.class);
-        String columnName = reflections.getColumnName(field);
+        boolean id = reflections.isIdField(field);
+        String columnName = id ? reflections.getIdName(field) : reflections.getColumnName(field);
+
         FieldRepresentationBuilder builder = FieldRepresentation.builder().withName(columnName)
-                .withField(field).withType(fieldType);
-        if (Objects.nonNull(convert)) {
+                .withField(field).withType(fieldType).withId(id);
+        if (nonNull(convert)) {
             builder.withConverter(convert.value());
         }
         switch (fieldType) {

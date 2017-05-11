@@ -17,43 +17,128 @@ package org.jnosql.artemis.document.query;
 
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.document.DocumentTemplate;
+import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.Reflections;
+import org.jnosql.diana.api.document.Document;
+import org.jnosql.diana.api.document.DocumentCondition;
+import org.jnosql.diana.api.document.DocumentDeleteQuery;
+import org.jnosql.diana.api.document.DocumentQuery;
 
 import java.time.Duration;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.StreamSupport.stream;
+import static org.jnosql.artemis.IdNotFoundException.KEY_NOT_FOUND_EXCEPTION_SUPPLIER;
 
 /**
  * The {@link Repository} template method
  */
-public abstract class AbstractDocumentRepository implements Repository {
+public abstract class AbstractDocumentRepository<T, ID> implements Repository<T, ID> {
 
     protected abstract DocumentTemplate getTemplate();
 
+    protected abstract ClassRepresentation getClassRepresentation();
+
+    protected abstract Reflections getReflections();
+
     @Override
-    public Object save(Object entity) throws NullPointerException {
-        return getTemplate().save(entity);
+    public T save(T entity) throws NullPointerException {
+        Objects.requireNonNull(entity, "Entity is required");
+        Object id = getReflections().getValue(entity, getIdField().getField());
+        if (existsById((ID) id)) {
+            return getTemplate().update(entity);
+        } else {
+            return getTemplate().insert(entity);
+        }
     }
 
     @Override
-    public Object save(Object entity, Duration ttl) {
-        return getTemplate().save(entity, ttl);
+    public T save(T entity, Duration ttl) {
+        Objects.requireNonNull(entity, "Entity is required");
+        Object id = getReflections().getValue(entity, getIdField().getField());
+        if (existsById((ID) id)) {
+            return getTemplate().update(entity);
+        } else {
+            return getTemplate().insert(entity, ttl);
+        }
     }
 
     @Override
-    public Iterable save(Iterable entities) throws NullPointerException {
-        return getTemplate().save(entities);
+    public Iterable<T> save(Iterable<T> entities) throws NullPointerException {
+        return getTemplate().insert(entities);
     }
 
     @Override
-    public Iterable save(Iterable entities, Duration ttl) throws NullPointerException {
-        return getTemplate().save(entities, ttl);
+    public Iterable<T> save(Iterable<T> entities, Duration ttl) throws NullPointerException {
+        return getTemplate().insert(entities, ttl);
     }
 
     @Override
-    public Object update(Object entity) {
-        return getTemplate().update(entity);
+    public void deleteById(ID id) throws NullPointerException {
+        requireNonNull(id, "is is required");
+        DocumentDeleteQuery query = DocumentDeleteQuery.of(getClassRepresentation().getName());
+        String documentName = this.getIdField().getName();
+        query.with(DocumentCondition.eq(Document.of(documentName, id)));
+        getTemplate().delete(query);
     }
 
     @Override
-    public Iterable update(Iterable entities) throws NullPointerException {
-        return getTemplate().update(entities);
+    public void deleteById(Iterable<ID> ids) throws NullPointerException {
+        requireNonNull(ids, "ids is required");
+        ids.forEach(this::deleteById);
     }
+
+    @Override
+    public void delete(Iterable<T> entities) throws NullPointerException {
+        requireNonNull(entities, "entities is required");
+        entities.forEach(this::delete);
+    }
+
+    @Override
+    public void delete(T entity) throws NullPointerException {
+        requireNonNull(entity, "entity is required");
+        Object idValue = getReflections().getValue(entity, this.getIdField().getField());
+        requireNonNull(idValue, "id value is required");
+        deleteById((ID) idValue);
+    }
+
+    @Override
+    public Optional<T> findById(ID id) throws NullPointerException {
+        requireNonNull(id, "id is required");
+
+        DocumentQuery query = DocumentQuery.of(getClassRepresentation().getName());
+        String documentName = this.getIdField().getName();
+        query.with(DocumentCondition.eq(Document.of(documentName, id)));
+        return getTemplate().singleResult(query);
+    }
+
+    @Override
+    public Iterable<T> findById(Iterable<ID> ids) throws NullPointerException {
+        requireNonNull(ids, "ids is required");
+        return (Iterable) stream(ids.spliterator(), false)
+                .flatMap(optionalToStream()).collect(Collectors.toList());
+    }
+
+    private FieldRepresentation getIdField() {
+        return getClassRepresentation().getId().orElseThrow(KEY_NOT_FOUND_EXCEPTION_SUPPLIER);
+    }
+
+    private Function optionalToStream() {
+        return id -> {
+            Optional entity = this.findById((ID) id);
+            return entity.isPresent() ? Stream.of(entity.get()) : Stream.empty();
+        };
+    }
+
+    @Override
+    public boolean existsById(ID id) throws NullPointerException {
+        return findById(id).isPresent();
+    }
+
 }

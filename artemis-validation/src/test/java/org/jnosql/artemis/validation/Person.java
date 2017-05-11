@@ -18,7 +18,7 @@ package org.jnosql.artemis.validation;
 
 import org.jnosql.artemis.Column;
 import org.jnosql.artemis.Entity;
-import org.jnosql.artemis.Key;
+import org.jnosql.artemis.Id;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.Min;
@@ -30,7 +30,7 @@ import java.util.List;
 @Entity
 public class Person {
 
-    @Key
+    @Id
     @NotNull
     @Column
     private String name;

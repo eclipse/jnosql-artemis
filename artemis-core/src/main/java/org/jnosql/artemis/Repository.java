@@ -17,12 +17,13 @@ package org.jnosql.artemis;
 
 
 import java.time.Duration;
+import java.util.Optional;
 
 /**
  * Interface to generic CRUD operations on a repository for a specific type.
  * The query builder mechanism built into Artemis repository infrastructure is useful for building constraining queries
  * over entities of the repository. The mechanism strips the prefixes is defined by:
- * <p>findBy: to find any information T</p>
+ * <p>findBy: to select any information T</p>
  * <p>deleteBy: To delete any information T</p>
  * Artemis has some keywords on method:
  * <p><b>And</b></p>
@@ -37,9 +38,10 @@ import java.time.Duration;
  * <p><b>OrderBy____Desc</b></p>
  * <p><b>OrderBy_____ASC</b></p>
  *
- * @param <T> the bean type
+ * @param <T>  the bean type
+ * @param <ID> the ID type
  */
-public interface Repository<T> {
+public interface Repository<T, ID> {
 
     /**
      * Saves entity
@@ -57,7 +59,7 @@ public interface Repository<T> {
      * @param ttl    the time to live
      * @return the entity saved
      */
-    T save(T entity, Duration ttl);
+    T save(T entity, Duration ttl) throws NullPointerException;
 
     /**
      * Saves entity
@@ -81,22 +83,63 @@ public interface Repository<T> {
     Iterable<T> save(Iterable<T> entities, Duration ttl) throws NullPointerException;
 
     /**
-     * Updates a entity
+     * Deletes the entity with the given id.
      *
-     * @param entity entity to be updated
-     * @return the entity updated
+     * @param id the id
+     * @throws NullPointerException when id is null
      */
-    T update(T entity);
+    void deleteById(ID id) throws NullPointerException;
 
     /**
-     * Updates entities,
-     * each NoSQL vendor might replace to a more appropriate one.
+     * Deletes the entity with the given ids.
      *
-     * @param entities entities to be saved
-     * @return the entity saved
+     * @param ids the ids
+     * @throws NullPointerException when either ids or same element is null
+     */
+    void deleteById(Iterable<ID> ids) throws NullPointerException;
+
+    /**
+     * Deletes the given entities.
+     *
+     * @param entities the entities
      * @throws NullPointerException when entities is null
      */
-    Iterable<T> update(Iterable<T> entities) throws NullPointerException;
+    void delete(Iterable<T> entities) throws NullPointerException;
+
+    /**
+     * Deletes the entity given the entity
+     *
+     * @param entity the entity
+     * @throws NullPointerException when entity is null
+     */
+    void delete(T entity) throws NullPointerException;
+
+    /**
+     * Finds an entity given the id
+     *
+     * @param id the id
+     * @return the entity given the ID
+     * @throws NullPointerException when id is null
+     */
+    Optional<T> findById(ID id) throws NullPointerException;
+
+    /**
+     * Finds the entities given ids
+     *
+     * @param ids the ids
+     * @return the entities from ids
+     * @throws NullPointerException when the id is null
+     */
+    Iterable<T> findById(Iterable<ID> ids) throws NullPointerException;
+
+    /**
+     * Returns whether an entity with the given id exists.
+     *
+     * @param id the id
+     * @return if the entity does exist or not
+     * @throws NullPointerException when id is null
+     */
+    boolean existsById(ID id) throws NullPointerException;
 
 
 }

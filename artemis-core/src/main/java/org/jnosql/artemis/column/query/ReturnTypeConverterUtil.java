@@ -42,27 +42,23 @@ public final class ReturnTypeConverterUtil {
 
         if (typeClass.equals(returnType)) {
             Optional<Object> optional = template.singleResult(query);
-            if (optional.isPresent()) {
-                return optional.get();
-            } else {
-                return null;
-            }
+            return optional.orElse(null);
 
         } else if (Optional.class.equals(returnType)) {
             return template.singleResult(query);
         } else if (List.class.equals(returnType)
                 || Iterable.class.equals(returnType)
                 || Collection.class.equals(returnType)) {
-            return template.find(query);
+            return template.select(query);
         } else if (Set.class.equals(returnType)) {
-            return new HashSet<>(template.find(query));
+            return new HashSet<>(template.select(query));
         } else if (Queue.class.equals(returnType)) {
-            return new PriorityQueue<>(template.find(query));
+            return new PriorityQueue<>(template.select(query));
         } else if (Stream.class.equals(returnType)) {
-            return template.find(query).stream();
+            return template.select(query).stream();
         }
 
-        return template.find(query);
+        return template.select(query);
     }
 
 }

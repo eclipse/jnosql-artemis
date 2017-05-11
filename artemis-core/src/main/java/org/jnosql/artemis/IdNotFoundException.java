@@ -13,29 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jnosql.artemis.key;
+package org.jnosql.artemis;
 
-import org.jnosql.artemis.ArtemisException;
+import java.util.function.Supplier;
 
 /**
  * When The Entity is converted to {@link org.jnosql.diana.api.key.KeyValueEntity},
- * this entity must have a field with {@link org.jnosql.artemis.Key} annotation. If this entity
+ * this entity must have a field with {@link org.jnosql.artemis.Id} annotation. If this entity
  * hasn't this information an exception will be launch.
  */
-public class KeyNotFoundException extends ArtemisException {
+public class IdNotFoundException extends ArtemisException {
 
+    public static final Supplier<IdNotFoundException> KEY_NOT_FOUND_EXCEPTION_SUPPLIER = ()
+            -> new IdNotFoundException("To use this resource you must annotaded a fiel with @org.jnosql.artemisId");
     /**
      * New exception instance with the exception message
      *
      * @param message the exception message
      */
-    public KeyNotFoundException(String message) {
+    public IdNotFoundException(String message) {
         super(message);
     }
 
 
-    static KeyNotFoundException newInstance(Class<?> clazz) {
-        String message = "The entity " + clazz + " must have a field annoted with @Key";
-        return new KeyNotFoundException(message);
+    public static IdNotFoundException newInstance(Class<?> clazz) {
+        String message = "The entity " + clazz + " must have a field annoted with @Id";
+        return new IdNotFoundException(message);
     }
 }

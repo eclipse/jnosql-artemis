@@ -20,6 +20,7 @@ import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.Reflections;
 
 import java.lang.reflect.ParameterizedType;
 
@@ -29,8 +30,6 @@ import java.lang.reflect.ParameterizedType;
  * @param <T> the type
  */
 class ColumnRepositoryAsyncProxy<T> extends AbstractColumnRepositoryAsyncProxy<T> {
-
-    private final Class<T> typeClass;
 
     private final ColumnTemplateAsync template;
 
@@ -43,12 +42,13 @@ class ColumnRepositoryAsyncProxy<T> extends AbstractColumnRepositoryAsyncProxy<T
     private final ColumnQueryDeleteParser deleteParser;
 
 
-    ColumnRepositoryAsyncProxy(ColumnTemplateAsync template, ClassRepresentations classRepresentations, Class<?> repositoryType) {
+    ColumnRepositoryAsyncProxy(ColumnTemplateAsync template, ClassRepresentations classRepresentations,
+                               Class<?> repositoryType, Reflections reflections) {
         this.template = template;
-        this.repository = new ColumnRepositoryAsync(template);
-        this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
+        Class<T> typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
+        this.repository = new ColumnRepositoryAsync(template, reflections, classRepresentation);
         this.queryParser = new ColumnQueryParser();
         this.deleteParser = new ColumnQueryDeleteParser();
     }
@@ -81,15 +81,34 @@ class ColumnRepositoryAsyncProxy<T> extends AbstractColumnRepositoryAsyncProxy<T
 
     class ColumnRepositoryAsync extends AbstractColumnRepositoryAsync implements RepositoryAsync {
 
+
         private final ColumnTemplateAsync template;
 
-        ColumnRepositoryAsync(ColumnTemplateAsync repository) {
+        private final Reflections reflections;
+
+        private final ClassRepresentation classRepresentation;
+
+        ColumnRepositoryAsync(ColumnTemplateAsync repository, Reflections reflections, ClassRepresentation classRepresentation) {
             this.template = repository;
+            this.reflections = reflections;
+            this.classRepresentation = classRepresentation;
         }
 
         @Override
         protected ColumnTemplateAsync getTemplate() {
             return template;
         }
+
+        @Override
+        protected Reflections getReflections() {
+            return reflections;
+        }
+
+        @Override
+        protected ClassRepresentation getClassRepresentation() {
+            return classRepresentation;
+        }
+
+
     }
 }

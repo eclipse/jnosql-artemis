@@ -15,6 +15,7 @@
  */
 package org.jnosql.artemis.key;
 
+import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.FieldRepresentation;
@@ -45,7 +46,7 @@ class DefaultKeyValueEntityConverter implements KeyValueEntityConverter {
         Class<?> clazz = entityInstance.getClass();
         ClassRepresentation representation = classRepresentations.get(clazz);
 
-        FieldRepresentation key = getKey(clazz, representation);
+        FieldRepresentation key = getId(clazz, representation);
         Object value = reflections.getValue(entityInstance, key.getField());
         requireNonNull(value, String.format("The key field %s is required", key.getName()));
 
@@ -60,7 +61,7 @@ class DefaultKeyValueEntityConverter implements KeyValueEntityConverter {
         if (Objects.isNull(t)) {
             return null;
         }
-        FieldRepresentation key = getKey(entityClass, classRepresentations.get(entityClass));
+        FieldRepresentation key = getId(entityClass, classRepresentations.get(entityClass));
         Object keyValue = reflections.getValue(t, key.getField());
         if (Objects.isNull(keyValue) || !keyValue.equals(entity.getKey())) {
             reflections.setValue(t, key.getField(), entity.getKey());
@@ -69,7 +70,7 @@ class DefaultKeyValueEntityConverter implements KeyValueEntityConverter {
     }
 
     @Override
-    public <T> T toEntity(Class<T> entityClass, Value value) throws KeyNotFoundException, NullPointerException {
+    public <T> T toEntity(Class<T> entityClass, Value value) throws IdNotFoundException, NullPointerException {
         T t = value.get(entityClass);
         if (Objects.isNull(t)) {
             return null;
@@ -77,9 +78,9 @@ class DefaultKeyValueEntityConverter implements KeyValueEntityConverter {
         return t;
     }
 
-    private FieldRepresentation getKey(Class<?> clazz, ClassRepresentation representation) {
+    private FieldRepresentation getId(Class<?> clazz, ClassRepresentation representation) {
         List<FieldRepresentation> fields = representation.getFields();
-        return fields.stream().filter(FieldRepresentation::isKey)
-                .findFirst().orElseThrow(() -> KeyNotFoundException.newInstance(clazz));
+        return fields.stream().filter(FieldRepresentation::isId)
+                .findFirst().orElseThrow(() -> IdNotFoundException.newInstance(clazz));
     }
 }

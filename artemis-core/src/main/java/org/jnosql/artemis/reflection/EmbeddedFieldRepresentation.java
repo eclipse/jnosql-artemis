@@ -36,7 +36,7 @@ public final class EmbeddedFieldRepresentation extends AbstractFieldRepresentati
     }
 
     @Override
-    public boolean isKey() {
+    public boolean isId() {
         return false;
     }
 

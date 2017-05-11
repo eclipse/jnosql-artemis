@@ -32,7 +32,10 @@ enum DocumentRepositoryType {
         String methodName = method.getName();
         switch (methodName) {
             case "save":
-            case "update":
+            case "deleteById":
+            case "delete":
+            case "findById":
+            case "existsById":
                 return DEFAULT;
             default:
         }

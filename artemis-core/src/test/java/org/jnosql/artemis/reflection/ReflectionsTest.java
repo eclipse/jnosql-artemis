@@ -15,15 +15,17 @@
  */
 package org.jnosql.artemis.reflection;
 
-import java.lang.reflect.Field;
-import javax.inject.Inject;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Actor;
 import org.jnosql.artemis.model.Movie;
 import org.jnosql.artemis.model.Person;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import javax.inject.Inject;
+import java.lang.reflect.Field;
+
+import static org.junit.Assert.assertEquals;
 
 
 @RunWith(WeldJUnit4Runner.class)
@@ -35,15 +37,15 @@ public class ReflectionsTest {
 
     @Test
     public void shouldReturnsEntityName() {
-        Assert.assertEquals("Person", reflections.getEntityName(Person.class));
-        Assert.assertEquals("movie", reflections.getEntityName(Movie.class));
+        assertEquals("Person", reflections.getEntityName(Person.class));
+        assertEquals("movie", reflections.getEntityName(Movie.class));
     }
 
     @Test
     public void shouldListFields() {
 
-        Assert.assertEquals(4, reflections.getFields(Person.class).size());
-        Assert.assertEquals(6, reflections.getFields(Actor.class).size());
+        assertEquals(4, reflections.getFields(Person.class).size());
+        assertEquals(6, reflections.getFields(Actor.class).size());
 
     }
 
@@ -52,8 +54,9 @@ public class ReflectionsTest {
         Field phones = Person.class.getDeclaredField("phones");
         Field id = Person.class.getDeclaredField("id");
 
-        Assert.assertEquals("phones", reflections.getColumnName(phones));
-        Assert.assertEquals("_id", reflections.getColumnName(id));
+        assertEquals("phones", reflections.getColumnName(phones));
+        assertEquals("id", reflections.getColumnName(id));
+        assertEquals("_id", reflections.getIdName(id));
     }
 
 }

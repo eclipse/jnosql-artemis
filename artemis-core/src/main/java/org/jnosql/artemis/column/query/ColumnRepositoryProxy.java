@@ -20,6 +20,7 @@ import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.Reflections;
 
 import java.lang.reflect.ParameterizedType;
 
@@ -27,15 +28,17 @@ import java.lang.reflect.ParameterizedType;
 /**
  * Proxy handle to generate {@link Repository}
  *
- * @param <T> the type
+ * @param <T>  the type
+ * @param <ID> the ID type
  */
-class ColumnRepositoryProxy<T> extends AbstractColumnRepositoryProxy {
+class ColumnRepositoryProxy<T, ID> extends AbstractColumnRepositoryProxy {
 
-    private final Class<T> typeClass;
 
     private final ColumnTemplate template;
 
     private final ColumnRepository repository;
+
+    private final Reflections reflections;
 
     private final ClassRepresentation classRepresentation;
 
@@ -44,12 +47,13 @@ class ColumnRepositoryProxy<T> extends AbstractColumnRepositoryProxy {
     private final ColumnQueryDeleteParser deleteParser;
 
 
-    ColumnRepositoryProxy(ColumnTemplate template, ClassRepresentations classRepresentations, Class<?> repositoryType) {
+    ColumnRepositoryProxy(ColumnTemplate template, ClassRepresentations classRepresentations, Class<?> repositoryType, Reflections reflections) {
         this.template = template;
-        this.repository = new ColumnRepository(template);
-        this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
+        Class<T> typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
+        this.repository = new ColumnRepository(template, classRepresentation);
+        this.reflections = reflections;
         this.queryParser = new ColumnQueryParser();
         this.deleteParser = new ColumnQueryDeleteParser();
     }
@@ -84,13 +88,27 @@ class ColumnRepositoryProxy<T> extends AbstractColumnRepositoryProxy {
 
         private final ColumnTemplate template;
 
-        ColumnRepository(ColumnTemplate template) {
+        private final ClassRepresentation classRepresentation;
+
+        ColumnRepository(ColumnTemplate template, ClassRepresentation classRepresentation) {
             this.template = template;
+            this.classRepresentation = classRepresentation;
         }
 
         @Override
         protected ColumnTemplate getTemplate() {
             return template;
         }
+
+        @Override
+        protected ClassRepresentation getClassRepresentation() {
+            return classRepresentation;
+        }
+
+        @Override
+        protected Reflections getReflections() {
+            return reflections;
+        }
+
     }
 }

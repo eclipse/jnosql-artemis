@@ -64,13 +64,11 @@ public class DefaultColumnTemplateAsyncTest {
 
     private ArgumentCaptor<ColumnEntity> captor;
 
-    private ColumnEventPersistManager columnEventPersistManager;
-
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
         managerMock = Mockito.mock(ColumnFamilyManagerAsync.class);
-        columnEventPersistManager = Mockito.mock(ColumnEventPersistManager.class);
+        ColumnEventPersistManager columnEventPersistManager = Mockito.mock(ColumnEventPersistManager.class);
         captor = ArgumentCaptor.forClass(ColumnEntity.class);
         Instance<ColumnFamilyManagerAsync> instance = Mockito.mock(Instance.class);
         Mockito.when(instance.get()).thenReturn(managerMock);
@@ -83,8 +81,8 @@ public class DefaultColumnTemplateAsyncTest {
         document.addAll(Stream.of(columns).collect(Collectors.toList()));
 
 
-        subject.save(this.person);
-        verify(managerMock).save(captor.capture(), Mockito.any(Consumer.class));
+        subject.insert(this.person);
+        verify(managerMock).insert(captor.capture(), Mockito.any(Consumer.class));
         ColumnEntity value = captor.getValue();
         assertEquals(document.getName(), value.getName());
     }
@@ -96,8 +94,8 @@ public class DefaultColumnTemplateAsyncTest {
         document.addAll(Stream.of(columns).collect(Collectors.toList()));
 
 
-        subject.save(this.person);
-        verify(managerMock).save(Mockito.any(ColumnEntity.class), Mockito.any(Consumer.class));
+        subject.insert(this.person);
+        verify(managerMock).insert(Mockito.any(ColumnEntity.class), Mockito.any(Consumer.class));
     }
 
     @Test

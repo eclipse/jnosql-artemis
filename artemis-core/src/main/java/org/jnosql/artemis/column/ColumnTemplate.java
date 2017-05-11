@@ -35,32 +35,32 @@ import java.util.stream.StreamSupport;
 public interface ColumnTemplate {
 
     /**
-     * Saves entity
+     * Inserts entity
      *
      * @param entity entity to be saved
      * @param <T>    the instance type
      * @return the entity saved
      * @throws NullPointerException when document is null
      */
-    <T> T save(T entity) throws NullPointerException;
+    <T> T insert(T entity) throws NullPointerException;
 
 
 
     /**
-     * Saves entity with time to live
+     * Inserts entity with time to live
      *
      * @param entity entity to be saved
      * @param ttl    the time to live
      * @param <T>    the instance type
      * @return the entity saved
      */
-    <T> T save(T entity, Duration ttl);
+    <T> T insert(T entity, Duration ttl);
 
 
 
     /**
-     * Saves entity, by default it's just run for each saving using
-     * {@link ColumnTemplate#save(Object)}},
+     * Inserts entity, by default it's just run for each saving using
+     * {@link ColumnTemplate#insert(Object)}},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -68,14 +68,14 @@ public interface ColumnTemplate {
      * @return the entity saved
      * @throws NullPointerException when entities is null
      */
-    default <T> Iterable<T> save(Iterable<T> entities) throws NullPointerException {
+    default <T> Iterable<T> insert(Iterable<T> entities) throws NullPointerException {
         Objects.requireNonNull(entities, "entities is required");
-        return StreamSupport.stream(entities.spliterator(), false).map(this::save).collect(Collectors.toList());
+        return StreamSupport.stream(entities.spliterator(), false).map(this::insert).collect(Collectors.toList());
     }
 
     /**
-     * Saves documents collection entity with time to live, by default it's just run for each saving using
-     * {@link ColumnTemplate#save(Object, Duration)},
+     * Inserts documents collection entity with time to live, by default it's just run for each saving using
+     * {@link ColumnTemplate#insert(Object, Duration)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
@@ -84,10 +84,10 @@ public interface ColumnTemplate {
      * @return the entity saved
      * @throws NullPointerException when entities is null
      */
-    default <T> Iterable<T> save(Iterable<T> entities, Duration ttl) throws NullPointerException {
+    default <T> Iterable<T> insert(Iterable<T> entities, Duration ttl) throws NullPointerException {
         Objects.requireNonNull(entities, "entities is required");
         Objects.requireNonNull(ttl, "ttl is required");
-        return StreamSupport.stream(entities.spliterator(), false).map(d -> save(d, ttl)).collect(Collectors.toList());
+        return StreamSupport.stream(entities.spliterator(), false).map(d -> insert(d, ttl)).collect(Collectors.toList());
     }
 
 
@@ -132,7 +132,7 @@ public interface ColumnTemplate {
      * @return entities found by query
      * @throws NullPointerException when query is null
      */
-    <T> List<T> find(ColumnQuery query) throws NullPointerException;
+    <T> List<T> select(ColumnQuery query) throws NullPointerException;
 
     /**
      * Returns a single entity from query
@@ -144,7 +144,7 @@ public interface ColumnTemplate {
      * @throws NullPointerException     when query is null
      */
     default <T> Optional<T> singleResult(ColumnQuery query) throws NonUniqueResultException {
-        List<T> entities = find(query);
+        List<T> entities = select(query);
         if (entities.isEmpty()) {
             return Optional.empty();
         }

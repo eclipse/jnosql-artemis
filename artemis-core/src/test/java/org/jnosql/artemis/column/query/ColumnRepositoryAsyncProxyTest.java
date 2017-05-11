@@ -22,6 +22,7 @@ import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.Condition;
 import org.jnosql.diana.api.Sort;
 import org.jnosql.diana.api.column.Column;
@@ -38,32 +39,38 @@ import javax.inject.Inject;
 import java.lang.reflect.Proxy;
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.jnosql.diana.api.column.ColumnCondition.eq;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(WeldJUnit4Runner.class)
 public class ColumnRepositoryAsyncProxyTest {
 
-    private ColumnTemplateAsync repository;
+    private ColumnTemplateAsync template;
 
     @Inject
     private ClassRepresentations classRepresentations;
+
+    @Inject
+    private Reflections reflections;
 
     private PersonAsyncRepository personRepository;
 
 
     @Before
     public void setUp() {
-        this.repository = Mockito.mock(ColumnTemplateAsync.class);
+        this.template = Mockito.mock(ColumnTemplateAsync.class);
 
-        ColumnRepositoryAsyncProxy handler = new ColumnRepositoryAsyncProxy(repository,
-                classRepresentations, PersonAsyncRepository.class);
+        ColumnRepositoryAsyncProxy handler = new ColumnRepositoryAsyncProxy(template,
+                classRepresentations, PersonAsyncRepository.class, reflections);
 
 
         personRepository = (PersonAsyncRepository) Proxy.newProxyInstance(PersonAsyncRepository.class.getClassLoader(),
@@ -73,17 +80,41 @@ public class ColumnRepositoryAsyncProxyTest {
 
 
     @Test
-    public void shouldSave() {
+    public void shouldSaveUsingInsertWhenThereIsNotData() {
         ArgumentCaptor<Person> captor = ArgumentCaptor.forClass(Person.class);
+        ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
+
         Person person = Person.builder().withName("Ada")
                 .withId(10L)
                 .withPhones(singletonList("123123"))
                 .build();
-        repository.save(person);
-        verify(repository).save(captor.capture());
+        personRepository.save(person);
+        verify(template).singleResult(Mockito.any(ColumnQuery.class), consumerCaptor.capture());
+        Consumer consumer = consumerCaptor.getValue();
+        consumer.accept(Optional.empty());
+        verify(template).insert(captor.capture());
         Person value = captor.getValue();
         assertEquals(person, value);
     }
+
+    @Test
+    public void shouldSaveUsingUpdateWhenThereIsData() {
+        ArgumentCaptor<Person> captor = ArgumentCaptor.forClass(Person.class);
+        ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
+
+        Person person = Person.builder().withName("Ada")
+                .withId(10L)
+                .withPhones(singletonList("123123"))
+                .build();
+        personRepository.save(person);
+        verify(template).singleResult(Mockito.any(ColumnQuery.class), consumerCaptor.capture());
+        Consumer consumer = consumerCaptor.getValue();
+        consumer.accept(Optional.of(Person.builder().build()));
+        verify(template).update(captor.capture());
+        Person value = captor.getValue();
+        assertEquals(person, value);
+    }
+
 
 
     @Test
@@ -93,58 +124,18 @@ public class ColumnRepositoryAsyncProxyTest {
                 .withId(10L)
                 .withPhones(singletonList("123123"))
                 .build();
-        repository.save(person, Duration.ofHours(2));
-        verify(repository).save(captor.capture(), Mockito.eq(Duration.ofHours(2)));
+        template.insert(person, Duration.ofHours(2));
+        verify(template).insert(captor.capture(), eq(Duration.ofHours(2)));
         Person value = captor.getValue();
         assertEquals(person, value);
     }
 
-
-    @Test
-    public void shouldUpdate() {
-        ArgumentCaptor<Person> captor = ArgumentCaptor.forClass(Person.class);
-        Person person = Person.builder().withName("Ada")
-                .withId(10L)
-                .withPhones(singletonList("123123"))
-                .build();
-        repository.update(person);
-        verify(repository).update(captor.capture());
-        Person value = captor.getValue();
-        assertEquals(person, value);
-    }
-
-
-    @Test
-    public void shouldSaveItarable() {
-        ArgumentCaptor<Iterable> captor = ArgumentCaptor.forClass(Iterable.class);
-        Person person = Person.builder().withName("Ada")
-                .withId(10L)
-                .withPhones(singletonList("123123"))
-                .build();
-        personRepository.save(singletonList(person));
-        verify(repository).save(captor.capture());
-        Iterable<Person> persons = captor.getValue();
-        assertThat(persons, containsInAnyOrder(person));
-    }
-
-    @Test
-    public void shouldUpdateItarable() {
-        ArgumentCaptor<Iterable> captor = ArgumentCaptor.forClass(Iterable.class);
-        Person person = Person.builder().withName("Ada")
-                .withId(10L)
-                .withPhones(singletonList("123123"))
-                .build();
-        personRepository.update(singletonList(person));
-        verify(repository).update(captor.capture());
-        Iterable<Person> persons = captor.getValue();
-        assertThat(persons, containsInAnyOrder(person));
-    }
 
     @Test
     public void shouldDeleteByName() {
         ArgumentCaptor<ColumnDeleteQuery> captor = ArgumentCaptor.forClass(ColumnDeleteQuery.class);
         personRepository.deleteByName("name");
-        verify(repository).delete(captor.capture());
+        verify(template).delete(captor.capture());
         ColumnDeleteQuery query = captor.getValue();
         ColumnCondition condition = query.getCondition().get();
         assertEquals("Person", query.getColumnFamily());
@@ -161,7 +152,7 @@ public class ColumnRepositoryAsyncProxyTest {
         Consumer<Void> voidConsumer = v -> {
         };
         personRepository.deleteByName("name", voidConsumer);
-        verify(repository).delete(captor.capture(), consumerCaptor.capture());
+        verify(template).delete(captor.capture(), consumerCaptor.capture());
         ColumnDeleteQuery query = captor.getValue();
         ColumnCondition condition = query.getCondition().get();
         assertEquals("Person", query.getColumnFamily());
@@ -185,7 +176,7 @@ public class ColumnRepositoryAsyncProxyTest {
         ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
 
         personRepository.findByName("name", callback);
-        verify(repository).find(captor.capture(), consumerCaptor.capture());
+        verify(template).select(captor.capture(), consumerCaptor.capture());
         ColumnQuery query = captor.getValue();
         ColumnCondition condition = query.getCondition().get();
         assertEquals("Person", query.getColumnFamily());
@@ -205,7 +196,7 @@ public class ColumnRepositoryAsyncProxyTest {
         ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
 
         personRepository.findByName("name", sort, callback);
-        verify(repository).find(captor.capture(), consumerCaptor.capture());
+        verify(template).select(captor.capture(), consumerCaptor.capture());
         ColumnQuery query = captor.getValue();
         ColumnCondition condition = query.getCondition().get();
         assertEquals("Person", query.getColumnFamily());
@@ -226,7 +217,7 @@ public class ColumnRepositoryAsyncProxyTest {
         ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
 
         personRepository.findByName("name", sort, pagination, callback);
-        verify(repository).find(captor.capture(), consumerCaptor.capture());
+        verify(template).select(captor.capture(), consumerCaptor.capture());
         ColumnQuery query = captor.getValue();
         ColumnCondition condition = query.getCondition().get();
         assertEquals("Person", query.getColumnFamily());
@@ -247,7 +238,7 @@ public class ColumnRepositoryAsyncProxyTest {
         ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
 
         personRepository.findByNameOrderByAgeDesc("name", callback);
-        verify(repository).find(captor.capture(), consumerCaptor.capture());
+        verify(template).select(captor.capture(), consumerCaptor.capture());
         ColumnQuery query = captor.getValue();
         ColumnCondition condition = query.getCondition().get();
         assertEquals("Person", query.getColumnFamily());
@@ -269,7 +260,7 @@ public class ColumnRepositoryAsyncProxyTest {
                 .and(eq(Column.of("name", "Ada")));
 
         personRepository.query(query, callback);
-        verify(repository).find(captor.capture(), consumerCaptor.capture());
+        verify(template).select(captor.capture(), consumerCaptor.capture());
         ColumnQuery queryCaptor = captor.getValue();
         ColumnCondition condition = query.getCondition().get();
         assertEquals(query, queryCaptor);
@@ -283,11 +274,77 @@ public class ColumnRepositoryAsyncProxyTest {
                 .and(eq(Column.of("name", "Ada")));
 
         personRepository.deleteQuery(deleteQuery);
-        verify(repository).delete(captor.capture());
+        verify(template).delete(captor.capture());
         assertEquals(deleteQuery, captor.getValue());
     }
 
-    interface PersonAsyncRepository extends RepositoryAsync<Person> {
+    @Test
+    public void shouldFindById() {
+        ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
+        Consumer<Optional<Person>> callBack = p -> {};
+        personRepository.findById(10L, callBack);
+        verify(template).singleResult(captor.capture(), eq(callBack));
+
+        ColumnQuery query = captor.getValue();
+
+        assertEquals("Person", query.getColumnFamily());
+        assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), query.getCondition().get());
+    }
+
+
+    @Test
+    public void shouldDeleteById() {
+        ArgumentCaptor<ColumnDeleteQuery> captor = ArgumentCaptor.forClass(ColumnDeleteQuery.class);
+        personRepository.deleteById(10L);
+        verify(template).delete(captor.capture());
+
+        ColumnDeleteQuery query = captor.getValue();
+
+        assertEquals("Person", query.getColumnFamily());
+        assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), query.getCondition().get());
+    }
+
+    @Test
+    public void shouldDeleteByEntity() {
+
+        ArgumentCaptor<ColumnDeleteQuery> captor = ArgumentCaptor.forClass(ColumnDeleteQuery.class);
+        personRepository.delete(Person.builder().withId(10L).build());
+        verify(template).delete(captor.capture());
+
+        ColumnDeleteQuery query = captor.getValue();
+
+        assertEquals("Person", query.getColumnFamily());
+        assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), query.getCondition().get());
+    }
+
+    @Test
+    public void shouldDeleteByEntities() {
+
+        ArgumentCaptor<ColumnDeleteQuery> captor = ArgumentCaptor.forClass(ColumnDeleteQuery.class);
+        Person person = Person.builder().withId(10L).build();
+        personRepository.delete(singletonList(person));
+        verify(template).delete(captor.capture());
+
+        ColumnDeleteQuery query = captor.getValue();
+
+        assertEquals("Person", query.getColumnFamily());
+        assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), query.getCondition().get());
+
+        personRepository.delete(asList(person, person, person));
+        verify(template, times(4)).delete(any(ColumnDeleteQuery.class));
+    }
+
+    @Test
+    public void shouldExistsById() {
+        Consumer<Boolean> callback = v -> {
+        };
+        personRepository.existsById(10L, callback);
+        verify(template).singleResult(any(ColumnQuery.class), any(Consumer.class));
+
+
+    }
+
+    interface PersonAsyncRepository extends RepositoryAsync<Person, Long> {
 
         void deleteByName(String name);
 

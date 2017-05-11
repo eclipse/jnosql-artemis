@@ -69,11 +69,11 @@ public interface FieldRepresentation extends Serializable {
     Object getValue(Value value);
 
     /**
-     * Returns true is the field is annotated with {@link org.jnosql.artemis.Key}
+     * Returns true is the field is annotated with {@link org.jnosql.artemis.Id}
      *
-     * @return true is annotated with {@link org.jnosql.artemis.Key}
+     * @return true is annotated with {@link org.jnosql.artemis.Id}
      */
-    boolean isKey();
+    boolean isId();
 
     /**
      * Returns the converter class

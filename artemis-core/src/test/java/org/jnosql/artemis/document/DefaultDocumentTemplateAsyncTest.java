@@ -67,13 +67,11 @@ public class DefaultDocumentTemplateAsyncTest {
 
     private ArgumentCaptor<DocumentEntity> captor;
 
-    private DocumentEventPersistManager documentEventPersistManager;
-
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
         managerMock = Mockito.mock(DocumentCollectionManagerAsync.class);
-        documentEventPersistManager = Mockito.mock(DocumentEventPersistManager.class);
+        DocumentEventPersistManager documentEventPersistManager = Mockito.mock(DocumentEventPersistManager.class);
         captor = ArgumentCaptor.forClass(DocumentEntity.class);
         Instance<DocumentCollectionManagerAsync> instance = Mockito.mock(Instance.class);
         when(instance.get()).thenReturn(managerMock);
@@ -86,8 +84,8 @@ public class DefaultDocumentTemplateAsyncTest {
         document.addAll(Stream.of(documents).collect(Collectors.toList()));
 
 
-        subject.save(this.person);
-        verify(managerMock).save(captor.capture(), Mockito.any(Consumer.class));
+        subject.insert(this.person);
+        verify(managerMock).insert(captor.capture(), Mockito.any(Consumer.class));
         DocumentEntity value = captor.getValue();
         assertEquals("Person", value.getName());
         assertEquals(4, value.getDocuments().size());
@@ -102,8 +100,8 @@ public class DefaultDocumentTemplateAsyncTest {
         document.addAll(Stream.of(documents).collect(Collectors.toList()));
 
 
-        subject.save(this.person, twoHours);
-        verify(managerMock).save(captor.capture(), Mockito.eq(twoHours), Mockito.any(Consumer.class));
+        subject.insert(this.person, twoHours);
+        verify(managerMock).insert(captor.capture(), Mockito.eq(twoHours), Mockito.any(Consumer.class));
         DocumentEntity value = captor.getValue();
         assertEquals("Person", value.getName());
         assertEquals(4, value.getDocuments().size());

@@ -34,7 +34,7 @@ public interface ClassRepresentations {
     /**
      * Returns the {@link ClassRepresentation} instance from {@link ClassRepresentation#getName()} in ignore case
      *
-     * @param name the name to find ah {@link ClassRepresentation} instance
+     * @param name the name to select ah {@link ClassRepresentation} instance
      * @return the {@link ClassRepresentation} from name
      * @throws ClassInformationNotFoundException when the class is not loaded
      */

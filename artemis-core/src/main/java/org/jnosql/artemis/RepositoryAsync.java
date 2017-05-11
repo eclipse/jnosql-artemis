@@ -19,13 +19,14 @@ package org.jnosql.artemis;
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
 
 import java.time.Duration;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
  * Interface to generic async CRUD operations on a repository for a specific type.
  * The query builder mechanism built into Artemis repository infrastructure is useful for building constraining queries
  * over entities of the repository. The mechanism strips the prefixes is defined by:
- * <p>findBy: to find any information T</p>
+ * <p>findBy: to select any information T</p>
  * <p>deleteBy: To delete any information T</p>
  * Artemis has some keywords on method:
  * <p><b>And</b></p>
@@ -40,9 +41,10 @@ import java.util.function.Consumer;
  * <p><b>OrderBy____Desc</b></p>
  * <p><b>OrderBy_____ASC</b></p>
  *
- * @param <T> the bean type
+ * @param <T>  the bean type
+ * @param <ID> the ID type
  */
-public interface RepositoryAsync<T> {
+public interface RepositoryAsync<T, ID> {
 
 
     /**
@@ -50,7 +52,7 @@ public interface RepositoryAsync<T> {
      *
      * @param entity entity to be saved
      * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
+     * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when entity are null
      */
     void save(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
@@ -61,7 +63,7 @@ public interface RepositoryAsync<T> {
      * @param entity entity to be saved
      * @param ttl    the time to live
      * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
+     * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when either entity or ttl are null
      */
     void save(T entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
@@ -72,7 +74,7 @@ public interface RepositoryAsync<T> {
      *
      * @param entities entities to be saved
      * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
+     * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when entities is null
      */
     void save(Iterable<T> entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
@@ -84,76 +86,53 @@ public interface RepositoryAsync<T> {
      * @param entities entities to be saved
      * @param ttl      time to live
      * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
+     * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when either entities or ttl are null
      */
     void save(Iterable<T> entities, Duration ttl) throws NullPointerException;
 
-    /**
-     * Saves an entity asynchronously
-     *
-     * @param entity   entity to be saved
-     * @param callBack the callback, when the process is finished will call this instance returning
-     *                 the saved entity within parameters
-     * @param <T>      the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
-     * @throws NullPointerException          when either entity or callBack are null
-     */
-    <T> void save(T entity, Consumer<T> callBack) throws
-            ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
 
     /**
-     * Saves an entity asynchronously with time to live
+     * Deletes the entity with the given id.
      *
-     * @param entity   entity to be saved
-     * @param ttl      time to live
-     * @param callBack the callback, when the process is finished will call this instance returning
-     *                 the saved entity within parameters
-     * @param <T>      the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
-     * @throws NullPointerException          when either entity or ttl or callBack are null
+     * @param id the id
+     * @throws NullPointerException when id is null
      */
-    <T> void save(T entity, Duration ttl, Consumer<T> callBack) throws
-            ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
+    void deleteById(ID id) throws NullPointerException;
 
     /**
-     * Updates an entity asynchronously
+     * Deletes the given entities.
      *
-     * @param entity   entity to be updated
-     * @param callBack the callback, when the process is finished will call this instance returning
-     *                 the updated entity within parametersa
-     * @param <T>      the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
-     * @throws NullPointerException          when either entity or callback are null
+     * @param entities the entities
+     * @throws NullPointerException when entities is null
      */
-    <T> void update(T entity, Consumer<T> callBack) throws
-            ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
+    void delete(Iterable<T> entities) throws NullPointerException;
+
+    /**
+     * Deletes the entity given the entity
+     *
+     * @param entity the entity
+     * @throws NullPointerException when entity is null
+     */
+    void delete(T entity) throws NullPointerException;
+
+    /**
+     * Finds an entity given the id
+     *
+     * @param id       the id
+     * @param callBack the callback
+     * @throws NullPointerException when id is null
+     */
+    void findById(ID id, Consumer<Optional<T>> callBack) throws NullPointerException;
 
 
     /**
-     * Updates an entity asynchronously
+     * Returns whether an entity with the given id exists.
      *
-     * @param entity entity to be updated
-     * @param <T>    the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
-     * @throws NullPointerException          when entity is null
+     * @param id       the id
+     * @param callBack the callback
+     * @throws NullPointerException when id is null
      */
-    <T> void update(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
-
-
-    /**
-     * Updates entities asynchronously
-     * each NoSQL vendor might replace to a more appropriate one.
-     *
-     * @param entities entities to be saved
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to save asynchronous
-     * @throws NullPointerException          when entities is null
-     */
-    void update(Iterable<T> entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
-
+    void existsById(ID id, Consumer<Boolean> callBack) throws NullPointerException;
 }
+

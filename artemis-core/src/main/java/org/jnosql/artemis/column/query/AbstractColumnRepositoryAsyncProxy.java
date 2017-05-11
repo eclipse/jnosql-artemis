@@ -70,9 +70,8 @@ public abstract class AbstractColumnRepositoryAsyncProxy<T> implements Invocatio
     }
 
     private Object executeDelete(Object arg, ColumnDeleteQuery deleteQuery) {
-        Object callBack = arg;
-        if (Consumer.class.isInstance(callBack)) {
-            getTemplate().delete(deleteQuery, Consumer.class.cast(callBack));
+        if (Consumer.class.isInstance(arg)) {
+            getTemplate().delete(deleteQuery, Consumer.class.cast(arg));
             return Void.class;
         }
         getTemplate().delete(deleteQuery);
@@ -84,13 +83,12 @@ public abstract class AbstractColumnRepositoryAsyncProxy<T> implements Invocatio
     }
 
     private Object executeQuery(Object arg, ColumnQuery query) {
-        Object callBack = arg;
-        if (Consumer.class.isInstance(callBack)) {
-            getTemplate().find(query, Consumer.class.cast(callBack));
+        if (Consumer.class.isInstance(arg)) {
+            getTemplate().select(query, Consumer.class.cast(arg));
             return null;
         }
 
-        throw new DynamicQueryException("On find async method you must put a java.util.function.Consumer" +
+        throw new DynamicQueryException("On select async method you must put a java.util.function.Consumer" +
                 " as end parameter as callback");
     }
 

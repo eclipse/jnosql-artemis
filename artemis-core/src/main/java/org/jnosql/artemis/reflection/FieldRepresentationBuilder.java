@@ -34,6 +34,8 @@ class FieldRepresentationBuilder {
 
     private Class<? extends AttributeConverter> converter;
 
+    private boolean id;
+
     public FieldRepresentationBuilder withType(FieldType type) {
         this.type = type;
         return this;
@@ -64,8 +66,13 @@ class FieldRepresentationBuilder {
         return this;
     }
 
+    public FieldRepresentationBuilder withId(boolean id) {
+        this.id = id;
+        return this;
+    }
+
     public DefaultFieldRepresentation buildDefault() {
-        return new DefaultFieldRepresentation(type, field, name, converter);
+        return new DefaultFieldRepresentation(type, field, name, converter, id);
     }
 
     public GenericFieldRepresentation buildGeneric() {

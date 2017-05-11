@@ -44,7 +44,7 @@ public class DocumentRepositoryValidationTest {
                 .withSalary(BigDecimal.ONE)
                 .withPhones(singletonList("123131231"))
                 .build();
-        repository.save(person);
+        repository.insert(person);
     }
 
     @Test(expected = ConstraintViolationException.class)
@@ -55,7 +55,7 @@ public class DocumentRepositoryValidationTest {
                 .withSalary(BigDecimal.ONE)
                 .withPhones(singletonList("123131231"))
                 .build();
-        repository.save(person);
+        repository.insert(person);
     }
 
 
@@ -69,7 +69,7 @@ public class DocumentRepositoryValidationTest {
                 .withPhones(singletonList("123131231"))
                 .build();
         try {
-            repository.save(person);
+            repository.insert(person);
         } catch (ConstraintViolationException ex) {
             Set<ConstraintViolation<?>> violations = ex.getConstraintViolations();
             Assert.assertEquals(2, violations.size());

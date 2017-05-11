@@ -22,11 +22,10 @@ public class WeldContext {
 
     public static final WeldContext INSTANCE = new WeldContext();
 
-    private final Weld weld;
     private final WeldContainer container;
 
     private WeldContext() {
-        this.weld = new Weld();
+        Weld weld = new Weld();
         this.container = weld.initialize();
         Runtime.getRuntime().addShutdownHook(new Thread(weld::shutdown));
     }

@@ -26,16 +26,11 @@ import java.util.Optional;
 
 class KeyValueCrudRepositoryProxy<T> implements InvocationHandler {
 
-    private final Class<T> typeClass;
-
-    private final KeyValueTemplate repository;
-
     private final DefaultKeyValueRepository crudRepository;
 
     KeyValueCrudRepositoryProxy(Class<?> repositoryType, KeyValueTemplate repository) {
-        this.typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
+        Class<T> typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
-        this.repository = repository;
         this.crudRepository = new DefaultKeyValueRepository(typeClass, repository);
     }
 

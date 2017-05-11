@@ -18,7 +18,7 @@ package org.jnosql.artemis.reflection;
 import org.apache.commons.lang3.StringUtils;
 import org.jnosql.artemis.Column;
 import org.jnosql.artemis.Entity;
-import org.jnosql.artemis.Key;
+import org.jnosql.artemis.Id;
 import org.jnosql.artemis.MappedSuperclass;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -232,21 +232,32 @@ public class Reflections {
             fields.addAll(getFields(classEntity.getSuperclass()));
         }
         Predicate<Field> hasColumnAnnotation = f -> f.getAnnotation(Column.class) != null;
-        Predicate<Field> hasKeyAnnotation = f -> f.getAnnotation(Key.class) != null;
+        Predicate<Field> hasIdAnnotation = f -> f.getAnnotation(Id.class) != null;
 
         Stream.of(classEntity.getDeclaredFields())
-                .filter(hasColumnAnnotation.or(hasKeyAnnotation))
+                .filter(hasColumnAnnotation.or(hasIdAnnotation))
                 .forEach(fields::add);
         return fields;
     }
 
-    public boolean isMappedSuperclass(Class<?> class1) {
-        return class1.getSuperclass().getAnnotation(MappedSuperclass.class) != null;
+    public boolean isMappedSuperclass(Class<?> classEntity) {
+        return classEntity.getSuperclass().getAnnotation(MappedSuperclass.class) != null;
+    }
+
+    public boolean isIdField(Field field) {
+        return field.getAnnotation(Id.class) != null;
     }
 
     public String getColumnName(Field field) {
         return Optional.ofNullable(field.getAnnotation(Column.class))
                 .map(Column::value)
+                .filter(StringUtils::isNotBlank)
+                .orElse(field.getName());
+    }
+
+    public String getIdName(Field field) {
+        return Optional.ofNullable(field.getAnnotation(Id.class))
+                .map(Id::value)
                 .filter(StringUtils::isNotBlank)
                 .orElse(field.getName());
     }

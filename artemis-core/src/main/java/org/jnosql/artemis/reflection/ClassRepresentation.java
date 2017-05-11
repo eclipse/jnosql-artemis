@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * This class is a representation of {@link Class} in cached way
@@ -71,4 +72,10 @@ public interface ClassRepresentation extends Serializable {
     Map<String, FieldRepresentation> getFieldsGroupByName();
 
 
+    /**
+     * Returns the field that has {@link org.jnosql.artemis.Id} annotation
+     *
+     * @return the field with ID annotation
+     */
+    Optional<FieldRepresentation> getId();
 }

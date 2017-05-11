@@ -26,7 +26,7 @@ public interface EntityDocumentPostPersist {
     /**
      * Return the entity whose gonna be either saved or updated
      *
-     * @return Return the entity whose gonna be either save or update
+     * @return Return the entity whose gonna be either insert or update
      */
     Object getValue();
 

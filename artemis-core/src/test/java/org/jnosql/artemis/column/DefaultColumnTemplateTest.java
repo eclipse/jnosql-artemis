@@ -86,11 +86,11 @@ public class DefaultColumnTemplateTest {
         document.addAll(Stream.of(columns).collect(Collectors.toList()));
 
         Mockito.when(managerMock
-                .save(Mockito.any(ColumnEntity.class)))
+                .insert(Mockito.any(ColumnEntity.class)))
                 .thenReturn(document);
 
-        subject.save(this.person);
-        verify(managerMock).save(captor.capture());
+        subject.insert(this.person);
+        verify(managerMock).insert(captor.capture());
         verify(columnEventPersistManager).firePostEntity(Mockito.any(Person.class));
         verify(columnEventPersistManager).firePreEntity(Mockito.any(Person.class));
         verify(columnEventPersistManager).firePreColumn(Mockito.any(ColumnEntity.class));
@@ -107,12 +107,12 @@ public class DefaultColumnTemplateTest {
         document.addAll(Stream.of(columns).collect(Collectors.toList()));
 
         Mockito.when(managerMock
-                .save(Mockito.any(ColumnEntity.class),
+                .insert(Mockito.any(ColumnEntity.class),
                         Mockito.any(Duration.class)))
                 .thenReturn(document);
 
-        subject.save(this.person, Duration.ofHours(2));
-        verify(managerMock).save(captor.capture(), Mockito.eq(Duration.ofHours(2)));
+        subject.insert(this.person, Duration.ofHours(2));
+        verify(managerMock).insert(captor.capture(), Mockito.eq(Duration.ofHours(2)));
         verify(columnEventPersistManager).firePostEntity(Mockito.any(Person.class));
         verify(columnEventPersistManager).firePreEntity(Mockito.any(Person.class));
         verify(columnEventPersistManager).firePreColumn(Mockito.any(ColumnEntity.class));

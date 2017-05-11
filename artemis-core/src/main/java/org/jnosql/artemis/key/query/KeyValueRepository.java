@@ -28,7 +28,7 @@ public interface KeyValueRepository<T> {
     /**
      * Saves the entity
      *
-     * @param entity the entity to be save
+     * @param entity the entity to be insert
      * @throws NullPointerException when entity is null
      */
      T put(T entity) throws NullPointerException;
@@ -36,7 +36,7 @@ public interface KeyValueRepository<T> {
     /**
      * Saves the entity with time to live
      *
-     * @param entity the entity to be save
+     * @param entity the entity to be insert
      * @param ttl    the defined time to live
      * @throws NullPointerException          when entity is null
      * @throws UnsupportedOperationException when expired time is not supported
@@ -46,7 +46,7 @@ public interface KeyValueRepository<T> {
     /**
      * Saves the {@link Iterable} of entities
      *
-     * @param entities keys to be save
+     * @param entities keys to be insert
      * @throws NullPointerException when the iterable is null
      */
       Iterable<T> put(Iterable<T> entities) throws NullPointerException;
@@ -54,7 +54,7 @@ public interface KeyValueRepository<T> {
     /**
      * Saves the {@link Iterable} of entities with a defined time to live
      *
-     * @param entities entities to be save
+     * @param entities entities to be insert
      * @param ttl      the time to entity expire
      * @throws NullPointerException          when the iterable is null
      * @throws UnsupportedOperationException when expired time is not supported

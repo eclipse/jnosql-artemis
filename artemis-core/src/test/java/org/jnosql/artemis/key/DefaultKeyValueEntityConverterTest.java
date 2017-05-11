@@ -15,9 +15,10 @@
  */
 package org.jnosql.artemis.key;
 
+import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.artemis.WeldJUnit4Runner;
-import org.jnosql.artemis.model.Actor;
 import org.jnosql.artemis.model.User;
+import org.jnosql.artemis.model.Worker;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.key.KeyValueEntity;
 import org.junit.Test;
@@ -25,7 +26,7 @@ import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(WeldJUnit4Runner.class)
 public class DefaultKeyValueEntityConverterTest {
@@ -38,9 +39,9 @@ public class DefaultKeyValueEntityConverterTest {
         converter.toKeyValue(null);
     }
 
-    @Test(expected = KeyNotFoundException.class)
+    @Test(expected = IdNotFoundException.class)
     public void shouldReturnErrorWhenThereIsNotKeyAnnotation() {
-        converter.toKeyValue(Actor.actorBuilder().build());
+        converter.toKeyValue(new Worker());
     }
 
     @Test(expected = NullPointerException.class)
@@ -67,9 +68,9 @@ public class DefaultKeyValueEntityConverterTest {
         converter.toEntity(null, KeyValueEntity.of("user", new User("nickname", "name", 21)));
     }
 
-    @Test(expected = KeyNotFoundException.class)
+    @Test(expected = IdNotFoundException.class)
     public void shouldReturnErrorWhenTheKeyIsMissing() {
-        converter.toEntity(Actor.class, KeyValueEntity.of("user", Actor.actorBuilder().build()));
+        converter.toEntity(Worker.class, KeyValueEntity.of("worker", new Worker()));
     }
 
     @Test

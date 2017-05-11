@@ -16,13 +16,12 @@
 package org.jnosql.artemis.reflection;
 
 
-import java.lang.reflect.Field;
-import java.util.Objects;
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jnosql.artemis.AttributeConverter;
-import org.jnosql.artemis.Key;
+
+import java.lang.reflect.Field;
+import java.util.Objects;
 
 /**
  * Class that represents {@link FieldRepresentation} a default field
@@ -30,16 +29,16 @@ import org.jnosql.artemis.Key;
 public class DefaultFieldRepresentation extends AbstractFieldRepresentation {
 
 
-    private final boolean key;
+    private final boolean id;
 
-    DefaultFieldRepresentation(FieldType type, Field field, String name, Class<? extends AttributeConverter> converter) {
+    DefaultFieldRepresentation(FieldType type, Field field, String name, Class<? extends AttributeConverter> converter, boolean id) {
         super(type, field, name, converter);
-        this.key = field.getDeclaredAnnotation(Key.class) != null;
+        this.id = id;
     }
 
     @Override
-    public boolean isKey() {
-        return key;
+    public boolean isId() {
+        return id;
     }
 
     @Override
@@ -68,7 +67,7 @@ public class DefaultFieldRepresentation extends AbstractFieldRepresentation {
                 .append("type", type)
                 .append("field", field)
                 .append("name", name)
-                .append("key", key)
+                .append("id", id)
                 .toString();
     }
 

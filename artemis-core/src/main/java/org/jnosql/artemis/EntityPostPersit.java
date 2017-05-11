@@ -26,7 +26,7 @@ public interface EntityPostPersit {
     /**
      * Return the entity whose was either saved or updated
      *
-     * @return Return the entity whose was either save or update
+     * @return Return the entity whose was either insert or update
      */
     Object getValue();
 
