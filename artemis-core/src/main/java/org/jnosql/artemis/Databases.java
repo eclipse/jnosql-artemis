@@ -47,8 +47,7 @@ public class Databases {
         Set<Annotation> annotations = processProducer.getAnnotatedMember().getAnnotations();
         Optional<Database> databaseOptional = annotations.stream().filter(a -> a instanceof Database)
                 .map(Database.class::cast).findFirst();
-        databaseOptional.ifPresent(database1 -> {
-            Database database = database1;
+        databaseOptional.ifPresent(database -> {
             if (!type.equals(database.value())) {
                 String simpleName = processProducer.getAnnotatedMember().getDeclaringType().getJavaClass().getSimpleName();
                 throw new IllegalStateException(String.format("The %s is producing a wrong manager for %s type", simpleName, type));

@@ -53,15 +53,6 @@ public interface Repository<T, ID> {
     T save(T entity) throws NullPointerException;
 
     /**
-     * Saves entity with time to live
-     *
-     * @param entity entity to be saved
-     * @param ttl    the time to live
-     * @return the entity saved
-     */
-    T save(T entity, Duration ttl) throws NullPointerException;
-
-    /**
      * Saves entity
      * each NoSQL vendor might replace to a more appropriate one.
      *
@@ -70,17 +61,6 @@ public interface Repository<T, ID> {
      * @throws NullPointerException when entities is null
      */
     Iterable<T> save(Iterable<T> entities) throws NullPointerException;
-
-    /**
-     * Saves documents collection entity with time to live
-     * each NoSQL vendor might replace to a more appropriate one.
-     *
-     * @param entities entities to be saved
-     * @param ttl      time to live
-     * @return the entity saved
-     * @throws NullPointerException when entities is null
-     */
-    Iterable<T> save(Iterable<T> entities, Duration ttl) throws NullPointerException;
 
     /**
      * Deletes the entity with the given id.

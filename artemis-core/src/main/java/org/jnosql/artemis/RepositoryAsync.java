@@ -58,17 +58,6 @@ public interface RepositoryAsync<T, ID> {
     void save(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
 
     /**
-     * Saves an entity asynchronously with time to live
-     *
-     * @param entity entity to be saved
-     * @param ttl    the time to live
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
-     * @throws NullPointerException          when either entity or ttl are null
-     */
-    void save(T entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
-
-    /**
      * Saves entities asynchronously
      * each NoSQL vendor might replace to a more appropriate one.
      *
@@ -78,19 +67,6 @@ public interface RepositoryAsync<T, ID> {
      * @throws NullPointerException          when entities is null
      */
     void save(Iterable<T> entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
-
-    /**
-     * Saves entities asynchronously with time to live.
-     * each NoSQL vendor might replace to a more appropriate one.
-     *
-     * @param entities entities to be saved
-     * @param ttl      time to live
-     * @throws ExecuteAsyncQueryException    when there is a async error
-     * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
-     * @throws NullPointerException          when either entities or ttl are null
-     */
-    void save(Iterable<T> entities, Duration ttl) throws NullPointerException;
-
 
     /**
      * Deletes the entity with the given id.
