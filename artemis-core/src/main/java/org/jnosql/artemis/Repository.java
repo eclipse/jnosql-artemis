@@ -50,7 +50,7 @@ public interface Repository<T, ID> {
      * @return the entity saved
      * @throws NullPointerException when document is null
      */
-    T save(T entity) throws NullPointerException;
+    <S extends T> S save(S entity) throws NullPointerException;
 
     /**
      * Saves entity
@@ -60,7 +60,7 @@ public interface Repository<T, ID> {
      * @return the entity saved
      * @throws NullPointerException when entities is null
      */
-    Iterable<T> save(Iterable<T> entities) throws NullPointerException;
+    <S extends T> Iterable<S> save(Iterable<S> entities) throws NullPointerException;
 
     /**
      * Deletes the entity with the given id.
