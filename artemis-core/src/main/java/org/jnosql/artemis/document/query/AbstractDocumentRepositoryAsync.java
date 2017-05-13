@@ -27,7 +27,6 @@ import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentQuery;
 
-import java.time.Duration;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -49,7 +48,7 @@ public abstract class AbstractDocumentRepositoryAsync<T, ID> implements Reposito
 
 
     @Override
-    public void save(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public <S extends T> void save(S entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
         Objects.requireNonNull(entity, "Entity is required");
         Object id = getReflections().getValue(entity, getIdField().getField());
         Consumer<Boolean> callBack = exist -> {
@@ -63,31 +62,11 @@ public abstract class AbstractDocumentRepositoryAsync<T, ID> implements Reposito
     }
 
     @Override
-    public void save(T entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        Objects.requireNonNull(entity, "Entity is required");
-        Object id = getReflections().getValue(entity, getIdField().getField());
-        Consumer<Boolean> callBack = exist -> {
-            if (exist) {
-                getTemplate().update(entity);
-            } else {
-                getTemplate().insert(entity, ttl);
-            }
-        };
-        existsById((ID) id, callBack);
-    }
-
-    @Override
-    public void save(Iterable<T> entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public <S extends T> void save(Iterable<S> entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
         Objects.requireNonNull(entities, "entities is required");
         entities.forEach(this::save);
     }
 
-    @Override
-    public void save(Iterable<T> entities, Duration ttl) throws NullPointerException {
-        Objects.requireNonNull(entities, "entities is required");
-        Objects.requireNonNull(ttl, "ttl is required");
-        entities.forEach(e -> save(e, ttl));
-    }
 
     @Override
     public void deleteById(ID id) throws NullPointerException {

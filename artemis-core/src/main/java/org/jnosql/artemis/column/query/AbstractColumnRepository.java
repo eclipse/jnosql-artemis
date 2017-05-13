@@ -48,7 +48,7 @@ public abstract class AbstractColumnRepository<T, ID> implements Repository<T, I
     protected abstract Reflections getReflections();
 
     @Override
-    public T save(T entity) throws NullPointerException {
+    public <S extends T> S save(S entity) throws NullPointerException {
         Objects.requireNonNull(entity, "Entity is required");
         Object id = getReflections().getValue(entity, getIdField().getField());
         if (existsById((ID) id)) {
@@ -58,26 +58,12 @@ public abstract class AbstractColumnRepository<T, ID> implements Repository<T, I
         }
     }
 
-    @Override
-    public T save(T entity, Duration ttl) {
-        Objects.requireNonNull(entity, "Entity is required");
-        Object id = getReflections().getValue(entity, getIdField().getField());
-        if (existsById((ID) id)) {
-            return getTemplate().update(entity);
-        } else {
-            return getTemplate().insert(entity, ttl);
-        }
-    }
 
     @Override
-    public Iterable<T> save(Iterable<T> entities) throws NullPointerException {
+    public <S extends T> Iterable<S> save(Iterable<S> entities) throws NullPointerException {
         return getTemplate().insert(entities);
     }
 
-    @Override
-    public Iterable<T> save(Iterable<T> entities, Duration ttl) throws NullPointerException {
-        return getTemplate().insert(entities, ttl);
-    }
 
     @Override
     public void deleteById(ID id) throws NullPointerException {
