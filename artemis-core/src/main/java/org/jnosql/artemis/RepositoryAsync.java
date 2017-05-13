@@ -18,7 +18,6 @@ package org.jnosql.artemis;
 
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
 
-import java.time.Duration;
 import java.util.Optional;
 import java.util.function.Consumer;
 

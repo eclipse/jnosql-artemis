@@ -120,22 +120,6 @@ public class ColumnRepositoryProxyTest {
 
 
     @Test
-    public void shouldSaveWithTTlUsingInsertWhenDataDoesNotExist() {
-        when(template.singleResult(Mockito.any(ColumnQuery.class))).thenReturn(Optional.empty());
-
-        ArgumentCaptor<Person> captor = ArgumentCaptor.forClass(Person.class);
-        Person person = Person.builder().withName("Ada")
-                .withId(10L)
-                .withPhones(singletonList("123123"))
-                .build();
-        assertNotNull(personRepository.save(person, Duration.ofHours(2)));
-        verify(template).insert(captor.capture(), Mockito.eq(Duration.ofHours(2)));
-        Person value = captor.getValue();
-        assertEquals(person, value);
-    }
-
-
-    @Test
     public void shouldSaveItarable() {
         ArgumentCaptor<Iterable> captor = ArgumentCaptor.forClass(Iterable.class);
         Person person = Person.builder().withName("Ada")
