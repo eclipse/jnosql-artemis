@@ -55,7 +55,7 @@ public interface RepositoryAsync<T, ID> {
      * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when entity are null
      */
-    void save(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
+    <S extends T>  void save(S entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
 
     /**
      * Saves entities asynchronously
@@ -66,7 +66,7 @@ public interface RepositoryAsync<T, ID> {
      * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when entities is null
      */
-    void save(Iterable<T> entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
+    <S extends T>  void save(Iterable<S> entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
 
     /**
      * Deletes the entity with the given id.
