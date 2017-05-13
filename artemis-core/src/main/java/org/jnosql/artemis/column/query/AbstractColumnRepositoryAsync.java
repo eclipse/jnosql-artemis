@@ -27,7 +27,6 @@ import org.jnosql.diana.api.column.ColumnCondition;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnQuery;
 
-import java.time.Duration;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;

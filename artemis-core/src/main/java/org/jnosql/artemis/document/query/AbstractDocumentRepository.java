@@ -25,7 +25,6 @@ import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentQuery;
 
-import java.time.Duration;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;

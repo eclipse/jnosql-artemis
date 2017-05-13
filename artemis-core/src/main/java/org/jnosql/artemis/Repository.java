@@ -16,7 +16,6 @@
 package org.jnosql.artemis;
 
 
-import java.time.Duration;
 import java.util.Optional;
 
 /**
