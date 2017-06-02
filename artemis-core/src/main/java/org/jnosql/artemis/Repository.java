@@ -78,22 +78,6 @@ public interface Repository<T, ID> {
     void deleteById(Iterable<ID> ids) throws NullPointerException;
 
     /**
-     * Deletes the given entities.
-     *
-     * @param entities the entities
-     * @throws NullPointerException when entities is null
-     */
-    void delete(Iterable<T> entities) throws NullPointerException;
-
-    /**
-     * Deletes the entity given the entity
-     *
-     * @param entity the entity
-     * @throws NullPointerException when entity is null
-     */
-    void delete(T entity) throws NullPointerException;
-
-    /**
      * Finds an entity given the id
      *
      * @param id the id

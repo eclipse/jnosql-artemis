@@ -79,20 +79,6 @@ public abstract class AbstractDocumentRepository<T, ID> implements Repository<T,
     }
 
     @Override
-    public void delete(Iterable<T> entities) throws NullPointerException {
-        requireNonNull(entities, "entities is required");
-        entities.forEach(this::delete);
-    }
-
-    @Override
-    public void delete(T entity) throws NullPointerException {
-        requireNonNull(entity, "entity is required");
-        Object idValue = getReflections().getValue(entity, this.getIdField().getField());
-        requireNonNull(idValue, "id value is required");
-        deleteById((ID) idValue);
-    }
-
-    @Override
     public Optional<T> findById(ID id) throws NullPointerException {
         requireNonNull(id, "id is required");
 

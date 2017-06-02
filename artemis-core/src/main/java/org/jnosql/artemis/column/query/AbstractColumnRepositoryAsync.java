@@ -77,19 +77,6 @@ public abstract class AbstractColumnRepositoryAsync<T, ID> implements Repository
         getTemplate().delete(query);
     }
 
-    @Override
-    public void delete(Iterable<T> entities) throws NullPointerException {
-        requireNonNull(entities, "entities is required");
-        entities.forEach(this::delete);
-    }
-
-    @Override
-    public void delete(T entity) throws NullPointerException {
-        requireNonNull(entity, "entity is required");
-        Object idValue = getReflections().getValue(entity, this.getIdField().getField());
-        requireNonNull(idValue, "id value is required");
-        deleteById((ID) idValue);
-    }
 
     @Override
     public void existsById(ID id, Consumer<Boolean> callBack) throws NullPointerException {
