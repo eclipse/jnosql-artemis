@@ -304,35 +304,6 @@ public class ColumnRepositoryAsyncProxyTest {
         assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), query.getCondition().get());
     }
 
-    @Test
-    public void shouldDeleteByEntity() {
-
-        ArgumentCaptor<ColumnDeleteQuery> captor = ArgumentCaptor.forClass(ColumnDeleteQuery.class);
-        personRepository.delete(Person.builder().withId(10L).build());
-        verify(template).delete(captor.capture());
-
-        ColumnDeleteQuery query = captor.getValue();
-
-        assertEquals("Person", query.getColumnFamily());
-        assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), query.getCondition().get());
-    }
-
-    @Test
-    public void shouldDeleteByEntities() {
-
-        ArgumentCaptor<ColumnDeleteQuery> captor = ArgumentCaptor.forClass(ColumnDeleteQuery.class);
-        Person person = Person.builder().withId(10L).build();
-        personRepository.delete(singletonList(person));
-        verify(template).delete(captor.capture());
-
-        ColumnDeleteQuery query = captor.getValue();
-
-        assertEquals("Person", query.getColumnFamily());
-        assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), query.getCondition().get());
-
-        personRepository.delete(asList(person, person, person));
-        verify(template, times(4)).delete(any(ColumnDeleteQuery.class));
-    }
 
     @Test
     public void shouldExistsById() {
