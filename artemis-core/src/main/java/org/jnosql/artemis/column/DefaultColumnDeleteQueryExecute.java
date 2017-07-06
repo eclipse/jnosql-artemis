@@ -19,6 +19,9 @@ import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import java.util.Objects;
 
 
+/**
+ * The default implementation of {@link ColumnDeleteQueryExecute}
+ */
 class DefaultColumnDeleteQueryExecute implements ColumnDeleteQueryExecute {
 
     private final ColumnDeleteQuery query;
