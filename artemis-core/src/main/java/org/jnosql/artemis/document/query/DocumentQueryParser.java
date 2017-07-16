@@ -20,7 +20,6 @@ import org.jnosql.diana.api.Sort;
 import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentQuery;
 import org.jnosql.diana.api.document.query.DocumentFrom;
-import org.jnosql.diana.api.document.query.DocumentQueryBuilder;
 
 import java.util.ArrayList;
 import java.util.List;

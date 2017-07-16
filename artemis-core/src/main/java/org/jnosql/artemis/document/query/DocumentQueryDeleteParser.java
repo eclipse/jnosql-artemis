@@ -16,11 +16,9 @@ package org.jnosql.artemis.document.query;
 
 import org.jnosql.artemis.document.query.DocumentQueryParserUtil.ConditionResult;
 import org.jnosql.artemis.reflection.ClassRepresentation;
-import org.jnosql.diana.api.column.query.ColumnDeleteFrom;
 import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.query.DocumentDeleteFrom;
-import org.jnosql.diana.api.document.query.DocumentQueryBuilder;
 
 import static org.jnosql.artemis.document.query.DocumentQueryParserUtil.and;
 import static org.jnosql.artemis.document.query.DocumentQueryParserUtil.or;

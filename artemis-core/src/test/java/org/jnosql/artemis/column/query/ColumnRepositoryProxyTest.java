@@ -252,7 +252,7 @@ public class ColumnRepositoryProxyTest {
     @Test
     public void shouldDeleteQuery() {
         ArgumentCaptor<ColumnDeleteQuery> captor = ArgumentCaptor.forClass(ColumnDeleteQuery.class);
-        
+
         ColumnDeleteQuery query = delete().from("Person").where(eq(Column.of("name", "Ada"))).build();
         personRepository.deleteQuery(query);
         verify(template).delete(captor.capture());
