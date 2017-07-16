@@ -19,6 +19,7 @@ import org.jnosql.artemis.EntityPrePersist;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnQuery;
+import org.jnosql.diana.api.column.query.ColumnQueryBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -28,6 +29,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.enterprise.event.Event;
 
+import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
+import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 
@@ -132,7 +135,9 @@ public class DefaultColumnEventPersistManagerTest {
 
     @Test
     public void shouldFirePreQuery() {
-        ColumnQuery query = ColumnQuery.of("person");
+
+
+        ColumnQuery query = select().from("person").build();
         subject.firePreQuery(query);
         ArgumentCaptor<ColumnQueryExecute> captor = ArgumentCaptor.forClass(ColumnQueryExecute.class);
         verify(columnQueryExecute).fire(captor.capture());
@@ -141,7 +146,8 @@ public class DefaultColumnEventPersistManagerTest {
 
     @Test
     public void shouldFirePreDeleteQuery() {
-        ColumnDeleteQuery query = ColumnDeleteQuery.of("person");
+
+        ColumnDeleteQuery query = delete().from("person").build();
         subject.firePreDeleteQuery(query);
         ArgumentCaptor<ColumnDeleteQueryExecute> captor = ArgumentCaptor.forClass(ColumnDeleteQueryExecute.class);
         verify(columnDeleteQueryExecute).fire(captor.capture());

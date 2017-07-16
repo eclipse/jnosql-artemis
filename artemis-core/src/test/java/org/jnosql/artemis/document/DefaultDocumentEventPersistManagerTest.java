@@ -28,6 +28,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.enterprise.event.Event;
 
+import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
+import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 
@@ -132,7 +134,8 @@ public class DefaultDocumentEventPersistManagerTest {
 
     @Test
     public void shouldFirePreQuery() {
-        DocumentQuery query = DocumentQuery.of("collection");
+
+        DocumentQuery query = select().from("collection").build();
         subject.firePreQuery(query);
         ArgumentCaptor<DocumentQueryExecute> captor = ArgumentCaptor.forClass(DocumentQueryExecute.class);
         verify(documentQueryExecute).fire(captor.capture());
@@ -141,7 +144,7 @@ public class DefaultDocumentEventPersistManagerTest {
 
     @Test
     public void shouldFirePreDeleteQuery() {
-        DocumentDeleteQuery query = DocumentDeleteQuery.of("collection");
+        DocumentDeleteQuery query = delete().from("collection").build();
         subject.firePreDeleteQuery(query);
         ArgumentCaptor<DocumentDeleteQueryExecute> captor = ArgumentCaptor.forClass(DocumentDeleteQueryExecute.class);
         verify(documentDeleteQueryExecute).fire(captor.capture());

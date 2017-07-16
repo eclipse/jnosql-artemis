@@ -56,7 +56,7 @@ public class DocumentQueryParserTest {
     @Test
     public void shouldFindByName() {
         DocumentQuery query = parser.parse("findByName", new Object[]{"name"}, classRepresentation);
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
         assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
     }
@@ -66,7 +66,7 @@ public class DocumentQueryParserTest {
     public void shouldFindByNameAndAge() {
         DocumentQuery query = parser.parse("findByNameAndAge", new Object[]{"name", 10}, classRepresentation);
         DocumentCondition condition = query.getCondition().get();
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.AND, condition.getCondition());
         List<DocumentCondition> conditions = condition.getDocument().get(new TypeReference<List<DocumentCondition>>() {
         });
@@ -83,7 +83,7 @@ public class DocumentQueryParserTest {
     public void shouldFindByNameOrAge() {
         DocumentQuery query = parser.parse("findByNameOrAge", new Object[]{"name", 10}, classRepresentation);
         DocumentCondition condition = query.getCondition().get();
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.OR, condition.getCondition());
         List<DocumentCondition> conditions = condition.getDocument().get(new TypeReference<List<DocumentCondition>>() {
         });
@@ -100,7 +100,7 @@ public class DocumentQueryParserTest {
     @Test
     public void shouldFindByAgeLessThan() {
         DocumentQuery query = parser.parse("findByAgeLessThan", new Object[]{10}, classRepresentation);
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.LESSER_THAN, query.getCondition().get().getCondition());
         assertEquals(Document.of("age", 10), query.getCondition().get().getDocument());
     }
@@ -108,7 +108,7 @@ public class DocumentQueryParserTest {
     @Test
     public void shouldFindByAgeGreaterThan() {
         DocumentQuery query = parser.parse("findByAgeGreaterThan", new Object[]{10}, classRepresentation);
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.GREATER_THAN, query.getCondition().get().getCondition());
         assertEquals(Document.of("age", 10), query.getCondition().get().getDocument());
     }
@@ -116,7 +116,7 @@ public class DocumentQueryParserTest {
     @Test
     public void shouldFindByAgeLessEqualThan() {
         DocumentQuery query = parser.parse("findByAgeLessEqualThan", new Object[]{10}, classRepresentation);
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.LESSER_EQUALS_THAN, query.getCondition().get().getCondition());
         assertEquals(Document.of("age", 10), query.getCondition().get().getDocument());
     }
@@ -124,7 +124,7 @@ public class DocumentQueryParserTest {
     @Test
     public void shouldFindByAgeGreaterEqualThan() {
         DocumentQuery query = parser.parse("findByAgeGreaterEqualThan", new Object[]{10}, classRepresentation);
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.GREATER_EQUALS_THAN, query.getCondition().get().getCondition());
         assertEquals(Document.of("age", 10), query.getCondition().get().getDocument());
     }
@@ -132,7 +132,7 @@ public class DocumentQueryParserTest {
     @Test
     public void shouldFindByNameLike() {
         DocumentQuery query = parser.parse("findByNameLike", new Object[]{"name"}, classRepresentation);
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.LIKE, query.getCondition().get().getCondition());
         assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
     }
@@ -140,7 +140,7 @@ public class DocumentQueryParserTest {
     @Test
     public void shouldFindByNameLikeOrderByName() {
         DocumentQuery query = parser.parse("findByNameLikeOrderByName", new Object[]{"name"}, classRepresentation);
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.LIKE, query.getCondition().get().getCondition());
         assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
         assertEquals(Sort.of("name", Sort.SortType.ASC), query.getSorts().get(0));
@@ -149,7 +149,7 @@ public class DocumentQueryParserTest {
     @Test
     public void shouldFindByNameLikeOrderByNameAsc() {
         DocumentQuery query = parser.parse("findByNameLikeOrderByNameAsc", new Object[]{"name"}, classRepresentation);
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.LIKE, query.getCondition().get().getCondition());
         assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
         assertEquals(Sort.of("name", Sort.SortType.ASC), query.getSorts().get(0));
@@ -158,7 +158,7 @@ public class DocumentQueryParserTest {
     @Test
     public void shouldFindByNameLikeOrderByNameDesc() {
         DocumentQuery query = parser.parse("findByNameLikeOrderByNameDesc", new Object[]{"name"}, classRepresentation);
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.LIKE, query.getCondition().get().getCondition());
         assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
         assertEquals(Sort.of("name", Sort.SortType.DESC), query.getSorts().get(0));
@@ -167,7 +167,7 @@ public class DocumentQueryParserTest {
     @Test
     public void shouldFindByNameLikeOrderByNameDescOrderByAgeAsc() {
         DocumentQuery query = parser.parse("findByNameLikeOrderByNameDescOrderByAgeAsc", new Object[]{"name"}, classRepresentation);
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.LIKE, query.getCondition().get().getCondition());
         assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
         assertEquals(Sort.of("name", Sort.SortType.DESC), query.getSorts().get(0));
@@ -178,7 +178,7 @@ public class DocumentQueryParserTest {
     public void shouldFindByNameAndAAgeBetween() {
         DocumentQuery query = parser.parse("findByNameAndAgeBetween", new Object[]{"name", 10, 11},
                 classRepresentation);
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         DocumentCondition condition = query.getCondition().get();
         assertEquals(Condition.AND, condition.getCondition());
         List<DocumentCondition> conditions = condition.getDocument().get(new TypeReference<List<DocumentCondition>>() {
@@ -211,7 +211,7 @@ public class DocumentQueryParserTest {
         DocumentQuery query = parser.parse("findByName", new Object[]{"name",
                 sort}, classRepresentation);
 
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
         assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
         assertEquals(sort, query.getSorts().get(0));
@@ -223,7 +223,7 @@ public class DocumentQueryParserTest {
         DocumentQuery query = parser.parse("findByName", new Object[]{"name",
                 pagination}, classRepresentation);
 
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
         assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
         assertEquals(pagination.getMaxResults(), query.getMaxResults());
@@ -237,7 +237,7 @@ public class DocumentQueryParserTest {
         DocumentQuery query = parser.parse("findByName", new Object[]{"name",
                 pagination, sort}, classRepresentation);
 
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
         assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
         assertEquals(pagination.getMaxResults(), query.getMaxResults());
@@ -252,7 +252,7 @@ public class DocumentQueryParserTest {
         DocumentQuery query = parser.parse("findByName", new Object[]{"name",
                 pagination, sort, "ignore"}, classRepresentation);
 
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
         assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
         assertEquals(pagination.getMaxResults(), query.getMaxResults());
@@ -263,7 +263,7 @@ public class DocumentQueryParserTest {
     @Test
     public void shouldConvertsJavaFieldToColumn() {
         DocumentQuery query = parser.parse("findById", new Object[]{"id"}, classRepresentation);
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
         assertEquals(Document.of("_id", "id"), query.getCondition().get().getDocument());
     }

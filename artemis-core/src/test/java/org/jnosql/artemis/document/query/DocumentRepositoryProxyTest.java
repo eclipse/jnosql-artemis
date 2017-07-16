@@ -46,6 +46,8 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.jnosql.diana.api.document.DocumentCondition.eq;
+import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
+import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -147,7 +149,7 @@ public class DocumentRepositoryProxyTest {
         verify(template).singleResult(captor.capture());
         DocumentQuery query = captor.getValue();
         DocumentCondition condition = query.getCondition().get();
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.EQUALS, condition.getCondition());
         assertEquals(Document.of("name", "name"), condition.getDocument());
 
@@ -227,7 +229,7 @@ public class DocumentRepositoryProxyTest {
         verify(template).delete(captor.capture());
         DocumentDeleteQuery deleteQuery = captor.getValue();
         DocumentCondition condition = deleteQuery.getCondition().get();
-        assertEquals("Person", deleteQuery.getCollection());
+        assertEquals("Person", deleteQuery.getDocumentCollection());
         assertEquals(Condition.EQUALS, condition.getCondition());
         assertEquals(Document.of("name", "Ada"), condition.getDocument());
 
@@ -241,7 +243,10 @@ public class DocumentRepositoryProxyTest {
         when(template.singleResult(Mockito.any(DocumentQuery.class)))
                 .thenReturn(Optional.of(ada));
 
-        DocumentQuery query = DocumentQuery.of("Person").with(eq(Document.of("name", "Ada")));
+
+        DocumentQuery query = select().from("Person")
+                .where(eq(Document.of("name", "Ada")))
+                .build();
         Person person = personRepository.query(query);
         verify(template).singleResult(captor.capture());
         assertEquals(ada, person);
@@ -252,7 +257,8 @@ public class DocumentRepositoryProxyTest {
     @Test
     public void shouldDeleteQuery() {
         ArgumentCaptor<DocumentDeleteQuery> captor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
-        DocumentDeleteQuery query = DocumentDeleteQuery.of("Person").and(eq(Document.of("name", "Ada")));
+
+        DocumentDeleteQuery query = delete().from("Person").where(eq(Document.of("name", "Ada"))).build();
         personRepository.deleteQuery(query);
         verify(template).delete(captor.capture());
         assertEquals(query, captor.getValue());
@@ -267,7 +273,7 @@ public class DocumentRepositoryProxyTest {
 
         DocumentQuery query = captor.getValue();
 
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), query.getCondition().get());
     }
 
@@ -280,7 +286,7 @@ public class DocumentRepositoryProxyTest {
 
         DocumentQuery query = captor.getValue();
 
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), query.getCondition().get());
         personRepository.findById(asList(1L, 2L, 3L));
         verify(template, times(4)).singleResult(any(DocumentQuery.class));
@@ -294,7 +300,7 @@ public class DocumentRepositoryProxyTest {
 
         DocumentDeleteQuery query = captor.getValue();
 
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), query.getCondition().get());
     }
 
@@ -306,7 +312,7 @@ public class DocumentRepositoryProxyTest {
 
         DocumentDeleteQuery query = captor.getValue();
 
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), query.getCondition().get());
 
         personRepository.deleteById(asList(1L, 2L, 3L));

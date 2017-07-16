@@ -33,7 +33,8 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.*;
+import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 
 @RunWith(WeldJUnit4Runner.class)
@@ -111,7 +112,8 @@ public class DefaultColumnTemplateAsyncTest {
 
     @Test
     public void shouldDelete() {
-        ColumnDeleteQuery query = ColumnDeleteQuery.of("delete");
+
+        ColumnDeleteQuery query = delete().from("delete").build();
         subject.delete(query);
         verify(managerMock).delete(query);
     }

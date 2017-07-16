@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
@@ -147,7 +148,8 @@ public class DefaultDocumentTemplateTest {
 
     @Test
     public void shouldDelete() {
-        DocumentDeleteQuery query = DocumentDeleteQuery.of("delete");
+
+        DocumentDeleteQuery query = delete().from("delete").build();
         subject.delete(query);
         verify(managerMock).delete(query);
     }

@@ -20,6 +20,7 @@ import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
+import org.jnosql.diana.api.column.query.ColumnQueryBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -143,7 +144,8 @@ public class DefaultColumnTemplateTest {
 
     @Test
     public void shouldDelete() {
-        ColumnDeleteQuery query = ColumnDeleteQuery.of("delete");
+
+        ColumnDeleteQuery query = ColumnQueryBuilder.delete().from("delete").build();
         subject.delete(query);
         verify(managerMock).delete(query);
     }

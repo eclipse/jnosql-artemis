@@ -28,6 +28,7 @@ import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnCondition;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnQuery;
+import org.jnosql.diana.api.column.query.ColumnQueryBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,6 +45,8 @@ import java.util.function.Consumer;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.jnosql.diana.api.column.ColumnCondition.eq;
+import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
+import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -113,7 +116,6 @@ public class ColumnRepositoryAsyncProxyTest {
         Person value = captor.getValue();
         assertEquals(person, value);
     }
-
 
 
     @Test
@@ -255,8 +257,11 @@ public class ColumnRepositoryAsyncProxyTest {
 
         ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
         ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
-        ColumnQuery query = ColumnQuery.of("Person")
-                .and(eq(Column.of("name", "Ada")));
+
+        ColumnQuery query = select()
+                .from("Person")
+                .where(eq(Column.of("name", "Ada")))
+                .build();
 
         personRepository.query(query, callback);
         verify(template).select(captor.capture(), consumerCaptor.capture());
@@ -269,8 +274,10 @@ public class ColumnRepositoryAsyncProxyTest {
     @Test
     public void shouldExecuteDeleteQuery() {
         ArgumentCaptor<ColumnDeleteQuery> captor = ArgumentCaptor.forClass(ColumnDeleteQuery.class);
-        ColumnDeleteQuery deleteQuery = ColumnDeleteQuery.of("Person")
-                .and(eq(Column.of("name", "Ada")));
+
+        ColumnDeleteQuery deleteQuery = delete().from("Person")
+                .where(eq(Column.of("name", "Ada")))
+                .build();
 
         personRepository.deleteQuery(deleteQuery);
         verify(template).delete(captor.capture());
@@ -280,7 +287,8 @@ public class ColumnRepositoryAsyncProxyTest {
     @Test
     public void shouldFindById() {
         ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
-        Consumer<Optional<Person>> callBack = p -> {};
+        Consumer<Optional<Person>> callBack = p -> {
+        };
         personRepository.findById(10L, callBack);
         verify(template).singleResult(captor.capture(), eq(callBack));
 

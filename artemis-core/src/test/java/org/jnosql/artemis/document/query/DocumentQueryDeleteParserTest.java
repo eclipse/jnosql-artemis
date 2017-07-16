@@ -16,7 +16,6 @@ package org.jnosql.artemis.document.query;
 
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.WeldJUnit4Runner;
-import org.jnosql.artemis.document.query.DocumentQueryDeleteParser;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
@@ -30,11 +29,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
-
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(WeldJUnit4Runner.class)
 public class DocumentQueryDeleteParserTest {
@@ -56,7 +54,7 @@ public class DocumentQueryDeleteParserTest {
     @Test
     public void shouldDeleteByName() {
         DocumentDeleteQuery query = parser.parse("deleteByName", new Object[]{"name"}, classRepresentation);
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
         assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
     }
@@ -66,7 +64,7 @@ public class DocumentQueryDeleteParserTest {
     public void shouldDeleteByNameAndAge() {
         DocumentDeleteQuery query = parser.parse("deleteByNameAndAge", new Object[]{"name", 10}, classRepresentation);
         DocumentCondition condition = query.getCondition().get();
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.AND, condition.getCondition());
         List<DocumentCondition> conditions = condition.getDocument().get(new TypeReference<List<DocumentCondition>>() {
         });
@@ -83,7 +81,7 @@ public class DocumentQueryDeleteParserTest {
     public void shouldDeleteByNameOrAge() {
         DocumentDeleteQuery query = parser.parse("deleteByNameOrAge", new Object[]{"name", 10}, classRepresentation);
         DocumentCondition condition = query.getCondition().get();
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.OR, condition.getCondition());
         List<DocumentCondition> conditions = condition.getDocument().get(new TypeReference<List<DocumentCondition>>() {
         });
@@ -100,7 +98,7 @@ public class DocumentQueryDeleteParserTest {
     @Test
     public void shouldDeleteByAgeLessThan() {
         DocumentDeleteQuery query = parser.parse("deleteByAgeLessThan", new Object[]{10}, classRepresentation);
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.LESSER_THAN, query.getCondition().get().getCondition());
         assertEquals(Document.of("age", 10), query.getCondition().get().getDocument());
     }
@@ -108,7 +106,7 @@ public class DocumentQueryDeleteParserTest {
     @Test
     public void shouldDeleteByAgeGreaterThan() {
         DocumentDeleteQuery query = parser.parse("deleteByAgeGreaterThan", new Object[]{10}, classRepresentation);
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.GREATER_THAN, query.getCondition().get().getCondition());
         assertEquals(Document.of("age", 10), query.getCondition().get().getDocument());
     }
@@ -116,7 +114,7 @@ public class DocumentQueryDeleteParserTest {
     @Test
     public void shouldDeleteByAgeLessEqualThan() {
         DocumentDeleteQuery query = parser.parse("deleteByAgeLessEqualThan", new Object[]{10}, classRepresentation);
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.LESSER_EQUALS_THAN, query.getCondition().get().getCondition());
         assertEquals(Document.of("age", 10), query.getCondition().get().getDocument());
     }
@@ -124,7 +122,7 @@ public class DocumentQueryDeleteParserTest {
     @Test
     public void shouldDeleteByAgeGreaterEqualThan() {
         DocumentDeleteQuery query = parser.parse("deleteByAgeGreaterEqualThan", new Object[]{10}, classRepresentation);
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.GREATER_EQUALS_THAN, query.getCondition().get().getCondition());
         assertEquals(Document.of("age", 10), query.getCondition().get().getDocument());
     }
@@ -132,7 +130,7 @@ public class DocumentQueryDeleteParserTest {
     @Test
     public void shouldDeleteByNameLike() {
         DocumentDeleteQuery query = parser.parse("deleteByNameLike", new Object[]{"name"}, classRepresentation);
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.LIKE, query.getCondition().get().getCondition());
         assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
     }
@@ -143,7 +141,7 @@ public class DocumentQueryDeleteParserTest {
     public void shouldDeleteByNameAndAAgeBetween() {
         DocumentDeleteQuery query = parser.parse("deleteByNameAndAgeBetween", new Object[]{"name", 10, 11},
                 classRepresentation);
-        assertEquals("Person", query.getCollection());
+        assertEquals("Person", query.getDocumentCollection());
         DocumentCondition condition = query.getCondition().get();
         assertEquals(Condition.AND, condition.getCondition());
         List<DocumentCondition> conditions = condition.getDocument().get(new TypeReference<List<DocumentCondition>>() {

@@ -46,6 +46,8 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.jnosql.diana.api.column.ColumnCondition.eq;
+import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
+import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -238,7 +240,8 @@ public class ColumnRepositoryProxyTest {
         when(template.singleResult(any(ColumnQuery.class)))
                 .thenReturn(Optional.of(ada));
 
-        ColumnQuery query = ColumnQuery.of("Person").and(eq(Column.of("name", "Ada")));
+
+        ColumnQuery query = select().from("Person").where(eq(Column.of("name", "Ada"))).build();
         Person person = personRepository.query(query);
         verify(template).singleResult(captor.capture());
         assertEquals(ada, person);
@@ -249,7 +252,8 @@ public class ColumnRepositoryProxyTest {
     @Test
     public void shouldDeleteQuery() {
         ArgumentCaptor<ColumnDeleteQuery> captor = ArgumentCaptor.forClass(ColumnDeleteQuery.class);
-        ColumnDeleteQuery query = ColumnDeleteQuery.of("Person").and(eq(Column.of("name", "Ada")));
+        
+        ColumnDeleteQuery query = delete().from("Person").where(eq(Column.of("name", "Ada"))).build();
         personRepository.deleteQuery(query);
         verify(template).delete(captor.capture());
         assertEquals(query, captor.getValue());
