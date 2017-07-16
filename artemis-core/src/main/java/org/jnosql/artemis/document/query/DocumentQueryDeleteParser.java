@@ -14,13 +14,18 @@
  */
 package org.jnosql.artemis.document.query;
 
-import org.jnosql.artemis.DynamicQueryException;
+import org.jnosql.artemis.document.query.DocumentQueryParserUtil.ConditionResult;
 import org.jnosql.artemis.reflection.ClassRepresentation;
-import org.jnosql.diana.api.Condition;
+import org.jnosql.diana.api.column.query.ColumnDeleteFrom;
 import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
+import org.jnosql.diana.api.document.query.DocumentDeleteFrom;
+import org.jnosql.diana.api.document.query.DocumentQueryBuilder;
 
+import static org.jnosql.artemis.document.query.DocumentQueryParserUtil.and;
+import static org.jnosql.artemis.document.query.DocumentQueryParserUtil.or;
 import static org.jnosql.artemis.document.query.DocumentQueryParserUtil.toCondition;
+import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
 
 /**
  * Class the returns a {@link DocumentDeleteQuery}
@@ -33,60 +38,31 @@ public class DocumentQueryDeleteParser {
 
 
     public DocumentDeleteQuery parse(String methodName, Object[] args, ClassRepresentation representation) {
-        DocumentDeleteQuery documentQuery = DocumentDeleteQuery.of(representation.getName());
         String[] tokens = methodName.replace(PREFIX, DocumentQueryParserUtil.EMPTY).split(TOKENIZER);
-        String className = representation.getClassInstance().getName();
+
+        DocumentCondition condition = null;
 
         int index = 0;
         for (String token : tokens) {
             if (token.startsWith(DocumentQueryParserUtil.AND)) {
-                index = and(args, documentQuery, index, token, methodName, representation);
+                ConditionResult result = and(args, index, token, methodName, representation, condition);
+                condition = result.getCondition();
+                index = result.getIndex();
             } else if (token.startsWith(DocumentQueryParserUtil.OR)) {
-                index = or(args, documentQuery, index, token, methodName, representation);
+                ConditionResult result = or(args, index, token, methodName, representation, condition);
+                condition = result.getCondition();
+                index = result.getIndex();
             } else {
-                DocumentCondition condition = toCondition(token, index, args, methodName, representation);
-                documentQuery.and(condition);
+                condition = toCondition(token, index, args, methodName, representation);
                 index++;
             }
         }
-
-        return documentQuery;
-    }
-
-
-    private void checkContents(int index, int argSize, int required, String method) {
-        if ((index + required) <= argSize) {
-            return;
-        }
-        throw new DynamicQueryException(String.format("There is a missed argument in the method %s",
-                method));
-    }
-
-    private int or(Object[] args, DocumentDeleteQuery documentQuery, int index, String token,
-                   String methodName, ClassRepresentation representation) {
-
-        String field = token.replace(DocumentQueryParserUtil.OR, DocumentQueryParserUtil.EMPTY);
-        DocumentCondition condition = toCondition(field, index, args, methodName, representation);
-        documentQuery.or(condition);
-        if (Condition.BETWEEN.equals(condition.getCondition())) {
-            return index + 2;
+        DocumentDeleteFrom from = delete().from(representation.getName());
+        if (condition == null) {
+            return from.build();
         } else {
-            return ++index;
+            return from.where(condition).build();
         }
     }
-
-    private int and(Object[] args, DocumentDeleteQuery documentQuery, int index, String token,
-                    String methodName, ClassRepresentation representation) {
-        String field = token.replace(DocumentQueryParserUtil.AND, DocumentQueryParserUtil.EMPTY);
-        DocumentCondition condition = toCondition(field, index, args, methodName, representation);
-        documentQuery.and(condition);
-        if (Condition.BETWEEN.equals(condition.getCondition())) {
-            return index + 2;
-        } else {
-            return ++index;
-        }
-
-    }
-
 
 }

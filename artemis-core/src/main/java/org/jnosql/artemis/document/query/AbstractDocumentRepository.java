@@ -20,9 +20,9 @@ import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.FieldRepresentation;
 import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.document.Document;
-import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentQuery;
+import org.jnosql.diana.api.document.query.DocumentQueryBuilder;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -33,6 +33,8 @@ import java.util.stream.Stream;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.StreamSupport.stream;
 import static org.jnosql.artemis.IdNotFoundException.KEY_NOT_FOUND_EXCEPTION_SUPPLIER;
+import static org.jnosql.diana.api.document.DocumentCondition.eq;
+import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
 
 /**
  * The {@link Repository} template method
@@ -65,9 +67,10 @@ public abstract class AbstractDocumentRepository<T, ID> implements Repository<T,
     @Override
     public void deleteById(ID id) throws NullPointerException {
         requireNonNull(id, "is is required");
-        DocumentDeleteQuery query = DocumentDeleteQuery.of(getClassRepresentation().getName());
+
         String documentName = this.getIdField().getName();
-        query.with(DocumentCondition.eq(Document.of(documentName, id)));
+        DocumentDeleteQuery query = delete().from(getClassRepresentation().getName())
+                .where(eq(Document.of(documentName, id))).build();
         getTemplate().delete(query);
     }
 
@@ -81,9 +84,11 @@ public abstract class AbstractDocumentRepository<T, ID> implements Repository<T,
     public Optional<T> findById(ID id) throws NullPointerException {
         requireNonNull(id, "id is required");
 
-        DocumentQuery query = DocumentQuery.of(getClassRepresentation().getName());
         String documentName = this.getIdField().getName();
-        query.with(DocumentCondition.eq(Document.of(documentName, id)));
+        DocumentQuery query = DocumentQueryBuilder.select()
+                .from(getClassRepresentation().getName())
+                .where((eq(Document.of(documentName, id))))
+                .build();
         return getTemplate().singleResult(query);
     }
 

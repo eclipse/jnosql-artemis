@@ -16,6 +16,7 @@ package org.jnosql.artemis.document.query;
 
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.diana.api.Condition;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCondition;
 
@@ -94,5 +95,72 @@ public final class DocumentQueryParserUtil {
     private static String getName(String token, ClassRepresentation representation) {
         return representation.getColumnField(String.valueOf(Character.toLowerCase(token.charAt(0)))
                 .concat(token.substring(1)));
+    }
+
+
+    static ConditionResult or(Object[] args, int index,
+                              String token,
+                              String methodName,
+                              ClassRepresentation representation,
+                              DocumentCondition queryCondition) {
+        String field = token.replace(DocumentQueryParserUtil.OR, DocumentQueryParserUtil.EMPTY);
+        DocumentCondition conditionResult = toCondition(field, index, args, methodName, representation);
+        DocumentCondition condition = null;
+
+        if (queryCondition == null) {
+            condition = conditionResult;
+        } else {
+            condition = queryCondition.or(conditionResult);
+        }
+        if (Condition.BETWEEN.equals(condition.getCondition())) {
+            return new ConditionResult(index + 2, condition);
+        } else {
+            return new ConditionResult(++index, condition);
+        }
+    }
+
+    static ConditionResult and(Object[] args,
+                               int index,
+                               String token,
+                               String methodName,
+                               ClassRepresentation representation,
+                               DocumentCondition queryCondition) {
+        String field = token.replace(DocumentQueryParserUtil.AND, DocumentQueryParserUtil.EMPTY);
+        DocumentCondition conditionResult = toCondition(field, index, args, methodName, representation);
+
+        DocumentCondition condition = null;
+
+        if (queryCondition == null) {
+            condition = conditionResult;
+        } else {
+            condition = queryCondition.and(conditionResult);
+        }
+
+        if (Condition.BETWEEN.equals(condition.getCondition())) {
+            return new ConditionResult(index + 2, condition);
+        } else {
+            return new ConditionResult(++index, condition);
+        }
+    }
+
+
+    static class ConditionResult {
+
+        private final int index;
+
+        private final DocumentCondition condition;
+
+        public ConditionResult(int index, DocumentCondition condition) {
+            this.index = index;
+            this.condition = condition;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        public DocumentCondition getCondition() {
+            return condition;
+        }
     }
 }

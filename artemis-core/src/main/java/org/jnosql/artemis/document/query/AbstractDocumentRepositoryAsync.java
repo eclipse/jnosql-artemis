@@ -22,7 +22,6 @@ import org.jnosql.artemis.reflection.FieldRepresentation;
 import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
 import org.jnosql.diana.api.document.Document;
-import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentQuery;
 
@@ -32,6 +31,9 @@ import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 import static org.jnosql.artemis.IdNotFoundException.KEY_NOT_FOUND_EXCEPTION_SUPPLIER;
+import static org.jnosql.diana.api.document.DocumentCondition.eq;
+import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
+import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
 
 /**
  * The {@link RepositoryAsync} template method
@@ -70,9 +72,13 @@ public abstract class AbstractDocumentRepositoryAsync<T, ID> implements Reposito
     @Override
     public void deleteById(ID id) throws NullPointerException {
         requireNonNull(id, "is is required");
-        DocumentDeleteQuery query = DocumentDeleteQuery.of(getClassRepresentation().getName());
+
         String documentName = this.getIdField().getName();
-        query.with(DocumentCondition.eq(Document.of(documentName, id)));
+
+        DocumentDeleteQuery query = delete().from(getClassRepresentation().getName())
+                .where(eq(Document.of(documentName, id)))
+                .build();
+
         getTemplate().delete(query);
     }
 
@@ -88,9 +94,11 @@ public abstract class AbstractDocumentRepositoryAsync<T, ID> implements Reposito
     public void findById(ID id, Consumer<Optional<T>> callBack) throws NullPointerException {
         requireNonNull(id, "id is required");
         requireNonNull(callBack, "callBack is required");
-        DocumentQuery query = DocumentQuery.of(getClassRepresentation().getName());
         String columnName = this.getIdField().getName();
-        query.with(DocumentCondition.eq(Document.of(columnName, id)));
+
+        DocumentQuery query = select().from(getClassRepresentation()
+                .getName())
+                .where(eq(Document.of(columnName, id))).build();
         getTemplate().singleResult(query, callBack);
     }
 

@@ -19,16 +19,22 @@ import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.Sort;
 import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentQuery;
+import org.jnosql.diana.api.document.query.DocumentFrom;
+import org.jnosql.diana.api.document.query.DocumentQueryBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import static org.jnosql.artemis.document.query.DocumentQueryParserUtil.AND;
 import static org.jnosql.artemis.document.query.DocumentQueryParserUtil.EMPTY;
 import static org.jnosql.artemis.document.query.DocumentQueryParserUtil.ORDER_BY;
+import static org.jnosql.artemis.document.query.DocumentQueryParserUtil.and;
+import static org.jnosql.artemis.document.query.DocumentQueryParserUtil.or;
 import static org.jnosql.artemis.document.query.DocumentQueryParserUtil.toCondition;
-import static org.jnosql.diana.api.Condition.BETWEEN;
 import static org.jnosql.diana.api.Sort.SortType.ASC;
 import static org.jnosql.diana.api.Sort.SortType.DESC;
+import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
 
 /**
  * Class the returns a {@link org.jnosql.diana.api.document.DocumentQuery}
@@ -43,25 +49,32 @@ public class DocumentQueryParser {
 
 
     public DocumentQuery parse(String methodName, Object[] args, ClassRepresentation representation) {
-        DocumentQuery documentQuery = DocumentQuery.of(representation.getName());
+
+
         String[] tokens = methodName.replace(PREFIX, EMPTY).split(TOKENIZER);
         String className = representation.getClassInstance().getName();
+        DocumentCondition condition = null;
+        List<Sort> sorts = new ArrayList<>();
+        long limit = 0;
+        long start = 0;
+
 
         int index = 0;
         for (String token : tokens) {
 
             if (token.startsWith(AND)) {
-                index = and(args, documentQuery, index, token, methodName, representation);
+                DocumentQueryParserUtil.ConditionResult result = and(args, index, token, methodName, representation, condition);
+                condition = result.getCondition();
+                index = result.getIndex();
             } else {
                 if (token.startsWith(ORDER_BY)) {
-                    sort(documentQuery, token, representation);
+                    sort(sorts, token, representation);
                 } else if (token.startsWith(DocumentQueryParserUtil.OR)) {
-                    index = or(args, documentQuery, index, token, methodName, representation);
+                    DocumentQueryParserUtil.ConditionResult result = or(args, index, token, methodName, representation, condition);
+                    condition = result.getCondition();
+                    index = result.getIndex();
                 } else {
-                    DocumentCondition condition = toCondition(token, index, args,
-                            methodName, representation);
-
-                    documentQuery.and(condition);
+                    condition = toCondition(token, index, args, methodName, representation);
                     index++;
                 }
             }
@@ -70,11 +83,11 @@ public class DocumentQueryParser {
         while (index < args.length) {
             Object value = args[index];
             if (Sort.class.isInstance(value)) {
-                documentQuery.addSort(Sort.class.cast(value));
+                sorts.add(Sort.class.cast(value));
             } else if (Pagination.class.isInstance(value)) {
                 Pagination pagination = Pagination.class.cast(value);
-                documentQuery.withMaxResults(pagination.getMaxResults());
-                documentQuery.withFirstResult(pagination.getFirstResult());
+                limit = pagination.getMaxResults();
+                start = pagination.getFirstResult();
             } else {
                 LOGGER.info(String.format("Ignoring parameter %s on  methodName %s class name %s arg-number: %d",
                         String.valueOf(value), methodName, className, index));
@@ -82,44 +95,25 @@ public class DocumentQueryParser {
             index++;
         }
 
-        return documentQuery;
-    }
-
-    private int or(Object[] args, DocumentQuery documentQuery, int index, String token, String methodName,
-                   ClassRepresentation representation) {
-
-        String field = token.replace(DocumentQueryParserUtil.OR, EMPTY);
-
-        DocumentCondition condition = toCondition(field, index, args, methodName, representation);
-        documentQuery.or(condition);
-        if (BETWEEN.equals(condition.getCondition())) {
-            return index + 2;
+        DocumentFrom from = select().from(representation.getName());
+        if (condition == null) {
+            sorts.forEach(from::orderBy);
+            return from.limit(limit).start(start).build();
         } else {
-            return ++index;
+            from.where(condition);
+            sorts.forEach(from::orderBy);
+            return from.start(start).limit(limit).build();
         }
     }
 
-    private int and(Object[] args, DocumentQuery documentQuery, int index, String token,
-                    String methodName,  ClassRepresentation representation) {
-        String field = token.replace(AND, EMPTY);
-        DocumentCondition condition = toCondition(field, index, args, methodName, representation);
 
-        documentQuery.and(condition);
-        if (BETWEEN.equals(condition.getCondition())) {
-            return index + 2;
-        } else {
-            return ++index;
-        }
-
-    }
-
-    private void sort(DocumentQuery documentQuery, String token, ClassRepresentation representation) {
+    private void sort(List<Sort> sorts, String token, ClassRepresentation representation) {
         String field = token.replace(ORDER_BY, EMPTY);
         if (field.contains("Desc")) {
-            documentQuery.addSort(Sort.of(getName(field.replace("Desc", EMPTY), representation)
+            sorts.add(Sort.of(getName(field.replace("Desc", EMPTY), representation)
                     , DESC));
         } else {
-            documentQuery.addSort(Sort.of(getName(field.replace("Asc", EMPTY), representation)
+            sorts.add(Sort.of(getName(field.replace("Asc", EMPTY), representation)
                     , ASC));
         }
     }
