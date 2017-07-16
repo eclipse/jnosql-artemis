@@ -16,14 +16,19 @@ package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.Pagination;
 import org.jnosql.artemis.reflection.ClassRepresentation;
-import org.jnosql.diana.api.Condition;
 import org.jnosql.diana.api.Sort;
 import org.jnosql.diana.api.column.ColumnCondition;
 import org.jnosql.diana.api.column.ColumnQuery;
+import org.jnosql.diana.api.column.query.ColumnFrom;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
+import static org.jnosql.artemis.column.query.ColumnQueryParserUtil.and;
+import static org.jnosql.artemis.column.query.ColumnQueryParserUtil.or;
 import static org.jnosql.artemis.column.query.ColumnQueryParserUtil.toCondition;
+import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
 
 /**
  * Class the returns a {@link ColumnQuery}
@@ -37,22 +42,31 @@ public class ColumnQueryParser {
     private static final String TOKENIZER = "(?=And|OrderBy|Or)";
 
 
-    public ColumnQuery parse(String methodName, Object[] args, ClassRepresentation classRepresentation) {
-        ColumnQuery columnQuery = ColumnQuery.of(classRepresentation.getName());
+    public ColumnQuery parse(String methodName, Object[] args, ClassRepresentation representation) {
+
+
+        ColumnCondition condition = null;
         String[] tokens = methodName.replace(PREFIX, ColumnQueryParserUtil.EMPTY).split(TOKENIZER);
-        String className = classRepresentation.getClassInstance().getName();
+        String className = representation.getClassInstance().getName();
+        List<Sort> sorts = new ArrayList<>();
+        long limit = 0;
+        long start = 0;
 
         int index = 0;
         for (String token : tokens) {
             if (token.startsWith(ColumnQueryParserUtil.AND)) {
-                index = and(args, columnQuery, index, token, methodName, classRepresentation);
+
+                ColumnQueryParserUtil.ConditionResult result = and(args, index, token, methodName, representation, condition);
+                condition = result.getCondition();
+                index = result.getIndex();
             } else if (token.startsWith(ColumnQueryParserUtil.ORDER_BY)) {
-                sort(columnQuery, token, classRepresentation);
+                sort(sorts, token, representation);
             } else if (token.startsWith(ColumnQueryParserUtil.OR)) {
-                index = or(args, columnQuery, index, token, methodName, classRepresentation);
+                ColumnQueryParserUtil.ConditionResult result = or(args, index, token, methodName, representation, condition);
+                condition = result.getCondition();
+                index = result.getIndex();
             } else {
-                ColumnCondition condition = toCondition(token, index, args, methodName, classRepresentation);
-                columnQuery.and(condition);
+                condition = toCondition(token, index, args, methodName, representation);
                 index++;
             }
         }
@@ -60,54 +74,37 @@ public class ColumnQueryParser {
         while (index < args.length) {
             Object value = args[index];
             if (Sort.class.isInstance(value)) {
-                columnQuery.addSort(Sort.class.cast(value));
+                sorts.add(Sort.class.cast(value));
             } else if (Pagination.class.isInstance(value)) {
                 Pagination pagination = Pagination.class.cast(value);
-                columnQuery.withMaxResults(pagination.getMaxResults());
-                columnQuery.withFirstResult(pagination.getFirstResult());
+                limit = pagination.getMaxResults();
+                start = pagination.getFirstResult();
             } else {
                 LOGGER.info(String.format("Ignoring parameter %s on  methodName %s class name %s arg-number: %d",
                         String.valueOf(value), methodName, className, index));
             }
             index++;
         }
-        return columnQuery;
-    }
 
-
-    private int or(Object[] args, ColumnQuery columnQuery, int index,
-                   String token, String methodName,
-                   ClassRepresentation classRepresentation) {
-        String field = token.replace(ColumnQueryParserUtil.OR, ColumnQueryParserUtil.EMPTY);
-        ColumnCondition condition = toCondition(field, index, args, methodName, classRepresentation);
-        columnQuery.or(condition);
-        if (Condition.BETWEEN.equals(condition.getCondition())) {
-            return index + 2;
+        ColumnFrom from = select().from(representation.getName());
+        if (condition == null) {
+            sorts.forEach(from::orderBy);
+            return from.limit(limit).start(start).build();
         } else {
-            return ++index;
+            from.where(condition);
+            sorts.forEach(from::orderBy);
+            return from.start(start).limit(limit).build();
         }
     }
 
-    private int and(Object[] args, ColumnQuery columnQuery, int index, String token,
-                    String methodName, ClassRepresentation classRepresentation) {
-        String field = token.replace(ColumnQueryParserUtil.AND, ColumnQueryParserUtil.EMPTY);
-        ColumnCondition condition = toCondition(field, index, args, methodName, classRepresentation);
-        columnQuery.and(condition);
-        if (Condition.BETWEEN.equals(condition.getCondition())) {
-            return index + 2;
-        } else {
-            return ++index;
-        }
 
-    }
-
-    private void sort(ColumnQuery columnQuery, String token, ClassRepresentation representation) {
+    private void sort(List<Sort> sorts, String token, ClassRepresentation representation) {
         String field = token.replace(ColumnQueryParserUtil.ORDER_BY, ColumnQueryParserUtil.EMPTY);
         if (field.contains("Desc")) {
-            columnQuery.addSort(Sort.of(getName(field.replace("Desc", ColumnQueryParserUtil.EMPTY),
+            sorts.add(Sort.of(getName(field.replace("Desc", ColumnQueryParserUtil.EMPTY),
                     representation), Sort.SortType.DESC));
         } else {
-            columnQuery.addSort(Sort.of(getName(field.replace("Asc", ColumnQueryParserUtil.EMPTY),
+            sorts.add(Sort.of(getName(field.replace("Asc", ColumnQueryParserUtil.EMPTY),
                     representation), Sort.SortType.ASC));
         }
     }

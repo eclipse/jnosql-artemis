@@ -16,6 +16,7 @@ package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.diana.api.Condition;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnCondition;
 
@@ -99,5 +100,72 @@ final class ColumnQueryParserUtil {
     private static String getName(String token, ClassRepresentation representation) {
         return representation.getColumnField(String.valueOf(Character.toLowerCase(token.charAt(0)))
                 .concat(token.substring(1)));
+    }
+
+
+    static ConditionResult or(Object[] args, int index,
+                              String token,
+                              String methodName,
+                              ClassRepresentation representation,
+                              ColumnCondition queryCondition) {
+        String field = token.replace(ColumnQueryParserUtil.OR, ColumnQueryParserUtil.EMPTY);
+        ColumnCondition conditionResult = toCondition(field, index, args, methodName, representation);
+        ColumnCondition condition = null;
+
+        if (queryCondition == null) {
+            condition = conditionResult;
+        } else {
+            condition = queryCondition.or(conditionResult);
+        }
+        if (Condition.BETWEEN.equals(condition.getCondition())) {
+            return new ConditionResult(index + 2, condition);
+        } else {
+            return new ConditionResult(++index, condition);
+        }
+    }
+
+    static ConditionResult and(Object[] args,
+                               int index,
+                               String token,
+                               String methodName,
+                               ClassRepresentation representation,
+                               ColumnCondition queryCondition) {
+        String field = token.replace(ColumnQueryParserUtil.AND, ColumnQueryParserUtil.EMPTY);
+        ColumnCondition conditionResult = toCondition(field, index, args, methodName, representation);
+
+        ColumnCondition condition = null;
+
+        if (queryCondition == null) {
+            condition = conditionResult;
+        } else {
+            condition = queryCondition.and(conditionResult);
+        }
+
+        if (Condition.BETWEEN.equals(condition.getCondition())) {
+            return new ConditionResult(index + 2, condition);
+        } else {
+            return new ConditionResult(++index, condition);
+        }
+    }
+
+
+    static class ConditionResult {
+
+        private final int index;
+
+        private final ColumnCondition condition;
+
+        public ConditionResult(int index, ColumnCondition condition) {
+            this.index = index;
+            this.condition = condition;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        public ColumnCondition getCondition() {
+            return condition;
+        }
     }
 }

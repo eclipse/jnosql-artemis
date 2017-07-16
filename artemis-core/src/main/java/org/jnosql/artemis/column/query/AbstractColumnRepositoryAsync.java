@@ -22,7 +22,6 @@ import org.jnosql.artemis.reflection.FieldRepresentation;
 import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
 import org.jnosql.diana.api.column.Column;
-import org.jnosql.diana.api.column.ColumnCondition;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnQuery;
 
@@ -32,6 +31,9 @@ import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 import static org.jnosql.artemis.IdNotFoundException.KEY_NOT_FOUND_EXCEPTION_SUPPLIER;
+import static org.jnosql.diana.api.column.ColumnCondition.eq;
+import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
+import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
 
 /**
  * The template method to {@link RepositoryAsync}
@@ -70,9 +72,11 @@ public abstract class AbstractColumnRepositoryAsync<T, ID> implements Repository
     @Override
     public void deleteById(ID id) throws NullPointerException {
         requireNonNull(id, "is is required");
-        ColumnDeleteQuery query = ColumnDeleteQuery.of(getClassRepresentation().getName());
+
         String columnName = this.getIdField().getName();
-        query.with(ColumnCondition.eq(Column.of(columnName, id)));
+
+        ColumnDeleteQuery query =  delete().from(getClassRepresentation().getName())
+                .where(eq(Column.of(columnName, id))).build();
         getTemplate().delete(query);
     }
 
@@ -88,9 +92,10 @@ public abstract class AbstractColumnRepositoryAsync<T, ID> implements Repository
     public void findById(ID id, Consumer<Optional<T>> callBack) throws NullPointerException {
         requireNonNull(id, "id is required");
         requireNonNull(callBack, "callBack is required");
-        ColumnQuery query = ColumnQuery.of(getClassRepresentation().getName());
+
         String columnName = this.getIdField().getName();
-        query.with(ColumnCondition.eq(Column.of(columnName, id)));
+        ColumnQuery query = select().from(getClassRepresentation().getName())
+                .where(eq(Column.of(columnName, id))).build();
         getTemplate().singleResult(query, callBack);
     }
 
