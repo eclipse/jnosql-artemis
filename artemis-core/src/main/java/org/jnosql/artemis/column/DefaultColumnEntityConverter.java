@@ -71,6 +71,8 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
 
     @Override
     public <T> T toEntity(Class<T> entityClass, ColumnEntity entity) {
+        Objects.requireNonNull(entity, "entity is required");
+        Objects.requireNonNull(entityClass, "entityClass is required");
         return toEntity(entityClass, entity.getColumns());
     }
 
@@ -83,6 +85,7 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T toEntity(ColumnEntity entity) {
+        Objects.requireNonNull(entity, "entity is required");
         ClassRepresentation representation = classRepresentations.findByName(entity.getName());
         T instance = reflections.newInstance(representation.getConstructor());
         return convertEntity(entity.getColumns(), representation, instance);
