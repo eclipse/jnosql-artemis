@@ -38,6 +38,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.requireNonNull;
 import static org.jnosql.artemis.reflection.FieldType.EMBEDDED;
 
 /**
@@ -58,7 +59,7 @@ class DefaultDocumentEntityConverter implements DocumentEntityConverter {
 
     @Override
     public DocumentEntity toDocument(Object entityInstance) {
-        Objects.requireNonNull(entityInstance, "Object is required");
+        requireNonNull(entityInstance, "Object is required");
         ClassRepresentation representation = classRepresentations.get(entityInstance.getClass());
         DocumentEntity entity = DocumentEntity.of(representation.getName());
         representation.getFields().stream()
@@ -72,6 +73,8 @@ class DefaultDocumentEntityConverter implements DocumentEntityConverter {
 
     @Override
     public <T> T toEntity(Class<T> entityClass, DocumentEntity entity) {
+        requireNonNull(entity, "entity is required");
+        requireNonNull(entityClass, "entityClass is required");
         return toEntity(entityClass, entity.getDocuments());
 
     }
@@ -86,6 +89,7 @@ class DefaultDocumentEntityConverter implements DocumentEntityConverter {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T toEntity(DocumentEntity entity) {
+        requireNonNull(entity, "entity is required");
         ClassRepresentation representation = classRepresentations.findByName(entity.getName());
         T instance = reflections.newInstance(representation.getConstructor());
         return convertEntity(entity.getDocuments(), representation, instance);
