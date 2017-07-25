@@ -29,6 +29,7 @@ import java.util.stream.StreamSupport;
 /**
  * This interface that represents the common operation between an entity
  * and {@link org.jnosql.diana.api.column.ColumnEntity}
+ *
  * @see org.jnosql.diana.api.column.ColumnFamilyManager
  */
 public interface ColumnTemplate {
@@ -44,7 +45,6 @@ public interface ColumnTemplate {
     <T> T insert(T entity) throws NullPointerException;
 
 
-
     /**
      * Inserts entity with time to live
      *
@@ -54,7 +54,6 @@ public interface ColumnTemplate {
      * @return the entity saved
      */
     <T> T insert(T entity, Duration ttl);
-
 
 
     /**
@@ -96,8 +95,9 @@ public interface ColumnTemplate {
      * @param entity entity to be updated
      * @param <T>    the instance type
      * @return the entity updated
+     * @throws NullPointerException when entity is null
      */
-    <T> T update(T entity);
+    <T> T update(T entity) throws NullPointerException;
 
 
     /**
@@ -119,8 +119,9 @@ public interface ColumnTemplate {
      * Deletes an entity
      *
      * @param query query to delete an entity
+     * @throws NullPointerException when query is null
      */
-    void delete(ColumnDeleteQuery query);
+    void delete(ColumnDeleteQuery query) throws NullPointerException;
 
 
     /**
