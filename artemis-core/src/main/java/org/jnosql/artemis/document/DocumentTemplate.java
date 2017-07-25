@@ -29,6 +29,7 @@ import static java.util.stream.Collectors.toList;
 
 /**
  * This interface that represents the common operation between an entity and DocumentCollectionEntity.
+ *
  * @see org.jnosql.diana.api.document.DocumentCollectionManager
  */
 public interface DocumentTemplate {
@@ -50,8 +51,9 @@ public interface DocumentTemplate {
      * @param <T>    the instance type
      * @param ttl    the time to live
      * @return the entity saved
+     * @throws NullPointerException when either entity or ttl are null
      */
-    <T> T insert(T entity, Duration ttl);
+    <T> T insert(T entity, Duration ttl) throws NullPointerException;
 
     /**
      * Saves entity, by default it's just run for each saving using
@@ -89,10 +91,13 @@ public interface DocumentTemplate {
      * Updates a entity
      *
      * @param entity entity to be updated
-     *               @param <T>      the instance type
+     * @param <T>    the instance type
      * @return the entity updated
+     * @throws NullPointerException when entity is null
      */
-    <T> T update(T entity);
+    <T> T update(T entity) throws NullPointerException;
+
+    ;
 
     /**
      * Updates entity, by default it's just run for each saving using
@@ -113,8 +118,9 @@ public interface DocumentTemplate {
      * Deletes an entity
      *
      * @param query query to delete an entity
+     * @throws NullPointerException query is null
      */
-    void delete(DocumentDeleteQuery query);
+    void delete(DocumentDeleteQuery query) throws NullPointerException;
 
     /**
      * Finds entities from query
