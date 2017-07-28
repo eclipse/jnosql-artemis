@@ -17,7 +17,7 @@ package org.jnosql.artemis;
 import java.util.function.Supplier;
 
 /**
- * When The Entity is converted to {@link org.jnosql.diana.api.key.KeyValueEntity},
+ * When The Entity is converted to communication layer,
  * this entity must have a field with {@link org.jnosql.artemis.Id} annotation. If this entity
  * hasn't this information an exception will be launch.
  */
