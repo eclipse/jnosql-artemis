@@ -85,7 +85,7 @@ public class DatabaseQualifierTest {
         assertEquals(KEY_VALUE, qualifier.value());
     }
 
-    
+
     @Test(expected = NullPointerException.class)
     public void shouldReturnErrorWhenGraphNull() {
         DatabaseQualifier.ofGraph(null);
