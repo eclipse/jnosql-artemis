@@ -19,8 +19,8 @@ import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.Database;
 import org.jnosql.artemis.Databases;
-import org.jnosql.artemis.column.query.CrudRepositoryAsyncColumnBean;
-import org.jnosql.artemis.column.query.CrudRepositoryColumnBean;
+import org.jnosql.artemis.column.query.RepositoryAsyncColumnBean;
+import org.jnosql.artemis.column.query.RepositoryColumnBean;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
 
@@ -103,15 +103,15 @@ public class ColumnFamilyProducerExtension implements Extension {
         });
 
         crudTypes.forEach(type -> {
-            afterBeanDiscovery.addBean(new CrudRepositoryColumnBean(type, beanManager, ""));
+            afterBeanDiscovery.addBean(new RepositoryColumnBean(type, beanManager, ""));
             databases.forEach(database -> afterBeanDiscovery
-                    .addBean(new CrudRepositoryColumnBean(type, beanManager, database.provider())));
+                    .addBean(new RepositoryColumnBean(type, beanManager, database.provider())));
         });
 
         crudAsyncTypes.forEach(type -> {
-            afterBeanDiscovery.addBean(new CrudRepositoryAsyncColumnBean(type, beanManager, ""));
+            afterBeanDiscovery.addBean(new RepositoryAsyncColumnBean(type, beanManager, ""));
             databasesAsync.forEach(database -> afterBeanDiscovery
-                    .addBean(new CrudRepositoryAsyncColumnBean(type, beanManager, database.provider())));
+                    .addBean(new RepositoryAsyncColumnBean(type, beanManager, database.provider())));
         });
 
 

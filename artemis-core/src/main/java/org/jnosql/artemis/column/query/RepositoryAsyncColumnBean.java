@@ -14,10 +14,10 @@
  */
 package org.jnosql.artemis.column.query;
 
-import org.jnosql.artemis.Repository;
+import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
-import org.jnosql.artemis.column.ColumnTemplate;
+import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.Reflections;
 
@@ -35,9 +35,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Artemis discoveryBean to CDI extension to register {@link Repository}
+ * Artemis discoveryBean to CDI extension to register {@link RepositoryAsync}
  */
-public class CrudRepositoryColumnBean implements Bean<Repository>, PassivationCapable {
+public class RepositoryAsyncColumnBean implements Bean<RepositoryAsync>, PassivationCapable {
 
     private final Class type;
 
@@ -56,7 +56,7 @@ public class CrudRepositoryColumnBean implements Bean<Repository>, PassivationCa
      * @param beanManager the beanManager
      * @param provider    the provider name, that must be a
      */
-    public CrudRepositoryColumnBean(Class type, BeanManager beanManager, String provider) {
+    public RepositoryAsyncColumnBean(Class type, BeanManager beanManager, String provider) {
         this.type = type;
         this.beanManager = beanManager;
         this.types = Collections.singleton(type);
@@ -85,14 +85,15 @@ public class CrudRepositoryColumnBean implements Bean<Repository>, PassivationCa
     }
 
     @Override
-    public Repository create(CreationalContext<Repository> creationalContext) {
+    public RepositoryAsync create(CreationalContext<RepositoryAsync> creationalContext) {
         ClassRepresentations classRepresentations = getInstance(ClassRepresentations.class);
-        ColumnTemplate repository = provider.isEmpty() ? getInstance(ColumnTemplate.class) :
-                getInstance(ColumnTemplate.class, provider);
+        ColumnTemplateAsync repository = provider.isEmpty() ? getInstance(ColumnTemplateAsync.class) :
+                getInstance(ColumnTemplateAsync.class, provider);
         Reflections reflections = getInstance(Reflections.class);
-        ColumnRepositoryProxy handler = new ColumnRepositoryProxy(repository,
+
+        ColumnRepositoryAsyncProxy handler = new ColumnRepositoryAsyncProxy(repository,
                 classRepresentations, type, reflections);
-        return (Repository) Proxy.newProxyInstance(type.getClassLoader(),
+        return (RepositoryAsync) Proxy.newProxyInstance(type.getClassLoader(),
                 new Class[]{type},
                 handler);
     }
@@ -112,7 +113,7 @@ public class CrudRepositoryColumnBean implements Bean<Repository>, PassivationCa
 
 
     @Override
-    public void destroy(Repository instance, CreationalContext<Repository> creationalContext) {
+    public void destroy(RepositoryAsync instance, CreationalContext<RepositoryAsync> creationalContext) {
 
     }
 
@@ -148,7 +149,8 @@ public class CrudRepositoryColumnBean implements Bean<Repository>, PassivationCa
 
     @Override
     public String getId() {
-        return type.getName() + '@' + DatabaseType.COLUMN + "-" + provider;
+        return type.getName() + "Async@" + DatabaseType.COLUMN + "-" + provider;
     }
+
 
 }
