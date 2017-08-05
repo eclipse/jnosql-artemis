@@ -18,6 +18,7 @@ import org.junit.Test;
 
 import static org.jnosql.artemis.DatabaseType.COLUMN;
 import static org.jnosql.artemis.DatabaseType.DOCUMENT;
+import static org.jnosql.artemis.DatabaseType.GRAPH;
 import static org.jnosql.artemis.DatabaseType.KEY_VALUE;
 import static org.junit.Assert.assertEquals;
 
@@ -82,5 +83,26 @@ public class DatabaseQualifierTest {
         DatabaseQualifier qualifier = DatabaseQualifier.ofKeyValue();
         assertEquals("", qualifier.provider());
         assertEquals(KEY_VALUE, qualifier.value());
+    }
+
+    
+    @Test(expected = NullPointerException.class)
+    public void shouldReturnErrorWhenGraphNull() {
+        DatabaseQualifier.ofGraph(null);
+    }
+
+    @Test
+    public void shouldReturnGraphProvider() {
+        String provider = "provider";
+        DatabaseQualifier qualifier = DatabaseQualifier.ofGraph(provider);
+        assertEquals(provider, qualifier.provider());
+        assertEquals(GRAPH, qualifier.value());
+    }
+
+    @Test
+    public void shouldReturnDefaultGraph() {
+        DatabaseQualifier qualifier = DatabaseQualifier.ofGraph();
+        assertEquals("", qualifier.provider());
+        assertEquals(GRAPH, qualifier.value());
     }
 }

@@ -20,6 +20,7 @@ import java.util.Objects;
 
 import static org.jnosql.artemis.DatabaseType.COLUMN;
 import static org.jnosql.artemis.DatabaseType.DOCUMENT;
+import static org.jnosql.artemis.DatabaseType.GRAPH;
 import static org.jnosql.artemis.DatabaseType.KEY_VALUE;
 
 /**
@@ -32,6 +33,8 @@ public class DatabaseQualifier extends AnnotationLiteral<Database> implements Da
     private static final DatabaseQualifier DEFAULT_COLUMN_PROVIDER = new DatabaseQualifier("", COLUMN);
 
     private static final DatabaseQualifier DEFAULT_KEY_VALUE_PROVIDER = new DatabaseQualifier("", KEY_VALUE);
+
+    private static final DatabaseQualifier DEFAULT_GRAPH_PROVIDER = new DatabaseQualifier("", GRAPH);
 
     private final String provider;
 
@@ -128,5 +131,31 @@ public class DatabaseQualifier extends AnnotationLiteral<Database> implements Da
             return DEFAULT_KEY_VALUE_PROVIDER;
         }
         return new DatabaseQualifier(provider, KEY_VALUE);
+    }
+
+    /**
+     * Returns the qualifier filter with document type {@link DatabaseType#GRAPH}
+     * and the nosql provider default
+     *
+     * @return the default key-value provider
+     */
+    public static DatabaseQualifier ofGraph() {
+        return DEFAULT_GRAPH_PROVIDER;
+    }
+
+    /**
+     * Returns the qualifier filter with graph type {@link DatabaseType#GRAPH} and the
+     * nosql provider defined
+     *
+     * @param provider the provider
+     * @return the qualifier filter instance
+     * @throws NullPointerException when provider is null
+     */
+    public static DatabaseQualifier ofGraph(String provider) throws NullPointerException {
+        Objects.requireNonNull(provider, "provider is required");
+        if (provider.trim().isEmpty()) {
+            return DEFAULT_KEY_VALUE_PROVIDER;
+        }
+        return new DatabaseQualifier(provider, GRAPH);
     }
 }
