@@ -127,7 +127,10 @@ public class DocumentRepositoryProxyTest {
 
         when(personRepository.findById(10L)).thenReturn(Optional.empty());
 
+        when(template.singleResult(Mockito.any(DocumentQuery.class))).thenReturn(Optional.empty());
+
         ArgumentCaptor<Person> captor = ArgumentCaptor.forClass(Person.class);
+
         Person person = Person.builder().withName("Ada")
                 .withId(10L)
                 .withPhones(singletonList("123123"))
