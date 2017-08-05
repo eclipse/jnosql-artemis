@@ -44,7 +44,6 @@ import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.jnosql.diana.api.column.ColumnCondition.eq;
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
@@ -121,7 +120,7 @@ public class ColumnRepositoryProxyTest {
 
 
     @Test
-    public void shouldSaveItarable() {
+    public void shouldSaveIterable() {
         when(personRepository.findById(10L)).thenReturn(Optional.empty());
 
         ArgumentCaptor<Person> captor = ArgumentCaptor.forClass(Person.class);

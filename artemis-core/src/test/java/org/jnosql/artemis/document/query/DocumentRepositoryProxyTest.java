@@ -44,7 +44,6 @@ import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.jnosql.diana.api.document.DocumentCondition.eq;
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
@@ -124,16 +123,20 @@ public class DocumentRepositoryProxyTest {
 
 
     @Test
-    public void shouldSaveItarable() {
-        ArgumentCaptor<Iterable> captor = ArgumentCaptor.forClass(Iterable.class);
+    public void shouldSaveIterable() {
+
+        when(personRepository.findById(10L)).thenReturn(Optional.empty());
+
+        ArgumentCaptor<Person> captor = ArgumentCaptor.forClass(Person.class);
         Person person = Person.builder().withName("Ada")
                 .withId(10L)
                 .withPhones(singletonList("123123"))
                 .build();
         personRepository.save(singletonList(person));
         verify(template).insert(captor.capture());
-        Iterable<Person> persons = captor.getValue();
-        assertThat(persons, containsInAnyOrder(person));
+        verify(template).insert(captor.capture());
+        Person personCapture = captor.getValue();
+        assertEquals(person, personCapture);
     }
 
 
