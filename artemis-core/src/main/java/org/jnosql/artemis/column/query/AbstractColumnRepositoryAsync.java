@@ -25,7 +25,6 @@ import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnQuery;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -49,7 +48,7 @@ public abstract class AbstractColumnRepositoryAsync<T, ID> implements Repository
 
     @Override
     public <S extends T> void save(S entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        Objects.requireNonNull(entity, "Entity is required");
+        requireNonNull(entity, "Entity is required");
         Object id = getReflections().getValue(entity, getIdField().getField());
         Consumer<Boolean> callBack = exist -> {
             if (exist) {
@@ -64,7 +63,7 @@ public abstract class AbstractColumnRepositoryAsync<T, ID> implements Repository
 
     @Override
     public <S extends T> void save(Iterable<S> entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        Objects.requireNonNull(entities, "entities is required");
+        requireNonNull(entities, "entities is required");
         entities.forEach(this::save);
     }
 
