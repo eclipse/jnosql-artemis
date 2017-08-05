@@ -169,7 +169,7 @@ public class ColumnRepositoryProxyTest {
         when(template.select(any(ColumnQuery.class)))
                 .thenReturn(singletonList(ada));
 
-        List<Person> persons = personRepository.findByNameANDAge("name", 20);
+        List<Person> persons = personRepository.findByNameAndAge("name", 20);
         ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
         verify(template).select(captor.capture());
         assertThat(persons, Matchers.contains(ada));
@@ -184,7 +184,7 @@ public class ColumnRepositoryProxyTest {
         when(template.select(any(ColumnQuery.class)))
                 .thenReturn(singletonList(ada));
 
-        Set<Person> persons = personRepository.findByAgeANDName(20, "name");
+        Set<Person> persons = personRepository.findByAgeAndName(20, "name");
         ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
         verify(template).select(captor.capture());
         assertThat(persons, Matchers.contains(ada));
@@ -199,7 +199,7 @@ public class ColumnRepositoryProxyTest {
         when(template.select(any(ColumnQuery.class)))
                 .thenReturn(singletonList(ada));
 
-        Stream<Person> persons = personRepository.findByNameANDAgeOrderByName("name", 20);
+        Stream<Person> persons = personRepository.findByNameAndAgeOrderByName("name", 20);
         ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
         verify(template).select(captor.capture());
         assertThat(persons.collect(Collectors.toList()), Matchers.contains(ada));
@@ -214,7 +214,7 @@ public class ColumnRepositoryProxyTest {
         when(template.select(any(ColumnQuery.class)))
                 .thenReturn(singletonList(ada));
 
-        Queue<Person> persons = personRepository.findByNameANDAgeOrderByAge("name", 20);
+        Queue<Person> persons = personRepository.findByNameAndAgeOrderByAge("name", 20);
         ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
         verify(template).select(captor.capture());
         assertThat(persons, Matchers.contains(ada));
@@ -338,13 +338,13 @@ public class ColumnRepositoryProxyTest {
 
         Optional<Person> findByAge(Integer age);
 
-        List<Person> findByNameANDAge(String name, Integer age);
+        List<Person> findByNameAndAge(String name, Integer age);
 
-        Set<Person> findByAgeANDName(Integer age, String name);
+        Set<Person> findByAgeAndName(Integer age, String name);
 
-        Stream<Person> findByNameANDAgeOrderByName(String name, Integer age);
+        Stream<Person> findByNameAndAgeOrderByName(String name, Integer age);
 
-        Queue<Person> findByNameANDAgeOrderByAge(String name, Integer age);
+        Queue<Person> findByNameAndAgeOrderByAge(String name, Integer age);
 
         Person query(ColumnQuery query);
 
