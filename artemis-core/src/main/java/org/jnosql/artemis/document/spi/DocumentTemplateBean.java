@@ -32,7 +32,7 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
 
-class DocumentRepositoryBean implements Bean<DocumentTemplate>, PassivationCapable {
+class DocumentTemplateBean implements Bean<DocumentTemplate>, PassivationCapable {
 
     private final BeanManager beanManager;
 
@@ -48,7 +48,7 @@ class DocumentRepositoryBean implements Bean<DocumentTemplate>, PassivationCapab
      * @param beanManager the beanManager
      * @param provider    the provider name, that must be a
      */
-    public DocumentRepositoryBean(BeanManager beanManager, String provider) {
+    public DocumentTemplateBean(BeanManager beanManager, String provider) {
         this.beanManager = beanManager;
         this.types = Collections.singleton(DocumentTemplate.class);
         this.provider = provider;

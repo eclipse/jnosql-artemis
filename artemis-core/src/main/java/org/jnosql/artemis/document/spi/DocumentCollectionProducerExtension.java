@@ -98,12 +98,12 @@ public class DocumentCollectionProducerExtension implements Extension {
                 databases.size(), crudTypes.size(), crudAsyncTypes.size()));
 
         databases.forEach(type -> {
-            final DocumentRepositoryBean bean = new DocumentRepositoryBean(beanManager, type.provider());
+            final DocumentTemplateBean bean = new DocumentTemplateBean(beanManager, type.provider());
             afterBeanDiscovery.addBean(bean);
         });
 
         databasesAsync.forEach(type -> {
-            final org.jnosql.artemis.document.spi.DocumentRepositoryAsyncBean bean = new org.jnosql.artemis.document.spi.DocumentRepositoryAsyncBean(beanManager, type.provider());
+            final DocumentTemplateAsyncBean bean = new DocumentTemplateAsyncBean(beanManager, type.provider());
             afterBeanDiscovery.addBean(bean);
         });
 

@@ -32,7 +32,7 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
 
-class DocumentRepositoryAsyncBean implements Bean<DocumentTemplateAsync>, PassivationCapable {
+class DocumentTemplateAsyncBean implements Bean<DocumentTemplateAsync>, PassivationCapable {
 
     private final BeanManager beanManager;
 
@@ -48,7 +48,7 @@ class DocumentRepositoryAsyncBean implements Bean<DocumentTemplateAsync>, Passiv
      * @param beanManager the beanManager
      * @param provider    the provider name, that must be a
      */
-    public DocumentRepositoryAsyncBean(BeanManager beanManager, String provider) {
+    public DocumentTemplateAsyncBean(BeanManager beanManager, String provider) {
         this.beanManager = beanManager;
         this.types = Collections.singleton(DocumentTemplateAsync.class);
         this.provider = provider;
