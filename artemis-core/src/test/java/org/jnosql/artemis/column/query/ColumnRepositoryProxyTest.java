@@ -122,15 +122,18 @@ public class ColumnRepositoryProxyTest {
 
     @Test
     public void shouldSaveItarable() {
-        ArgumentCaptor<Iterable> captor = ArgumentCaptor.forClass(Iterable.class);
+        when(personRepository.findById(10L)).thenReturn(Optional.empty());
+
+        ArgumentCaptor<Person> captor = ArgumentCaptor.forClass(Person.class);
         Person person = Person.builder().withName("Ada")
                 .withId(10L)
                 .withPhones(singletonList("123123"))
                 .build();
+
         personRepository.save(singletonList(person));
         verify(template).insert(captor.capture());
-        Iterable<Person> persons = captor.getValue();
-        assertThat(persons, containsInAnyOrder(person));
+        Person personCapture = captor.getValue();
+        assertEquals(person, personCapture);
     }
 
 

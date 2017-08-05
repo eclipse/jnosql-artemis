@@ -26,10 +26,11 @@ import org.jnosql.diana.api.column.ColumnQuery;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.StreamSupport.stream;
 import static org.jnosql.artemis.IdNotFoundException.KEY_NOT_FOUND_EXCEPTION_SUPPLIER;
 import static org.jnosql.diana.api.column.ColumnCondition.eq;
@@ -61,7 +62,8 @@ public abstract class AbstractColumnRepository<T, ID> implements Repository<T, I
 
     @Override
     public <S extends T> Iterable<S> save(Iterable<S> entities) throws NullPointerException {
-        return getTemplate().insert(entities);
+        requireNonNull(entities, "entities is required");
+        return StreamSupport.stream(entities.spliterator(), false).map(this::save).collect(toList());
     }
 
 
@@ -96,7 +98,7 @@ public abstract class AbstractColumnRepository<T, ID> implements Repository<T, I
     public Iterable<T> findById(Iterable<ID> ids) throws NullPointerException {
         requireNonNull(ids, "ids is required");
         return (Iterable) stream(ids.spliterator(), false)
-                .flatMap(optionalToStream()).collect(Collectors.toList());
+                .flatMap(optionalToStream()).collect(toList());
     }
 
     private FieldRepresentation getIdField() {
