@@ -15,13 +15,7 @@
 package org.jnosql.artemis.reflection;
 
 
-import org.jnosql.artemis.AttributeConverter;
-import org.jnosql.artemis.Converters;
-import org.jnosql.artemis.column.ColumnEntityConverter;
-import org.jnosql.diana.api.column.Column;
-
 import java.util.Objects;
-import java.util.Optional;
 
 final class DefaultFieldValue implements FieldValue {
 
@@ -50,21 +44,6 @@ final class DefaultFieldValue implements FieldValue {
         return value != null;
     }
 
-
-    @Override
-    public Column toColumn(ColumnEntityConverter converter, Converters converters) {
-
-        if (FieldType.EMBEDDED.equals(getField().getType())) {
-            return Column.of(field.getName(), converter.toColumn(value).getColumns());
-        }
-        Optional<Class<? extends AttributeConverter>> optionalConverter = field.getConverter();
-        if (optionalConverter.isPresent()) {
-            AttributeConverter attributeConverter = converters.get(optionalConverter.get());
-            return Column.of(field.getName(), attributeConverter.convertToDatabaseColumn(value));
-        }
-
-        return Column.of(field.getName(), value);
-    }
 
     @Override
     public String toString() {
