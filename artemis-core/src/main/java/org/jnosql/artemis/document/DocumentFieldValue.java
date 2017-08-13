@@ -16,11 +16,9 @@ package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.AttributeConverter;
 import org.jnosql.artemis.Converters;
-import org.jnosql.artemis.column.ColumnEntityConverter;
 import org.jnosql.artemis.reflection.FieldRepresentation;
 import org.jnosql.artemis.reflection.FieldType;
 import org.jnosql.artemis.reflection.FieldValue;
-import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.document.Document;
 
 import java.util.Optional;
@@ -62,11 +60,6 @@ class DocumentFieldValue implements FieldValue {
     @Override
     public boolean isNotEmpty() {
         return fieldValue.isNotEmpty();
-    }
-
-    @Override
-    public Column toColumn(ColumnEntityConverter converter, Converters converters) {
-        return null;
     }
 
     static DocumentFieldValue of(Object value, FieldRepresentation field) {
