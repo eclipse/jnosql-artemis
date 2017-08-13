@@ -30,7 +30,7 @@ enum ColumnTokenProcessorType implements ColumnTokenProcessor {
         @Override
         public ColumnCondition toCondition(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
             checkContents(index, args.length, 2, methodName);
-            String name = getName(token, representation).replace(this.type, EMPTY);
+            String name = getName(token, representation).replace(this.getType(), EMPTY);
             return ColumnCondition.between(Column.of(name, Arrays.asList(args[index], args[++index])));
         }
     },
@@ -38,7 +38,7 @@ enum ColumnTokenProcessorType implements ColumnTokenProcessor {
         @Override
         public ColumnCondition toCondition(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
             checkContents(index, args.length, 1, methodName);
-            String name = getName(token, representation).replace(this.type, EMPTY);
+            String name = getName(token, representation).replace(this.getType(), EMPTY);
             return ColumnCondition.lt(Column.of(name, args[index]));
         }
     },
@@ -46,7 +46,7 @@ enum ColumnTokenProcessorType implements ColumnTokenProcessor {
         @Override
         public ColumnCondition toCondition(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
             checkContents(index, args.length, 1, methodName);
-            String name = getName(token, representation).replace(this.type, EMPTY);
+            String name = getName(token, representation).replace(this.getType(), EMPTY);
             return ColumnCondition.gt(Column.of(name, args[index]));
         }
     },
@@ -54,7 +54,7 @@ enum ColumnTokenProcessorType implements ColumnTokenProcessor {
         @Override
         public ColumnCondition toCondition(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
             checkContents(index, args.length, 1, methodName);
-            String name = getName(token, representation).replace(this.type, EMPTY);
+            String name = getName(token, representation).replace(this.getType(), EMPTY);
             return ColumnCondition.lte(Column.of(name, args[index]));
         }
     },
@@ -62,7 +62,7 @@ enum ColumnTokenProcessorType implements ColumnTokenProcessor {
         @Override
         public ColumnCondition toCondition(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
             checkContents(index, args.length, 1, methodName);
-            String name = getName(token, representation).replace(this.type, EMPTY);
+            String name = getName(token, representation).replace(this.getType(), EMPTY);
             return ColumnCondition.gte(Column.of(name, args[index]));
         }
     },
@@ -70,7 +70,7 @@ enum ColumnTokenProcessorType implements ColumnTokenProcessor {
         @Override
         public ColumnCondition toCondition(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
             checkContents(index, args.length, 1, methodName);
-            String name = getName(token, representation).replace(this.type, EMPTY);
+            String name = getName(token, representation).replace(this.getType(), EMPTY);
             return ColumnCondition.like(Column.of(name, args[index]));
         }
     },DEFAULT("") {
