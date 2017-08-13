@@ -14,7 +14,6 @@
  */
 package org.jnosql.artemis.document.query;
 
-import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.Condition;
 import org.jnosql.diana.api.document.DocumentCondition;
