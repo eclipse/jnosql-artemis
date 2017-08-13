@@ -26,57 +26,57 @@ import static org.jnosql.artemis.column.query.ColumnQueryParserUtil.EMPTY;
 
 enum ColumnTokenProcessorType implements ColumnTokenProcessor {
 
-    BETWEEN("Between") {
+    BETWEEN("Between", 2) {
         @Override
         public ColumnCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
-            checkContents(index, args.length, 2, methodName);
+            checkContents(index, args.length, this.getFieldsRequired(), methodName);
             String name = getName(token, representation).replace(this.getType(), EMPTY);
             return ColumnCondition.between(Column.of(name, Arrays.asList(args[index], args[++index])));
         }
     },
-    LESS_THAN("LessThan") {
+    LESS_THAN("LessThan", 1) {
         @Override
         public ColumnCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
-            checkContents(index, args.length, 1, methodName);
+            checkContents(index, args.length, this.getFieldsRequired(), methodName);
             String name = getName(token, representation).replace(this.getType(), EMPTY);
             return ColumnCondition.lt(Column.of(name, args[index]));
         }
     },
-    GREATER_THAN("GreaterThan") {
+    GREATER_THAN("GreaterThan", 1) {
         @Override
         public ColumnCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
-            checkContents(index, args.length, 1, methodName);
+            checkContents(index, args.length, this.getFieldsRequired(), methodName);
             String name = getName(token, representation).replace(this.getType(), EMPTY);
             return ColumnCondition.gt(Column.of(name, args[index]));
         }
     },
-    LESS_THAN_EQUAL("LessEqualThan") {
+    LESS_THAN_EQUAL("LessEqualThan", 1) {
         @Override
         public ColumnCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
-            checkContents(index, args.length, 1, methodName);
+            checkContents(index, args.length, this.getFieldsRequired(), methodName);
             String name = getName(token, representation).replace(this.getType(), EMPTY);
             return ColumnCondition.lte(Column.of(name, args[index]));
         }
     },
-    GREATER_THAN_EQUAL("GreaterEqualThan") {
+    GREATER_THAN_EQUAL("GreaterEqualThan", 1) {
         @Override
         public ColumnCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
-            checkContents(index, args.length, 1, methodName);
+            checkContents(index, args.length, this.getFieldsRequired(), methodName);
             String name = getName(token, representation).replace(this.getType(), EMPTY);
             return ColumnCondition.gte(Column.of(name, args[index]));
         }
     },
-    LIKE("Like") {
+    LIKE("Like", 1) {
         @Override
         public ColumnCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
-            checkContents(index, args.length, 1, methodName);
+            checkContents(index, args.length, this.getFieldsRequired(), methodName);
             String name = getName(token, representation).replace(this.getType(), EMPTY);
             return ColumnCondition.like(Column.of(name, args[index]));
         }
-    },DEFAULT("") {
+    },DEFAULT("", 1) {
         @Override
         public ColumnCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
-            checkContents(index, args.length, 1, methodName);
+            checkContents(index, args.length, this.getFieldsRequired(), methodName);
             String name = getName(token, representation);
             return ColumnCondition.eq(Column.of(name, args[index]));
         }
@@ -84,14 +84,20 @@ enum ColumnTokenProcessorType implements ColumnTokenProcessor {
 
     private final String type;
 
-    ColumnTokenProcessorType(String type){
+    private final int fieldsRequired;
+
+    ColumnTokenProcessorType(String type,int fieldsRequired){
         this.type = type;
+        this.fieldsRequired = fieldsRequired;
     }
 
     public String getType() {
         return type;
     }
 
+    public int getFieldsRequired() {
+        return fieldsRequired;
+    }
 
     static ColumnTokenProcessorType of(String token) {
         return Stream.of(ColumnTokenProcessorType.values())
