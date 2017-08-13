@@ -22,7 +22,7 @@ public class EntityNotFoundException extends ArtemisException {
     /**
      * Constructs a new EntityNotFoundException exception with the specified detail message.
      *
-     * @param message
+     * @param message the message
      */
     public EntityNotFoundException(String message) {
         super(message);
