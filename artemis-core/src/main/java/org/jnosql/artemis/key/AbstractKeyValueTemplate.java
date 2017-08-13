@@ -63,9 +63,7 @@ public abstract class AbstractKeyValueTemplate implements KeyValueTemplate {
     public <K, T> Optional<T> get(K key, Class<T> clazz) throws NullPointerException {
         Optional<Value> value = getManager().get(key);
         return value.map(v -> getConverter().toEntity(clazz, v))
-                .filter(Objects::nonNull)
-                .map(Optional::ofNullable)
-                .orElse(Optional.empty());
+                .filter(Objects::nonNull);
     }
 
     @Override

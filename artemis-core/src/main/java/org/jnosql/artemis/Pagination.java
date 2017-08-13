@@ -37,7 +37,7 @@ public interface Pagination {
      * Creates a default pagination
      *
      * @param start the start
-     * @param limit the limit 
+     * @param limit the limit
      * @return the pagination instance
      */
     static Pagination of(long start, long limit) {
