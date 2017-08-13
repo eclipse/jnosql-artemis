@@ -28,7 +28,7 @@ enum ColumnTokenProcessorType implements ColumnTokenProcessor {
 
     BETWEEN("Between") {
         @Override
-        public ColumnCondition toCondition(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
+        public ColumnCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
             checkContents(index, args.length, 2, methodName);
             String name = getName(token, representation).replace(this.getType(), EMPTY);
             return ColumnCondition.between(Column.of(name, Arrays.asList(args[index], args[++index])));
@@ -36,7 +36,7 @@ enum ColumnTokenProcessorType implements ColumnTokenProcessor {
     },
     LESS_THAN("LessThan") {
         @Override
-        public ColumnCondition toCondition(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
+        public ColumnCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
             checkContents(index, args.length, 1, methodName);
             String name = getName(token, representation).replace(this.getType(), EMPTY);
             return ColumnCondition.lt(Column.of(name, args[index]));
@@ -44,7 +44,7 @@ enum ColumnTokenProcessorType implements ColumnTokenProcessor {
     },
     GREATER_THAN("GreaterThan") {
         @Override
-        public ColumnCondition toCondition(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
+        public ColumnCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
             checkContents(index, args.length, 1, methodName);
             String name = getName(token, representation).replace(this.getType(), EMPTY);
             return ColumnCondition.gt(Column.of(name, args[index]));
@@ -52,7 +52,7 @@ enum ColumnTokenProcessorType implements ColumnTokenProcessor {
     },
     LESS_THAN_EQUAL("LessEqualThan") {
         @Override
-        public ColumnCondition toCondition(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
+        public ColumnCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
             checkContents(index, args.length, 1, methodName);
             String name = getName(token, representation).replace(this.getType(), EMPTY);
             return ColumnCondition.lte(Column.of(name, args[index]));
@@ -60,7 +60,7 @@ enum ColumnTokenProcessorType implements ColumnTokenProcessor {
     },
     GREATER_THAN_EQUAL("GreaterEqualThan") {
         @Override
-        public ColumnCondition toCondition(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
+        public ColumnCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
             checkContents(index, args.length, 1, methodName);
             String name = getName(token, representation).replace(this.getType(), EMPTY);
             return ColumnCondition.gte(Column.of(name, args[index]));
@@ -68,14 +68,14 @@ enum ColumnTokenProcessorType implements ColumnTokenProcessor {
     },
     LIKE("Like") {
         @Override
-        public ColumnCondition toCondition(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
+        public ColumnCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
             checkContents(index, args.length, 1, methodName);
             String name = getName(token, representation).replace(this.getType(), EMPTY);
             return ColumnCondition.like(Column.of(name, args[index]));
         }
     },DEFAULT("") {
         @Override
-        public ColumnCondition toCondition(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
+        public ColumnCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
             checkContents(index, args.length, 1, methodName);
             String name = getName(token, representation);
             return ColumnCondition.eq(Column.of(name, args[index]));

@@ -19,9 +19,9 @@ import org.jnosql.diana.api.column.ColumnCondition;
 
 interface ColumnTokenProcessor {
 
-    ColumnCondition toCondition(String token,
-                                int index,
-                                Object[] args,
-                                String methodName,
-                                ClassRepresentation representation);
+    ColumnCondition process(String token,
+                            int index,
+                            Object[] args,
+                            String methodName,
+                            ClassRepresentation representation);
 }

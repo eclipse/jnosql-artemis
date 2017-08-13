@@ -40,7 +40,7 @@ final class ColumnQueryParserUtil {
                                        ClassRepresentation representation) {
 
         ColumnTokenProcessor processor = ColumnTokenProcessorType.of(token);
-        return processor.toCondition(token, index, args, methodName, representation);
+        return processor.process(token, index, args, methodName, representation);
 
     }
 
