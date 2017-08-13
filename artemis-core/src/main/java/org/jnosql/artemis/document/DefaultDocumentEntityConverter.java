@@ -153,9 +153,9 @@ class DefaultDocumentEntityConverter implements DocumentEntityConverter {
         }
     }
 
-    private FieldValue to(FieldRepresentation field, Object entityInstance) {
+    private DocumentFieldValue to(FieldRepresentation field, Object entityInstance) {
         Object value = reflections.getValue(entityInstance, field.getField());
-        return FieldValue.of(value, field);
+        return DocumentFieldValue.of(value, field);
     }
 
 }

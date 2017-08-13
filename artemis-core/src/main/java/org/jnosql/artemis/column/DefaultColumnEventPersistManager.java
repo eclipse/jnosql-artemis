@@ -30,6 +30,7 @@ import javax.inject.Inject;
  */
 @ApplicationScoped
 class DefaultColumnEventPersistManager implements ColumnEventPersistManager {
+
     @Inject
     private Event<ColumnEntityPrePersist> documentEntityPrePersistEvent;
 

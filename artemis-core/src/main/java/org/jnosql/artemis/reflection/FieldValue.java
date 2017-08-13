@@ -17,9 +17,7 @@ package org.jnosql.artemis.reflection;
 
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.column.ColumnEntityConverter;
-import org.jnosql.artemis.document.DocumentEntityConverter;
 import org.jnosql.diana.api.column.Column;
-import org.jnosql.diana.api.document.Document;
 
 /**
  * The tuple between the instance value and {@link FieldRepresentation}
@@ -57,14 +55,6 @@ public interface FieldValue {
      * @return if {@link FieldValue#getValue()} is different of null
      */
     boolean isNotEmpty();
-
-    /**
-     * Convert this instance to {@link Document}
-     *
-     * @param converter the converter
-     * @return a {@link Document} instance
-     */
-    Document toDocument(DocumentEntityConverter converter, Converters converters);
 
     /**
      * Convert this instance to {@link Column}
