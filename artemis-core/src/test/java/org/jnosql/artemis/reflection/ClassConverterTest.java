@@ -77,7 +77,7 @@ public class ClassConverterTest {
     @Test
     public void shouldReturnFalseWhenThereIsNotKey(){
         ClassRepresentation classRepresentation = classConverter.create(Worker.class);
-        boolean allMatch = classRepresentation.getFields().stream().allMatch(f -> !f.isId());
+        boolean allMatch = classRepresentation.getFields().stream().noneMatch(f -> f.isId());
         assertTrue(allMatch);
     }
 
