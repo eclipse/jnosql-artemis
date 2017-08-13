@@ -45,21 +45,6 @@ public final class DocumentQueryParserUtil {
 
     }
 
-    private static void checkContents(int index, int argSize, int required, String method) {
-        if ((index + required) <= argSize) {
-            return;
-        }
-        throw new DynamicQueryException(String.format("There is a missed argument in the method %s",
-                method));
-    }
-
-
-    private static String getName(String token, ClassRepresentation representation) {
-        return representation.getColumnField(String.valueOf(Character.toLowerCase(token.charAt(0)))
-                .concat(token.substring(1)));
-    }
-
-
     static ConditionResult or(Object[] args, int index,
                               String token,
                               String methodName,
