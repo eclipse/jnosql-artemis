@@ -73,4 +73,12 @@ class DocumentFieldValue implements FieldValue {
         return new DocumentFieldValue(FieldValue.of(value, field));
     }
 
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("DocumentFieldValue{");
+        sb.append("fieldValue=").append(fieldValue);
+        sb.append('}');
+        return sb.toString();
+    }
 }
