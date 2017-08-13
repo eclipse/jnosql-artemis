@@ -15,10 +15,6 @@
 package org.jnosql.artemis.reflection;
 
 
-import org.jnosql.artemis.Converters;
-import org.jnosql.artemis.column.ColumnEntityConverter;
-import org.jnosql.diana.api.column.Column;
-
 /**
  * The tuple between the instance value and {@link FieldRepresentation}
  */
@@ -56,11 +52,4 @@ public interface FieldValue {
      */
     boolean isNotEmpty();
 
-    /**
-     * Convert this instance to {@link Column}
-     *
-     * @param converter the converter
-     * @return a {@link Column} instance
-     */
-    Column toColumn(ColumnEntityConverter converter, Converters converters);
 }
