@@ -97,8 +97,6 @@ public interface DocumentTemplate {
      */
     <T> T update(T entity) throws NullPointerException;
 
-    ;
-
     /**
      * Updates entity, by default it's just run for each saving using
      * {@link DocumentTemplate#update(Object)},
