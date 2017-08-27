@@ -16,6 +16,7 @@ package org.jnosql.artemis.key.query;
 
 import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
+import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.key.KeyValueTemplate;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -36,7 +37,7 @@ import java.util.Set;
 /**
  * Artemis discoveryBean to CDI extension to register {@link KeyValueTemplate}
  */
-public class KeyValueRepositoryBean implements Bean<KeyValueRepository>, PassivationCapable {
+public class KeyValueRepositoryBean implements Bean<Repository>, PassivationCapable {
 
     private final Class type;
 
@@ -87,11 +88,11 @@ public class KeyValueRepositoryBean implements Bean<KeyValueRepository>, Passiva
     }
 
     @Override
-    public KeyValueRepository create(CreationalContext<KeyValueRepository> creationalContext) {
+    public Repository create(CreationalContext<Repository> creationalContext) {
         KeyValueTemplate repository = provider.isEmpty() ? getInstance(KeyValueTemplate.class) :
                 getInstance(KeyValueTemplate.class, provider);
         KeyValueRepositoryProxy handler = new KeyValueRepositoryProxy(type, repository);
-        return (KeyValueRepository) Proxy.newProxyInstance(type.getClassLoader(),
+        return (Repository) Proxy.newProxyInstance(type.getClassLoader(),
                 new Class[]{type},
                 handler);
     }
@@ -111,7 +112,7 @@ public class KeyValueRepositoryBean implements Bean<KeyValueRepository>, Passiva
 
 
     @Override
-    public void destroy(KeyValueRepository instance, CreationalContext<KeyValueRepository> creationalContext) {
+    public void destroy(Repository instance, CreationalContext<Repository> creationalContext) {
 
     }
 
