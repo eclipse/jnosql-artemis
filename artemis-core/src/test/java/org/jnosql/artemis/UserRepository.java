@@ -15,8 +15,7 @@
 package org.jnosql.artemis;
 
 
-import org.jnosql.artemis.key.query.KeyValueRepository;
 import org.jnosql.artemis.model.User;
 
-public interface UserRepository extends KeyValueRepository<User> {
+public interface UserRepository extends Repository<User, String> {
 }
