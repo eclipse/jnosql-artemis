@@ -15,6 +15,7 @@
 package org.jnosql.artemis.key.query;
 
 import org.hamcrest.Matchers;
+import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.key.KeyValueTemplate;
 import org.jnosql.artemis.model.User;
@@ -113,9 +114,16 @@ public class KeyValueRepositoryProxyTest {
 
         assertThat(userRepository.findById(keys), Matchers.containsInAnyOrder(user, user2));
     }
+    
+
+    @Test(expected = DynamicQueryException.class)
+    public void shouldReturnErrorWhenExecuteMethodQuery() {
+        userRepository.findByName("name");
+    }
 
     interface UserRepository extends Repository<User, String> {
 
+        Optional<User> findByName(String name);
     }
 
 }
