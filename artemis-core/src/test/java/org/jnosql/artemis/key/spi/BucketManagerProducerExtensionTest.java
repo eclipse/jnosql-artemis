@@ -63,9 +63,9 @@ public class BucketManagerProducerExtensionTest {
 
     @Test
     public void shouldGet() {
-        User user = userRepository.get("user").get();
-        User userDefault = userRepositoryDefault.get("user").get();
-        User userMock = userRepositoryMock.get("user").get();
+        User user = userRepository.findById("user").get();
+        User userDefault = userRepositoryDefault.findById("user").get();
+        User userMock = userRepositoryMock.findById("user").get();
         assertEquals("Default", user.getName());
         assertEquals("Default", userDefault.getName());
         assertEquals("keyvalueMock", userMock.getName());
