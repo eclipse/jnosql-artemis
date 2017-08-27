@@ -90,7 +90,7 @@ public class KeyValueRepositoryBean implements Bean<KeyValueRepository>, Passiva
     public KeyValueRepository create(CreationalContext<KeyValueRepository> creationalContext) {
         KeyValueTemplate repository = provider.isEmpty() ? getInstance(KeyValueTemplate.class) :
                 getInstance(KeyValueTemplate.class, provider);
-        KeyValueCrudRepositoryProxy handler = new KeyValueCrudRepositoryProxy(type, repository);
+        KeyValueRepositoryProxy handler = new KeyValueRepositoryProxy(type, repository);
         return (KeyValueRepository) Proxy.newProxyInstance(type.getClassLoader(),
                 new Class[]{type},
                 handler);

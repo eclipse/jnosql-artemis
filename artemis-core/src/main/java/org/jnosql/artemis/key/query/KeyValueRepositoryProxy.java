@@ -23,13 +23,13 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.Optional;
 
-class KeyValueCrudRepositoryProxy<T> implements InvocationHandler {
+class KeyValueRepositoryProxy<T> implements InvocationHandler {
 
     private final DefaultKeyValueRepository crudRepository;
 
     private final Class<T> typeClass;
 
-    KeyValueCrudRepositoryProxy(Class<?> repositoryType, KeyValueTemplate repository) {
+    KeyValueRepositoryProxy(Class<?> repositoryType, KeyValueTemplate repository) {
         typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.crudRepository = new DefaultKeyValueRepository(typeClass, repository);

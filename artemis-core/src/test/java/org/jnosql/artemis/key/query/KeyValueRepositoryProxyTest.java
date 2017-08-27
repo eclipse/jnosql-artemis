@@ -46,7 +46,7 @@ public class KeyValueRepositoryProxyTest {
     @Before
     public void setUp() {
 
-        KeyValueCrudRepositoryProxy handler = new KeyValueCrudRepositoryProxy(UserRepository.class, repository);
+        KeyValueRepositoryProxy handler = new KeyValueRepositoryProxy(UserRepository.class, repository);
         userRepository = (UserRepository) Proxy.newProxyInstance(UserRepository.class.getClassLoader(),
                 new Class[]{UserRepository.class},
                 handler);
