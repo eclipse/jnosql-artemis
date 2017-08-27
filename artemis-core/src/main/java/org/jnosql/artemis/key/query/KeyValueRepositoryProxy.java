@@ -15,6 +15,7 @@
 package org.jnosql.artemis.key.query;
 
 
+import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.key.KeyValueTemplate;
 
@@ -37,7 +38,17 @@ class KeyValueRepositoryProxy<T> implements InvocationHandler {
 
     @Override
     public Object invoke(Object o, Method method, Object[] args) throws Throwable {
-        return method.invoke(crudRepository, args);
+
+        switch (method.getName()) {
+            case "save":
+            case "deleteById":
+            case "findById":
+            case "existsById":
+                return method.invoke(crudRepository, args);
+                default:
+                    throw new DynamicQueryException("Key Value repository does not support query method");
+        }
+
     }
 
     class DefaultKeyValueRepository implements Repository {
