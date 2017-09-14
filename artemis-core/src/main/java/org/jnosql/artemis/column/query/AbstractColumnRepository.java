@@ -29,6 +29,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.StreamSupport.stream;
@@ -52,7 +53,7 @@ public abstract class AbstractColumnRepository<T, ID> implements Repository<T, I
     public <S extends T> S save(S entity) throws NullPointerException {
         Objects.requireNonNull(entity, "Entity is required");
         Object id = getReflections().getValue(entity, getIdField().getField());
-        if (existsById((ID) id)) {
+        if (nonNull(id) && existsById((ID) id)) {
             return getTemplate().update(entity);
         } else {
             return getTemplate().insert(entity);
@@ -71,7 +72,7 @@ public abstract class AbstractColumnRepository<T, ID> implements Repository<T, I
     public void deleteById(ID id) throws NullPointerException {
         requireNonNull(id, "is is required");
         String columnName = this.getIdField().getName();
-        ColumnDeleteQuery query =  delete().from(getClassRepresentation().getName())
+        ColumnDeleteQuery query = delete().from(getClassRepresentation().getName())
                 .where(eq(Column.of(columnName, id))).build();
         getTemplate().delete(query);
     }

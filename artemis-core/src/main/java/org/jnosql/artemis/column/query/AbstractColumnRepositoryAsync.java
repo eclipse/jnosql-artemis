@@ -28,6 +28,7 @@ import org.jnosql.diana.api.column.ColumnQuery;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 import static org.jnosql.artemis.IdNotFoundException.KEY_NOT_FOUND_EXCEPTION_SUPPLIER;
 import static org.jnosql.diana.api.column.ColumnCondition.eq;
@@ -50,6 +51,12 @@ public abstract class AbstractColumnRepositoryAsync<T, ID> implements Repository
     public <S extends T> void save(S entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
         requireNonNull(entity, "Entity is required");
         Object id = getReflections().getValue(entity, getIdField().getField());
+
+        if (isNull(id)) {
+            getTemplate().insert(entity);
+            return;
+        }
+
         Consumer<Boolean> callBack = exist -> {
             if (exist) {
                 getTemplate().update(entity);
@@ -74,7 +81,7 @@ public abstract class AbstractColumnRepositoryAsync<T, ID> implements Repository
 
         String columnName = this.getIdField().getName();
 
-        ColumnDeleteQuery query =  delete().from(getClassRepresentation().getName())
+        ColumnDeleteQuery query = delete().from(getClassRepresentation().getName())
                 .where(eq(Column.of(columnName, id))).build();
         getTemplate().delete(query);
     }

@@ -29,6 +29,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 import static org.jnosql.artemis.IdNotFoundException.KEY_NOT_FOUND_EXCEPTION_SUPPLIER;
 import static org.jnosql.diana.api.document.DocumentCondition.eq;
@@ -52,6 +53,11 @@ public abstract class AbstractDocumentRepositoryAsync<T, ID> implements Reposito
     public <S extends T> void save(S entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
         Objects.requireNonNull(entity, "Entity is required");
         Object id = getReflections().getValue(entity, getIdField().getField());
+        if (isNull(id)) {
+            getTemplate().insert(entity);
+            return;
+        }
+
         Consumer<Boolean> callBack = exist -> {
             if (exist) {
                 getTemplate().update(entity);
