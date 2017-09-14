@@ -50,7 +50,7 @@ public class BucketManagerProducerExtensionTest {
     private UserRepository userRepositoryMock;
 
     @Test
-    public void shouldPut() {
+    public void shouldUseMock() {
         Person person = repository.get("key", Person.class).get();
 
         Person personMock = repositoryMock.get("key", Person.class).get();
@@ -62,7 +62,7 @@ public class BucketManagerProducerExtensionTest {
 
 
     @Test
-    public void shouldGet() {
+    public void shouldUseRepository() {
         User user = userRepository.findById("user").get();
         User userDefault = userRepositoryDefault.findById("user").get();
         User userMock = userRepositoryMock.findById("user").get();
