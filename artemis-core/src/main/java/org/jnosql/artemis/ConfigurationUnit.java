@@ -29,20 +29,19 @@ import java.lang.annotation.Target;
  */
 public @interface ConfigurationUnit {
 
+
     /**
-     * The name by which the econfiguration is to be accessed in the environment referencing context;
-     * not needed when dependency injection is used.
+     * The name of the configuration unit as defined in the settings file.
      *
-     * @return the name
+     * @return the unit name
      */
     @Nonbinding
     String name() default "";
 
     /**
-     * The name of the persistence unit as defined in the persistence.xml file.
-     *
-     * @return the unit name
+     * the file name that is within WEB-INF/. The default value is jnosql.json
+     * @return the file name
      */
     @Nonbinding
-    String unitName() default "persistence.json";
+    String fileName() default "jnosql.json";
 }
