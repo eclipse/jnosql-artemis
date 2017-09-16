@@ -13,7 +13,29 @@
  *   Otavio Santana
  */
 /**
- *This package has the classes to read configuration from file, json recommended, that is normally activated from
+ * This package has the classes to read configuration from file, json recommended, that is normally activated from
  * {@link org.jnosql.artemis.ConfigurationUnit} annotation.
+ * <pre>{@code
+ * [
+ * {
+ * "description":"that is the description",
+ * "name":"name",
+ * "provider":"class",
+ * "settings":{
+ * "key":"value"
+ * }
+ * },
+ * {
+ * "description":"that is the description",
+ * "name":"name",
+ * "provider":"class",
+ * "settings":{
+ * "key":"value"
+ * }
+ * }
+ * ]
+ *
+ * }
+ * </pre>
  */
 package org.jnosql.artemis.configuration;
