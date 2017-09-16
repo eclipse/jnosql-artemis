@@ -77,7 +77,7 @@ class DefaultConfigurationReader implements ConfigurationReader {
     }
 
     private String getExtension(ConfigurationUnit annotation) {
-        String[] fileName = annotation.fileName().split(".");
+        String[] fileName = annotation.fileName().split("\\.");
         if (fileName.length != 2) {
             throw new ConfigurationException("The cofinguration file is invalid: " + annotation.fileName());
         }

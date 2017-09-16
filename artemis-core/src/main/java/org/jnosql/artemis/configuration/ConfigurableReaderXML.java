@@ -16,6 +16,7 @@ package org.jnosql.artemis.configuration;
 
 import org.jnosql.artemis.ConfigurationUnit;
 
+import javax.inject.Named;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -26,6 +27,7 @@ import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 
+@Named("xml")
 class ConfigurableReaderXML implements ConfigurableReader {
 
     private static final JAXBContext JAXB_CONTEX;

@@ -16,6 +16,7 @@ package org.jnosql.artemis.configuration;
 
 import org.jnosql.artemis.ConfigurationUnit;
 
+import javax.inject.Named;
 import javax.json.JsonException;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
@@ -26,6 +27,7 @@ import java.util.List;
 /**
  * The {@link ConfigurableReader} to JSON
  */
+@Named("json")
 class ConfigurableReaderJSON implements ConfigurableReader {
 
     private static final Jsonb JSONB = JsonbBuilder.create();
