@@ -1,0 +1,10 @@
+[
+  {
+    "name":"name",
+    "description":"that is the description",
+    "provider":"java.util.Collection",
+    "settings":{
+      "key":"value"
+    }
+  }
+]

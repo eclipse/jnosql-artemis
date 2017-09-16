@@ -1,0 +1,18 @@
+[
+  {
+    "description":"that is the description",
+    "name":"name",
+    "provider":"class",
+    "settings":{
+      "key":"value"
+    }
+  },
+  {
+    "description":"that is the description",
+    "name":"name",
+    "provider":"class",
+    "settings":{
+      "key":"value"
+    }
+  }
+]
