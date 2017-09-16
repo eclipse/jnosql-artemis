@@ -14,41 +14,24 @@
  */
 package org.jnosql.artemis.configuration;
 
-import java.io.Serializable;
-import java.util.Map;
+import org.jnosql.artemis.ConfigurationUnit;
+
+import java.io.InputStream;
+import java.util.List;
 
 /**
- * This class is the information unit that returns from a file
+ * The reader of configurations
  */
-interface Configurable extends Serializable {
-
-
-    /**
-     * Get the unit-name
-     *
-     * @return the name
-     */
-    String getName();
-
+interface ConfigurableReader {
 
     /**
-     * Get the description
-     *
-     * @return the description
+     * That reads the configurations and than returns {@link Configurable}
+     * @param stream the stream
+     * @param annotation the annotation
+     * @return the configurations list
+     * @throws NullPointerException when either stream or annotation are null
+     * @throws ConfigurationException
      */
-    String getDescription();
-
-    /**
-     * Get the provider
-     *
-     * @return provider
-     */
-    String getProvider();
-
-    /**
-     * the settings map
-     *
-     * @return the settings map
-     */
-    Map<String, String> getSettings();
+    List<Configurable> read(InputStream stream, ConfigurationUnit annotation)throws NullPointerException,
+            ConfigurationException;
 }
