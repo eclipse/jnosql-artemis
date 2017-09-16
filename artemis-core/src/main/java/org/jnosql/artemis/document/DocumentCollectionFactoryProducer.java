@@ -18,8 +18,6 @@ import org.jnosql.artemis.ConfigurationUnit;
 import org.jnosql.artemis.configuration.ConfigurationReader;
 import org.jnosql.artemis.configuration.ConfigurationSettingsUnit;
 import org.jnosql.artemis.reflection.Reflections;
-import org.jnosql.diana.api.column.ColumnConfiguration;
-import org.jnosql.diana.api.column.ColumnConfigurationAsync;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsyncFactory;

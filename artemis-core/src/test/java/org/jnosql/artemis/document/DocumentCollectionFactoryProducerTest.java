@@ -52,7 +52,7 @@ public class DocumentCollectionFactoryProducerTest {
 
 
     @Test
-    public void shouldReadInjectColumnFamily() {
+    public void shouldReadInjectDocumentCollection() {
         factoryA.get("database");
         Assert.assertTrue(DocumentCollectionManagerMock.DocumentMock.class.isInstance(factoryA));
         DocumentCollectionManagerMock.DocumentMock mock = DocumentCollectionManagerMock.DocumentMock.class.cast(factoryA);
@@ -63,7 +63,7 @@ public class DocumentCollectionFactoryProducerTest {
     }
 
     @Test
-    public void shouldReadInjectColumnFamilyB() {
+    public void shouldReadInjectDocumentCollectionB() {
         factoryB.get("database");
         Assert.assertTrue(DocumentCollectionManagerMock.DocumentMock.class.isInstance(factoryB));
         DocumentCollectionManagerMock.DocumentMock mock = DocumentCollectionManagerMock.DocumentMock.class.cast(factoryB);
@@ -75,7 +75,7 @@ public class DocumentCollectionFactoryProducerTest {
     }
 
     @Test
-    public void shouldReadInjectColumnFamilyAsync() {
+    public void shouldReadInjectDocumentCollectionAsync() {
         factoryAsyncA.getAsync("database");
         Assert.assertTrue(DocumentCollectionManagerMock.DocumentMock.class.isInstance(factoryAsyncA));
         DocumentCollectionManagerMock.DocumentMock mock = DocumentCollectionManagerMock.DocumentMock.class.cast(factoryAsyncA);
@@ -86,7 +86,7 @@ public class DocumentCollectionFactoryProducerTest {
     }
 
     @Test
-    public void shouldReadInjectColumnFamilyBAsync() {
+    public void shouldReadInjectDocumentCollectionAsyncB() {
         factoryAsyncB.getAsync("database");
         Assert.assertTrue(DocumentCollectionManagerMock.DocumentMock.class.isInstance(factoryAsyncB));
         DocumentCollectionManagerMock.DocumentMock mock = DocumentCollectionManagerMock.DocumentMock.class.cast(factoryAsyncB);
