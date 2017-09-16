@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Qualifier
 /**
- * Expresses a dependency to a configuration
+ * Expresses a dependency to a configuration and its associated persistence unit.
  */
 public @interface ConfigurationUnit {
 
