@@ -21,7 +21,7 @@ import java.util.Objects;
 /**
  * The class that represents configuration in JSON
  */
-class ConfigurationJson implements Serializable {
+public class ConfigurationJson implements Serializable {
 
     private String name;
 
