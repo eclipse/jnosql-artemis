@@ -23,6 +23,7 @@ import javax.json.bind.JsonbBuilder;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * The {@link ConfigurableReader} to JSON
@@ -33,9 +34,9 @@ class ConfigurableReaderJSON implements ConfigurableReader {
     private static final Jsonb JSONB = JsonbBuilder.create();
 
     @Override
-    public List<Configurable> read(InputStream stream, ConfigurationUnit annotation) throws NullPointerException, ConfigurationException {
+    public List<Configurable> read(Supplier<InputStream> stream, ConfigurationUnit annotation) throws NullPointerException, ConfigurationException {
         try {
-            return JSONB.fromJson(stream, new ArrayList<ConfigurableJSON>() {
+            return JSONB.fromJson(stream.get(), new ArrayList<ConfigurableJSON>() {
             }.getClass().getGenericSuperclass());
         } catch (JsonException exception) {
             throw new ConfigurationException("An error when read the JSON file: " + annotation.fileName()

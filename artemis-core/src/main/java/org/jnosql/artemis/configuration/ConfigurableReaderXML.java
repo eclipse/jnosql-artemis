@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import static java.util.Collections.emptyList;
 
@@ -51,10 +52,10 @@ class ConfigurableReaderXML implements ConfigurableReader {
     }
 
     @Override
-    public List<Configurable> read(InputStream stream, ConfigurationUnit annotation) throws NullPointerException, ConfigurationException {
+    public List<Configurable> read(Supplier<InputStream> stream, ConfigurationUnit annotation) throws NullPointerException, ConfigurationException {
         Unmarshaller unmarshaller = UNMARSHALLER.get();
         try {
-            ConfigurablesXML configurablesXML = (ConfigurablesXML) unmarshaller.unmarshal(stream);
+            ConfigurablesXML configurablesXML = (ConfigurablesXML) unmarshaller.unmarshal(stream.get());
             List<Configurable> configurables = new ArrayList<>();
             Optional.ofNullable(configurablesXML.getConfigurations()).orElse(emptyList()).forEach(configurables::add);
             return configurables;

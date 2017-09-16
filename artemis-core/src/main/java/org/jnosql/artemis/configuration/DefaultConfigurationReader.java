@@ -27,6 +27,8 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 import static java.lang.String.format;
 import static java.util.Collections.emptyMap;
@@ -41,6 +43,8 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 class DefaultConfigurationReader implements ConfigurationReader {
 
     private static final String META_INF = "META-INF/";
+
+    private static final Logger LOGGER = Logger.getLogger(DefaultConfigurationReader.class.getName());
 
     @Inject
     private Reflections reflections;
@@ -57,7 +61,7 @@ class DefaultConfigurationReader implements ConfigurationReader {
         requireNonNull(configurationClass, "configurationClass is required");
 
 
-        InputStream stream = read(annotation);
+        Supplier<InputStream> stream = read(annotation);
         String extension = getExtension(annotation);
         Instance<ConfigurableReader> select = readers.select(new NamedLiteral(extension));
         if (select.isUnsatisfied()) {
@@ -124,10 +128,13 @@ class DefaultConfigurationReader implements ConfigurationReader {
     }
 
 
-    private InputStream read(ConfigurationUnit annotation) {
-        String fileName = META_INF + annotation.fileName();
-        InputStream stream = DefaultConfigurationReader.class.getClassLoader().getResourceAsStream(fileName);
-        return ofNullable(stream)
-                .orElseThrow(() -> new ConfigurationException("The File does not found at: " + fileName));
+    private Supplier<InputStream> read(ConfigurationUnit annotation) {
+        return () -> {
+            String fileName = META_INF + annotation.fileName();
+            LOGGER.fine("Reading the configuration file: " + fileName);
+            InputStream stream = DefaultConfigurationReader.class.getClassLoader().getResourceAsStream(fileName);
+            return ofNullable(stream)
+                    .orElseThrow(() -> new ConfigurationException("The File does not found at: " + fileName));
+        };
     }
 }

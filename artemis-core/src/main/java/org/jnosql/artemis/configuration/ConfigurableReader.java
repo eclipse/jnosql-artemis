@@ -18,6 +18,7 @@ import org.jnosql.artemis.ConfigurationUnit;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * The reader of configurations
@@ -32,6 +33,6 @@ public interface ConfigurableReader {
      * @throws NullPointerException when either stream or annotation are null
      * @throws ConfigurationException
      */
-    List<Configurable> read(InputStream stream, ConfigurationUnit annotation)throws NullPointerException,
+    List<Configurable> read(Supplier<InputStream> stream, ConfigurationUnit annotation)throws NullPointerException,
             ConfigurationException;
 }
