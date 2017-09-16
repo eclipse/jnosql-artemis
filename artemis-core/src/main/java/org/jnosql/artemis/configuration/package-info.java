@@ -15,6 +15,7 @@
 /**
  * This package has the classes to read configuration from file, json recommended, that is normally activated from
  * {@link org.jnosql.artemis.ConfigurationUnit} annotation.
+ * <p>The JSON file has the structure below:</p>
  * <pre>{@code
  * [
  * {
@@ -27,7 +28,7 @@
  * },
  * {
  * "description":"that is the description",
- * "name":"name",
+ * "name":"name-2",
  * "provider":"class",
  * "settings":{
  * "key":"value"
@@ -35,6 +36,35 @@
  * }
  * ]
  *
+ * }
+ * </pre>
+ * <p>
+ * <p>Where:</p>
+ * <p>Name the unit-name in the configuration, when there is more than one configuration unit (optional).</p>
+ * <p>Description: the description of configuration (optional).</p>
+ * <p>Provider: the class provider</p>
+ * <p>settings: The key-value settings to use on the setup class.</p>
+ * <p>
+ * <pre>{@code
+ *
+ * @Inject
+ * @ConfigurationUnit
+ * private Configuration configuration;
+ * }
+ * </pre>
+ * <p>
+ * When the structure just has one configuration unit the name is not required, however,
+ * when there are two or more configurations the name in the configuration must match with the
+ * {@link org.jnosql.artemis.ConfigurationUnit#name()} annotation.
+ * When the structure just has one configuration unit the name is not required, however,
+ * when there are two or more settings the name in the configuration must match with the annotation.
+ * If there are more than two configurations in the file and the inject does not inform the name that will
+ * throw an exception.
+ * <pre>{@code
+ *
+ * @Inject
+ * @ConfigurationUnit(name = "name")
+ * private Configuration configuration;
  * }
  * </pre>
  */
