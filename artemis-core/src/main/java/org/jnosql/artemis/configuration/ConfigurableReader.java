@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * The reader of configurations
  */
-interface ConfigurableReader {
+public interface ConfigurableReader {
 
     /**
      * That reads the configurations and than returns {@link Configurable}

@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * This class is the information unit that returns from a file
  */
-interface Configurable extends Serializable {
+public interface Configurable extends Serializable {
 
 
     /**
