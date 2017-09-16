@@ -17,7 +17,7 @@ package org.jnosql.artemis.configuration;
 import org.jnosql.artemis.ArtemisException;
 
 /**
- *
+ * The exception to read Configuration
  */
 public class ConfigurationException extends ArtemisException {
 
