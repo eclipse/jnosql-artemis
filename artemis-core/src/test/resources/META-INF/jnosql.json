@@ -2,17 +2,21 @@
   {
     "description":"that is the description",
     "name":"name",
-    "provider":"class",
+    "provider":"org.jnosql.artemis.configuration.DefaultMockConfiguration",
     "settings":{
-      "key":"value"
+      "key":"value",
+      "key2":"value2"
+
     }
   },
   {
     "description":"that is the description",
     "name":"name-2",
-    "provider":"class",
+    "provider":"org.jnosql.artemis.configuration.DefaultMockConfiguration",
     "settings":{
-      "key":"value"
+      "key":"value",
+      "key2":"value2",
+      "key3":"value3"
     }
   }
 ]

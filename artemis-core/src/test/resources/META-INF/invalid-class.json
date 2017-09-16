@@ -13,12 +13,12 @@
     "provider": "java.invalid.Collection",
     "settings": {
       "key": "value"
-    },
-
+    }
+  },
   {
     "name": "name-2",
     "description": "that is the description",
-    "provider": "java.invalid.Collection",
+    "provider": "org.jnosql.artemis.configuration.InvalidConfiguration",
     "settings": {
       "key": "value"
     }

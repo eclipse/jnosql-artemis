@@ -16,11 +16,15 @@ package org.jnosql.artemis.configuration;
 
 import org.jnosql.artemis.ConfigurationUnit;
 import org.jnosql.artemis.WeldJUnit4Runner;
+import org.jnosql.diana.api.Settings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -83,16 +87,72 @@ public class DefaultConfigurationReaderTest {
     }
 
 
-    @Test
+    @Test(expected = ConfigurationException.class)
     public void shouldReturnErrorWhenThereIsNotDefaultConstructor() {
-
+        ConfigurationUnit annotation = mock(ConfigurationUnit.class);
+        when(annotation.fileName()).thenReturn("invalid-class.json");
+        when(annotation.name()).thenReturn("name-2");
+        configurationReader.read(annotation, MockConfiguration.class);
     }
 
-    //should match when there is just one file and not name
-    //should match when the configuration file does not have
-    //should find when there is not than one file
-    //when the unit is not found in the file
-    //when the class does not match
-    //when there is not default constructor
-    //when there is an ambiguous exception
+    @Test(expected = ConfigurationException.class)
+    public void shouldReturnErrorWhenThereIsAmbiguous() {
+        ConfigurationUnit annotation = mock(ConfigurationUnit.class);
+        when(annotation.fileName()).thenReturn("jnosql.json");
+        configurationReader.read(annotation, MockConfiguration.class);
+    }
+
+    @Test
+    public void shouldReadConfiguration() {
+        ConfigurationUnit annotation = mock(ConfigurationUnit.class);
+        when(annotation.fileName()).thenReturn("jnosql.json");
+        when(annotation.name()).thenReturn("name");
+        ConfigurationSettingsUnit unit = configurationReader.read(annotation, MockConfiguration.class);
+
+        Map<String, Object> settings = new HashMap<String, Object>();
+        settings.put("key","value");
+        settings.put("key2","value2");
+
+        assertEquals("name", unit.getName().get());
+        assertEquals("that is the description", unit.getDescription().get());
+        assertEquals(Settings.of(settings), unit.getSettings());
+        assertEquals(DefaultMockConfiguration.class, unit.getProvider().get());
+    }
+
+    @Test
+    public void shouldReadDefaultFile() {
+        ConfigurationUnit annotation = mock(ConfigurationUnit.class);
+        when(annotation.name()).thenReturn("name-2");
+        when(annotation.fileName()).thenReturn("jnosql.json");
+        ConfigurationSettingsUnit unit = configurationReader.read(annotation, MockConfiguration.class);
+
+        Map<String, Object> settings = new HashMap<String, Object>();
+        settings.put("key","value");
+        settings.put("key2","value2");
+        settings.put("key3","value3");
+
+        assertEquals("name-2", unit.getName().get());
+        assertEquals("that is the description", unit.getDescription().get());
+        assertEquals(Settings.of(settings), unit.getSettings());
+        assertEquals(DefaultMockConfiguration.class, unit.getProvider().get());
+    }
+
+
+    @Test
+    public void shouldReadDefaultName() {
+        ConfigurationUnit annotation = mock(ConfigurationUnit.class);
+        when(annotation.fileName()).thenReturn("jnosql-2.json");
+        when(annotation.name()).thenReturn("name");
+        ConfigurationSettingsUnit unit = configurationReader.read(annotation, MockConfiguration.class);
+
+        Map<String, Object> settings = new HashMap<String, Object>();
+        settings.put("key","value");
+        settings.put("key2","value2");
+
+        assertEquals("name", unit.getName().get());
+        assertEquals("that is the description", unit.getDescription().get());
+        assertEquals(Settings.of(settings), unit.getSettings());
+        assertEquals(DefaultMockConfiguration.class, unit.getProvider().get());
+    }
+
 }

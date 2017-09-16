@@ -14,8 +14,5 @@
  */
 package org.jnosql.artemis.configuration;
 
-public class InvalidConfiguration implements MockConfiguration {
-
-    private InvalidConfiguration(String configuration) {
-    }
+public class DefaultMockConfiguration implements MockConfiguration {
 }

@@ -14,5 +14,5 @@
  */
 package org.jnosql.artemis.configuration;
 
-public interface MockConfiguration{
+public interface MockConfiguration {
 }

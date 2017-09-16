@@ -15,16 +15,23 @@
 package org.jnosql.artemis.configuration;
 
 import org.jnosql.artemis.ConfigurationUnit;
+import org.jnosql.artemis.reflection.ConstructorException;
+import org.jnosql.artemis.reflection.Reflections;
+import org.jnosql.diana.api.Settings;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.json.JsonException;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.lang.String.format;
+import static java.util.Collections.emptyMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -39,6 +46,9 @@ class DefaultConfigurationReader implements ConfigurationReader {
 
     private static final Jsonb JSONB = JsonbBuilder.create();
 
+    @Inject
+    private Reflections reflections;
+
     @Override
     public <T> ConfigurationSettingsUnit read(ConfigurationUnit annotation, Class<T> configurationClass)
             throws NullPointerException, ConfigurationException {
@@ -51,16 +61,28 @@ class DefaultConfigurationReader implements ConfigurationReader {
         List<ConfigurationJson> configurations = getConfigurations(stream, annotation);
         ConfigurationJson configuration = getConfiguration(annotation, configurations);
 
+        String name = configuration.getName();
+        String description = configuration.getDescription();
+        Map<String, Object> settings = new HashMap<>(ofNullable(configuration.getSettings()).orElse(emptyMap()));
+        Class<?> provider = getProvider(configurationClass, configuration);
+
+        return new DefaultConfigurationSettingsUnit(name, description, provider, Settings.of(settings));
+    }
+
+    private <T> Class<?> getProvider(Class<T> configurationClass, ConfigurationJson configuration) {
         try {
-            Class<?> clazz = Class.forName(configuration.getProvider());
-            if (!clazz.isAssignableFrom(configurationClass)) {
+            Class<?> provider = Class.forName(configuration.getProvider());
+            if (!configurationClass.isAssignableFrom(provider)) {
                 throw new ConfigurationException(String.format("The class %s does not match with %s",
-                        clazz.toString(), configuration.toString()));
+                        provider.toString(), configuration.toString()));
             }
+            reflections.makeAccessible(provider);
+            return provider;
         } catch (ClassNotFoundException e) {
             throw new ConfigurationException("An error to load the provider class: " + configuration.getProvider());
+        } catch (ConstructorException exception) {
+            throw new ConfigurationException("An error to load the provider class: " + configuration.getProvider(), exception);
         }
-        return null;
     }
 
     private ConfigurationJson getConfiguration(ConfigurationUnit annotation, List<ConfigurationJson> configurations) {
