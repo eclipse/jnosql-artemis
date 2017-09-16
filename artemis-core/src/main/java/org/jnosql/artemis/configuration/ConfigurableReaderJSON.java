@@ -40,15 +40,15 @@ class ConfigurableReaderJSON implements ConfigurableReader {
 
     private static final Jsonb JSONB = JsonbBuilder.create();
 
-    private static Logger LOGGER = Logger.getLogger(ConfigurableJSON.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ConfigurableJSON.class.getName());
 
 
-    private final Map<String, List<Configurable>> configurationCache = new ConcurrentHashMap<>();
+    private final Map<String, List<Configurable>> cache = new ConcurrentHashMap<>();
 
 
     @Override
     public List<Configurable> read(Supplier<InputStream> stream, ConfigurationUnit annotation) throws NullPointerException, ConfigurationException {
-        List<Configurable> configurations = configurationCache.get(annotation.fileName());
+        List<Configurable> configurations = cache.get(annotation.fileName());
 
         if (nonNull(configurations)) {
             LOGGER.info("Loading the configuration file from the cache file: " + annotation.fileName());
@@ -57,7 +57,7 @@ class ConfigurableReaderJSON implements ConfigurableReader {
         try {
             configurations = JSONB.fromJson(stream.get(), new ArrayList<ConfigurableJSON>() {
             }.getClass().getGenericSuperclass());
-            configurationCache.put(annotation.fileName(), configurations);
+            cache.put(annotation.fileName(), configurations);
             return configurations;
         } catch (JsonException exception) {
             throw new ConfigurationException("An error when read the JSON file: " + annotation.fileName()

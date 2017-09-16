@@ -40,9 +40,10 @@ class ConfigurableReaderXML implements ConfigurableReader {
     private static final JAXBContext JAXB_CONTEX;
 
     private static final ThreadLocal<Unmarshaller> UNMARSHALLER;
-    private static Logger LOGGER = Logger.getLogger(ConfigurableReaderXML.class.getName());
 
-    private final Map<String, List<Configurable>> configurationCache = new ConcurrentHashMap<>();
+    private static final Logger LOGGER = Logger.getLogger(ConfigurableReaderXML.class.getName());
+
+    private final Map<String, List<Configurable>> cache = new ConcurrentHashMap<>();
 
     static {
         try {
@@ -63,7 +64,7 @@ class ConfigurableReaderXML implements ConfigurableReader {
     @Override
     public List<Configurable> read(Supplier<InputStream> stream, ConfigurationUnit annotation) throws NullPointerException, ConfigurationException {
 
-        List<Configurable> configurations = configurationCache.get(annotation.fileName());
+        List<Configurable> configurations = cache.get(annotation.fileName());
 
         if (nonNull(configurations)) {
             LOGGER.fine("Loading the configuration file from the cache file: " + annotation.fileName());
@@ -75,7 +76,7 @@ class ConfigurableReaderXML implements ConfigurableReader {
             ConfigurablesXML configurablesXML = (ConfigurablesXML) unmarshaller.unmarshal(stream.get());
             List<Configurable> configurables = new ArrayList<>();
             Optional.ofNullable(configurablesXML.getConfigurations()).orElse(emptyList()).forEach(configurables::add);
-            configurationCache.put(annotation.fileName(), configurables);
+            cache.put(annotation.fileName(), configurables);
             return configurables;
         } catch (JAXBException e) {
             throw new ConfigurationException("Error to read XML file:" + annotation.fileName(), e);
