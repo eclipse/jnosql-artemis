@@ -14,7 +14,6 @@
  */
 package org.jnosql.artemis.configuration;
 
-import org.jnosql.artemis.ConfigurationUnit;
 import org.jnosql.diana.api.Settings;
 
 import java.util.Optional;
@@ -26,10 +25,10 @@ public interface ConfigurationSettingsUnit {
 
     /**
      * Returns the unit-name from the configuration.
-     * When a configuration file has more than one, the injection configuration unit must match {@link ConfigurationUnit#name()}
+     * When a configuration file has more than one, the injection configuration unit must match {@link org.jnosql.artemis.ConfigurationUnit#name()}
      *
      * @return the name otherwise {@link Optional#empty()}
-     * @see ConfigurationUnit
+     * @see org.jnosql.artemis.ConfigurationUnit
      */
     Optional<String> getName();
 
