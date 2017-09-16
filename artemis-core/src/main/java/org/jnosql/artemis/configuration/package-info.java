@@ -67,7 +67,7 @@
  * private Configuration configuration;
  *
  * </pre>
- * The default configuration structure is within either WEB-INF or META-INF folder.
+ * The default configuration structure is within META-INF folder.
  * The default JSON file is "jnosql.json", despite you can change using the {@link org.jnosql.artemis.ConfigurationUnit#fileName()}
  * <p>
  * <pre>
