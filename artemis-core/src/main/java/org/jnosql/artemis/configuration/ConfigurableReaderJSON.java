@@ -16,6 +16,7 @@ package org.jnosql.artemis.configuration;
 
 import org.jnosql.artemis.ConfigurationUnit;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 import javax.json.JsonException;
 import javax.json.bind.Jsonb;
@@ -23,21 +24,41 @@ import javax.json.bind.JsonbBuilder;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
+
+import static java.util.Objects.nonNull;
 
 /**
  * The {@link ConfigurableReader} to JSON
  */
 @Named("json")
+@ApplicationScoped
 class ConfigurableReaderJSON implements ConfigurableReader {
 
     private static final Jsonb JSONB = JsonbBuilder.create();
 
+    private static Logger LOGGER = Logger.getLogger(ConfigurableJSON.class.getName());
+
+
+    private final Map<String, List<Configurable>> configurationCache = new ConcurrentHashMap<>();
+
+
     @Override
     public List<Configurable> read(Supplier<InputStream> stream, ConfigurationUnit annotation) throws NullPointerException, ConfigurationException {
+        List<Configurable> configurations = configurationCache.get(annotation.fileName());
+
+        if (nonNull(configurations)) {
+            LOGGER.info("Loading the configuration file from the cache file: " + annotation.fileName());
+            return configurations;
+        }
         try {
-            return JSONB.fromJson(stream.get(), new ArrayList<ConfigurableJSON>() {
+            configurations = JSONB.fromJson(stream.get(), new ArrayList<ConfigurableJSON>() {
             }.getClass().getGenericSuperclass());
+            configurationCache.put(annotation.fileName(), configurations);
+            return configurations;
         } catch (JsonException exception) {
             throw new ConfigurationException("An error when read the JSON file: " + annotation.fileName()
                     , exception);

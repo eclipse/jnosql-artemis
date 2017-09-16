@@ -61,6 +61,20 @@ public class DefaultConfigurationReaderTest {
         configurationReader.read(annotation, MockConfiguration.class);
     }
 
+    @Test(expected = ConfigurationException.class)
+    public void shouldReturnAnErrorWhenTheExtensionDoesNotSupport() {
+        ConfigurationUnit annotation = mock(ConfigurationUnit.class);
+        when(annotation.fileName()).thenReturn("invalid.invalid");
+        configurationReader.read(annotation, MockConfiguration.class);
+    }
+
+    @Test(expected = ConfigurationException.class)
+    public void shouldReturnAnErrorWhenTheFileIsInvalid() {
+        ConfigurationUnit annotation = mock(ConfigurationUnit.class);
+        when(annotation.fileName()).thenReturn("invalid");
+        configurationReader.read(annotation, MockConfiguration.class);
+    }
+
 
     @Test(expected = ConfigurationException.class)
     public void shouldReturnErrorWhenUnitNameIsNotFind() {
