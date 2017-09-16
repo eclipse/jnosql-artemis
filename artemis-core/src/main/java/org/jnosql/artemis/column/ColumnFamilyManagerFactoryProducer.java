@@ -15,23 +15,62 @@
 package org.jnosql.artemis.column;
 
 import org.jnosql.artemis.ConfigurationUnit;
-import org.jnosql.diana.api.column.ColumnFamilyManager;
+import org.jnosql.artemis.configuration.ConfigurationReader;
+import org.jnosql.artemis.configuration.ConfigurationSettingsUnit;
+import org.jnosql.artemis.reflection.Reflections;
+import org.jnosql.diana.api.column.ColumnConfiguration;
+import org.jnosql.diana.api.column.ColumnConfigurationAsync;
+import org.jnosql.diana.api.column.ColumnFamilyManagerAsyncFactory;
 import org.jnosql.diana.api.column.ColumnFamilyManagerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Inject;
 
 @ApplicationScoped
 class ColumnFamilyManagerFactoryProducer {
 
+    @Inject
+    private Reflections reflections;
+
+    @Inject
+    private ConfigurationReader configurationReader;
+
 
     @ConfigurationUnit
     @Produces
-    public <T extends ColumnFamilyManager> ColumnFamilyManagerFactory<T> getColumnConfiguration(InjectionPoint injectionPoint) {
+    public  ColumnFamilyManagerFactory getColumnConfiguration(InjectionPoint injectionPoint) {
         Annotated annotated = injectionPoint.getAnnotated();
         ConfigurationUnit annotation = annotated.getAnnotation(ConfigurationUnit.class);
-        return null;
+
+        ConfigurationSettingsUnit unit = configurationReader.read(annotation, ColumnConfiguration.class);
+        Class<ColumnConfiguration> configurationClass = unit.<ColumnConfiguration>getProvider()
+                .orElseThrow(() -> new IllegalStateException("The ColumnConfiguration provider is required in the configuration"));
+
+        ColumnConfiguration columnConfiguration = reflections.newInstance(configurationClass);
+        ColumnFamilyManagerFactory columnFamilyManagerFactory = columnConfiguration.get(unit.getSettings());
+
+
+        return columnFamilyManagerFactory;
+    }
+
+
+    @ConfigurationUnit
+    @Produces
+    public  ColumnFamilyManagerAsyncFactory getColumnConfigurationAsync(InjectionPoint injectionPoint) {
+        Annotated annotated = injectionPoint.getAnnotated();
+        ConfigurationUnit annotation = annotated.getAnnotation(ConfigurationUnit.class);
+
+        ConfigurationSettingsUnit unit = configurationReader.read(annotation, ColumnConfigurationAsync.class);
+        Class<ColumnConfigurationAsync> configurationClass = unit.<ColumnConfigurationAsync>getProvider()
+                .orElseThrow(() -> new IllegalStateException("The ColumnConfiguration provider is required in the configuration"));
+
+        ColumnConfigurationAsync columnConfiguration = reflections.newInstance(configurationClass);
+        ColumnFamilyManagerAsyncFactory columnFamilyManagerFactory = columnConfiguration.getAsync(unit.getSettings());
+
+
+        return columnFamilyManagerFactory;
     }
 }
