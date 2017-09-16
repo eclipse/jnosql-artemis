@@ -14,8 +14,6 @@
  */
 package org.jnosql.artemis.reflection;
 
-import org.jnosql.artemis.Column;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.List;
