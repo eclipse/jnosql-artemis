@@ -17,7 +17,7 @@ package org.jnosql.artemis;
 import org.jnosql.diana.api.JNoSQLException;
 
 /**
- * The root execption to Artemis project
+ * The root exception to Artemis project
  */
 public class ArtemisException extends JNoSQLException {
 
