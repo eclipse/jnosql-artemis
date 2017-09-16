@@ -43,11 +43,11 @@
  * <p><b>Description</b>: the description of configuration (optional).</p>
  * <p><b>Provider</b>: the class provider</p>
  * <p><b>settings</b>: The key-value settings to use on the setup class.</p>
- *
+ * <p>
  * <pre>
  *
- * @Inject
- * @ConfigurationUnit
+ * &#064;Inject
+ * &#064;ConfigurationUnit
  * private Configuration configuration;
  *
  * </pre>
@@ -60,22 +60,22 @@
  * If there are more than two configurations in the file and the inject does not inform the name that will
  * throw an exception.
  * </p>
- * <pre>{@code
+ * <pre>
  *
- * @Inject
- * @ConfigurationUnit(name = "name")
+ * &#064;Inject
+ * &#064;ConfigurationUnit(name = "name")
  * private Configuration configuration;
- * }
+ *
  * </pre>
  * The default configuration structure is within either WEB-INF or META-INF folder.
  * The default JSON file is "jnosql.json", despite you can change using the {@link org.jnosql.artemis.ConfigurationUnit#fileName()}
  * <p>
- * <pre>{@code
+ * <pre>
  *
- * @Inject
- * @ConfigurationUnit(fileName = "file.json")
+ * &#064;Inject
+ * &#064;ConfigurationUnit(fileName = "file.json")
  * private Configuration configuration;
- * }
+ *
  * </pre>
  */
 package org.jnosql.artemis.configuration;
