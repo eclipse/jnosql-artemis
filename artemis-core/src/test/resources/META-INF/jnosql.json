@@ -9,7 +9,7 @@
   },
   {
     "description":"that is the description",
-    "name":"name",
+    "name":"name-2",
     "provider":"class",
     "settings":{
       "key":"value"
