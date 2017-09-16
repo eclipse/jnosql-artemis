@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 
 import static java.lang.String.format;
 import static java.util.Collections.emptyMap;
+import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -43,6 +44,8 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 class DefaultConfigurationReader implements ConfigurationReader {
 
     private static final String META_INF = "META-INF/";
+
+    private static final String WEB_INF = "WEB-INF/";
 
     private static final Logger LOGGER = Logger.getLogger(DefaultConfigurationReader.class.getName());
 
@@ -130,11 +133,20 @@ class DefaultConfigurationReader implements ConfigurationReader {
 
     private Supplier<InputStream> read(ConfigurationUnit annotation) {
         return () -> {
-            String fileName = META_INF + annotation.fileName();
-            LOGGER.fine("Reading the configuration file: " + fileName);
-            InputStream stream = DefaultConfigurationReader.class.getClassLoader().getResourceAsStream(fileName);
+            String metaInfFile = META_INF + annotation.fileName();
+
+
+            LOGGER.fine("Reading the configuration file: " + metaInfFile);
+            
+            InputStream stream = DefaultConfigurationReader.class.getClassLoader().getResourceAsStream(metaInfFile);
+
+            if (isNull(stream)) {
+                String webInfFile = WEB_INF + annotation.fileName();
+                LOGGER.fine("Reading the configuration file: " + webInfFile);
+                stream = DefaultConfigurationReader.class.getClassLoader().getResourceAsStream(webInfFile);
+            }
             return ofNullable(stream)
-                    .orElseThrow(() -> new ConfigurationException("The File does not found at: " + fileName));
+                    .orElseThrow(() -> new ConfigurationException("The File does not found at: " + annotation.fileName()));
         };
     }
 }
