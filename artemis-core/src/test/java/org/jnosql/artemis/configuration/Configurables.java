@@ -18,10 +18,15 @@ import org.junit.Test;
 
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
-public class ConfigurableJSONTest {
+public class Configurables {
 
 
     @Test
@@ -37,6 +42,31 @@ public class ConfigurableJSONTest {
         String json = jsonb.toJson(Arrays.asList(configuration, configuration));
 
         System.out.println(json);
+
+    }
+
+    @Test
+    public void shouldGenerateXML() throws JAXBException {
+
+        JAXBContext jaxbContext = JAXBContext.newInstance(ConfigurablesXML.class);
+        Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+        ConfigurablesXML configurables = new ConfigurablesXML();
+
+        ConfigurableXML configuration = new ConfigurableXML();
+        configuration.setName("name");
+        configuration.setDescription("that is the description");
+        configuration.setProvider("class");
+        Map<String, String> settings = new HashMap<>();
+        settings.put("key", "value");
+        settings.put("key2", "value2");
+        configuration.setSettings(settings);
+
+        configurables.setConfigurations(Collections.singletonList(configuration));
+
+        jaxbMarshaller.marshal(configurables, System.out);
+
 
     }
 

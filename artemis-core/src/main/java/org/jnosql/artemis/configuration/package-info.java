@@ -38,6 +38,29 @@
  *
  * }
  * </pre>
+ * <p>
+ * <p>The XML file structure:</p>
+ * <pre>{@code
+ *  <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+ * <configurations>
+ * <configuration>
+ * <description>that is the description</description>
+ * <name>name</name>
+ * <provider>class</provider>
+ * <settings>
+ * <entry>
+ * <key>key2</key>
+ * <value>value2</value>
+ * </entry>
+ * <entry>
+ * <key>key</key>
+ * <value>value</value>
+ * </entry>
+ * </settings>
+ * </configuration>
+ * </configurations>
+ *
+ *  }
  * <p>Where:</p>
  * <p><b>Name</b> the unit-name in the configuration, when there is more than one configuration unit (optional).</p>
  * <p><b>Description</b>: the description of configuration (optional).</p>
