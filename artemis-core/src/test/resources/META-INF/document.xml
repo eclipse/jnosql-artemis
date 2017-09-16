@@ -31,9 +31,13 @@
     </configuration>
     <configuration>
         <description>that is the description</description>
-        <name>name</name>
+        <name>name-2</name>
         <provider>org.jnosql.artemis.document.DocumentCollectionManagerMock</provider>
         <settings>
+            <entry>
+                <key>key3</key>
+                <value>value3</value>
+            </entry>
             <entry>
                 <key>key2</key>
                 <value>value2</value>
