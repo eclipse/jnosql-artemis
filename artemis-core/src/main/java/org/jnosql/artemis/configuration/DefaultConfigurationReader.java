@@ -20,12 +20,10 @@ import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.Settings;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.json.JsonException;
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,10 +42,12 @@ class DefaultConfigurationReader implements ConfigurationReader {
 
     private static final String META_INF = "META-INF/";
 
-    private static final Jsonb JSONB = JsonbBuilder.create();
-
     @Inject
     private Reflections reflections;
+
+    @Inject
+    @Any
+    private Instance<ConfigurableReader> readers;
 
     @Override
     public <T> ConfigurationSettingsUnit read(ConfigurationUnit annotation, Class<T> configurationClass)
@@ -58,8 +58,15 @@ class DefaultConfigurationReader implements ConfigurationReader {
 
 
         InputStream stream = read(annotation);
-        List<ConfigurableJSON> configurations = getConfigurations(stream, annotation);
-        ConfigurableJSON configuration = getConfiguration(annotation, configurations);
+        String extension = getExtension(annotation);
+        Instance<ConfigurableReader> select = readers.select(new NamedLiteral(extension));
+        if (select.isUnsatisfied()) {
+            throw new ConfigurationException(String.format("The extension %s is not supported", extension));
+        }
+
+
+        List<Configurable> configurations = select.get().read(stream, annotation);
+        Configurable configuration = getConfiguration(annotation, configurations);
 
         String name = configuration.getName();
         String description = configuration.getDescription();
@@ -69,7 +76,15 @@ class DefaultConfigurationReader implements ConfigurationReader {
         return new DefaultConfigurationSettingsUnit(name, description, provider, Settings.of(settings));
     }
 
-    private <T> Class<?> getProvider(Class<T> configurationClass, ConfigurableJSON configuration) {
+    private String getExtension(ConfigurationUnit annotation) {
+        String[] fileName = annotation.fileName().split(".");
+        if (fileName.length != 2) {
+            throw new ConfigurationException("The cofinguration file is invalid: " + annotation.fileName());
+        }
+        return fileName[1];
+    }
+
+    private <T> Class<?> getProvider(Class<T> configurationClass, Configurable configuration) {
         try {
             Class<?> provider = Class.forName(configuration.getProvider());
             if (!configurationClass.isAssignableFrom(provider)) {
@@ -85,7 +100,7 @@ class DefaultConfigurationReader implements ConfigurationReader {
         }
     }
 
-    private ConfigurableJSON getConfiguration(ConfigurationUnit annotation, List<ConfigurableJSON> configurations) {
+    private Configurable getConfiguration(ConfigurationUnit annotation, List<Configurable> configurations) {
 
 
         String name = annotation.name();
@@ -108,15 +123,6 @@ class DefaultConfigurationReader implements ConfigurationReader {
                         , name, fileName)));
     }
 
-    private List<ConfigurableJSON> getConfigurations(InputStream stream, ConfigurationUnit annotation) {
-        try {
-            return JSONB.fromJson(stream, new ArrayList<ConfigurableJSON>() {
-            }.getClass().getGenericSuperclass());
-        } catch (JsonException exception) {
-            throw new ConfigurationException("An error when read the JSON file: " + annotation.fileName()
-                    , exception);
-        }
-    }
 
     private InputStream read(ConfigurationUnit annotation) {
         String fileName = META_INF + annotation.fileName();
