@@ -33,6 +33,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 @ApplicationScoped
@@ -140,6 +141,8 @@ public class DefaultReflections implements Reflections {
 
     @Override
     public String getEntityName(Class classEntity) {
+        requireNonNull(classEntity, "class entity is required");
+
         return Optional.ofNullable((Entity) classEntity.getAnnotation(Entity.class))
                 .map(Entity::value)
                 .filter(StringUtils::isNotBlank)
@@ -148,6 +151,7 @@ public class DefaultReflections implements Reflections {
 
     @Override
     public List<Field> getFields(Class classEntity) {
+        requireNonNull(classEntity, "class entity is required");
 
         List<Field> fields = new ArrayList<>();
 
@@ -165,16 +169,19 @@ public class DefaultReflections implements Reflections {
 
     @Override
     public boolean isMappedSuperclass(Class<?> classEntity) {
+        requireNonNull(classEntity, "class entity is required");
         return classEntity.getSuperclass().getAnnotation(MappedSuperclass.class) != null;
     }
 
     @Override
     public boolean isIdField(Field field) {
+        requireNonNull(field, "field is required");
         return field.getAnnotation(Id.class) != null;
     }
 
     @Override
     public String getColumnName(Field field) {
+        requireNonNull(field, "field is required");
         return Optional.ofNullable(field.getAnnotation(Column.class))
                 .map(Column::value)
                 .filter(StringUtils::isNotBlank)
@@ -183,6 +190,7 @@ public class DefaultReflections implements Reflections {
 
     @Override
     public String getIdName(Field field) {
+        requireNonNull(field, "field is required");
         return Optional.ofNullable(field.getAnnotation(Id.class))
                 .map(Id::value)
                 .filter(StringUtils::isNotBlank)

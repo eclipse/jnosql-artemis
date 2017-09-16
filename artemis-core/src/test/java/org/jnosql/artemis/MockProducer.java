@@ -96,7 +96,7 @@ public class MockProducer {
                 .withName("documentRepositoryMock").build());
 
         when(documentTemplate.singleResult(any(DocumentQuery.class))).thenReturn(Optional.empty());
-        
+
         return documentTemplate;
     }
 
