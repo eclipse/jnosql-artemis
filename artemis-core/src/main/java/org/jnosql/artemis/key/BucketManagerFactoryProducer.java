@@ -18,8 +18,6 @@ import org.jnosql.artemis.ConfigurationUnit;
 import org.jnosql.artemis.configuration.ConfigurationReader;
 import org.jnosql.artemis.configuration.ConfigurationSettingsUnit;
 import org.jnosql.artemis.reflection.Reflections;
-import org.jnosql.diana.api.column.ColumnFamilyManagerAsyncFactory;
-import org.jnosql.diana.api.column.ColumnFamilyManagerFactory;
 import org.jnosql.diana.api.key.BucketManager;
 import org.jnosql.diana.api.key.BucketManagerFactory;
 import org.jnosql.diana.api.key.KeyValueConfiguration;
@@ -45,13 +43,13 @@ class BucketManagerFactoryProducer {
 
     @ConfigurationUnit
     @Produces
-    public <T extends BucketManager> BucketManagerFactory<T> getColumnConfigurationGenerics(InjectionPoint injectionPoint) {
+    public <T extends BucketManager> BucketManagerFactory<T> getBucketManagerGenerics(InjectionPoint injectionPoint) {
         return getBuckerManagerFactocy(injectionPoint);
     }
 
     @ConfigurationUnit
     @Produces
-    public BucketManagerFactory getColumnConfiguration(InjectionPoint injectionPoint) {
+    public BucketManagerFactory getBucketManager(InjectionPoint injectionPoint) {
         return getBuckerManagerFactocy(injectionPoint);
     }
 
