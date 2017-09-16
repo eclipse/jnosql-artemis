@@ -20,6 +20,8 @@ import org.jnosql.artemis.configuration.ConfigurationSettingsUnit;
 import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.column.ColumnConfiguration;
 import org.jnosql.diana.api.column.ColumnConfigurationAsync;
+import org.jnosql.diana.api.column.ColumnFamilyManager;
+import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsyncFactory;
 import org.jnosql.diana.api.column.ColumnFamilyManagerFactory;
 
@@ -29,6 +31,10 @@ import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 
+/**
+ * The class that creates {@link ColumnFamilyManagerFactory} and {@link ColumnFamilyManagerAsyncFactory}
+ * from the {@link ConfigurationUnit}
+ */
 @ApplicationScoped
 class ColumnFamilyManagerFactoryProducer {
 
@@ -41,25 +47,32 @@ class ColumnFamilyManagerFactoryProducer {
 
     @ConfigurationUnit
     @Produces
-    public  ColumnFamilyManagerFactory getColumnConfiguration(InjectionPoint injectionPoint) {
-        Annotated annotated = injectionPoint.getAnnotated();
-        ConfigurationUnit annotation = annotated.getAnnotation(ConfigurationUnit.class);
+    public <T extends ColumnFamilyManager> ColumnFamilyManagerFactory<T> getColumnConfigurationGenerics(InjectionPoint injectionPoint) {
+        return gettColumnFamilyManagerFactory(injectionPoint);
+    }
 
-        ConfigurationSettingsUnit unit = configurationReader.read(annotation, ColumnConfiguration.class);
-        Class<ColumnConfiguration> configurationClass = unit.<ColumnConfiguration>getProvider()
-                .orElseThrow(() -> new IllegalStateException("The ColumnConfiguration provider is required in the configuration"));
-
-        ColumnConfiguration columnConfiguration = reflections.newInstance(configurationClass);
-        ColumnFamilyManagerFactory columnFamilyManagerFactory = columnConfiguration.get(unit.getSettings());
-
-
-        return columnFamilyManagerFactory;
+    @ConfigurationUnit
+    @Produces
+    public ColumnFamilyManagerFactory getColumnConfiguration(InjectionPoint injectionPoint) {
+        return gettColumnFamilyManagerFactory(injectionPoint);
     }
 
 
     @ConfigurationUnit
     @Produces
-    public  ColumnFamilyManagerAsyncFactory getColumnConfigurationAsync(InjectionPoint injectionPoint) {
+    public <T extends ColumnFamilyManagerAsync> ColumnFamilyManagerAsyncFactory<T> getColumnConfigurationAsyncGeneric(InjectionPoint injectionPoint) {
+        return gettColumnFamilyManagerAsyncFactory(injectionPoint);
+    }
+
+
+    @ConfigurationUnit
+    @Produces
+    public ColumnFamilyManagerAsyncFactory getColumnConfigurationAsync(InjectionPoint injectionPoint) {
+        return gettColumnFamilyManagerAsyncFactory(injectionPoint);
+    }
+
+
+    private <T extends ColumnFamilyManagerAsync> ColumnFamilyManagerAsyncFactory<T> gettColumnFamilyManagerAsyncFactory(InjectionPoint injectionPoint) {
         Annotated annotated = injectionPoint.getAnnotated();
         ConfigurationUnit annotation = annotated.getAnnotation(ConfigurationUnit.class);
 
@@ -69,6 +82,21 @@ class ColumnFamilyManagerFactoryProducer {
 
         ColumnConfigurationAsync columnConfiguration = reflections.newInstance(configurationClass);
         ColumnFamilyManagerAsyncFactory columnFamilyManagerFactory = columnConfiguration.getAsync(unit.getSettings());
+
+
+        return columnFamilyManagerFactory;
+    }
+
+    private <T extends ColumnFamilyManager> ColumnFamilyManagerFactory<T> gettColumnFamilyManagerFactory(InjectionPoint injectionPoint) {
+        Annotated annotated = injectionPoint.getAnnotated();
+        ConfigurationUnit annotation = annotated.getAnnotation(ConfigurationUnit.class);
+
+        ConfigurationSettingsUnit unit = configurationReader.read(annotation, ColumnConfiguration.class);
+        Class<ColumnConfiguration> configurationClass = unit.<ColumnConfiguration>getProvider()
+                .orElseThrow(() -> new IllegalStateException("The ColumnConfiguration provider is required in the configuration"));
+
+        ColumnConfiguration columnConfiguration = reflections.newInstance(configurationClass);
+        ColumnFamilyManagerFactory columnFamilyManagerFactory = columnConfiguration.get(unit.getSettings());
 
 
         return columnFamilyManagerFactory;
