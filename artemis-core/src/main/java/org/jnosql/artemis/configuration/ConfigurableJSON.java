@@ -14,14 +14,13 @@
  */
 package org.jnosql.artemis.configuration;
 
-import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
 
 /**
  * The class that represents configuration in JSON
  */
-public class ConfigurationJson implements Serializable {
+public class ConfigurableJSON implements Configurable {
 
     private String name;
 
@@ -31,6 +30,7 @@ public class ConfigurationJson implements Serializable {
 
     private Map<String, String> settings;
 
+    @Override
     public String getName() {
         return name;
     }
@@ -39,6 +39,7 @@ public class ConfigurationJson implements Serializable {
         this.name = name;
     }
 
+    @Override
     public String getDescription() {
         return description;
     }
@@ -47,6 +48,7 @@ public class ConfigurationJson implements Serializable {
         this.description = description;
     }
 
+    @Override
     public String getProvider() {
         return provider;
     }
@@ -55,6 +57,7 @@ public class ConfigurationJson implements Serializable {
         this.provider = provider;
     }
 
+    @Override
     public Map<String, String> getSettings() {
         return settings;
     }
@@ -69,10 +72,10 @@ public class ConfigurationJson implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ConfigurationJson)) {
+        if (!(o instanceof ConfigurableJSON)) {
             return false;
         }
-        ConfigurationJson that = (ConfigurationJson) o;
+        ConfigurableJSON that = (ConfigurableJSON) o;
         return Objects.equals(name, that.name) &&
                 Objects.equals(description, that.description) &&
                 Objects.equals(provider, that.provider) &&
@@ -86,7 +89,7 @@ public class ConfigurationJson implements Serializable {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("ConfigurationJson{");
+        final StringBuilder sb = new StringBuilder("ConfigurableJSON{");
         sb.append("name='").append(name).append('\'');
         sb.append(", description='").append(description).append('\'');
         sb.append(", provider='").append(provider).append('\'');

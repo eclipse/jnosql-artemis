@@ -21,7 +21,7 @@ import javax.json.bind.JsonbBuilder;
 import java.util.Arrays;
 import java.util.Collections;
 
-public class ConfigurationJsonTest {
+public class ConfigurableJSONTest {
 
 
     @Test
@@ -29,7 +29,7 @@ public class ConfigurationJsonTest {
 
         Jsonb jsonb = JsonbBuilder.create();
 
-        ConfigurationJson configuration = new ConfigurationJson();
+        ConfigurableJSON configuration = new ConfigurableJSON();
         configuration.setName("name");
         configuration.setDescription("that is the description");
         configuration.setProvider("class");

@@ -58,8 +58,8 @@ class DefaultConfigurationReader implements ConfigurationReader {
 
 
         InputStream stream = read(annotation);
-        List<ConfigurationJson> configurations = getConfigurations(stream, annotation);
-        ConfigurationJson configuration = getConfiguration(annotation, configurations);
+        List<ConfigurableJSON> configurations = getConfigurations(stream, annotation);
+        ConfigurableJSON configuration = getConfiguration(annotation, configurations);
 
         String name = configuration.getName();
         String description = configuration.getDescription();
@@ -69,7 +69,7 @@ class DefaultConfigurationReader implements ConfigurationReader {
         return new DefaultConfigurationSettingsUnit(name, description, provider, Settings.of(settings));
     }
 
-    private <T> Class<?> getProvider(Class<T> configurationClass, ConfigurationJson configuration) {
+    private <T> Class<?> getProvider(Class<T> configurationClass, ConfigurableJSON configuration) {
         try {
             Class<?> provider = Class.forName(configuration.getProvider());
             if (!configurationClass.isAssignableFrom(provider)) {
@@ -85,7 +85,7 @@ class DefaultConfigurationReader implements ConfigurationReader {
         }
     }
 
-    private ConfigurationJson getConfiguration(ConfigurationUnit annotation, List<ConfigurationJson> configurations) {
+    private ConfigurableJSON getConfiguration(ConfigurationUnit annotation, List<ConfigurableJSON> configurations) {
 
 
         String name = annotation.name();
@@ -108,9 +108,9 @@ class DefaultConfigurationReader implements ConfigurationReader {
                         , name, fileName)));
     }
 
-    private List<ConfigurationJson> getConfigurations(InputStream stream, ConfigurationUnit annotation) {
+    private List<ConfigurableJSON> getConfigurations(InputStream stream, ConfigurationUnit annotation) {
         try {
-            return JSONB.fromJson(stream, new ArrayList<ConfigurationJson>() {
+            return JSONB.fromJson(stream, new ArrayList<ConfigurableJSON>() {
             }.getClass().getGenericSuperclass());
         } catch (JsonException exception) {
             throw new ConfigurationException("An error when read the JSON file: " + annotation.fileName()
