@@ -139,9 +139,9 @@ public class DefaultConfigurationReaderTest {
 
 
     @Test
-    public void shouldReadDefaultName() {
+    public void shouldReadDefaultNameXML() {
         ConfigurationUnit annotation = mock(ConfigurationUnit.class);
-        when(annotation.fileName()).thenReturn("jnosql-2.json");
+        when(annotation.fileName()).thenReturn("jnosql.xml");
         when(annotation.name()).thenReturn("name");
         ConfigurationSettingsUnit unit = configurationReader.read(annotation, MockConfiguration.class);
 
