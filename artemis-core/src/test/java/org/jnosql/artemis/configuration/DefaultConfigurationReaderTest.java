@@ -83,7 +83,7 @@ public class DefaultConfigurationReaderTest {
     }
 
 
-    @Test(expected = ConfigurationException.class)
+    @Test
     public void shouldReturnErrorWhenThereIsNotDefaultConstructor() {
 
     }

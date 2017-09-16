@@ -27,6 +27,7 @@ import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
 import org.jnosql.diana.api.document.DocumentEntity;
+import org.jnosql.diana.api.document.DocumentQuery;
 import org.jnosql.diana.api.key.BucketManager;
 import org.mockito.Mockito;
 
@@ -34,6 +35,7 @@ import javax.enterprise.inject.Produces;
 
 import java.util.Optional;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -92,6 +94,9 @@ public class MockProducer {
         DocumentTemplate documentTemplate = mock(DocumentTemplate.class);
         when(documentTemplate.insert(Mockito.any(Person.class))).thenReturn(Person.builder()
                 .withName("documentRepositoryMock").build());
+
+        when(documentTemplate.singleResult(any(DocumentQuery.class))).thenReturn(Optional.empty());
+        
         return documentTemplate;
     }
 

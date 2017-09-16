@@ -36,7 +36,7 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toList;
 
 @ApplicationScoped
-class DefaultReflections implements Reflections {
+public class DefaultReflections implements Reflections {
 
     @Override
     public Object getValue(Object object, Field field) {

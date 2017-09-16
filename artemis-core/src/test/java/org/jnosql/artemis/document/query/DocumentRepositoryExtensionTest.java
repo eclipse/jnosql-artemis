@@ -63,14 +63,14 @@ public class DocumentRepositoryExtensionTest {
 
 
     @Test
-    public void shouldIniciate() {
+    public void shouldInitiate() {
         assertNotNull(repository);
         Person person = repository.save(Person.builder().build());
         assertEquals("Default", person.getName());
     }
 
     @Test
-    public void shouldUseInstantion(){
+    public void shouldUseMock(){
         assertNotNull(repositoryMock);
         Person person = repositoryMock.save(Person.builder().build());
         assertEquals("documentRepositoryMock", person.getName());

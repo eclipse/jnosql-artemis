@@ -15,19 +15,19 @@
 package org.jnosql.artemis.reflection;
 
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import org.jnosql.artemis.Embeddable;
+import org.jnosql.artemis.Entity;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
-
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-import org.jnosql.artemis.Embeddable;
-import org.jnosql.artemis.Entity;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 /**
  * This class is a CDI extension to load all class that has {@link Entity} annotation.
@@ -39,7 +39,7 @@ public class ClassRepresentationsExtension implements Extension {
 
     private static final Logger LOGGER = Logger.getLogger(ClassRepresentationsExtension.class.getName());
 
-    private final ClassConverter classConverter = new ClassConverter(new Reflections());
+    private final ClassConverter classConverter = new ClassConverter(new DefaultReflections());
 
     private final Map<String, ClassRepresentation> representations = new ConcurrentHashMap<>();
 
