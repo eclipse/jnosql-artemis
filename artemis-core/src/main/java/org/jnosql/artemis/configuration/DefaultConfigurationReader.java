@@ -74,7 +74,7 @@ class DefaultConfigurationReader implements ConfigurationReader {
             Class<?> provider = Class.forName(configuration.getProvider());
             if (!configurationClass.isAssignableFrom(provider)) {
                 throw new ConfigurationException(String.format("The class %s does not match with %s",
-                        provider.toString(), configuration.toString()));
+                        provider.toString(), configurationClass));
             }
             reflections.makeAccessible(provider);
             return provider;
