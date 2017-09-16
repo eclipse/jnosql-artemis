@@ -39,7 +39,8 @@ public @interface ConfigurationUnit {
     String name() default "";
 
     /**
-     * the file name that is within WEB-INF/. The default value is jnosql.json
+     * the file name that is within the folder. The default value is jnosql.json
+     *
      * @return the file name
      */
     @Nonbinding

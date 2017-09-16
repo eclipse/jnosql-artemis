@@ -39,16 +39,17 @@
  * }
  * </pre>
  * <p>Where:</p>
- * <p><b></b>Name</b> the unit-name in the configuration, when there is more than one configuration unit (optional).</p>
+ * <p><b>Name</b> the unit-name in the configuration, when there is more than one configuration unit (optional).</p>
  * <p><b>Description</b>: the description of configuration (optional).</p>
  * <p><b>Provider</b>: the class provider</p>
  * <p><b>settings</b>: The key-value settings to use on the setup class.</p>
- * <pre>{@code
+ *
+ * <pre>
  *
  * @Inject
  * @ConfigurationUnit
  * private Configuration configuration;
- * }
+ *
  * </pre>
  * <p>
  * When the structure just has one configuration unit the name is not required, however,
@@ -58,6 +59,7 @@
  * when there are two or more settings the name in the configuration must match with the annotation.
  * If there are more than two configurations in the file and the inject does not inform the name that will
  * throw an exception.
+ * </p>
  * <pre>{@code
  *
  * @Inject
@@ -74,5 +76,6 @@
  * @ConfigurationUnit(fileName = "file.json")
  * private Configuration configuration;
  * }
+ * </pre>
  */
 package org.jnosql.artemis.configuration;
