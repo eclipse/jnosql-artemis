@@ -92,6 +92,9 @@ class DefaultConfigurationReader implements ConfigurationReader {
     }
 
     private <T> Class<?> getProvider(Class<T> configurationClass, Configurable configuration) {
+        if (isBlank(configuration.getProvider())) {
+            return null;
+        }
         try {
             Class<?> provider = Class.forName(configuration.getProvider());
             if (!configurationClass.isAssignableFrom(provider)) {
@@ -137,7 +140,7 @@ class DefaultConfigurationReader implements ConfigurationReader {
 
 
             LOGGER.fine("Reading the configuration file: " + metaInfFile);
-            
+
             InputStream stream = DefaultConfigurationReader.class.getClassLoader().getResourceAsStream(metaInfFile);
 
             if (isNull(stream)) {
