@@ -14,16 +14,12 @@
  */
 package org.jnosql.artemis.configuration;
 
-import org.jnosql.artemis.ConfigurationUnit;
 import org.junit.Test;
 
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Map;
-
-import static org.junit.Assert.*;
 
 public class ConfigurationJsonTest {
 
