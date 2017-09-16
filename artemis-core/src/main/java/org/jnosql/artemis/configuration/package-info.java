@@ -38,13 +38,11 @@
  *
  * }
  * </pre>
- * <p>
  * <p>Where:</p>
- * <p>Name the unit-name in the configuration, when there is more than one configuration unit (optional).</p>
- * <p>Description: the description of configuration (optional).</p>
- * <p>Provider: the class provider</p>
- * <p>settings: The key-value settings to use on the setup class.</p>
- * <p>
+ * <p><b></b>Name</b> the unit-name in the configuration, when there is more than one configuration unit (optional).</p>
+ * <p><b>Description</b>: the description of configuration (optional).</p>
+ * <p><b>Provider</b>: the class provider</p>
+ * <p><b>settings</b>: The key-value settings to use on the setup class.</p>
  * <pre>{@code
  *
  * @Inject
