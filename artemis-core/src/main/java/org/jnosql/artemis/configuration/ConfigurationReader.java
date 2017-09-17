@@ -26,15 +26,28 @@ public interface ConfigurationReader {
 
     /**
      * Reads the annotation and returns the ConfigurationUnit
-     * @param annotation the annotation that has configuration unit
+     *
+     * @param annotation         the annotation that has configuration unit
      * @param configurationClass the class to check the instance
-     * @param <T> the class type
+     * @param <T>                the class type
      * @return a {@link ConfigurationSettingsUnit}
-     * @throws NullPointerException when either annotation or class are null
+     * @throws NullPointerException   when either annotation or class are null
      * @throws ConfigurationException when the class does not found,
-     * is not the same type of configuratioClass, when the file does not exist, when the unit is not found in the configuration file,
-     * when there is ambiguous configuration
+     *                                is not the same type of configuratioClass, when the file does not exist, when the unit is not found in the configuration file,
+     *                                when there is ambiguous configuration
      */
     <T> ConfigurationSettingsUnit read(ConfigurationUnit annotation, Class<T> configurationClass)
             throws NullPointerException, ConfigurationException;
+
+    /**
+     * Reads the annotation and returns the ConfigurationUnit
+     *
+     * @param annotation the annotation that has configuration unit
+     * @param <T>        the class type
+     * @return a {@link ConfigurationSettingsUnit}
+     * @throws NullPointerException   when either annotation or class are null
+     * @throws ConfigurationException when the unit is not found in the configuration file,
+     *                                when there is ambiguous configuration
+     */
+    <T> ConfigurationSettingsUnit read(ConfigurationUnit annotation) throws NullPointerException, ConfigurationException;
 }
