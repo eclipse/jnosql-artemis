@@ -45,7 +45,7 @@ public interface ConfigurationReader {
      * @param annotation the annotation that has configuration unit
      * @param <T>        the class type
      * @return a {@link ConfigurationSettingsUnit}
-     * @throws NullPointerException   when either annotation or class are null
+     * @throws NullPointerException   when annotation is null
      * @throws ConfigurationException when the unit is not found in the configuration file,
      *                                when there is ambiguous configuration
      */

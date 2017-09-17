@@ -64,15 +64,7 @@ class DefaultConfigurationReader implements ConfigurationReader {
         requireNonNull(configurationClass, "configurationClass is required");
 
 
-        Supplier<InputStream> stream = read(annotation);
-        String extension = getExtension(annotation);
-        Instance<ConfigurableReader> select = readers.select(new NamedLiteral(extension));
-        if (select.isUnsatisfied()) {
-            throw new ConfigurationException(String.format("The extension %s is not supported", extension));
-        }
-
-
-        List<Configurable> configurations = select.get().read(stream, annotation);
+        List<Configurable> configurations = getConfigurations(annotation);
         Configurable configuration = getConfiguration(annotation, configurations);
 
         String name = configuration.getName();
@@ -81,6 +73,36 @@ class DefaultConfigurationReader implements ConfigurationReader {
         Class<?> provider = getProvider(configurationClass, configuration);
 
         return new DefaultConfigurationSettingsUnit(name, description, provider, Settings.of(settings));
+    }
+
+
+    @Override
+    public <T> ConfigurationSettingsUnit read(ConfigurationUnit annotation)
+            throws NullPointerException, ConfigurationException {
+
+        requireNonNull(annotation, "annotation is required");
+
+        List<Configurable> configurations = getConfigurations(annotation);
+        Configurable configuration = getConfiguration(annotation, configurations);
+
+        String name = configuration.getName();
+        String description = configuration.getDescription();
+        Map<String, Object> settings = new HashMap<>(ofNullable(configuration.getSettings()).orElse(emptyMap()));
+
+        return new DefaultConfigurationSettingsUnit(name, description, null, Settings.of(settings));
+    }
+
+
+    private List<Configurable> getConfigurations(ConfigurationUnit annotation) {
+        Supplier<InputStream> stream = readStream(annotation);
+        String extension = getExtension(annotation);
+        Instance<ConfigurableReader> select = readers.select(new NamedLiteral(extension));
+        if (select.isUnsatisfied()) {
+            throw new ConfigurationException(String.format("The extension %s is not supported", extension));
+        }
+
+
+        return select.get().read(stream, annotation);
     }
 
     private String getExtension(ConfigurationUnit annotation) {
@@ -134,7 +156,7 @@ class DefaultConfigurationReader implements ConfigurationReader {
     }
 
 
-    private Supplier<InputStream> read(ConfigurationUnit annotation) {
+    private Supplier<InputStream> readStream(ConfigurationUnit annotation) {
         return () -> {
             String metaInfFile = META_INF + annotation.fileName();
 

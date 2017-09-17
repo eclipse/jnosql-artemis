@@ -25,6 +25,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -167,6 +170,42 @@ public class DefaultConfigurationReaderTest {
         assertEquals("that is the description", unit.getDescription().get());
         assertEquals(Settings.of(settings), unit.getSettings());
         assertEquals(DefaultMockConfiguration.class, unit.getProvider().get());
+    }
+
+    @Test
+    public void shouldReadAnnotationDefaultFile() {
+        ConfigurationUnit annotation = mock(ConfigurationUnit.class);
+        when(annotation.name()).thenReturn("name-2");
+        when(annotation.fileName()).thenReturn("jnosql.json");
+        ConfigurationSettingsUnit unit = configurationReader.read(annotation);
+
+        Map<String, Object> settings = new HashMap<String, Object>();
+        settings.put("key","value");
+        settings.put("key2","value2");
+        settings.put("key3","value3");
+
+        assertEquals("name-2", unit.getName().get());
+        assertEquals("that is the description", unit.getDescription().get());
+        assertEquals(Settings.of(settings), unit.getSettings());
+        assertFalse(unit.getProvider().isPresent());
+    }
+
+
+    @Test
+    public void shouldReadDefaultAnnotationNameXML() {
+        ConfigurationUnit annotation = mock(ConfigurationUnit.class);
+        when(annotation.fileName()).thenReturn("jnosql.xml");
+        when(annotation.name()).thenReturn("name");
+        ConfigurationSettingsUnit unit = configurationReader.read(annotation);
+
+        Map<String, Object> settings = new HashMap<String, Object>();
+        settings.put("key","value");
+        settings.put("key2","value2");
+
+        assertEquals("name", unit.getName().get());
+        assertEquals("that is the description", unit.getDescription().get());
+        assertEquals(Settings.of(settings), unit.getSettings());
+        assertFalse(unit.getProvider().isPresent());
     }
 
 }
