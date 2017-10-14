@@ -35,7 +35,7 @@ import static java.util.Collections.emptyMap;
 import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.jnosql.artemis.util.StringUtils.isBlank;
 
 /**
  * The default class to {@link ConfigurationReader}
