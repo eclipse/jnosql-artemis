@@ -31,4 +31,8 @@ public final class StringUtils {
         }
         return true;
     }
+
+    public static boolean isNotBlank(final CharSequence cs) {
+        return !isBlank(cs);
+    }
 }

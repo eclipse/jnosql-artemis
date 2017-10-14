@@ -14,11 +14,11 @@
  */
 package org.jnosql.artemis.reflection;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jnosql.artemis.Column;
 import org.jnosql.artemis.Entity;
 import org.jnosql.artemis.Id;
 import org.jnosql.artemis.MappedSuperclass;
+import org.jnosql.artemis.util.StringUtils;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.lang.reflect.Constructor;
