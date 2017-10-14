@@ -15,15 +15,13 @@
 package org.jnosql.artemis.model;
 
 
-import java.util.List;
-import java.util.Objects;
-
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jnosql.artemis.Column;
 import org.jnosql.artemis.Entity;
 import org.jnosql.artemis.Id;
 import org.jnosql.artemis.MappedSuperclass;
+
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @MappedSuperclass
@@ -77,12 +75,14 @@ public class Person {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
-                .append("id", id)
-                .append("name", name)
-                .append("age", age)
-                .append("phones", phones)
-                .toString();
+        final StringBuilder sb = new StringBuilder("Person{");
+        sb.append("id=").append(id);
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", age=").append(age);
+        sb.append(", phones=").append(phones);
+        sb.append(", ignore='").append(ignore).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 
     @Override
