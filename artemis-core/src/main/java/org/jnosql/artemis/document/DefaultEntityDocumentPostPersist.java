@@ -15,9 +15,6 @@
 package org.jnosql.artemis.document;
 
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-
 import java.util.Objects;
 
 class DefaultEntityDocumentPostPersist implements EntityDocumentPostPersist {
@@ -52,8 +49,9 @@ class DefaultEntityDocumentPostPersist implements EntityDocumentPostPersist {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
-                .append("value", value)
-                .toString();
+        final StringBuilder sb = new StringBuilder("DefaultEntityDocumentPostPersist{");
+        sb.append("value=").append(value);
+        sb.append('}');
+        return sb.toString();
     }
 }

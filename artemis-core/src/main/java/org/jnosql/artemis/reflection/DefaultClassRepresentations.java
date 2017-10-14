@@ -15,14 +15,11 @@
 package org.jnosql.artemis.reflection;
 
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The default implementation of {@link ClassRepresentation}.
@@ -76,10 +73,12 @@ class DefaultClassRepresentations implements ClassRepresentations {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                .append("representations", representations.size())
-                .append("classes", classes.size())
-                .toString();
+        final StringBuilder sb = new StringBuilder("DefaultClassRepresentations{");
+        sb.append("representations-size=").append(representations.size());
+        sb.append(", classes=").append(classes);
+        sb.append(", classConverter=").append(classConverter);
+        sb.append(", extension=").append(extension);
+        sb.append('}');
+        return sb.toString();
     }
-
 }

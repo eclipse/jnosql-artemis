@@ -14,8 +14,6 @@
  */
 package org.jnosql.artemis.key;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jnosql.diana.api.key.KeyValueEntity;
 
 import java.util.Objects;
@@ -52,8 +50,9 @@ class DefaultKeyValueEntityPostPersist implements KeyValueEntityPostPersist {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE)
-                .append("entity", entity)
-                .toString();
+        final StringBuilder sb = new StringBuilder("DefaultKeyValueEntityPostPersist{");
+        sb.append("entity=").append(entity);
+        sb.append('}');
+        return sb.toString();
     }
 }

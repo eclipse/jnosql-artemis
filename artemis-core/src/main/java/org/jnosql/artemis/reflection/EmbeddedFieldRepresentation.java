@@ -15,9 +15,6 @@
 package org.jnosql.artemis.reflection;
 
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-
 import java.lang.reflect.Field;
 import java.util.Objects;
 
@@ -61,13 +58,14 @@ public final class EmbeddedFieldRepresentation extends AbstractFieldRepresentati
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE)
-                .append("type", type)
-                .append("field", field)
-                .append("name", name)
-                .append("entityName", entityName)
-                .toString();
+        final StringBuilder sb = new StringBuilder("EmbeddedFieldRepresentation{");
+        sb.append("entityName='").append(entityName).append('\'');
+        sb.append(", type=").append(type);
+        sb.append(", field=").append(field);
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", fieldName='").append(fieldName).append('\'');
+        sb.append(", converter=").append(converter);
+        sb.append('}');
+        return sb.toString();
     }
-
-
 }

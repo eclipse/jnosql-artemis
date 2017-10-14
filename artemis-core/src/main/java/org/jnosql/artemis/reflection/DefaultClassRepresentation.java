@@ -15,8 +15,6 @@
 package org.jnosql.artemis.reflection;
 
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
@@ -124,14 +122,17 @@ class DefaultClassRepresentation implements ClassRepresentation {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
-                .append("name", name)
-                .append("fieldsName", fieldsName)
-                .append("classInstance", classInstance)
-                .append("fields", fields)
-                .append("id", id)
-                .append("constructor", constructor)
-                .toString();
+        final StringBuilder sb = new StringBuilder("DefaultClassRepresentation{");
+        sb.append("name='").append(name).append('\'');
+        sb.append(", fieldsName=").append(fieldsName);
+        sb.append(", classInstance=").append(classInstance);
+        sb.append(", fields=").append(fields);
+        sb.append(", constructor=").append(constructor);
+        sb.append(", javaFieldGroupedByColumn=").append(javaFieldGroupedByColumn);
+        sb.append(", fieldsGroupedByName=").append(fieldsGroupedByName);
+        sb.append(", id=").append(id);
+        sb.append('}');
+        return sb.toString();
     }
 
     /**

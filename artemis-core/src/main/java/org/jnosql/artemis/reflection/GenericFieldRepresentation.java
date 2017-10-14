@@ -15,8 +15,6 @@
 package org.jnosql.artemis.reflection;
 
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jnosql.artemis.AttributeConverter;
 import org.jnosql.diana.api.TypeSupplier;
 import org.jnosql.diana.api.Value;
@@ -65,11 +63,14 @@ public class GenericFieldRepresentation extends AbstractFieldRepresentation {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE)
-                .append("type", type)
-                .append("field", field)
-                .append("name", name)
-                .append("typeSupplier", typeSupplier)
-                .toString();
+        final StringBuilder sb = new StringBuilder("GenericFieldRepresentation{");
+        sb.append("typeSupplier=").append(typeSupplier);
+        sb.append(", type=").append(type);
+        sb.append(", field=").append(field);
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", fieldName='").append(fieldName).append('\'');
+        sb.append(", converter=").append(converter);
+        sb.append('}');
+        return sb.toString();
     }
 }

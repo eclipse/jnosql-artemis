@@ -15,8 +15,6 @@
 package org.jnosql.artemis.reflection;
 
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jnosql.artemis.AttributeConverter;
 
 import java.lang.reflect.Field;
@@ -62,13 +60,14 @@ public class DefaultFieldRepresentation extends AbstractFieldRepresentation {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE)
-                .append("type", type)
-                .append("field", field)
-                .append("name", name)
-                .append("id", id)
-                .toString();
+        final StringBuilder sb = new StringBuilder("DefaultFieldRepresentation{");
+        sb.append("id=").append(id);
+        sb.append(", type=").append(type);
+        sb.append(", field=").append(field);
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", fieldName='").append(fieldName).append('\'');
+        sb.append(", converter=").append(converter);
+        sb.append('}');
+        return sb.toString();
     }
-
-
 }

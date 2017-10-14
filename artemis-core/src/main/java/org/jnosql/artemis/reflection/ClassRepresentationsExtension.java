@@ -15,8 +15,6 @@
 package org.jnosql.artemis.reflection;
 
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jnosql.artemis.Embeddable;
 import org.jnosql.artemis.Entity;
 
@@ -90,9 +88,11 @@ public class ClassRepresentationsExtension implements Extension {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
-                .append("representations-size", representations.size())
-                .append("representations", representations)
-                .toString();
+        final StringBuilder sb = new StringBuilder("ClassRepresentationsExtension{");
+        sb.append("classConverter=").append(classConverter);
+        sb.append(", representations-size=").append(representations.size());
+        sb.append(", classes=").append(classes);
+        sb.append('}');
+        return sb.toString();
     }
 }

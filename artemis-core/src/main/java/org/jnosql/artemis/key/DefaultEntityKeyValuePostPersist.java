@@ -14,9 +14,6 @@
  */
 package org.jnosql.artemis.key;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-
 import java.util.Objects;
 
 class DefaultEntityKeyValuePostPersist implements EntityKeyValuePostPersist{
@@ -51,8 +48,9 @@ class DefaultEntityKeyValuePostPersist implements EntityKeyValuePostPersist{
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
-                .append("value", value)
-                .toString();
+        final StringBuilder sb = new StringBuilder("DefaultEntityKeyValuePostPersist{");
+        sb.append("value=").append(value);
+        sb.append('}');
+        return sb.toString();
     }
 }

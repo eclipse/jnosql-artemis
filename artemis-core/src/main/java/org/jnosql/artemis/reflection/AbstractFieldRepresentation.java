@@ -14,12 +14,11 @@
  */
 package org.jnosql.artemis.reflection;
 
-import java.lang.reflect.Field;
-import java.util.Optional;
-
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.jnosql.artemis.AttributeConverter;
 import org.jnosql.diana.api.Value;
+
+import java.lang.reflect.Field;
+import java.util.Optional;
 
 /**
  * Base class to all {@link FieldRepresentation}
@@ -75,12 +74,14 @@ abstract class AbstractFieldRepresentation implements FieldRepresentation {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
-                .append("type", type)
-                .append("field", field)
-                .append("name", name)
-                .append("fieldName", fieldName)
-                .toString();
+        final StringBuilder sb = new StringBuilder("AbstractFieldRepresentation{");
+        sb.append("type=").append(type);
+        sb.append(", field=").append(field);
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", fieldName='").append(fieldName).append('\'');
+        sb.append(", converter=").append(converter);
+        sb.append('}');
+        return sb.toString();
     }
 
     public Object getValue(Value value) {

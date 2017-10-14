@@ -15,8 +15,6 @@
 package org.jnosql.artemis.column;
 
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jnosql.diana.api.column.ColumnEntity;
 
 import java.util.Objects;
@@ -56,8 +54,9 @@ class DefaultColumnEntityPrePersist implements ColumnEntityPrePersist {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
-                .append("entity", entity)
-                .toString();
+        final StringBuilder sb = new StringBuilder("DefaultColumnEntityPrePersist{");
+        sb.append("entity=").append(entity);
+        sb.append('}');
+        return sb.toString();
     }
 }
