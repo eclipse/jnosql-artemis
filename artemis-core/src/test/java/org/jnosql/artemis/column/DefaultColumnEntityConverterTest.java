@@ -273,7 +273,7 @@ public class DefaultColumnEntityConverterTest {
 
 
     @Test
-    public void shouldConverttoListEmbeddable() {
+    public void shouldConvertoListEmbeddable() {
         AppointmentBook appointmentBook = new AppointmentBook("ids");
         appointmentBook.add(Contact.builder().withType(ContactType.EMAIL).withName("Ada").withInformation("ada@lovelace.com").build());
         appointmentBook.add(Contact.builder().withType(ContactType.MOBILE).withName("Ada").withInformation("11 1231231 123").build());
