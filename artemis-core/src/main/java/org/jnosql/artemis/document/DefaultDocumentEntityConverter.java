@@ -50,13 +50,13 @@ import static org.jnosql.artemis.reflection.FieldType.EMBEDDED;
 public class DefaultDocumentEntityConverter implements DocumentEntityConverter {
 
     @Inject
-    private ClassRepresentations classRepresentations;
+    protected ClassRepresentations classRepresentations;
 
     @Inject
-    private Reflections reflections;
+    protected Reflections reflections;
 
     @Inject
-    private Converters converters;
+    protected Converters converters;
 
     private final DocumentFieldConverterFactory converterFactory = new DocumentFieldConverterFactory();
 

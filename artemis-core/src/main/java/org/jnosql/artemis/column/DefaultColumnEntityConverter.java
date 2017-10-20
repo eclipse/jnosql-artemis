@@ -51,13 +51,13 @@ import static org.jnosql.artemis.reflection.FieldType.EMBEDDED;
 public class DefaultColumnEntityConverter implements ColumnEntityConverter {
 
     @Inject
-    private ClassRepresentations classRepresentations;
+    protected ClassRepresentations classRepresentations;
 
     @Inject
-    private Reflections reflections;
+    protected Reflections reflections;
 
     @Inject
-    private Converters converters;
+    protected Converters converters;
 
     private final ColumnFieldConverterFactory converterFactory = new ColumnFieldConverterFactory();
 

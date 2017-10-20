@@ -34,10 +34,10 @@ import static java.util.Objects.requireNonNull;
 public class DefaultKeyValueEntityConverter implements KeyValueEntityConverter {
 
     @Inject
-    private ClassRepresentations classRepresentations;
+    protected ClassRepresentations classRepresentations;
 
     @Inject
-    private Reflections reflections;
+    protected Reflections reflections;
 
     @Override
     public KeyValueEntity<?> toKeyValue(Object entityInstance) {
