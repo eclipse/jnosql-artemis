@@ -29,13 +29,13 @@ import javax.inject.Inject;
 class DefaultColumnEntityConverter extends AbstractColumnEntityConverter implements ColumnEntityConverter {
 
     @Inject
-    protected ClassRepresentations classRepresentations;
+    private ClassRepresentations classRepresentations;
 
     @Inject
-    protected Reflections reflections;
+    private Reflections reflections;
 
     @Inject
-    protected Converters converters;
+    private Converters converters;
 
 
     @Override
