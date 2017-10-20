@@ -112,7 +112,7 @@ public class DefaultDocumentEntityConverter implements DocumentEntityConverter {
         return instance;
     }
 
-    private <T> Consumer<String> feedObject(T instance, List<Document> documents, Map<String, FieldRepresentation> fieldsGroupByName) {
+    protected <T> Consumer<String> feedObject(T instance, List<Document> documents, Map<String, FieldRepresentation> fieldsGroupByName) {
         return k -> {
             Optional<Document> document = documents.stream().filter(c -> c.getName().equals(k)).findFirst();
 

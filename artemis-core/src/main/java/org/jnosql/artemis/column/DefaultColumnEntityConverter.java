@@ -101,7 +101,7 @@ public class DefaultColumnEntityConverter implements ColumnEntityConverter {
         return ColumnFieldValue.of(value, field);
     }
 
-    private <T> Consumer<String> feedObject(T instance, List<Column> columns, Map<String, FieldRepresentation> fieldsGroupByName) {
+    protected  <T> Consumer<String> feedObject(T instance, List<Column> columns, Map<String, FieldRepresentation> fieldsGroupByName) {
         return (String k) -> {
             Optional<Column> column = columns.stream().filter(c -> c.getName().equals(k)).findFirst();
             FieldRepresentation field = fieldsGroupByName.get(k);
