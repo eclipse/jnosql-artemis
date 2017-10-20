@@ -279,14 +279,11 @@ public class DefaultColumnEntityConverterTest {
         ColumnEntity entity = converter.toColumn(appointmentBook);
         Column contacts = entity.find("contacts").get();
         assertEquals("ids", appointmentBook.getId());
-        List<Column> columns = contacts.get(new TypeReference<List<Column>>() {
-        });
-        for (Column contact : columns) {
-            List<Column> contactInformation = contact.get(new TypeReference<List<Column>>() {
-            });
-            assertThat(contactInformation, contains(Column.of("name", "Ada")));
-        }
+        List<List<Column>> columns = (List<List<Column>>) contacts.get();
 
+        assertEquals(3L, columns.stream().flatMap(c -> c.stream())
+                .filter(c -> c.getName().equals("name"))
+                .count());
     }
 
     private Object getValue(Optional<Column> document) {

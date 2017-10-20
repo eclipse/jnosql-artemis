@@ -18,6 +18,7 @@ import org.jnosql.artemis.AttributeConverter;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.Embeddable;
 import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.FieldType;
 import org.jnosql.artemis.reflection.FieldValue;
 import org.jnosql.diana.api.column.Column;
 
@@ -57,7 +58,7 @@ class ColumnFieldValue implements FieldValue {
 
         if (EMBEDDED.equals(getNativeField())) {
             return Column.of(getName(), converter.toColumn(getValue()).getColumns());
-        } else if(COLLECTION.equals(getNativeField()) && isEmbeddableElement()) {
+        } else if(COLLECTION.equals(getType()) && isEmbeddableElement()) {
             List<List<Column>> columns = new ArrayList<>();
             for (Object element : Iterable.class.cast(getValue())) {
                 columns.add(converter.toColumn(element).getColumns());
@@ -71,6 +72,10 @@ class ColumnFieldValue implements FieldValue {
         }
 
         return Column.of(getName(), getValue());
+    }
+
+    private FieldType getType() {
+        return getField().getType();
     }
 
     private String getName() {
