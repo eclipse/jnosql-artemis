@@ -28,6 +28,9 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
+import static org.jnosql.artemis.reflection.FieldType.COLLECTION;
+import static org.jnosql.artemis.reflection.FieldType.EMBEDDED;
+
 class ColumnFieldValue implements FieldValue {
 
     private final FieldValue fieldValue;
@@ -53,10 +56,10 @@ class ColumnFieldValue implements FieldValue {
 
     public Column toColumn(ColumnEntityConverter converter, Converters converters) {
 
-        if (FieldType.EMBEDDED.equals(getNativeField())) {
+        if (EMBEDDED.equals(getNativeField())) {
             return Column.of(getField().getName(), converter.toColumn(getValue()).getColumns());
-        } else if(FieldType.COLLECTION.equals(getNativeField()) && isEmbeddableElement()) {
-            
+        } else if(COLLECTION.equals(getNativeField()) && isEmbeddableElement()) {
+
         }
         Optional<Class<? extends AttributeConverter>> optionalConverter = getField().getConverter();
         if (optionalConverter.isPresent()) {
