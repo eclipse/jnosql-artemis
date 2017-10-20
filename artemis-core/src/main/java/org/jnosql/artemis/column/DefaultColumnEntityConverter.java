@@ -48,7 +48,7 @@ import static org.jnosql.artemis.reflection.FieldType.EMBEDDED;
  * The default implementation to {@link ColumnEntityConverter}
  */
 @ApplicationScoped
-class DefaultColumnEntityConverter implements ColumnEntityConverter {
+public class DefaultColumnEntityConverter implements ColumnEntityConverter {
 
     @Inject
     private ClassRepresentations classRepresentations;
