@@ -244,8 +244,8 @@ public class DefaultColumnEntityConverterTest {
         ColumnEntity entity = converter.toColumn(worker);
         assertEquals("Worker", entity.getName());
         assertEquals("Bob", entity.find("name").get().get());
-        Column subDocument = entity.find("job").get();
-        List<Column> columns = subDocument.get(new TypeReference<List<Column>>() {
+        Column subColumn = entity.find("job").get();
+        List<Column> columns = subColumn.get(new TypeReference<List<Column>>() {
         });
         assertThat(columns, Matchers.containsInAnyOrder(Column.of("city", "Sao Paulo"), Column.of("description", "Java Developer")));
         assertEquals("BRL 10", entity.find("money").get().get());
@@ -278,6 +278,8 @@ public class DefaultColumnEntityConverterTest {
         ColumnEntity entity = converter.toColumn(appointmentBook);
         Column contacts = entity.find("contacts").get();
         assertEquals("ids", appointmentBook.getId());
+        List<Column> columns = subDocument.get(new TypeReference<List<Column>>() {
+        });
 
     }
 
