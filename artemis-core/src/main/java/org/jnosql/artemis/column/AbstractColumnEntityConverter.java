@@ -75,7 +75,7 @@ public abstract class AbstractColumnEntityConverter implements ColumnEntityConve
         return toEntity(entityClass, entity.getColumns());
     }
 
-    private <T> T toEntity(Class<T> entityClass, List<Column> columns) {
+    protected  <T> T toEntity(Class<T> entityClass, List<Column> columns) {
         ClassRepresentation representation = getClassRepresentations().get(entityClass);
         T instance = getReflections().newInstance(representation.getConstructor());
         return convertEntity(columns, representation, instance);
