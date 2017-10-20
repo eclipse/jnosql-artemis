@@ -22,7 +22,18 @@ import org.jnosql.diana.api.Value;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.NavigableSet;
 import java.util.Objects;
+import java.util.Queue;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class GenericFieldRepresentation extends AbstractFieldRepresentation {
 
@@ -68,6 +79,26 @@ public class GenericFieldRepresentation extends AbstractFieldRepresentation {
                 .getGenericType())
                 .getActualTypeArguments()[0])
                 .getAnnotation(Embeddable.class) != null;
+    }
+
+    public Class getElementType() {
+        return Class.class.cast(ParameterizedType.class.cast(getNativeField()
+                .getGenericType())
+                .getActualTypeArguments()[0]);
+    }
+
+    public Collection getCollectionInstance() {
+        Class<?> type = getNativeField().getType();
+        if (Deque.class.equals(type) || Queue.class.equals(type)) {
+            return new LinkedList<>();
+        } else if (List.class.equals(type) || Iterable.class.equals(type)) {
+            return new ArrayList<>();
+        } else if (NavigableSet.class.equals(type) || SortedSet.class.equals(type)) {
+            return new TreeSet<>();
+        } else if (Set.class.equals(type)) {
+            return new HashSet<>();
+        }
+        throw new UnsupportedOperationException("This collection is not supported yet: " + type);
     }
 
     @Override

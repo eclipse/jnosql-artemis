@@ -48,6 +48,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -70,7 +71,7 @@ public class DefaultColumnEntityConverterTest {
     private Actor actor = Actor.actorBuilder().withAge()
             .withId()
             .withName()
-            .withPhones(Arrays.asList("234", "2342"))
+            .withPhones(asList("234", "2342"))
             .withMovieCharacter(Collections.singletonMap("JavaZone", "Jedi"))
             .withMovierRating(Collections.singletonMap("JavaZone", 10))
             .build();
@@ -80,7 +81,7 @@ public class DefaultColumnEntityConverterTest {
 
         columns = new Column[]{Column.of("_id", 12L),
                 Column.of("age", 10), Column.of("name", "Otavio"),
-                Column.of("phones", Arrays.asList("234", "2342"))
+                Column.of("phones", asList("234", "2342"))
                 , Column.of("movieCharacter", Collections.singletonMap("JavaZone", "Jedi"))
                 , Column.of("movieRating", Collections.singletonMap("JavaZone", 10))};
     }
@@ -91,7 +92,7 @@ public class DefaultColumnEntityConverterTest {
         Person person = Person.builder().withAge()
                 .withId(12)
                 .withName("Otavio")
-                .withPhones(Arrays.asList("234", "2342")).build();
+                .withPhones(asList("234", "2342")).build();
 
         ColumnEntity entity = converter.toColumn(person);
         assertEquals("Person", entity.getName());
@@ -122,7 +123,7 @@ public class DefaultColumnEntityConverterTest {
         assertNotNull(actor);
         assertEquals(10, actor.getAge());
         assertEquals(12L, actor.getId());
-        assertEquals(Arrays.asList("234", "2342"), actor.getPhones());
+        assertEquals(asList("234", "2342"), actor.getPhones());
         assertEquals(Collections.singletonMap("JavaZone", "Jedi"), actor.getMovieCharacter());
         assertEquals(Collections.singletonMap("JavaZone", 10), actor.getMovieRating());
     }
@@ -136,7 +137,7 @@ public class DefaultColumnEntityConverterTest {
         assertNotNull(actor);
         assertEquals(10, actor.getAge());
         assertEquals(12L, actor.getId());
-        assertEquals(Arrays.asList("234", "2342"), actor.getPhones());
+        assertEquals(asList("234", "2342"), actor.getPhones());
         assertEquals(Collections.singletonMap("JavaZone", "Jedi"), actor.getMovieCharacter());
         assertEquals(Collections.singletonMap("JavaZone", 10), actor.getMovieRating());
     }
@@ -149,7 +150,7 @@ public class DefaultColumnEntityConverterTest {
         Director director = Director.builderDiretor().withAge(12)
                 .withId(12)
                 .withName("Otavio")
-                .withPhones(Arrays.asList("234", "2342")).withMovie(movie).build();
+                .withPhones(asList("234", "2342")).withMovie(movie).build();
 
         ColumnEntity entity = converter.toColumn(director);
         assertEquals(5, entity.size());
@@ -179,7 +180,7 @@ public class DefaultColumnEntityConverterTest {
         Director director = Director.builderDiretor().withAge(12)
                 .withId(12)
                 .withName("Otavio")
-                .withPhones(Arrays.asList("234", "2342")).withMovie(movie).build();
+                .withPhones(asList("234", "2342")).withMovie(movie).build();
 
         ColumnEntity entity = converter.toColumn(director);
         Director director1 = converter.toEntity(entity);
@@ -196,7 +197,7 @@ public class DefaultColumnEntityConverterTest {
         Director director = Director.builderDiretor().withAge(12)
                 .withId(12)
                 .withName("Otavio")
-                .withPhones(Arrays.asList("234", "2342")).withMovie(movie).build();
+                .withPhones(asList("234", "2342")).withMovie(movie).build();
 
         ColumnEntity entity = converter.toColumn(director);
         entity.remove("movie");
@@ -217,7 +218,7 @@ public class DefaultColumnEntityConverterTest {
         Director director = Director.builderDiretor().withAge(12)
                 .withId(12)
                 .withName("Otavio")
-                .withPhones(Arrays.asList("234", "2342")).withMovie(movie).build();
+                .withPhones(asList("234", "2342")).withMovie(movie).build();
 
         ColumnEntity entity = converter.toColumn(director);
         entity.remove("movie");
@@ -289,19 +290,26 @@ public class DefaultColumnEntityConverterTest {
     }
 
     @Test
-    @Ignore
     public void shouldConvertFromListEmbeddable() {
         ColumnEntity entity = ColumnEntity.of("AppointmentBook");
-        entity.add(Column.of("id", "ids"));
+        entity.add(Column.of("_id", "ids"));
         List<List<Column>> columns = new ArrayList<>();
-        columns.add(singletonList(Column.of("name", "Ada")));
-        columns.add(singletonList(Column.of("name", "Ada")));
-        columns.add(singletonList(Column.of("name", "Ada")));
+
+        columns.add(asList(Column.of("name", "Ada"), Column.of("type", ContactType.EMAIL),
+                Column.of("information", "ada@lovelace.com")));
+
+        columns.add(asList(Column.of("name", "Ada"), Column.of("type", ContactType.MOBILE),
+                Column.of("information", "11 1231231 123")));
+
+        columns.add(asList(Column.of("name", "Ada"), Column.of("type", ContactType.PHONE),
+                Column.of("information", "phone")));
+
         entity.add(Column.of("contacts", columns));
 
         AppointmentBook appointmentBook = converter.toEntity(entity);
 
         List<Contact> contacts = appointmentBook.getContacts();
+        assertEquals("ids", appointmentBook.getId());
         assertEquals("Ada", contacts.stream().map(Contact::getName).distinct().findFirst().get());
 
     }

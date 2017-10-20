@@ -31,6 +31,7 @@ import org.jnosql.diana.api.column.ColumnEntity;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -113,17 +114,16 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
 
         private final EmbeddedFieldConverter embeddedFieldConverter = new EmbeddedFieldConverter();
         private final DefaultConverter defaultConverter = new DefaultConverter();
+        private final CollectionEmbeddableConverter embeddableConverter = new CollectionEmbeddableConverter();
 
         ColumnFieldConverter get(FieldRepresentation field) {
             if (EMBEDDED.equals(field.getType())) {
                 return embeddedFieldConverter;
             } else if (isCollectionEmbeddable(field)) {
-                System.out.println(field);
-                System.out.println(field);
+                return embeddableConverter;
             } else {
                 return defaultConverter;
             }
-            throw new IllegalArgumentException("There is not support to the field: " + field);
         }
 
         private boolean isCollectionEmbeddable(FieldRepresentation field) {
@@ -174,6 +174,23 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
                 reflections.setValue(instance, field.getNativeField(), field.getValue(Value.of(attributeConverted)));
             } else {
                 reflections.setValue(instance, field.getNativeField(), field.getValue(value));
+            }
+        }
+    }
+
+    private class CollectionEmbeddableConverter implements ColumnFieldConverter {
+
+        @Override
+        public <T> void convert(T instance, List<Column> columns, Optional<Column> column, FieldRepresentation field) {
+            if (column.isPresent()) {
+                GenericFieldRepresentation genericField = GenericFieldRepresentation.class.cast(field);
+                Collection collection = genericField.getCollectionInstance();
+                List<List<Column>> embeddable = (List<List<Column>>) column.get().get();
+                for (List<Column> columnList : embeddable) {
+                    Object element = DefaultColumnEntityConverter.this.toEntity(genericField.getElementType(), columnList);
+                    collection.add(element);
+                }
+                reflections.setValue(instance, field.getNativeField(), collection);
             }
         }
     }
