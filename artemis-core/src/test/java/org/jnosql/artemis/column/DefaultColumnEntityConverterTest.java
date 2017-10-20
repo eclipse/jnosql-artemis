@@ -17,9 +17,9 @@ package org.jnosql.artemis.column;
 import org.hamcrest.Matchers;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Actor;
+import org.jnosql.artemis.model.AppointmentBook;
 import org.jnosql.artemis.model.Contact;
 import org.jnosql.artemis.model.ContactType;
-import org.jnosql.artemis.model.AppointmentBook;
 import org.jnosql.artemis.model.Director;
 import org.jnosql.artemis.model.Job;
 import org.jnosql.artemis.model.Money;
@@ -38,6 +38,7 @@ import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,7 +48,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.util.Collections.singleton;
-import static org.hamcrest.Matchers.contains;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -270,7 +271,7 @@ public class DefaultColumnEntityConverterTest {
 
 
     @Test
-    public void shouldConvertListEmbeddable() {
+    public void shouldConverttoListEmbeddable() {
         AppointmentBook appointmentBook = new AppointmentBook("ids");
         appointmentBook.add(Contact.builder().withType(ContactType.EMAIL).withName("Ada").withInformation("ada@lovelace.com").build());
         appointmentBook.add(Contact.builder().withType(ContactType.MOBILE).withName("Ada").withInformation("11 1231231 123").build());
@@ -284,6 +285,23 @@ public class DefaultColumnEntityConverterTest {
         assertEquals(3L, columns.stream().flatMap(c -> c.stream())
                 .filter(c -> c.getName().equals("name"))
                 .count());
+    }
+
+    @Test
+    public void shouldConvertFromListEmbeddable() {
+        ColumnEntity entity = ColumnEntity.of("AppointmentBook");
+        entity.add(Column.of("id", "ids"));
+        List<List<Column>> columns = new ArrayList<>();
+        columns.add(singletonList(Column.of("name", "Ada")));
+        columns.add(singletonList(Column.of("name", "Ada")));
+        columns.add(singletonList(Column.of("name", "Ada")));
+        entity.add(Column.of("contacts", columns));
+
+        AppointmentBook appointmentBook = converter.toEntity(entity);
+
+        List<Contact> contacts = appointmentBook.getContacts();
+        assertEquals("Ada", contacts.stream().map(Contact::getName).distinct().findFirst().get());
+
     }
 
     private Object getValue(Optional<Column> document) {
