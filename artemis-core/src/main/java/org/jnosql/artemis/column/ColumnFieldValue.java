@@ -56,7 +56,7 @@ class ColumnFieldValue implements FieldValue {
 
     public Column toColumn(ColumnEntityConverter converter, Converters converters) {
 
-        if (EMBEDDED.equals(getNativeField())) {
+        if (EMBEDDED.equals(getType())) {
             return Column.of(getName(), converter.toColumn(getValue()).getColumns());
         } else if(COLLECTION.equals(getType()) && isEmbeddableElement()) {
             List<List<Column>> columns = new ArrayList<>();
