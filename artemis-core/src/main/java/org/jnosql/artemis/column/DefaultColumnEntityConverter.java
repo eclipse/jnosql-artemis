@@ -39,6 +39,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
+import static org.jnosql.artemis.reflection.FieldType.COLLECTION;
 import static org.jnosql.artemis.reflection.FieldType.EMBEDDED;
 
 /**
@@ -55,6 +56,8 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
 
     @Inject
     private Converters converters;
+
+    private final ColumnFieldConverterFactory converterFactory = new ColumnFieldConverterFactory();
 
     @Override
     public ColumnEntity toColumn(Object entityInstance) {
@@ -97,28 +100,79 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
     }
 
     private <T> Consumer<String> feedObject(T instance, List<Column> columns, Map<String, FieldRepresentation> fieldsGroupByName) {
-        return k -> {
+        return (String k) -> {
             Optional<Column> column = columns.stream().filter(c -> c.getName().equals(k)).findFirst();
             FieldRepresentation field = fieldsGroupByName.get(k);
-            if (EMBEDDED.equals(field.getType())) {
-                setEmbeddedField(instance, columns, column, field);
-            } else {
-                setSingleField(instance, column, field);
-            }
+            ColumnFieldConverter fieldConverter = converterFactory.get(field);
+            fieldConverter.convert(instance, columns, column, field);
         };
     }
 
-    private <T> void setSingleField(T instance, Optional<Column> column, FieldRepresentation field) {
-        Value value = column.get().getValue();
-        Optional<Class<? extends AttributeConverter>> converter = field.getConverter();
-        if (converter.isPresent()) {
-            AttributeConverter attributeConverter = converters.get(converter.get());
-            Object attributeConverted = attributeConverter.convertToEntityAttribute(value.get());
-            reflections.setValue(instance, field.getNativeField(), field.getValue(Value.of(attributeConverted)));
-        } else {
-            reflections.setValue(instance, field.getNativeField(), field.getValue(value));
+    private class ColumnFieldConverterFactory {
+
+        private final EmbeddedFieldConverter embeddedFieldConverter = new EmbeddedFieldConverter();
+        private final SingleFieldConverter singleFieldConverter = new SingleFieldConverter();
+
+        ColumnFieldConverter get(FieldRepresentation field) {
+            if (EMBEDDED.equals(field.getType())) {
+                return embeddedFieldConverter;
+            } else if (COLLECTION.equals(field.getType())) {
+                System.out.println(field);
+                System.out.println(field);
+            } else {
+                return singleFieldConverter;
+            }
+            throw new IllegalArgumentException("There is not support to the field: " + field);
         }
     }
+
+    private interface ColumnFieldConverter {
+
+        <T> void convert(T instance, List<Column> columns, Optional<Column> column, FieldRepresentation field);
+    }
+
+    private class EmbeddedFieldConverter implements ColumnFieldConverter {
+
+        @Override
+        public <T> void convert(T instance, List<Column> columns, Optional<Column> column, FieldRepresentation field) {
+            if (column.isPresent()) {
+                Column subColumn = column.get();
+                Object value = subColumn.get();
+                if (Map.class.isInstance(value)) {
+                    Map map = Map.class.cast(value);
+                    List<Column> embeddedColumns = new ArrayList<>();
+                    for (Object key : map.keySet()) {
+                        embeddedColumns.add(Column.of(key.toString(), map.get(key)));
+                    }
+                    reflections.setValue(instance, field.getNativeField(), toEntity(field.getNativeField().getType(), embeddedColumns));
+                } else {
+                    reflections.setValue(instance, field.getNativeField(), toEntity(field.getNativeField().getType(),
+                            subColumn.get(new TypeReference<List<Column>>() {
+                            })));
+                }
+
+            } else {
+                reflections.setValue(instance, field.getNativeField(), toEntity(field.getNativeField().getType(), columns));
+            }
+        }
+    }
+
+    private class SingleFieldConverter implements ColumnFieldConverter {
+
+        @Override
+        public <T> void convert(T instance, List<Column> columns, Optional<Column> column, FieldRepresentation field) {
+            Value value = column.get().getValue();
+            Optional<Class<? extends AttributeConverter>> converter = field.getConverter();
+            if (converter.isPresent()) {
+                AttributeConverter attributeConverter = converters.get(converter.get());
+                Object attributeConverted = attributeConverter.convertToEntityAttribute(value.get());
+                reflections.setValue(instance, field.getNativeField(), field.getValue(Value.of(attributeConverted)));
+            } else {
+                reflections.setValue(instance, field.getNativeField(), field.getValue(value));
+            }
+        }
+    }
+
 
     private <T> T convertEntity(List<Column> columns, ClassRepresentation representation, T instance) {
         Map<String, FieldRepresentation> fieldsGroupByName = representation.getFieldsGroupByName();
@@ -131,26 +185,5 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
         return instance;
     }
 
-    private <T> void setEmbeddedField(T instance, List<Column> columns, Optional<Column> column, FieldRepresentation field) {
-        if (column.isPresent()) {
-            Column subColumn = column.get();
-            Object value = subColumn.get();
-            if (Map.class.isInstance(value)) {
-                Map map = Map.class.cast(value);
-                List<Column> embeddedColumns = new ArrayList<>();
-                for (Object key : map.keySet()) {
-                    embeddedColumns.add(Column.of(key.toString(), map.get(key)));
-                }
-                reflections.setValue(instance, field.getNativeField(), toEntity(field.getNativeField().getType(), embeddedColumns));
-            } else {
-                reflections.setValue(instance, field.getNativeField(), toEntity(field.getNativeField().getType(),
-                        subColumn.get(new TypeReference<List<Column>>() {
-                        })));
-            }
-
-        } else {
-            reflections.setValue(instance, field.getNativeField(), toEntity(field.getNativeField().getType(), columns));
-        }
-    }
 
 }
