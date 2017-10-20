@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class Contacts {
+public class AppointmentBook {
 
 
     @Id
@@ -34,10 +34,10 @@ public class Contacts {
     private List<Contact> contacts = new ArrayList<>();
 
 
-    Contacts() {
+    AppointmentBook() {
     }
 
-    public Contacts(String id) {
+    public AppointmentBook(String id) {
         this.id = id;
     }
 
@@ -62,8 +62,8 @@ public class Contacts {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Contacts contacts = (Contacts) o;
-        return Objects.equals(id, contacts.id);
+        AppointmentBook appointmentBook = (AppointmentBook) o;
+        return Objects.equals(id, appointmentBook.id);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class Contacts {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Contacts{");
+        final StringBuilder sb = new StringBuilder("AppointmentBook{");
         sb.append("id='").append(id).append('\'');
         sb.append(", contacts=").append(contacts);
         sb.append('}');

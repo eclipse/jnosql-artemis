@@ -17,6 +17,9 @@ package org.jnosql.artemis.column;
 import org.hamcrest.Matchers;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Actor;
+import org.jnosql.artemis.model.Contact;
+import org.jnosql.artemis.model.ContactType;
+import org.jnosql.artemis.model.AppointmentBook;
 import org.jnosql.artemis.model.Director;
 import org.jnosql.artemis.model.Job;
 import org.jnosql.artemis.model.Money;
@@ -262,6 +265,20 @@ public class DefaultColumnEntityConverterTest {
         Assert.assertEquals(worker.getSalary(), worker1.getSalary());
         assertEquals(job.getCity(), worker1.getJob().getCity());
         assertEquals(job.getDescription(), worker1.getJob().getDescription());
+    }
+
+
+    @Test
+    public void shouldConvertListEmbeddable() {
+        AppointmentBook appointmentBook = new AppointmentBook("ids");
+        appointmentBook.add(Contact.builder().withType(ContactType.EMAIL).withName("Ada").withInformation("ada@lovelace.com").build());
+        appointmentBook.add(Contact.builder().withType(ContactType.MOBILE).withName("Ada").withInformation("11 1231231 123").build());
+        appointmentBook.add(Contact.builder().withType(ContactType.PHONE).withName("Ada").withInformation("12 123 1231 123123").build());
+
+        ColumnEntity entity = converter.toColumn(appointmentBook);
+        Column contacts = entity.find("contacts").get();
+        assertEquals("ids", appointmentBook.getId());
+
     }
 
     private Object getValue(Optional<Column> document) {
