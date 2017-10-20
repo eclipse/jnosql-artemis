@@ -53,7 +53,7 @@ public abstract class AbstractDocumentRepository<T, ID> implements Repository<T,
     @Override
     public <S extends T> S save(S entity) throws NullPointerException {
         Objects.requireNonNull(entity, "Entity is required");
-        Object id = getReflections().getValue(entity, getIdField().getField());
+        Object id = getReflections().getValue(entity, getIdField().getNativeField());
         if (nonNull(id) && existsById((ID) id)) {
             return getTemplate().update(entity);
         } else {

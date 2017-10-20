@@ -17,6 +17,9 @@ package org.jnosql.artemis.document;
 import org.hamcrest.Matchers;
 import org.jnosql.artemis.WeldJUnit4Runner;
 import org.jnosql.artemis.model.Actor;
+import org.jnosql.artemis.model.AppointmentBook;
+import org.jnosql.artemis.model.Contact;
+import org.jnosql.artemis.model.ContactType;
 import org.jnosql.artemis.model.Director;
 import org.jnosql.artemis.model.Job;
 import org.jnosql.artemis.model.Money;
@@ -35,6 +38,7 @@ import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,6 +47,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
@@ -262,6 +267,48 @@ public class DefaultDocumentEntityConverterTest {
         Assert.assertEquals(worker.getSalary(), worker1.getSalary());
         assertEquals(job.getCity(), worker1.getJob().getCity());
         assertEquals(job.getDescription(), worker1.getJob().getDescription());
+    }
+
+    @Test
+    public void shouldConvertoListEmbeddable() {
+        AppointmentBook appointmentBook = new AppointmentBook("ids");
+        appointmentBook.add(Contact.builder().withType(ContactType.EMAIL).withName("Ada").withInformation("ada@lovelace.com").build());
+        appointmentBook.add(Contact.builder().withType(ContactType.MOBILE).withName("Ada").withInformation("11 1231231 123").build());
+        appointmentBook.add(Contact.builder().withType(ContactType.PHONE).withName("Ada").withInformation("12 123 1231 123123").build());
+
+        DocumentEntity entity = converter.toDocument(appointmentBook);
+        Document contacts = entity.find("contacts").get();
+        assertEquals("ids", appointmentBook.getId());
+        List<List<Document>> documents = (List<List<Document>>) contacts.get();
+
+        assertEquals(3L, documents.stream().flatMap(c -> c.stream())
+                .filter(c -> c.getName().equals("name"))
+                .count());
+    }
+
+    @Test
+    public void shouldConvertFromListEmbeddable() {
+        DocumentEntity entity = DocumentEntity.of("AppointmentBook");
+        entity.add(Document.of("_id", "ids"));
+        List<List<Document>> documents = new ArrayList<>();
+
+        documents.add(asList(Document.of("name", "Ada"), Document.of("type", ContactType.EMAIL),
+                Document.of("information", "ada@lovelace.com")));
+
+        documents.add(asList(Document.of("name", "Ada"), Document.of("type", ContactType.MOBILE),
+                Document.of("information", "11 1231231 123")));
+
+        documents.add(asList(Document.of("name", "Ada"), Document.of("type", ContactType.PHONE),
+                Document.of("information", "phone")));
+
+        entity.add(Document.of("contacts", documents));
+
+        AppointmentBook appointmentBook = converter.toEntity(entity);
+
+        List<Contact> contacts = appointmentBook.getContacts();
+        assertEquals("ids", appointmentBook.getId());
+        assertEquals("Ada", contacts.stream().map(Contact::getName).distinct().findFirst().get());
+
     }
 
     private Object getValue(Optional<Document> document) {

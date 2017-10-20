@@ -50,7 +50,7 @@ public abstract class AbstractColumnRepositoryAsync<T, ID> implements Repository
     @Override
     public <S extends T> void save(S entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
         requireNonNull(entity, "Entity is required");
-        Object id = getReflections().getValue(entity, getIdField().getField());
+        Object id = getReflections().getValue(entity, getIdField().getNativeField());
 
         if (isNull(id)) {
             getTemplate().insert(entity);
