@@ -15,34 +15,12 @@
 package org.jnosql.artemis.column;
 
 
-import org.jnosql.artemis.AttributeConverter;
 import org.jnosql.artemis.Converters;
-import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.artemis.reflection.FieldRepresentation;
-import org.jnosql.artemis.reflection.FieldValue;
-import org.jnosql.artemis.reflection.GenericFieldRepresentation;
 import org.jnosql.artemis.reflection.Reflections;
-import org.jnosql.diana.api.TypeReference;
-import org.jnosql.diana.api.Value;
-import org.jnosql.diana.api.column.Column;
-import org.jnosql.diana.api.column.ColumnEntity;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
-import static java.util.Objects.requireNonNull;
-import static org.jnosql.artemis.reflection.FieldType.COLLECTION;
-import static org.jnosql.artemis.reflection.FieldType.EMBEDDED;
 
 /**
  * The default implementation to {@link ColumnEntityConverter}

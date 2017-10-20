@@ -27,7 +27,6 @@ import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnEntity;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
