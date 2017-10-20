@@ -208,8 +208,8 @@ class DefaultDocumentEntityConverter implements DocumentEntityConverter {
                 GenericFieldRepresentation genericField = GenericFieldRepresentation.class.cast(field);
                 Collection collection = genericField.getCollectionInstance();
                 List<List<Document>> embeddable = (List<List<Document>>) document.get().get();
-                for (List<Document> columnList : embeddable) {
-                    Object element = DefaultDocumentEntityConverter.this.toEntity(genericField.getElementType(), columnList);
+                for (List<Document> documentList : embeddable) {
+                    Object element = DefaultDocumentEntityConverter.this.toEntity(genericField.getElementType(), documentList);
                     collection.add(element);
                 }
                 reflections.setValue(instance, field.getNativeField(), collection);
