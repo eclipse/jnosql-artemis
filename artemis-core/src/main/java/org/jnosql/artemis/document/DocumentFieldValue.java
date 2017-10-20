@@ -19,9 +19,14 @@ import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.reflection.FieldRepresentation;
 import org.jnosql.artemis.reflection.FieldType;
 import org.jnosql.artemis.reflection.FieldValue;
+import org.jnosql.artemis.reflection.GenericFieldRepresentation;
 import org.jnosql.diana.api.document.Document;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+
+import static org.jnosql.artemis.reflection.FieldType.COLLECTION;
 
 /**
  * Implementation of document
@@ -46,20 +51,38 @@ class DocumentFieldValue implements FieldValue {
 
 
     public Document toDocument(DocumentEntityConverter converter, Converters converters) {
-        if (FieldType.EMBEDDED.equals(getField().getType())) {
-            return Document.of(getField().getName(), converter.toDocument(getValue()).getDocuments());
+        if (FieldType.EMBEDDED.equals(getType())) {
+            return Document.of(getName(), converter.toDocument(getValue()).getDocuments());
+        } else if (COLLECTION.equals(getType()) && isEmbeddableElement()) {
+            List<List<Document>> documents = new ArrayList<>();
+            for (Object element : Iterable.class.cast(getValue())) {
+                documents.add(converter.toDocument(element).getDocuments());
+            }
+            return Document.of(getName(), documents);
         }
         Optional<Class<? extends AttributeConverter>> optionalConverter = getField().getConverter();
         if (optionalConverter.isPresent()) {
             AttributeConverter attributeConverter = converters.get(optionalConverter.get());
-            return Document.of(getField().getName(), attributeConverter.convertToDatabaseColumn(getValue()));
+            return Document.of(getName(), attributeConverter.convertToDatabaseColumn(getValue()));
         }
-        return Document.of(getField().getName(), getValue());
+        return Document.of(getName(), getValue());
     }
 
     @Override
     public boolean isNotEmpty() {
         return fieldValue.isNotEmpty();
+    }
+
+    private FieldType getType() {
+        return getField().getType();
+    }
+
+    private boolean isEmbeddableElement() {
+        return GenericFieldRepresentation.class.cast(getField()).isEmbeddable();
+    }
+
+    private String getName() {
+        return getField().getName();
     }
 
     static DocumentFieldValue of(Object value, FieldRepresentation field) {
