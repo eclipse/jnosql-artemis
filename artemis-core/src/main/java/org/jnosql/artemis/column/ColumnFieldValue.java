@@ -18,14 +18,13 @@ import org.jnosql.artemis.AttributeConverter;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.Embeddable;
 import org.jnosql.artemis.reflection.FieldRepresentation;
-import org.jnosql.artemis.reflection.FieldType;
 import org.jnosql.artemis.reflection.FieldValue;
-import org.jnosql.artemis.reflection.GenericFieldRepresentation;
 import org.jnosql.diana.api.column.Column;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.jnosql.artemis.reflection.FieldType.COLLECTION;
@@ -57,17 +56,25 @@ class ColumnFieldValue implements FieldValue {
     public Column toColumn(ColumnEntityConverter converter, Converters converters) {
 
         if (EMBEDDED.equals(getNativeField())) {
-            return Column.of(getField().getName(), converter.toColumn(getValue()).getColumns());
+            return Column.of(getName(), converter.toColumn(getValue()).getColumns());
         } else if(COLLECTION.equals(getNativeField()) && isEmbeddableElement()) {
-
+            List<List<Column>> columns = new ArrayList<>();
+            for (Object element : Iterable.class.cast(getValue())) {
+                columns.add(converter.toColumn(element).getColumns());
+            }
+            return Column.of(getName(), columns);
         }
         Optional<Class<? extends AttributeConverter>> optionalConverter = getField().getConverter();
         if (optionalConverter.isPresent()) {
             AttributeConverter attributeConverter = converters.get(optionalConverter.get());
-            return Column.of(getField().getName(), attributeConverter.convertToDatabaseColumn(getValue()));
+            return Column.of(getName(), attributeConverter.convertToDatabaseColumn(getValue()));
         }
 
-        return Column.of(getField().getName(), getValue());
+        return Column.of(getName(), getValue());
+    }
+
+    private String getName() {
+        return getField().getName();
     }
 
     private boolean isEmbeddableElement() {
