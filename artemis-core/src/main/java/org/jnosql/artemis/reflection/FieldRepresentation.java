@@ -40,7 +40,7 @@ public interface FieldRepresentation extends Serializable {
      *
      * @return the field
      */
-    Field getField();
+    Field getNativeField();
 
     /**
      * Returns the name of the field that can be eiher the field name

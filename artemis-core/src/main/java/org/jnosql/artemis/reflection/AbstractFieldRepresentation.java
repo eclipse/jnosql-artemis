@@ -51,7 +51,7 @@ abstract class AbstractFieldRepresentation implements FieldRepresentation {
     }
 
     @Override
-    public Field getField() {
+    public Field getNativeField() {
         return field;
     }
 

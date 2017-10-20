@@ -92,7 +92,7 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
     }
 
     private ColumnFieldValue to(FieldRepresentation field, Object entityInstance) {
-        Object value = reflections.getValue(entityInstance, field.getField());
+        Object value = reflections.getValue(entityInstance, field.getNativeField());
         return ColumnFieldValue.of(value, field);
     }
 
@@ -114,9 +114,9 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
         if (converter.isPresent()) {
             AttributeConverter attributeConverter = converters.get(converter.get());
             Object attributeConverted = attributeConverter.convertToEntityAttribute(value.get());
-            reflections.setValue(instance, field.getField(), field.getValue(Value.of(attributeConverted)));
+            reflections.setValue(instance, field.getNativeField(), field.getValue(Value.of(attributeConverted)));
         } else {
-            reflections.setValue(instance, field.getField(), field.getValue(value));
+            reflections.setValue(instance, field.getNativeField(), field.getValue(value));
         }
     }
 
@@ -141,15 +141,15 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
                 for (Object key : map.keySet()) {
                     embeddedColumns.add(Column.of(key.toString(), map.get(key)));
                 }
-                reflections.setValue(instance, field.getField(), toEntity(field.getField().getType(), embeddedColumns));
+                reflections.setValue(instance, field.getNativeField(), toEntity(field.getNativeField().getType(), embeddedColumns));
             } else {
-                reflections.setValue(instance, field.getField(), toEntity(field.getField().getType(),
+                reflections.setValue(instance, field.getNativeField(), toEntity(field.getNativeField().getType(),
                         subColumn.get(new TypeReference<List<Column>>() {
                         })));
             }
 
         } else {
-            reflections.setValue(instance, field.getField(), toEntity(field.getField().getType(), columns));
+            reflections.setValue(instance, field.getNativeField(), toEntity(field.getNativeField().getType(), columns));
         }
     }
 

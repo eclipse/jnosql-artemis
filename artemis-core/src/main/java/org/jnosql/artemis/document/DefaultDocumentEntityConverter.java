@@ -126,9 +126,9 @@ class DefaultDocumentEntityConverter implements DocumentEntityConverter {
         if (converter.isPresent()) {
             AttributeConverter attributeConverter = converters.get(converter.get());
             Object attributeConverted = attributeConverter.convertToEntityAttribute(value.get());
-            reflections.setValue(instance, field.getField(), field.getValue(Value.of(attributeConverted)));
+            reflections.setValue(instance, field.getNativeField(), field.getValue(Value.of(attributeConverted)));
         } else {
-            reflections.setValue(instance, field.getField(), field.getValue(value));
+            reflections.setValue(instance, field.getNativeField(), field.getValue(value));
         }
     }
 
@@ -142,19 +142,19 @@ class DefaultDocumentEntityConverter implements DocumentEntityConverter {
                 for (Object key : map.keySet()) {
                     embeddedDocument.add(Document.of(key.toString(), map.get(key)));
                 }
-                reflections.setValue(instance, field.getField(), toEntity(field.getField().getType(), embeddedDocument));
+                reflections.setValue(instance, field.getNativeField(), toEntity(field.getNativeField().getType(), embeddedDocument));
             } else {
-                reflections.setValue(instance, field.getField(), toEntity(field.getField().getType(), sudDocument.get(new TypeReference<List<Document>>() {
+                reflections.setValue(instance, field.getNativeField(), toEntity(field.getNativeField().getType(), sudDocument.get(new TypeReference<List<Document>>() {
                 })));
             }
 
         } else {
-            reflections.setValue(instance, field.getField(), toEntity(field.getField().getType(), documents));
+            reflections.setValue(instance, field.getNativeField(), toEntity(field.getNativeField().getType(), documents));
         }
     }
 
     private DocumentFieldValue to(FieldRepresentation field, Object entityInstance) {
-        Object value = reflections.getValue(entityInstance, field.getField());
+        Object value = reflections.getValue(entityInstance, field.getNativeField());
         return DocumentFieldValue.of(value, field);
     }
 

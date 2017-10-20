@@ -46,7 +46,7 @@ class DefaultKeyValueEntityConverter implements KeyValueEntityConverter {
         ClassRepresentation representation = classRepresentations.get(clazz);
 
         FieldRepresentation key = getId(clazz, representation);
-        Object value = reflections.getValue(entityInstance, key.getField());
+        Object value = reflections.getValue(entityInstance, key.getNativeField());
         requireNonNull(value, String.format("The key field %s is required", key.getName()));
 
         return KeyValueEntity.of(value, entityInstance);
@@ -61,9 +61,9 @@ class DefaultKeyValueEntityConverter implements KeyValueEntityConverter {
             return null;
         }
         FieldRepresentation key = getId(entityClass, classRepresentations.get(entityClass));
-        Object keyValue = reflections.getValue(t, key.getField());
+        Object keyValue = reflections.getValue(t, key.getNativeField());
         if (Objects.isNull(keyValue) || !keyValue.equals(entity.getKey())) {
-            reflections.setValue(t, key.getField(), entity.getKey());
+            reflections.setValue(t, key.getNativeField(), entity.getKey());
         }
         return t;
     }

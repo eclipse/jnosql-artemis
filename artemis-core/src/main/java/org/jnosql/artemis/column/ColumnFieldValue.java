@@ -90,7 +90,7 @@ class ColumnFieldValue implements FieldValue {
     }
 
     private Field getNativeField() {
-        return getField().getField();
+        return getField().getNativeField();
     }
 
     @Override
