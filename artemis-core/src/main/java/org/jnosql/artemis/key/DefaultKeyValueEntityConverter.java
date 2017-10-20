@@ -31,7 +31,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * The default implementation of {@link KeyValueEntityConverter}
  */
-class DefaultKeyValueEntityConverter implements KeyValueEntityConverter {
+public class DefaultKeyValueEntityConverter implements KeyValueEntityConverter {
 
     @Inject
     private ClassRepresentations classRepresentations;
