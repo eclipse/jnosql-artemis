@@ -33,12 +33,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.requireNonNull;
 import static org.jnosql.artemis.reflection.FieldType.EMBEDDED;
 
 /**
@@ -58,7 +58,7 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
 
     @Override
     public ColumnEntity toColumn(Object entityInstance) {
-        Objects.requireNonNull(entityInstance, "Object is required");
+        requireNonNull(entityInstance, "Object is required");
         ClassRepresentation representation = classRepresentations.get(entityInstance.getClass());
         ColumnEntity entity = ColumnEntity.of(representation.getName());
         representation.getFields().stream()
@@ -71,8 +71,8 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
 
     @Override
     public <T> T toEntity(Class<T> entityClass, ColumnEntity entity) {
-        Objects.requireNonNull(entity, "entity is required");
-        Objects.requireNonNull(entityClass, "entityClass is required");
+        requireNonNull(entity, "entity is required");
+        requireNonNull(entityClass, "entityClass is required");
         return toEntity(entityClass, entity.getColumns());
     }
 
@@ -85,7 +85,7 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T toEntity(ColumnEntity entity) {
-        Objects.requireNonNull(entity, "entity is required");
+        requireNonNull(entity, "entity is required");
         ClassRepresentation representation = classRepresentations.findByName(entity.getName());
         T instance = reflections.newInstance(representation.getConstructor());
         return convertEntity(entity.getColumns(), representation, instance);
