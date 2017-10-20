@@ -110,6 +110,18 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
         };
     }
 
+    private <T> T convertEntity(List<Column> columns, ClassRepresentation representation, T instance) {
+        Map<String, FieldRepresentation> fieldsGroupByName = representation.getFieldsGroupByName();
+        List<String> names = columns.stream().map(Column::getName).sorted().collect(Collectors.toList());
+        Predicate<String> existField = k -> Collections.binarySearch(names, k) >= 0;
+        fieldsGroupByName.keySet().stream()
+                .filter(existField.or(k -> EMBEDDED.equals(fieldsGroupByName.get(k).getType())))
+                .forEach(feedObject(instance, columns, fieldsGroupByName));
+
+        return instance;
+    }
+
+
     private class ColumnFieldConverterFactory {
 
         private final EmbeddedFieldConverter embeddedFieldConverter = new EmbeddedFieldConverter();
@@ -193,18 +205,6 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
                 reflections.setValue(instance, field.getNativeField(), collection);
             }
         }
-    }
-
-
-    private <T> T convertEntity(List<Column> columns, ClassRepresentation representation, T instance) {
-        Map<String, FieldRepresentation> fieldsGroupByName = representation.getFieldsGroupByName();
-        List<String> names = columns.stream().map(Column::getName).sorted().collect(Collectors.toList());
-        Predicate<String> existField = k -> Collections.binarySearch(names, k) >= 0;
-        fieldsGroupByName.keySet().stream()
-                .filter(existField.or(k -> EMBEDDED.equals(fieldsGroupByName.get(k).getType())))
-                .forEach(feedObject(instance, columns, fieldsGroupByName));
-
-        return instance;
     }
 
 
