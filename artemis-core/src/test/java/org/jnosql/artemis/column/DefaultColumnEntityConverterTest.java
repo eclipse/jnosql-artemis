@@ -47,6 +47,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.util.Collections.singleton;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -278,8 +279,13 @@ public class DefaultColumnEntityConverterTest {
         ColumnEntity entity = converter.toColumn(appointmentBook);
         Column contacts = entity.find("contacts").get();
         assertEquals("ids", appointmentBook.getId());
-        List<Column> columns = subDocument.get(new TypeReference<List<Column>>() {
+        List<Column> columns = contacts.get(new TypeReference<List<Column>>() {
         });
+        for (Column contact : columns) {
+            List<Column> contactInformation = contact.get(new TypeReference<List<Column>>() {
+            });
+            assertThat(contactInformation, contains(Column.of("name", "Ada")));
+        }
 
     }
 
