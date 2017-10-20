@@ -29,24 +29,30 @@ public class Contacts {
     @Id
     private String id;
 
-    @Column
-    private String name;
 
     @Column
     private List<Contact> contacts = new ArrayList<>();
+
+
+    Contacts() {
+    }
+
+    public Contacts(String id) {
+        this.id = id;
+    }
 
     public String getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
 
     public List<Contact> getContacts() {
         return contacts;
     }
 
+    public void add(Contact contact) {
+        this.contacts.add(contact);
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -69,7 +75,6 @@ public class Contacts {
     public String toString() {
         final StringBuilder sb = new StringBuilder("Contacts{");
         sb.append("id='").append(id).append('\'');
-        sb.append(", name='").append(name).append('\'');
         sb.append(", contacts=").append(contacts);
         sb.append('}');
         return sb.toString();
