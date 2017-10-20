@@ -15,11 +15,13 @@
 package org.jnosql.artemis.model;
 
 import org.jnosql.artemis.Column;
+import org.jnosql.artemis.Embeddable;
 
+@Embeddable
 public class Contact {
 
     @Column
-    private ContactType tipo;
+    private ContactType type;
     @Column
-    private String informacao;
+    private String description;
 }
