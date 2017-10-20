@@ -21,6 +21,7 @@ import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.FieldRepresentation;
 import org.jnosql.artemis.reflection.FieldValue;
+import org.jnosql.artemis.reflection.GenericFieldRepresentation;
 import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.TypeReference;
 import org.jnosql.diana.api.Value;
@@ -111,18 +112,22 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
     private class ColumnFieldConverterFactory {
 
         private final EmbeddedFieldConverter embeddedFieldConverter = new EmbeddedFieldConverter();
-        private final SingleFieldConverter singleFieldConverter = new SingleFieldConverter();
+        private final DefaultConverter defaultConverter = new DefaultConverter();
 
         ColumnFieldConverter get(FieldRepresentation field) {
             if (EMBEDDED.equals(field.getType())) {
                 return embeddedFieldConverter;
-            } else if (COLLECTION.equals(field.getType())) {
+            } else if (isCollectionEmbeddable(field)) {
                 System.out.println(field);
                 System.out.println(field);
             } else {
-                return singleFieldConverter;
+                return defaultConverter;
             }
             throw new IllegalArgumentException("There is not support to the field: " + field);
+        }
+
+        private boolean isCollectionEmbeddable(FieldRepresentation field) {
+            return COLLECTION.equals(field.getType()) && GenericFieldRepresentation.class.cast(field).isEmbeddable();
         }
     }
 
@@ -157,7 +162,7 @@ class DefaultColumnEntityConverter implements ColumnEntityConverter {
         }
     }
 
-    private class SingleFieldConverter implements ColumnFieldConverter {
+    private class DefaultConverter implements ColumnFieldConverter {
 
         @Override
         public <T> void convert(T instance, List<Column> columns, Optional<Column> column, FieldRepresentation field) {

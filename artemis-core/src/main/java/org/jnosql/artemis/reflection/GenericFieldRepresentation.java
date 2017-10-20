@@ -16,10 +16,12 @@ package org.jnosql.artemis.reflection;
 
 
 import org.jnosql.artemis.AttributeConverter;
+import org.jnosql.artemis.Embeddable;
 import org.jnosql.diana.api.TypeSupplier;
 import org.jnosql.diana.api.Value;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.Objects;
 
 public class GenericFieldRepresentation extends AbstractFieldRepresentation {
@@ -59,6 +61,13 @@ public class GenericFieldRepresentation extends AbstractFieldRepresentation {
     @Override
     public int hashCode() {
         return Objects.hash(type, field, name, typeSupplier);
+    }
+
+    public boolean isEmbeddable() {
+        return Class.class.cast(ParameterizedType.class.cast(getNativeField()
+                .getGenericType())
+                .getActualTypeArguments()[0])
+                .getAnnotation(Embeddable.class) != null;
     }
 
     @Override

@@ -16,14 +16,13 @@ package org.jnosql.artemis.column;
 
 import org.jnosql.artemis.AttributeConverter;
 import org.jnosql.artemis.Converters;
-import org.jnosql.artemis.Embeddable;
 import org.jnosql.artemis.reflection.FieldRepresentation;
 import org.jnosql.artemis.reflection.FieldType;
 import org.jnosql.artemis.reflection.FieldValue;
+import org.jnosql.artemis.reflection.GenericFieldRepresentation;
 import org.jnosql.diana.api.column.Column;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -58,7 +57,7 @@ class ColumnFieldValue implements FieldValue {
 
         if (EMBEDDED.equals(getType())) {
             return Column.of(getName(), converter.toColumn(getValue()).getColumns());
-        } else if(COLLECTION.equals(getType()) && isEmbeddableElement()) {
+        } else if (COLLECTION.equals(getType()) && isEmbeddableElement()) {
             List<List<Column>> columns = new ArrayList<>();
             for (Object element : Iterable.class.cast(getValue())) {
                 columns.add(converter.toColumn(element).getColumns());
@@ -83,10 +82,7 @@ class ColumnFieldValue implements FieldValue {
     }
 
     private boolean isEmbeddableElement() {
-        return Class.class.cast(ParameterizedType.class.cast(getNativeField()
-                 .getGenericType())
-                 .getActualTypeArguments()[0])
-                 .getAnnotation(Embeddable.class) != null;
+        return GenericFieldRepresentation.class.cast(getField()).isEmbeddable();
     }
 
     private Field getNativeField() {
