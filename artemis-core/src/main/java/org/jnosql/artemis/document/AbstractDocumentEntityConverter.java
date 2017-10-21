@@ -77,7 +77,7 @@ public abstract class AbstractDocumentEntityConverter  implements DocumentEntity
 
     }
 
-    private <T> T toEntity(Class<T> entityClass, List<Document> documents) {
+    protected  <T> T toEntity(Class<T> entityClass, List<Document> documents) {
         ClassRepresentation representation = getClassRepresentations().get(entityClass);
         T instance = getReflections().newInstance(representation.getConstructor());
         return convertEntity(documents, representation, instance);
