@@ -47,16 +47,16 @@ import static org.jnosql.artemis.reflection.FieldType.EMBEDDED;
  * The default implementation of {@link DocumentEntityConverter}
  */
 @ApplicationScoped
-public class DefaultDocumentEntityConverter implements DocumentEntityConverter {
+class DefaultDocumentEntityConverter implements DocumentEntityConverter {
 
     @Inject
-    protected ClassRepresentations classRepresentations;
+    private ClassRepresentations classRepresentations;
 
     @Inject
-    protected Reflections reflections;
+    private Reflections reflections;
 
     @Inject
-    protected Converters converters;
+    private Converters converters;
 
     private final DocumentFieldConverterFactory converterFactory = new DocumentFieldConverterFactory();
 
