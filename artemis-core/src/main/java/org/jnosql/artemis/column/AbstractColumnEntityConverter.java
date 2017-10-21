@@ -92,7 +92,7 @@ public abstract class AbstractColumnEntityConverter implements ColumnEntityConve
 
     protected ColumnFieldValue to(FieldRepresentation field, Object entityInstance) {
         Object value = getReflections().getValue(entityInstance, field.getNativeField());
-        return ColumnFieldValue.of(value, field);
+        return DefaultColumnFieldValue.of(value, field);
     }
 
     protected  <T> Consumer<String> feedObject(T instance, List<Column> columns, Map<String, FieldRepresentation> fieldsGroupByName) {
