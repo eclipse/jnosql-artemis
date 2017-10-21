@@ -47,7 +47,7 @@ import static org.jnosql.artemis.reflection.FieldType.EMBEDDED;
  * The default implementation of {@link DocumentEntityConverter}
  */
 @ApplicationScoped
-class DefaultDocumentEntityConverter implements DocumentEntityConverter {
+class DefaultDocumentEntityConverter extends AbstractDocumentEntityConverter implements DocumentEntityConverter {
 
     @Inject
     private ClassRepresentations classRepresentations;
@@ -58,163 +58,19 @@ class DefaultDocumentEntityConverter implements DocumentEntityConverter {
     @Inject
     private Converters converters;
 
-    private final DocumentFieldConverterFactory converterFactory = new DocumentFieldConverterFactory();
-
 
     @Override
-    public DocumentEntity toDocument(Object entityInstance) {
-        requireNonNull(entityInstance, "Object is required");
-        ClassRepresentation representation = classRepresentations.get(entityInstance.getClass());
-        DocumentEntity entity = DocumentEntity.of(representation.getName());
-        representation.getFields().stream()
-                .map(f -> to(f, entityInstance))
-                .filter(FieldValue::isNotEmpty)
-                .map(f -> f.toDocument(this, converters))
-                .forEach(entity::add);
-        return entity;
-
+    protected ClassRepresentations getClassRepresentations() {
+        return classRepresentations;
     }
 
     @Override
-    public <T> T toEntity(Class<T> entityClass, DocumentEntity entity) {
-        requireNonNull(entity, "entity is required");
-        requireNonNull(entityClass, "entityClass is required");
-        return toEntity(entityClass, entity.getDocuments());
-
+    protected Reflections getReflections() {
+        return reflections;
     }
 
-    private <T> T toEntity(Class<T> entityClass, List<Document> documents) {
-        ClassRepresentation representation = classRepresentations.get(entityClass);
-        T instance = reflections.newInstance(representation.getConstructor());
-        return convertEntity(documents, representation, instance);
-    }
-
-
-    @SuppressWarnings("unchecked")
     @Override
-    public <T> T toEntity(DocumentEntity entity) {
-        requireNonNull(entity, "entity is required");
-        ClassRepresentation representation = classRepresentations.findByName(entity.getName());
-        T instance = reflections.newInstance(representation.getConstructor());
-        return convertEntity(entity.getDocuments(), representation, instance);
+    protected Converters getConverters() {
+        return converters;
     }
-
-    private <T> T convertEntity(List<Document> documents, ClassRepresentation representation, T instance) {
-        Map<String, FieldRepresentation> fieldsGroupByName = representation.getFieldsGroupByName();
-
-        List<String> names = documents.stream().map(Document::getName).sorted().collect(Collectors.toList());
-        Predicate<String> existField = k -> Collections.binarySearch(names, k) >= 0;
-
-        fieldsGroupByName.keySet().stream()
-                .filter(existField.or(k -> EMBEDDED.equals(fieldsGroupByName.get(k).getType())))
-                .forEach(feedObject(instance, documents, fieldsGroupByName));
-
-        return instance;
-    }
-
-    protected <T> Consumer<String> feedObject(T instance, List<Document> documents, Map<String, FieldRepresentation> fieldsGroupByName) {
-        return k -> {
-            Optional<Document> document = documents.stream().filter(c -> c.getName().equals(k)).findFirst();
-
-            FieldRepresentation field = fieldsGroupByName.get(k);
-            DocumentFieldConverter fieldConverter = converterFactory.get(field);
-            fieldConverter.convert(instance, documents, document, field);
-        };
-    }
-
-
-    private DocumentFieldValue to(FieldRepresentation field, Object entityInstance) {
-        Object value = reflections.getValue(entityInstance, field.getNativeField());
-        return DocumentFieldValue.of(value, field);
-    }
-
-
-    private interface DocumentFieldConverter {
-
-        <T> void convert(T instance, List<Document> documents, Optional<Document> document, FieldRepresentation field);
-    }
-
-    private class DocumentFieldConverterFactory {
-
-        private final EmbeddedFieldConverter embeddedFieldConverter = new EmbeddedFieldConverter();
-        private final DefaultConverter defaultConverter = new DefaultConverter();
-        private final CollectionEmbeddableConverter embeddableConverter = new CollectionEmbeddableConverter();
-
-        DocumentFieldConverter get(FieldRepresentation field) {
-            if (EMBEDDED.equals(field.getType())) {
-                return embeddedFieldConverter;
-            } else if (isCollectionEmbeddable(field)) {
-                return embeddableConverter;
-            } else {
-                return defaultConverter;
-            }
-        }
-
-        private boolean isCollectionEmbeddable(FieldRepresentation field) {
-            return COLLECTION.equals(field.getType()) && GenericFieldRepresentation.class.cast(field).isEmbeddable();
-        }
-    }
-
-    private class EmbeddedFieldConverter implements DocumentFieldConverter {
-
-        @Override
-        public <T> void convert(T instance, List<Document> documents, Optional<Document> document,
-                                FieldRepresentation field) {
-
-            if (document.isPresent()) {
-                Document sudDocument = document.get();
-                Object value = sudDocument.get();
-                if (Map.class.isInstance(value)) {
-                    Map map = Map.class.cast(value);
-                    List<Document> embeddedDocument = new ArrayList<>();
-                    for (Object key : map.keySet()) {
-                        embeddedDocument.add(Document.of(key.toString(), map.get(key)));
-                    }
-                    reflections.setValue(instance, field.getNativeField(), toEntity(field.getNativeField().getType(), embeddedDocument));
-                } else {
-                    reflections.setValue(instance, field.getNativeField(), toEntity(field.getNativeField().getType(), sudDocument.get(new TypeReference<List<Document>>() {
-                    })));
-                }
-
-            } else {
-                reflections.setValue(instance, field.getNativeField(), toEntity(field.getNativeField().getType(), documents));
-            }
-        }
-    }
-
-    private class DefaultConverter  implements DocumentFieldConverter {
-
-        @Override
-        public <T> void convert(T instance, List<Document> documents, Optional<Document> document,
-                                FieldRepresentation field) {
-            Value value = document.get().getValue();
-            Optional<Class<? extends AttributeConverter>> converter = field.getConverter();
-            if (converter.isPresent()) {
-                AttributeConverter attributeConverter = converters.get(converter.get());
-                Object attributeConverted = attributeConverter.convertToEntityAttribute(value.get());
-                reflections.setValue(instance, field.getNativeField(), field.getValue(Value.of(attributeConverted)));
-            } else {
-                reflections.setValue(instance, field.getNativeField(), field.getValue(value));
-            }
-        }
-    }
-
-    private class CollectionEmbeddableConverter implements DocumentFieldConverter {
-
-        @Override
-        public <T> void convert(T instance, List<Document> documents, Optional<Document> document,
-                                FieldRepresentation field) {
-            if (document.isPresent()) {
-                GenericFieldRepresentation genericField = GenericFieldRepresentation.class.cast(field);
-                Collection collection = genericField.getCollectionInstance();
-                List<List<Document>> embeddable = (List<List<Document>>) document.get().get();
-                for (List<Document> documentList : embeddable) {
-                    Object element = DefaultDocumentEntityConverter.this.toEntity(genericField.getElementType(), documentList);
-                    collection.add(element);
-                }
-                reflections.setValue(instance, field.getNativeField(), collection);
-            }
-        }
-    }
-
 }
