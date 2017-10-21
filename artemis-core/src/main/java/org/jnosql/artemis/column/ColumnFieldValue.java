@@ -14,91 +14,16 @@
  */
 package org.jnosql.artemis.column;
 
-import org.jnosql.artemis.AttributeConverter;
 import org.jnosql.artemis.Converters;
-import org.jnosql.artemis.reflection.FieldRepresentation;
-import org.jnosql.artemis.reflection.FieldType;
 import org.jnosql.artemis.reflection.FieldValue;
-import org.jnosql.artemis.reflection.GenericFieldRepresentation;
 import org.jnosql.diana.api.column.Column;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+/**
+ * The specialist {@link FieldValue} to column
+ */
+public interface ColumnFieldValue extends FieldValue {
 
-import static org.jnosql.artemis.reflection.FieldType.COLLECTION;
-import static org.jnosql.artemis.reflection.FieldType.EMBEDDED;
 
-class ColumnFieldValue implements FieldValue {
-
-    private final FieldValue fieldValue;
-
-    private ColumnFieldValue(FieldValue fieldValue) {
-        this.fieldValue = fieldValue;
-    }
-
-    @Override
-    public Object getValue() {
-        return fieldValue.getValue();
-    }
-
-    @Override
-    public FieldRepresentation getField() {
-        return fieldValue.getField();
-    }
-
-    @Override
-    public boolean isNotEmpty() {
-        return fieldValue.isNotEmpty();
-    }
-
-    public Column toColumn(ColumnEntityConverter converter, Converters converters) {
-
-        if (EMBEDDED.equals(getType())) {
-            return Column.of(getName(), converter.toColumn(getValue()).getColumns());
-        } else if (COLLECTION.equals(getType()) && isEmbeddableElement()) {
-            List<List<Column>> columns = new ArrayList<>();
-            for (Object element : Iterable.class.cast(getValue())) {
-                columns.add(converter.toColumn(element).getColumns());
-            }
-            return Column.of(getName(), columns);
-        }
-        Optional<Class<? extends AttributeConverter>> optionalConverter = getField().getConverter();
-        if (optionalConverter.isPresent()) {
-            AttributeConverter attributeConverter = converters.get(optionalConverter.get());
-            return Column.of(getName(), attributeConverter.convertToDatabaseColumn(getValue()));
-        }
-
-        return Column.of(getName(), getValue());
-    }
-
-    private FieldType getType() {
-        return getField().getType();
-    }
-
-    private String getName() {
-        return getField().getName();
-    }
-
-    private boolean isEmbeddableElement() {
-        return GenericFieldRepresentation.class.cast(getField()).isEmbeddable();
-    }
-
-    private Field getNativeField() {
-        return getField().getNativeField();
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("ColumnFieldValue{");
-        sb.append("fieldValue=").append(fieldValue);
-        sb.append('}');
-        return sb.toString();
-    }
-
-    static ColumnFieldValue of(Object value, FieldRepresentation field) {
-        return new ColumnFieldValue(FieldValue.of(value, field));
-    }
+    Column toColumn(ColumnEntityConverter converter, Converters converters);
 
 }
