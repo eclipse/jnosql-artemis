@@ -90,7 +90,7 @@ public abstract class AbstractColumnEntityConverter implements ColumnEntityConve
         return convertEntity(entity.getColumns(), representation, instance);
     }
 
-    private ColumnFieldValue to(FieldRepresentation field, Object entityInstance) {
+    protected ColumnFieldValue to(FieldRepresentation field, Object entityInstance) {
         Object value = getReflections().getValue(entityInstance, field.getNativeField());
         return ColumnFieldValue.of(value, field);
     }
