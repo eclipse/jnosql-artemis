@@ -18,3 +18,4 @@ The project has three modules:
 * The artemis-key-value: The Eclipse JNoSQL mapping, Artemis, to key-value NoSQL database.
 
 The graph API is an extension because the communication layer to the graph is Apache TinkerPop.
+
