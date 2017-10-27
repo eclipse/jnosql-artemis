@@ -88,7 +88,6 @@
             <version>${javax.json.version}</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>javax.json.bind</groupId>
             <artifactId>javax.json.bind-api</artifactId>
@@ -100,6 +99,26 @@
             <artifactId>artemis-core</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.jnosql.artemis</groupId>
+            <artifactId>artemis-column</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jnosql.artemis</groupId>
+            <artifactId>artemis-document</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jnosql.artemis</groupId>
+            <artifactId>artemis-key-value</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.weld.se</groupId>
