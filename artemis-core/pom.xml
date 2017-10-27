@@ -70,6 +70,13 @@
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.jnosql.diana</groupId>
+            <artifactId>diana-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
