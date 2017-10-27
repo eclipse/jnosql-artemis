@@ -12,5 +12,4 @@
 #
 #   Otavio Santana
 #
-
-org.jnosql.artemis.reflection.ClassRepresentationsExtension
+org.jnosql.artemis.document.spi.DocumentCollectionProducerExtension

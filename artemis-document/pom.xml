@@ -16,11 +16,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>artemis-core</artifactId>
+    <artifactId>artemis-document</artifactId>
     <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>Artemis Core engine</description>
+    <description>Artemis API to Document NoSQL databases</description>
     <url>http://jnosql.org/</url>
 
     <licenses>
@@ -72,10 +72,14 @@
     <dependencies>
         <dependency>
             <groupId>org.jnosql.diana</groupId>
-            <artifactId>diana-core</artifactId>
+            <artifactId>diana-document</artifactId>
             <version>${project.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.jnosql.artemis</groupId>
+            <artifactId>artemis-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
@@ -94,6 +98,7 @@
             <version>${javax.json.version}</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>javax.json.bind</groupId>
             <artifactId>javax.json.bind-api</artifactId>
@@ -113,12 +118,14 @@
             <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.eclipse</groupId>
             <artifactId>yasson</artifactId>
             <version>${json.b.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.json</artifactId>
