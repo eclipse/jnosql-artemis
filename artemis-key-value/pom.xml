@@ -71,6 +71,16 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.jnosql.diana</groupId>
+            <artifactId>diana-key-value</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jnosql.artemis</groupId>
+            <artifactId>artemis-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
             <version>1.2</version>
