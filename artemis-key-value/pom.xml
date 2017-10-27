@@ -1,0 +1,128 @@
+<!--
+  ~  Copyright (c) 2017 Otávio Santana and others
+  ~   All rights reserved. This program and the accompanying materials
+  ~   are made available under the terms of the Eclipse Public License v1.0
+  ~   and Apache License v2.0 which accompanies this distribution.
+  ~   The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html
+  ~   and the Apache License v2.0 is available at http://www.opensource.org/licenses/apache2.0.php.
+  ~
+  ~   You may elect to redistribute this code under either of these licenses.
+  ~
+  ~   Contributors:
+  ~
+  ~   Otavio Santana
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>artemis-key-value</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Artemis API to Key-value NoSQL databases</description>
+    <url>http://jnosql.org/</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+        <license>
+            <name>The Eclipse Public License v1.0</name>
+            <url>http://www.eclipse.org/legal/epl-v10.html</url>
+        </license>
+    </licenses>
+
+
+    <scm>
+        <connection>scm:git:git://github.com/eclipse/jnosql-artemis.git</connection>
+        <developerConnection>scm:git:ssh://github.com:eclipse/jnosql-artemis.git</developerConnection>
+        <url>https://github.com/eclipse/jnosql-artemis</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>Otavio Santana</name>
+            <email>otaviojava@apache.org</email>
+            <organization>SouJava</organization>
+            <organizationUrl>https://about.me/otaviojava</organizationUrl>
+        </developer>
+        <developer>
+            <name>JNoSQL Developers</name>
+            <email>jnosql-dev@eclipse.org</email>
+            <organization>Eclipse JNoSQL</organization>
+            <organizationUrl>https://dev.eclipse.org/mailman/listinfo/jnosql-dev</organizationUrl>
+        </developer>
+    </developers>
+
+
+    <parent>
+        <groupId>org.jnosql.artemis</groupId>
+        <artifactId>artemis-parent</artifactId>
+        <version>0.0.4-SNAPSHOT</version>
+    </parent>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <json.b.version>1.0</json.b.version>
+        <javax.json.version>1.1</javax.json.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <version>1.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.3</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.json</groupId>
+            <artifactId>javax.json-api</artifactId>
+            <version>${javax.json.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.json.bind</groupId>
+            <artifactId>javax.json.bind-api</artifactId>
+            <version>${json.b.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld.se</groupId>
+            <artifactId>weld-se-core</artifactId>
+            <version>2.3.5.Final</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.10.19</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse</groupId>
+            <artifactId>yasson</artifactId>
+            <version>${json.b.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+            <version>${javax.json.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+</project>
