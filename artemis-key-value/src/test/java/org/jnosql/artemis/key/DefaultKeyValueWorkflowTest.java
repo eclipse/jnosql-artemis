@@ -14,7 +14,6 @@
  */
 package org.jnosql.artemis.key;
 
-import org.jnosql.diana.api.document.DocumentEntity;
 import org.jnosql.diana.api.key.KeyValueEntity;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,11 +69,6 @@ public class DefaultKeyValueWorkflowTest {
 
         verify(eventPersistManager).firePreKeyValue(any(KeyValueEntity.class));
         verify(eventPersistManager).firePostKeyValue(any(KeyValueEntity.class));
-        verify(eventPersistManager).firePreEntity(any(DocumentEntity.class));
-        verify(eventPersistManager).firePostEntity(any(DocumentEntity.class));
-
-        verify(eventPersistManager).firePreKeyValueEntity(any(DocumentEntity.class));
-        verify(eventPersistManager).firePostKeyValueEntity(any(DocumentEntity.class));
     }
 
 }
