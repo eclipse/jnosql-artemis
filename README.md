@@ -6,7 +6,7 @@
 * Diana Based
 * Events to insert, delete, update
 * Supports to Bean Validation
-* ORM Annotation Based
+* OxM Annotation Based
 * Configurable and extensible
 
 The API's focus is on simplicity and ease of use. Developers should only have to know a minimal set of artifacts to work with the solution. The API is built on latest Java 8 features and therefore fit perfectly with the functional features of Java 8. 
