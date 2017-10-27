@@ -71,6 +71,16 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.jnosql.diana</groupId>
+            <artifactId>diana-column</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jnosql.artemis</groupId>
+            <artifactId>artemis-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
             <version>1.2</version>
@@ -108,14 +118,12 @@
             <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.eclipse</groupId>
             <artifactId>yasson</artifactId>
             <version>${json.b.version}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.json</artifactId>
