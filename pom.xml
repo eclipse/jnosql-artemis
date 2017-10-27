@@ -82,29 +82,14 @@
 
     <modules>
         <module>artemis-core</module>
-	<module>artemis-column</module>
-	<module>artemis-document</module>
-	<module>artemis-key-value</module>
+        <module>artemis-column</module>
+        <module>artemis-document</module>
+        <module>artemis-key-value</module>
         <module>artemis-validation</module>
     </modules>
 
     <dependencies>
 
-         <dependency>
-            <groupId>org.jnosql.diana</groupId>
-            <artifactId>diana-key-value</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jnosql.diana</groupId>
-            <artifactId>diana-column</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jnosql.diana</groupId>
-            <artifactId>diana-document</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <!-- TEST DEPENDENCIES -->
 
         <dependency>
