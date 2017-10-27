@@ -48,8 +48,4 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-
 org.jnosql.artemis.reflection.ClassRepresentationsExtension
-org.jnosql.artemis.column.spi.ColumnFamilyProducerExtension
-org.jnosql.artemis.document.spi.DocumentCollectionProducerExtension
-org.jnosql.artemis.key.spi.BucketManagerProducerExtension
