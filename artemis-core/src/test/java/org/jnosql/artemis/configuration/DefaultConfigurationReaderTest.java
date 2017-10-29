@@ -15,7 +15,7 @@
 package org.jnosql.artemis.configuration;
 
 import org.jnosql.artemis.ConfigurationUnit;
-import org.jnosql.artemis.WeldJUnit4Runner;
+import org.jnosql.artemis.CDIJUnit4Runner;
 import org.jnosql.diana.api.Settings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +31,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(WeldJUnit4Runner.class)
+@RunWith(CDIJUnit4Runner.class)
 public class DefaultConfigurationReaderTest {
 
 

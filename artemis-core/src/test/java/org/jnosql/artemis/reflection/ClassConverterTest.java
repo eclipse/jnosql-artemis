@@ -14,7 +14,7 @@
  */
 package org.jnosql.artemis.reflection;
 
-import org.jnosql.artemis.WeldJUnit4Runner;
+import org.jnosql.artemis.CDIJUnit4Runner;
 import org.jnosql.artemis.model.Actor;
 import org.jnosql.artemis.model.Animal;
 import org.jnosql.artemis.model.Director;
@@ -35,7 +35,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(WeldJUnit4Runner.class)
+@RunWith(CDIJUnit4Runner.class)
 public class ClassConverterTest {
 
     @Inject
