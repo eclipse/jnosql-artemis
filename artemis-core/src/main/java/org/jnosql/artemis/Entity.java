@@ -15,6 +15,7 @@
 package org.jnosql.artemis;
 
 
+import javax.enterprise.inject.Stereotype;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -25,6 +26,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@Stereotype
 public @interface Entity {
     /**
      * The name of an entity. Defaults to the unqualified name of the entity class.
