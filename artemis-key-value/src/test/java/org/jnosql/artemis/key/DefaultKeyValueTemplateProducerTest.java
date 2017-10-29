@@ -14,7 +14,7 @@
  */
 package org.jnosql.artemis.key;
 
-import org.jnosql.artemis.WeldJUnit4Runner;
+import org.jnosql.artemis.CDIJUnit4Runner;
 import org.jnosql.diana.api.key.BucketManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +24,7 @@ import javax.inject.Inject;
 
 import static org.junit.Assert.assertNotNull;
 
-@RunWith(WeldJUnit4Runner.class)
+@RunWith(CDIJUnit4Runner.class)
 public class DefaultKeyValueTemplateProducerTest {
 
 

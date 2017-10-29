@@ -16,7 +16,7 @@ package org.jnosql.artemis.column.spi;
 
 import org.jnosql.artemis.Database;
 import org.jnosql.artemis.DatabaseType;
-import org.jnosql.artemis.WeldJUnit4Runner;
+import org.jnosql.artemis.CDIJUnit4Runner;
 import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.model.Person;
@@ -28,7 +28,7 @@ import javax.inject.Inject;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(WeldJUnit4Runner.class)
+@RunWith(CDIJUnit4Runner.class)
 public class ColumnFamilyProducerExtensionTest {
 
     @Inject

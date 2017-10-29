@@ -12,20 +12,23 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis;
+package org.jnosql.artemis.validation;
 
-import org.junit.runners.BlockJUnit4ClassRunner;
-import org.junit.runners.model.InitializationError;
+import javax.enterprise.inject.se.SeContainer;
+import javax.enterprise.inject.se.SeContainerInitializer;
 
-public class WeldJUnit4Runner extends BlockJUnit4ClassRunner {
+public class CDIContext {
 
-    public WeldJUnit4Runner(Class<Object> clazz) throws InitializationError {
-        super(clazz);
+    public static final CDIContext INSTANCE = new CDIContext();
+
+    private final SeContainer container;
+
+    private CDIContext() {
+        this.container = SeContainerInitializer.newInstance().initialize();
+        Runtime.getRuntime().addShutdownHook(new Thread(container::close));
     }
 
-    @Override
-    protected Object createTest() {
-        final Class<?> test = getTestClass().getJavaClass();
-        return WeldContext.INSTANCE.getBean(test);
+    public <T> T getBean(Class<T> type) {
+        return container.select(type).get();
     }
 }

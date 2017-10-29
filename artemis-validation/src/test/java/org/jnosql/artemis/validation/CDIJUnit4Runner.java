@@ -12,24 +12,20 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis;
+package org.jnosql.artemis.validation;
 
-import org.jboss.weld.environment.se.Weld;
-import org.jboss.weld.environment.se.WeldContainer;
+import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.runners.model.InitializationError;
 
-public class WeldContext {
+public class CDIJUnit4Runner extends BlockJUnit4ClassRunner {
 
-    public static final WeldContext INSTANCE = new WeldContext();
-
-    private final WeldContainer container;
-
-    private WeldContext() {
-        Weld weld = new Weld();
-        this.container = weld.initialize();
-        Runtime.getRuntime().addShutdownHook(new Thread(weld::shutdown));
+    public CDIJUnit4Runner(Class<Object> clazz) throws InitializationError {
+        super(clazz);
     }
 
-    public <T> T getBean(Class<T> type) {
-        return container.instance().select(type).get();
+    @Override
+    protected Object createTest() {
+        final Class<?> test = getTestClass().getJavaClass();
+        return CDIContext.INSTANCE.getBean(test);
     }
 }

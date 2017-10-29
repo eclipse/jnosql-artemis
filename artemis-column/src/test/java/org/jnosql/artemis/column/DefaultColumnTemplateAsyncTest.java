@@ -14,7 +14,7 @@
  */
 package org.jnosql.artemis.column;
 
-import org.jnosql.artemis.WeldJUnit4Runner;
+import org.jnosql.artemis.CDIJUnit4Runner;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
@@ -37,7 +37,7 @@ import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 
-@RunWith(WeldJUnit4Runner.class)
+@RunWith(CDIJUnit4Runner.class)
 public class DefaultColumnTemplateAsyncTest {
 
     private Person person = Person.builder().

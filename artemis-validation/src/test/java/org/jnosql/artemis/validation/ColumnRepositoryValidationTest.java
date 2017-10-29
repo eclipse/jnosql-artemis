@@ -27,7 +27,7 @@ import java.util.Set;
 
 import static java.util.Collections.singletonList;
 
-@RunWith(WeldJUnit4Runner.class)
+@RunWith(CDIJUnit4Runner.class)
 public class ColumnRepositoryValidationTest {
 
     @Inject

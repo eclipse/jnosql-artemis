@@ -16,7 +16,7 @@ package org.jnosql.artemis.column.query;
 
 import org.hamcrest.Matchers;
 import org.jnosql.artemis.Repository;
-import org.jnosql.artemis.WeldJUnit4Runner;
+import org.jnosql.artemis.CDIJUnit4Runner;
 import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
@@ -58,7 +58,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(WeldJUnit4Runner.class)
+@RunWith(CDIJUnit4Runner.class)
 public class ColumnRepositoryProxyTest {
 
     private ColumnTemplate template;
