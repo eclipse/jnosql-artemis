@@ -19,7 +19,7 @@ import org.jnosql.artemis.ConfigurationUnit;
 /**
  * Reader class that given the annotation returns {@link ConfigurationSettingsUnit}
  *
- * @see {@link ConfigurationUnit}
+ * {@link ConfigurationUnit}
  */
 public interface ConfigurationReader {
 

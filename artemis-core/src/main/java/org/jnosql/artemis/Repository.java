@@ -18,7 +18,10 @@ package org.jnosql.artemis;
 import java.util.Optional;
 
 /**
- * Interface to generic CRUD operations on a repository for a specific type.
+ * <p>Interface to generic CRUD operations on a repository for a specific type.</p>
+ * <p>The interface that extends need to be recovered by CDI, so either the bean-discovery-mode="all" be set in bean.xml
+ * or define a scope in the interface.</p>
+ * <p><a href="https://docs.jboss.org/cdi/spec/2.0/cdi-spec.html#default_bean_discovery">https://docs.jboss.org/cdi/spec/2.0/cdi-spec.html#default_bean_discovery</a></p>
  * The query builder mechanism built into Artemis repository infrastructure is useful for building constraining queries
  * over entities of the repository. The mechanism strips the prefixes is defined by:
  * <p>findBy: to select any information T</p>
