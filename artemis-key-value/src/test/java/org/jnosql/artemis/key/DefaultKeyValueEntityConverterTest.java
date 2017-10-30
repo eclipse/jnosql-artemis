@@ -15,7 +15,7 @@
 package org.jnosql.artemis.key;
 
 import org.jnosql.artemis.IdNotFoundException;
-import org.jnosql.artemis.CDIJUnit4Runner;
+import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.model.User;
 import org.jnosql.artemis.model.Worker;
 import org.jnosql.diana.api.Value;
@@ -27,7 +27,7 @@ import javax.inject.Inject;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(CDIJUnit4Runner.class)
+@RunWith(CDIJUnitRunner.class)
 public class DefaultKeyValueEntityConverterTest {
 
     @Inject

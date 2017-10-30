@@ -14,7 +14,7 @@
  */
 package org.jnosql.artemis.document;
 
-import org.jnosql.artemis.CDIJUnit4Runner;
+import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import static org.junit.Assert.assertNotNull;
 
 
-@RunWith(CDIJUnit4Runner.class)
+@RunWith(CDIJUnitRunner.class)
 public class DefaultDocumentTemplateAsyncProducerTest {
 
     @Inject

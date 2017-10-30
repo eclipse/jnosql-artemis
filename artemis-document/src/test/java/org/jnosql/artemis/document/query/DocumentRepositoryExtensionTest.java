@@ -18,7 +18,7 @@ import org.jnosql.artemis.Database;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.PersonRepository;
 import org.jnosql.artemis.PersonRepositoryAsync;
-import org.jnosql.artemis.CDIJUnit4Runner;
+import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.model.Person;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +29,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 
-@RunWith(CDIJUnit4Runner.class)
+@RunWith(CDIJUnitRunner.class)
 public class DocumentRepositoryExtensionTest {
 
 

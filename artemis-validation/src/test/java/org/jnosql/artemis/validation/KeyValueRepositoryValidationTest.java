@@ -27,7 +27,7 @@ import java.util.Set;
 
 import static java.util.Collections.singletonList;
 
-@RunWith(CDIJUnit4Runner.class)
+@RunWith(CDIJUnitRunner.class)
 public class KeyValueRepositoryValidationTest {
 
     @Inject

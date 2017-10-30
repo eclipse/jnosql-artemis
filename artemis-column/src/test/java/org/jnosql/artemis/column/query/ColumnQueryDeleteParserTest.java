@@ -15,7 +15,7 @@
 package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.DynamicQueryException;
-import org.jnosql.artemis.CDIJUnit4Runner;
+import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
@@ -34,7 +34,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(CDIJUnit4Runner.class)
+@RunWith(CDIJUnitRunner.class)
 public class ColumnQueryDeleteParserTest {
     @Inject
     private ClassRepresentations classRepresentations;

@@ -14,7 +14,7 @@
  */
 package org.jnosql.artemis.reflection;
 
-import org.jnosql.artemis.CDIJUnit4Runner;
+import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.model.Actor;
 import org.jnosql.artemis.model.Movie;
 import org.jnosql.artemis.model.Person;
@@ -27,7 +27,7 @@ import java.lang.reflect.Field;
 import static org.junit.Assert.assertEquals;
 
 
-@RunWith(CDIJUnit4Runner.class)
+@RunWith(CDIJUnitRunner.class)
 public class ReflectionsTest {
 
 

@@ -15,7 +15,7 @@
 package org.jnosql.artemis.column;
 
 import org.jnosql.artemis.ConfigurationUnit;
-import org.jnosql.artemis.CDIJUnit4Runner;
+import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.diana.api.Settings;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsyncFactory;
 import org.jnosql.diana.api.column.ColumnFamilyManagerFactory;
@@ -29,7 +29,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(CDIJUnit4Runner.class)
+@RunWith(CDIJUnitRunner.class)
 public class ColumnFamilyManagerFactoryProducerTest {
 
 

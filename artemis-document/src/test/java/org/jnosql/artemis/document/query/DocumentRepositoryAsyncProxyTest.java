@@ -17,7 +17,7 @@ package org.jnosql.artemis.document.query;
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.Pagination;
 import org.jnosql.artemis.RepositoryAsync;
-import org.jnosql.artemis.CDIJUnit4Runner;
+import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.document.DocumentTemplateAsync;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
@@ -51,7 +51,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 
 
-@RunWith(CDIJUnit4Runner.class)
+@RunWith(CDIJUnitRunner.class)
 public class DocumentRepositoryAsyncProxyTest {
 
     private DocumentTemplateAsync template;

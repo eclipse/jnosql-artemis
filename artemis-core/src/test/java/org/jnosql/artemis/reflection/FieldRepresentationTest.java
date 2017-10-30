@@ -17,7 +17,7 @@ package org.jnosql.artemis.reflection;
 
 import org.jnosql.artemis.Column;
 import org.jnosql.artemis.Embeddable;
-import org.jnosql.artemis.CDIJUnit4Runner;
+import org.jnosql.artemis.CDIJUnitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -31,7 +31,7 @@ import static org.jnosql.artemis.reflection.FieldType.EMBEDDED;
 import static org.jnosql.artemis.reflection.FieldType.MAP;
 import static org.junit.Assert.assertEquals;
 
-@RunWith(CDIJUnit4Runner.class)
+@RunWith(CDIJUnitRunner.class)
 public class FieldRepresentationTest {
 
 

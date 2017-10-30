@@ -16,7 +16,7 @@ package org.jnosql.artemis.document.query;
 
 import org.hamcrest.Matchers;
 import org.jnosql.artemis.Repository;
-import org.jnosql.artemis.CDIJUnit4Runner;
+import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.document.DocumentTemplate;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
@@ -58,7 +58,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(CDIJUnit4Runner.class)
+@RunWith(CDIJUnitRunner.class)
 public class DocumentRepositoryProxyTest {
 
     private DocumentTemplate template;
