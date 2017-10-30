@@ -124,7 +124,7 @@ public class DefaultConfigurationReaderTest {
         when(annotation.name()).thenReturn("name");
         ConfigurationSettingsUnit unit = configurationReader.read(annotation, MockConfiguration.class);
 
-        Map<String, Object> settings = new HashMap<String, Object>();
+        Map<String, Object> settings = new HashMap<>();
         settings.put("key","value");
         settings.put("key2","value2");
 
@@ -141,7 +141,7 @@ public class DefaultConfigurationReaderTest {
         when(annotation.fileName()).thenReturn("jnosql.json");
         ConfigurationSettingsUnit unit = configurationReader.read(annotation, MockConfiguration.class);
 
-        Map<String, Object> settings = new HashMap<String, Object>();
+        Map<String, Object> settings = new HashMap<>();
         settings.put("key","value");
         settings.put("key2","value2");
         settings.put("key3","value3");
@@ -160,7 +160,7 @@ public class DefaultConfigurationReaderTest {
         when(annotation.name()).thenReturn("name");
         ConfigurationSettingsUnit unit = configurationReader.read(annotation, MockConfiguration.class);
 
-        Map<String, Object> settings = new HashMap<String, Object>();
+        Map<String, Object> settings = new HashMap<>();
         settings.put("key","value");
         settings.put("key2","value2");
 
@@ -177,7 +177,7 @@ public class DefaultConfigurationReaderTest {
         when(annotation.fileName()).thenReturn("jnosql.json");
         ConfigurationSettingsUnit unit = configurationReader.read(annotation);
 
-        Map<String, Object> settings = new HashMap<String, Object>();
+        Map<String, Object> settings = new HashMap<>();
         settings.put("key","value");
         settings.put("key2","value2");
         settings.put("key3","value3");
@@ -196,7 +196,7 @@ public class DefaultConfigurationReaderTest {
         when(annotation.name()).thenReturn("name");
         ConfigurationSettingsUnit unit = configurationReader.read(annotation);
 
-        Map<String, Object> settings = new HashMap<String, Object>();
+        Map<String, Object> settings = new HashMap<>();
         settings.put("key","value");
         settings.put("key2","value2");
 
