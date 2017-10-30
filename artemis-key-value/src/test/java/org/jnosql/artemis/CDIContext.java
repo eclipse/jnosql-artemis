@@ -14,8 +14,21 @@
  */
 package org.jnosql.artemis;
 
+import javax.enterprise.inject.se.SeContainer;
+import javax.enterprise.inject.se.SeContainerInitializer;
 
-import org.jnosql.artemis.model.Person;
+public class CDIContext {
 
-public interface PersonRepository extends Repository<Person, Long> {
+    public static final CDIContext INSTANCE = new CDIContext();
+
+    private final SeContainer container;
+
+    private CDIContext() {
+        this.container = SeContainerInitializer.newInstance().initialize();
+        Runtime.getRuntime().addShutdownHook(new Thread(container::close));
+    }
+
+    public <T> T getBean(Class<T> type) {
+        return container.select(type).get();
+    }
 }

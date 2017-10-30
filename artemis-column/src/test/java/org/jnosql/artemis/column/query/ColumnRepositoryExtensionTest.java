@@ -18,7 +18,7 @@ import org.jnosql.artemis.Database;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.PersonRepository;
 import org.jnosql.artemis.PersonRepositoryAsync;
-import org.jnosql.artemis.WeldJUnit4Runner;
+import org.jnosql.artemis.CDIJUnit4Runner;
 import org.jnosql.artemis.model.Person;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +28,7 @@ import javax.inject.Inject;
 import static org.junit.Assert.*;
 
 
-@RunWith(WeldJUnit4Runner.class)
+@RunWith(CDIJUnit4Runner.class)
 public class ColumnRepositoryExtensionTest {
 
     @Inject

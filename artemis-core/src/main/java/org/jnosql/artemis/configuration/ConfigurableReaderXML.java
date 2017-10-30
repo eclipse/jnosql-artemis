@@ -25,13 +25,13 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 
 @Named("xml")
 @ApplicationScoped
@@ -75,7 +75,7 @@ class ConfigurableReaderXML implements ConfigurableReader {
             Unmarshaller unmarshaller = UNMARSHALLER.get();
             ConfigurablesXML configurablesXML = (ConfigurablesXML) unmarshaller.unmarshal(stream.get());
             List<Configurable> configurables = new ArrayList<>();
-            Optional.ofNullable(configurablesXML.getConfigurations()).orElse(emptyList()).forEach(configurables::add);
+            configurables.addAll(ofNullable(configurablesXML.getConfigurations()).orElse(emptyList()));
             cache.put(annotation.fileName(), configurables);
             return configurables;
         } catch (JAXBException e) {

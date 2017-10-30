@@ -14,6 +14,21 @@
  */
 package org.jnosql.artemis;
 
+import javax.enterprise.inject.se.SeContainer;
+import javax.enterprise.inject.se.SeContainerInitializer;
 
-public interface IgnoreRepository<T, ID> extends Repository<T, ID> {
+public class CDIContext {
+
+    public static final CDIContext INSTANCE = new CDIContext();
+
+    private final SeContainer container;
+
+    private CDIContext() {
+        this.container = SeContainerInitializer.newInstance().initialize();
+        Runtime.getRuntime().addShutdownHook(new Thread(container::close));
+    }
+
+    public <T> T getBean(Class<T> type) {
+        return container.select(type).get();
+    }
 }

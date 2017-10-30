@@ -15,7 +15,7 @@
 package org.jnosql.artemis.configuration;
 
 import org.jnosql.artemis.ConfigurationUnit;
-import org.jnosql.artemis.WeldJUnit4Runner;
+import org.jnosql.artemis.CDIJUnit4Runner;
 import org.jnosql.diana.api.Settings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,12 +26,10 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(WeldJUnit4Runner.class)
+@RunWith(CDIJUnit4Runner.class)
 public class DefaultConfigurationReaderTest {
 
 
@@ -126,7 +124,7 @@ public class DefaultConfigurationReaderTest {
         when(annotation.name()).thenReturn("name");
         ConfigurationSettingsUnit unit = configurationReader.read(annotation, MockConfiguration.class);
 
-        Map<String, Object> settings = new HashMap<String, Object>();
+        Map<String, Object> settings = new HashMap<>();
         settings.put("key","value");
         settings.put("key2","value2");
 
@@ -143,7 +141,7 @@ public class DefaultConfigurationReaderTest {
         when(annotation.fileName()).thenReturn("jnosql.json");
         ConfigurationSettingsUnit unit = configurationReader.read(annotation, MockConfiguration.class);
 
-        Map<String, Object> settings = new HashMap<String, Object>();
+        Map<String, Object> settings = new HashMap<>();
         settings.put("key","value");
         settings.put("key2","value2");
         settings.put("key3","value3");
@@ -162,7 +160,7 @@ public class DefaultConfigurationReaderTest {
         when(annotation.name()).thenReturn("name");
         ConfigurationSettingsUnit unit = configurationReader.read(annotation, MockConfiguration.class);
 
-        Map<String, Object> settings = new HashMap<String, Object>();
+        Map<String, Object> settings = new HashMap<>();
         settings.put("key","value");
         settings.put("key2","value2");
 
@@ -179,7 +177,7 @@ public class DefaultConfigurationReaderTest {
         when(annotation.fileName()).thenReturn("jnosql.json");
         ConfigurationSettingsUnit unit = configurationReader.read(annotation);
 
-        Map<String, Object> settings = new HashMap<String, Object>();
+        Map<String, Object> settings = new HashMap<>();
         settings.put("key","value");
         settings.put("key2","value2");
         settings.put("key3","value3");
@@ -198,7 +196,7 @@ public class DefaultConfigurationReaderTest {
         when(annotation.name()).thenReturn("name");
         ConfigurationSettingsUnit unit = configurationReader.read(annotation);
 
-        Map<String, Object> settings = new HashMap<String, Object>();
+        Map<String, Object> settings = new HashMap<>();
         settings.put("key","value");
         settings.put("key2","value2");
 

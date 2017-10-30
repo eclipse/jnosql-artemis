@@ -12,10 +12,20 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis;
+package org.jnosql.artemis.validation;
 
+import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.runners.model.InitializationError;
 
-import org.jnosql.artemis.model.Person;
+public class CDIJUnit4Runner extends BlockJUnit4ClassRunner {
 
-public interface PersonRepositoryAsync extends RepositoryAsync<Person, Long> {
+    public CDIJUnit4Runner(Class<Object> clazz) throws InitializationError {
+        super(clazz);
+    }
+
+    @Override
+    protected Object createTest() {
+        final Class<?> test = getTestClass().getJavaClass();
+        return CDIContext.INSTANCE.getBean(test);
+    }
 }

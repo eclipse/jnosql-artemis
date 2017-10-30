@@ -15,7 +15,7 @@
 package org.jnosql.artemis.key;
 
 import org.jnosql.artemis.ConfigurationUnit;
-import org.jnosql.artemis.WeldJUnit4Runner;
+import org.jnosql.artemis.CDIJUnit4Runner;
 import org.jnosql.diana.api.Settings;
 import org.jnosql.diana.api.key.BucketManagerFactory;
 import org.junit.Assert;
@@ -28,7 +28,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(WeldJUnit4Runner.class)
+@RunWith(CDIJUnit4Runner.class)
 public class BucketManagerFactoryProducerTest {
 
     @Inject
