@@ -84,7 +84,7 @@
 
     <modules>
         <module>artemis-core</module>
-        <module>artemis-configuration-reader</module>
+        <module>artemis-configuration</module>
         <module>artemis-column</module>
         <module>artemis-document</module>
         <module>artemis-key-value</module>
