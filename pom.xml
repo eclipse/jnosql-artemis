@@ -31,7 +31,7 @@
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>JNoSQL Mapping layer</description>
+    <description>Eclipse JNoSQL Mapping layer, Artemis</description>
     <url>http://jnosql.org/</url>
 
     <licenses>
