@@ -23,6 +23,7 @@ import org.jnosql.diana.api.key.BucketManagerFactory;
 import org.jnosql.diana.api.key.KeyValueConfiguration;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -39,7 +40,7 @@ class BucketManagerFactoryProducer {
     private Reflections reflections;
 
     @Inject
-    private ConfigurationReader configurationReader;
+    private Instance<ConfigurationReader> configurationReader;
 
     @ConfigurationUnit
     @Produces
@@ -57,7 +58,7 @@ class BucketManagerFactoryProducer {
         Annotated annotated = injectionPoint.getAnnotated();
         ConfigurationUnit annotation = annotated.getAnnotation(ConfigurationUnit.class);
 
-        ConfigurationSettingsUnit unit = configurationReader.read(annotation, KeyValueConfiguration.class);
+        ConfigurationSettingsUnit unit = configurationReader.get().read(annotation, KeyValueConfiguration.class);
         Class<KeyValueConfiguration> configurationClass = unit.<KeyValueConfiguration>getProvider()
                 .orElseThrow(() -> new IllegalStateException("The ColumnConfiguration provider is required in the configuration"));
 
