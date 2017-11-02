@@ -14,9 +14,9 @@
  */
 package org.jnosql.artemis.column;
 
-import org.jnosql.artemis.ConfigurationUnit;
 import org.jnosql.artemis.ConfigurationReader;
 import org.jnosql.artemis.ConfigurationSettingsUnit;
+import org.jnosql.artemis.ConfigurationUnit;
 import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.column.ColumnConfiguration;
 import org.jnosql.diana.api.column.ColumnConfigurationAsync;
@@ -26,6 +26,7 @@ import org.jnosql.diana.api.column.ColumnFamilyManagerAsyncFactory;
 import org.jnosql.diana.api.column.ColumnFamilyManagerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -42,7 +43,7 @@ class ColumnFamilyManagerFactoryProducer {
     private Reflections reflections;
 
     @Inject
-    private ConfigurationReader configurationReader;
+    private Instance<ConfigurationReader> configurationReader;
 
 
     @ConfigurationUnit
@@ -76,7 +77,7 @@ class ColumnFamilyManagerFactoryProducer {
         Annotated annotated = injectionPoint.getAnnotated();
         ConfigurationUnit annotation = annotated.getAnnotation(ConfigurationUnit.class);
 
-        ConfigurationSettingsUnit unit = configurationReader.read(annotation, ColumnConfigurationAsync.class);
+        ConfigurationSettingsUnit unit = configurationReader.get().read(annotation, ColumnConfigurationAsync.class);
         Class<ColumnConfigurationAsync> configurationClass = unit.<ColumnConfigurationAsync>getProvider()
                 .orElseThrow(() -> new IllegalStateException("The ColumnConfiguration provider is required in the configuration"));
 
@@ -91,7 +92,7 @@ class ColumnFamilyManagerFactoryProducer {
         Annotated annotated = injectionPoint.getAnnotated();
         ConfigurationUnit annotation = annotated.getAnnotation(ConfigurationUnit.class);
 
-        ConfigurationSettingsUnit unit = configurationReader.read(annotation, ColumnConfiguration.class);
+        ConfigurationSettingsUnit unit = configurationReader.get().read(annotation, ColumnConfiguration.class);
         Class<ColumnConfiguration> configurationClass = unit.<ColumnConfiguration>getProvider()
                 .orElseThrow(() -> new IllegalStateException("The ColumnConfiguration provider is required in the configuration"));
 
