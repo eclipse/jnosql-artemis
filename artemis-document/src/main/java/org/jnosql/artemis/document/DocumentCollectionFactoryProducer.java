@@ -14,9 +14,9 @@
  */
 package org.jnosql.artemis.document;
 
-import org.jnosql.artemis.ConfigurationUnit;
 import org.jnosql.artemis.ConfigurationReader;
 import org.jnosql.artemis.ConfigurationSettingsUnit;
+import org.jnosql.artemis.ConfigurationUnit;
 import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
@@ -26,6 +26,7 @@ import org.jnosql.diana.api.document.DocumentConfiguration;
 import org.jnosql.diana.api.document.DocumentConfigurationAsync;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -42,7 +43,7 @@ class DocumentCollectionFactoryProducer {
     private Reflections reflections;
 
     @Inject
-    private ConfigurationReader configurationReader;
+    private Instance<ConfigurationReader> configurationReader;
 
 
     @ConfigurationUnit
@@ -78,7 +79,7 @@ class DocumentCollectionFactoryProducer {
         Annotated annotated = injectionPoint.getAnnotated();
         ConfigurationUnit annotation = annotated.getAnnotation(ConfigurationUnit.class);
 
-        ConfigurationSettingsUnit unit = configurationReader.read(annotation, DocumentConfigurationAsync.class);
+        ConfigurationSettingsUnit unit = configurationReader.get().read(annotation, DocumentConfigurationAsync.class);
         Class<DocumentConfigurationAsync> configurationClass = unit.<DocumentConfigurationAsync>getProvider()
                 .orElseThrow(() -> new IllegalStateException("The DocumentConfiguration provider is required in the configuration"));
 
@@ -93,7 +94,7 @@ class DocumentCollectionFactoryProducer {
         Annotated annotated = injectionPoint.getAnnotated();
         ConfigurationUnit annotation = annotated.getAnnotation(ConfigurationUnit.class);
 
-        ConfigurationSettingsUnit unit = configurationReader.read(annotation, DocumentConfiguration.class);
+        ConfigurationSettingsUnit unit = configurationReader.get().read(annotation, DocumentConfiguration.class);
         Class<DocumentConfiguration> configurationClass = unit.<DocumentConfiguration>getProvider()
                 .orElseThrow(() -> new IllegalStateException("The DocumentConfiguration provider is required in the configuration"));
 
