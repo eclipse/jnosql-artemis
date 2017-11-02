@@ -12,7 +12,7 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis.configuration;
+package org.jnosql.artemis;
 
 import org.jnosql.diana.api.Settings;
 

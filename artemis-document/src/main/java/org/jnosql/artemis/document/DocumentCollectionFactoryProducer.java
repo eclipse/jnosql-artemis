@@ -15,8 +15,8 @@
 package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.ConfigurationUnit;
-import org.jnosql.artemis.configuration.ConfigurationReader;
-import org.jnosql.artemis.configuration.ConfigurationSettingsUnit;
+import org.jnosql.artemis.ConfigurationReader;
+import org.jnosql.artemis.ConfigurationSettingsUnit;
 import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;

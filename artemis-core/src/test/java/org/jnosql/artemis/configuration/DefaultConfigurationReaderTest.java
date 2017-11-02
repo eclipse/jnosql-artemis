@@ -14,6 +14,8 @@
  */
 package org.jnosql.artemis.configuration;
 
+import org.jnosql.artemis.ConfigurationReader;
+import org.jnosql.artemis.ConfigurationSettingsUnit;
 import org.jnosql.artemis.ConfigurationUnit;
 import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.diana.api.Settings;
