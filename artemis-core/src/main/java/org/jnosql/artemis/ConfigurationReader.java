@@ -14,8 +14,6 @@
  */
 package org.jnosql.artemis;
 
-import org.jnosql.artemis.configuration.ConfigurationException;
-
 /**
  * Reader class that given the annotation returns {@link ConfigurationSettingsUnit}
  *

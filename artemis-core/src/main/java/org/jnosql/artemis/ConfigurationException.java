@@ -12,21 +12,19 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis.model;
+package org.jnosql.artemis;
 
+/**
+ * The exception to read Configuration
+ */
+public class ConfigurationException extends ArtemisException {
 
-import org.jnosql.artemis.Column;
-
-public class Machine {
-
-    @Column
-    private String name;
-
-    public String getName() {
-        return name;
+    public ConfigurationException(String message) {
+        super(message);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public ConfigurationException(String message, Throwable exception) {
+        super(message, exception);
     }
+
 }
