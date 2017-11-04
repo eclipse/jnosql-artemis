@@ -39,7 +39,6 @@ public class Person {
 ```java
 public class MoneyConverter implements AttributeConverter<Money, String>{
 
-
     @Override
     public String convertToDatabaseColumn(Money attribute) {
         return attribute.toString();
@@ -66,3 +65,21 @@ public class Worker {
 }
 ```
 
+## @ConfigurationUnit
+
+Expresses a dependency to a configuration and its associated persistence unit.
+
+```java
+
+@ConfigurationUnit
+private ColumnFamilyManagerFactory<DatabaseImplementation> factory;
+   
+@ConfigurationUnit(fileName = "column.json", name = "name")
+private ColumnFamilyManagerFactory<?> factoryB;
+    
+```
+
+
+## @Database
+
+The database qualifier used on Eclipse JNoSQL Artemis such as defines which interpreter will be used on Repository.
