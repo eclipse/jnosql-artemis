@@ -340,7 +340,9 @@ public class ColumnRepositoryProxyTest {
         List<Person> persons = personRepository.findAll();
         ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
         verify(template).select(captor.capture());
-        assertFalse(captor.getValue().getCondition().isPresent());
+        ColumnQuery query = captor.getValue();
+        assertFalse(query.getCondition().isPresent());
+        assertEquals("Person", query.getColumnFamily());
 
     }
 
