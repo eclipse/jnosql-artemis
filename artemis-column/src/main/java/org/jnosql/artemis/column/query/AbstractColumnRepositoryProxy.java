@@ -60,9 +60,8 @@ public abstract class AbstractColumnRepositoryProxy<T, ID> implements Invocation
                 ColumnQuery query = getQueryParser().parse(method, args, getClassRepresentation());
                 return returnObject(query, getTemplate(), typeClass, method);
             case FIND_ALL:
-
-                ColumnQuery query = getQueryParser().parse(method, args, getClassRepresentation());
-                return returnObject(query, getTemplate(), typeClass, method);
+                return returnObject(ColumnQueryBuilder.select().from(getClassRepresentation().getName()).build(),
+                        getTemplate(), typeClass, method);
             case DELETE_BY:
                 ColumnDeleteQuery deleteQuery = getDeleteParser().parse(methodName, args, getClassRepresentation());
                 getTemplate().delete(deleteQuery);

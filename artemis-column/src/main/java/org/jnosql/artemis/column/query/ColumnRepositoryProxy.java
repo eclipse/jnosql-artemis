@@ -46,14 +46,15 @@ class ColumnRepositoryProxy<T, ID> extends AbstractColumnRepositoryProxy {
     private final ColumnQueryDeleteParser deleteParser;
 
 
-    ColumnRepositoryProxy(ColumnTemplate template, ClassRepresentations classRepresentations, Class<?> repositoryType, Reflections reflections) {
+    ColumnRepositoryProxy(ColumnTemplate template, ClassRepresentations classRepresentations, Class<?> repositoryType,
+                          Reflections reflections, ColumnQueryParser queryParser) {
         this.template = template;
         Class<T> typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
         this.repository = new ColumnRepository(template, classRepresentation);
         this.reflections = reflections;
-        this.queryParser = new ColumnQueryParser();
+        this.queryParser = queryParser;
         this.deleteParser = new ColumnQueryDeleteParser();
     }
 

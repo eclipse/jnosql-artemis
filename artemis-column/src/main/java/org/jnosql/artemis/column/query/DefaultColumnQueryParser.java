@@ -47,7 +47,7 @@ class DefaultColumnQueryParser implements ColumnQueryParser {
         requireNonNull(method, "method is required");
         requireNonNull(args, "args is required");
         requireNonNull(representation, "representation is required");
-        
+
         String methodName = method.getName();
         ColumnCondition condition = null;
         String[] tokens = methodName.replace(PREFIX, ColumnQueryParserUtil.EMPTY).split(TOKENIZER);
