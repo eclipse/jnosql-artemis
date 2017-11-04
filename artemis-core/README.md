@@ -1,6 +1,6 @@
-![Eclipse JNoSQL Artemis Project](https://github.com/JNOSQL/diana-site/blob/master/images/duke-artemis.png)
-# Eclipse JNoSQL Artemis
- Eclipse JNoSQL Artemis is a flexible and extensible OxM to connect NoSQL databases. It brings an easy interface to support key-value, column family, document oriented and graph databases using as base Diana in CDI based.
+![Artemis Project](https://github.com/JNOSQL/diana-site/blob/master/images/duke-artemis.png)
+# Artemis
+ Artemis is a flexible and extensible ORM to connect NoSQL databases. It brings an easy interface to support key-value, column family, document oriented and graph databases using as base Diana in CDI based.
 
 * CDI Based
 * Diana Based
