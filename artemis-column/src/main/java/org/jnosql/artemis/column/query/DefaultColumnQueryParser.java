@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import static java.util.Objects.requireNonNull;
 import static org.jnosql.artemis.column.query.ColumnQueryParserUtil.and;
 import static org.jnosql.artemis.column.query.ColumnQueryParserUtil.or;
 import static org.jnosql.artemis.column.query.ColumnQueryParserUtil.toCondition;
@@ -43,6 +44,10 @@ class DefaultColumnQueryParser implements ColumnQueryParser {
 
     public ColumnQuery parse(Method method, Object[] args, ClassRepresentation representation) {
 
+        requireNonNull(method, "method is required");
+        requireNonNull(args, "args is required");
+        requireNonNull(representation, "representation is required");
+        
         String methodName = method.getName();
         ColumnCondition condition = null;
         String[] tokens = methodName.replace(PREFIX, ColumnQueryParserUtil.EMPTY).split(TOKENIZER);
