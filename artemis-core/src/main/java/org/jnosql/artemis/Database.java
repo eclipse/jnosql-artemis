@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 
 
 /**
- * Defines which interpreter will be used on {@link Repository}
+ * The database qualifier used on Eclipse JNoSQL Artemis such as defines which interpreter will be used on {@link Repository}
  * with {@link Database}
  */
 @Retention(RetentionPolicy.RUNTIME)
