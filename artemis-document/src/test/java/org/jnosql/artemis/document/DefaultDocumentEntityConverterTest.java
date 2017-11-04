@@ -40,6 +40,7 @@ import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -281,7 +282,7 @@ public class DefaultDocumentEntityConverterTest {
         assertEquals("ids", appointmentBook.getId());
         List<List<Document>> documents = (List<List<Document>>) contacts.get();
 
-        assertEquals(3L, documents.stream().flatMap(c -> c.stream())
+        assertEquals(3L, documents.stream().flatMap(Collection::stream)
                 .filter(c -> c.getName().equals("name"))
                 .count());
     }

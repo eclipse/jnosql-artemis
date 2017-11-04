@@ -39,6 +39,7 @@ import org.junit.runner.RunWith;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -281,7 +282,7 @@ public class DefaultColumnEntityConverterTest {
         assertEquals("ids", appointmentBook.getId());
         List<List<Column>> columns = (List<List<Column>>) contacts.get();
 
-        assertEquals(3L, columns.stream().flatMap(c -> c.stream())
+        assertEquals(3L, columns.stream().flatMap(Collection::stream)
                 .filter(c -> c.getName().equals("name"))
                 .count());
     }
