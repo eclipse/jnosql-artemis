@@ -28,10 +28,8 @@ class KeyValueRepositoryProxy<T> implements InvocationHandler {
 
     private final DefaultKeyValueRepository crudRepository;
 
-    private final Class<T> typeClass;
-
     KeyValueRepositoryProxy(Class<?> repositoryType, KeyValueTemplate repository) {
-        typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
+        Class<T> typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.crudRepository = new DefaultKeyValueRepository(typeClass, repository);
     }
