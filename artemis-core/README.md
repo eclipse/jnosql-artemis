@@ -14,7 +14,7 @@ The Eclipse JNoSQL Artemis Core is the commons project in the mapping project. I
 
 E.g.:
 
-´´´java
+```java
 @Entity
 public class Person {
 
@@ -30,4 +30,4 @@ public class Person {
     @Column
     private List<String> phones;
 }    
-´´´
+```
