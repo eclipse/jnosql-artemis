@@ -1,24 +1,13 @@
-![Artemis Project](https://github.com/JNOSQL/diana-site/blob/master/images/duke-artemis.png)
-# Artemis
- Artemis is a flexible and extensible ORM to connect NoSQL databases. It brings an easy interface to support key-value, column family, document oriented and graph databases using as base Diana in CDI based.
-
-* CDI Based
-* Diana Based
-* Events to insert, delete, update
-* Supports to Bean Validation
-* OxM Annotation Based
-* Configurable and extensible
-
-The API's focus is on simplicity and ease of use. Developers should only have to know a minimal set of artifacts to work with the solution. The API is built on latest Java 8 features and therefore fit perfectly with the functional features of Java 8. 
-
-The project has five modules:
-
-* The artemis-core: The Eclipse JNoSQL mapping, Artemis, commons project.
-* The artemis-configuration: The Eclipse JNoSQL reader to Artemis project.
-* The artemis-column: The Eclipse JNoSQL mapping, Artemis, to column NoSQL database.
-* The artemis-document: The Eclipse JNoSQL mapping, Artemis, to document NoSQL database.
-* The artemis-key-value: The Eclipse JNoSQL mapping, Artemis, to key-value NoSQL database.
+![Eclipse JNoSQL Artemis Project](https://github.com/JNOSQL/diana-site/blob/master/images/duke-artemis.png)
+# Eclipse JNoSQL Artemis Core
 
 
-The graph API is an extension because the communication layer to the graph is Apache TinkerPop.
+The Eclipse JNoSQL Artemis Core is the commons project in the mapping project. It has the commons annotations.
 
+## Entities Mapping
+
+* `@Entity`: Specifies that the class is an entity. This annotation is applied to the entity class.
+* `@Column`: Specifies a mapped column for a persistent property or field.
+* `@Id`: Defines the field is the key of the Entity
+* `@Embeddable`:Defines a class whose instances are stored as an intrinsic part of an owning entity and share the identity of the entity.
+* `@MappedSuperclass`: Designates a class whose mapping information is applied to the entities that inherit from it. A mapped superclass has no separate table defined for it.
