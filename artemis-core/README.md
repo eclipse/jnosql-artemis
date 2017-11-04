@@ -83,3 +83,22 @@ private ColumnFamilyManagerFactory<?> factoryB;
 ## @Database
 
 The database qualifier used on Eclipse JNoSQL Artemis such as defines which interpreter will be used on Repository.
+
+```java
+public interface PersonRepository extends Repository<Person, Long> {
+}
+
+
+    @Inject
+    @Database(value = DatabaseType.COLUMN)
+    private PersonRepository repository;
+
+    @Inject
+    @Database(value = DatabaseType.DOCUMENT)
+    private PersonRepository repository;
+
+    @Inject
+    @Database(value = DatabaseType.KEY_VALUE)
+    private PersonRepository repository;        
+    
+```
