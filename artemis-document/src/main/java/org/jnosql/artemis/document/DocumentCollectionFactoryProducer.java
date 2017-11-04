@@ -96,9 +96,7 @@ class DocumentCollectionFactoryProducer {
                 .orElseThrow(() -> new IllegalStateException("The DocumentConfiguration provider is required in the configuration"));
 
         DocumentConfiguration columnConfiguration = reflections.newInstance(configurationClass);
-        DocumentCollectionManagerFactory documentFactory = columnConfiguration.get(unit.getSettings());
 
-
-        return documentFactory;
+        return columnConfiguration.get(unit.getSettings());
     }
 }
