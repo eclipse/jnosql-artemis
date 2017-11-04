@@ -82,10 +82,8 @@ class ColumnFamilyManagerFactoryProducer {
                 .orElseThrow(() -> new IllegalStateException("The ColumnConfiguration provider is required in the configuration"));
 
         ColumnConfigurationAsync columnConfiguration = reflections.newInstance(configurationClass);
-        ColumnFamilyManagerAsyncFactory columnFamilyManagerFactory = columnConfiguration.getAsync(unit.getSettings());
 
-
-        return columnFamilyManagerFactory;
+        return columnConfiguration.getAsync(unit.getSettings());
     }
 
     private <T extends ColumnFamilyManager> ColumnFamilyManagerFactory<T> gettColumnFamilyManagerFactory(InjectionPoint injectionPoint) {
@@ -97,9 +95,7 @@ class ColumnFamilyManagerFactoryProducer {
                 .orElseThrow(() -> new IllegalStateException("The ColumnConfiguration provider is required in the configuration"));
 
         ColumnConfiguration columnConfiguration = reflections.newInstance(configurationClass);
-        ColumnFamilyManagerFactory columnFamilyManagerFactory = columnConfiguration.get(unit.getSettings());
 
-
-        return columnFamilyManagerFactory;
+        return columnConfiguration.get(unit.getSettings());
     }
 }

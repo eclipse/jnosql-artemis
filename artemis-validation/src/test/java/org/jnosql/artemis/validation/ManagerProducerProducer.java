@@ -35,8 +35,7 @@ public class ManagerProducerProducer {
 
     @Produces
     public BucketManager getBucketManager() {
-        BucketManager manager = Mockito.mock(BucketManager.class);
-        return manager;
+        return Mockito.mock(BucketManager.class);
     }
 
     @Produces

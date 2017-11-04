@@ -84,10 +84,7 @@ class DocumentCollectionFactoryProducer {
                 .orElseThrow(() -> new IllegalStateException("The DocumentConfiguration provider is required in the configuration"));
 
         DocumentConfigurationAsync documentConfiguration = reflections.newInstance(configurationClass);
-        DocumentCollectionManagerAsyncFactory documentFactory = documentConfiguration.getAsync(unit.getSettings());
-
-
-        return documentFactory;
+        return documentConfiguration.getAsync(unit.getSettings());
     }
 
     private <T extends DocumentCollectionManager> DocumentCollectionManagerFactory<T> getDocumentCollection(InjectionPoint injectionPoint) {
