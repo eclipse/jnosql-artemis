@@ -188,16 +188,20 @@ public abstract class AbstractColumnEntityConverter implements ColumnEntityConve
 
         @Override
         public <T> void convert(T instance, List<Column> columns, Optional<Column> column, FieldRepresentation field) {
-            if (column.isPresent()) {
+            column.ifPresent(convertColumn(instance, field));
+        }
+
+        private <T> Consumer<Column> convertColumn(T instance, FieldRepresentation field) {
+            return column -> {
                 GenericFieldRepresentation genericField = GenericFieldRepresentation.class.cast(field);
                 Collection collection = genericField.getCollectionInstance();
-                List<List<Column>> embeddable = (List<List<Column>>) column.get().get();
+                List<List<Column>> embeddable = (List<List<Column>>) column.get();
                 for (List<Column> columnList : embeddable) {
                     Object element = AbstractColumnEntityConverter.this.toEntity(genericField.getElementType(), columnList);
                     collection.add(element);
                 }
                 getReflections().setValue(instance, field.getNativeField(), collection);
-            }
+            };
         }
     }
 }
