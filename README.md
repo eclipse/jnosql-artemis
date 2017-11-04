@@ -16,6 +16,7 @@ The project has three modules:
 * The artemis-column: The Eclipse JNoSQL mapping, Artemis, to column NoSQL database.
 * The artemis-document: The Eclipse JNoSQL mapping, Artemis, to document NoSQL database.
 * The artemis-key-value: The Eclipse JNoSQL mapping, Artemis, to key-value NoSQL database.
+* The artemis-configuration: The Eclipse JNoSQL reader to Artemis project.
 
 The graph API is an extension because the communication layer to the graph is Apache TinkerPop.
 
