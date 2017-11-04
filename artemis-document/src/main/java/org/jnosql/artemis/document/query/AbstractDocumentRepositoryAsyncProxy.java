@@ -28,6 +28,7 @@ import java.util.function.Consumer;
 
 import static org.jnosql.artemis.document.query.DocumentRepositoryType.getDeleteQuery;
 import static org.jnosql.artemis.document.query.DocumentRepositoryType.getQuery;
+import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
 
 /**
  * The template method to {@link RepositoryAsync} to Document
@@ -60,6 +61,8 @@ public abstract class AbstractDocumentRepositoryAsyncProxy<T> implements Invocat
             case FIND_BY:
                 DocumentQuery query = getQueryParser().parse(methodName, args, getClassRepresentation());
                 return executeQuery(getCallBack(args), query);
+            case FIND_ALL:
+                return executeQuery(getCallBack(args), select().from(getClassRepresentation().getName()).build());
             case DELETE_BY:
                 DocumentDeleteQuery deleteQuery = getDeleteParser().parse(methodName, args, getClassRepresentation());
                 return executeDelete(args, deleteQuery);

@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
 import static org.jnosql.artemis.document.query.DocumentRepositoryType.getDeleteQuery;
 import static org.jnosql.artemis.document.query.DocumentRepositoryType.getQuery;
 import static org.jnosql.artemis.document.query.ReturnTypeConverterUtil.returnObject;
+import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
 
 /**
  * The template method to {@link Repository} to Document
@@ -60,6 +61,9 @@ public abstract class AbstractDocumentRepositoryProxy<T> implements InvocationHa
             case FIND_BY:
                 DocumentQuery query = getQueryParser().parse(methodName, args, getClassRepresentation());
                 return returnObject(query, getTemplate(), typeClass, method);
+            case FIND_ALL:
+                return returnObject(select().from(getClassRepresentation().getName()).build(), getTemplate(),
+                        typeClass, method);
             case DELETE_BY:
                 getTemplate().delete(getDeleteParser().parse(methodName, args, getClassRepresentation()));
                 return null;

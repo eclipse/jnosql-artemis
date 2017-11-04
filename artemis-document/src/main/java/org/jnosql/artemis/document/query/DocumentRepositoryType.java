@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 
 enum DocumentRepositoryType {
 
-    DEFAULT, FIND_BY, DELETE_BY, QUERY, QUERY_DELETE, UNKNOWN;
+    DEFAULT, FIND_BY, FIND_ALL, DELETE_BY, QUERY, QUERY_DELETE, UNKNOWN;
 
 
     static DocumentRepositoryType of(Method method, Object[] args) {
@@ -36,6 +36,8 @@ enum DocumentRepositoryType {
             case "findById":
             case "existsById":
                 return DEFAULT;
+            case "findAll":
+                return FIND_ALL;
             default:
         }
 
