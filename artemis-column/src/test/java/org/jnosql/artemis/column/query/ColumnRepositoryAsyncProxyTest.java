@@ -69,7 +69,8 @@ public class ColumnRepositoryAsyncProxyTest {
         this.template = Mockito.mock(ColumnTemplateAsync.class);
 
         ColumnRepositoryAsyncProxy handler = new ColumnRepositoryAsyncProxy(template,
-                classRepresentations, PersonAsyncRepository.class, reflections);
+                classRepresentations, PersonAsyncRepository.class, reflections
+                , new DefaultColumnQueryParser(), new ColumnQueryDeleteParser());
 
 
         personRepository = (PersonAsyncRepository) Proxy.newProxyInstance(PersonAsyncRepository.class.getClassLoader(),

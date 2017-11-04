@@ -49,7 +49,7 @@ public class ColumnQueryParserTest {
 
     @Before
     public void setUp() {
-        parser = new ColumnQueryParser();
+        parser = new DefaultColumnQueryParser();
         classRepresentation = classRepresentations.get(Person.class);
     }
 

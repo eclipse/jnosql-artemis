@@ -90,9 +90,11 @@ public class RepositoryAsyncColumnBean implements Bean<RepositoryAsync>, Passiva
         ColumnTemplateAsync repository = provider.isEmpty() ? getInstance(ColumnTemplateAsync.class) :
                 getInstance(ColumnTemplateAsync.class, provider);
         Reflections reflections = getInstance(Reflections.class);
+        ColumnQueryParser queryParser = getInstance(ColumnQueryParser.class);
+        ColumnQueryDeleteParser deleteParser = getInstance(ColumnQueryDeleteParser.class);
 
         ColumnRepositoryAsyncProxy handler = new ColumnRepositoryAsyncProxy(repository,
-                classRepresentations, type, reflections);
+                classRepresentations, type, reflections, queryParser, deleteParser);
         return (RepositoryAsync) Proxy.newProxyInstance(type.getClassLoader(),
                 new Class[]{type},
                 handler);
