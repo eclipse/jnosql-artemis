@@ -198,16 +198,20 @@ public abstract class AbstractDocumentEntityConverter  implements DocumentEntity
         @Override
         public <T> void convert(T instance, List<Document> documents, Optional<Document> document,
                                 FieldRepresentation field) {
-            if (document.isPresent()) {
+            document.ifPresent(convertDocument(instance, field));
+        }
+
+        private <T> Consumer<Document> convertDocument(T instance, FieldRepresentation field) {
+            return document -> {
                 GenericFieldRepresentation genericField = GenericFieldRepresentation.class.cast(field);
                 Collection collection = genericField.getCollectionInstance();
-                List<List<Document>> embeddable = (List<List<Document>>) document.get().get();
+                List<List<Document>> embeddable = (List<List<Document>>) document.get();
                 for (List<Document> documentList : embeddable) {
                     Object element = AbstractDocumentEntityConverter.this.toEntity(genericField.getElementType(), documentList);
                     collection.add(element);
                 }
                 getReflections().setValue(instance, field.getNativeField(), collection);
-            }
+            };
         }
     }
 }
