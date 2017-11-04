@@ -26,6 +26,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.function.Consumer;
 
+import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
+
 /**
  * Template method to {@link RepositoryAsync} proxy on column
  *
@@ -55,6 +57,8 @@ public abstract class AbstractColumnRepositoryAsyncProxy<T> implements Invocatio
             case FIND_BY:
                 ColumnQuery query = getQueryParser().parse(methodName, args, getClassRepresentation());
                 return executeQuery(getCallBack(args), query);
+            case FIND_ALL:
+                return executeQuery(getCallBack(args), select().from(getClassRepresentation().getName()).build());
             case DELETE_BY:
                 ColumnDeleteQuery deleteQuery = getDeleteParser().parse(methodName, args, getClassRepresentation());
                 return executeDelete(getCallBack(args), deleteQuery);

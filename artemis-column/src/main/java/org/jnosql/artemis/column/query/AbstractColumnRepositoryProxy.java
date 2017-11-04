@@ -20,7 +20,6 @@ import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnQuery;
-import org.jnosql.diana.api.column.query.ColumnQueryBuilder;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -28,6 +27,7 @@ import java.lang.reflect.Method;
 import static org.jnosql.artemis.column.query.ColumnRepositoryType.getDeleteQuery;
 import static org.jnosql.artemis.column.query.ColumnRepositoryType.getQuery;
 import static org.jnosql.artemis.column.query.ReturnTypeConverterUtil.returnObject;
+import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
 
 /**
  * Template method to {@link Repository} proxy on column
@@ -60,7 +60,7 @@ public abstract class AbstractColumnRepositoryProxy<T, ID> implements Invocation
                 ColumnQuery query = getQueryParser().parse(methodName, args, getClassRepresentation());
                 return returnObject(query, getTemplate(), typeClass, method);
             case FIND_ALL:
-                return returnObject(ColumnQueryBuilder.select().from(getClassRepresentation().getName()).build(),
+                return returnObject(select().from(getClassRepresentation().getName()).build(),
                         getTemplate(), typeClass, method);
             case DELETE_BY:
                 ColumnDeleteQuery deleteQuery = getDeleteParser().parse(methodName, args, getClassRepresentation());
