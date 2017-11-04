@@ -329,8 +329,24 @@ public class ColumnRepositoryProxyTest {
 
     }
 
+    @Test
+    public void shouldFindAll() {
+        Person ada = Person.builder()
+                .withAge(20).withName("Ada").build();
+
+        when(template.select(any(ColumnQuery.class)))
+                .thenReturn(singletonList(ada));
+
+        List<Person> persons = personRepository.findAll();
+        ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
+        verify(template).select(captor.capture());
+        assertFalse(captor.getValue().getCondition().isPresent());
+
+    }
 
     interface PersonRepository extends Repository<Person, Long> {
+
+        List<Person> findAll();
 
         Person findByName(String name);
 

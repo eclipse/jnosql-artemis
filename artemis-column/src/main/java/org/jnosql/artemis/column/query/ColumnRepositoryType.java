@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 enum ColumnRepositoryType {
-    DEFAULT, FIND_BY, DELETE_BY, QUERY, QUERY_DELETE, UNKNOWN;
+    DEFAULT, FIND_BY, DELETE_BY, QUERY, QUERY_DELETE, UNKNOWN, FIND_ALL;
 
 
     static ColumnRepositoryType of(Method method, Object[] args) {
@@ -34,6 +34,8 @@ enum ColumnRepositoryType {
             case "findById":
             case "existsById":
                 return DEFAULT;
+            case "findAll":
+                return FIND_ALL;
             default:
         }
 
