@@ -338,8 +338,27 @@ public class DocumentRepositoryProxyTest {
 
     }
 
+    @Test
+    public void shouldFindAll() {
+        Person ada = Person.builder()
+                .withAge(20).withName("Ada").build();
+
+        when(template.select(any(DocumentQuery.class)))
+                .thenReturn(singletonList(ada));
+
+        List<Person> persons = personRepository.findAll();
+        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
+        verify(template).select(captor.capture());
+        DocumentQuery query = captor.getValue();
+        assertFalse(query.getCondition().isPresent());
+        assertEquals("Person", query.getDocumentCollection());
+
+    }
+
 
     interface PersonRepository extends Repository<Person, Long> {
+
+        List<Person> findAll();
 
         Person findByName(String name);
 
