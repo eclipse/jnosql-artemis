@@ -57,7 +57,7 @@ public abstract class AbstractColumnRepositoryProxy<T, ID> implements Invocation
             case DEFAULT:
                 return method.invoke(getRepository(), args);
             case FIND_BY:
-                ColumnQuery query = getQueryParser().parse(method, args, getClassRepresentation());
+                ColumnQuery query = getQueryParser().parse(methodName, args, getClassRepresentation());
                 return returnObject(query, getTemplate(), typeClass, method);
             case FIND_ALL:
                 return returnObject(ColumnQueryBuilder.select().from(getClassRepresentation().getName()).build(),

@@ -53,7 +53,7 @@ public abstract class AbstractColumnRepositoryAsyncProxy<T> implements Invocatio
             case DEFAULT:
                 return method.invoke(getRepository(), args);
             case FIND_BY:
-                ColumnQuery query = getQueryParser().parse(method, args, getClassRepresentation());
+                ColumnQuery query = getQueryParser().parse(methodName, args, getClassRepresentation());
                 return executeQuery(getCallBack(args), query);
             case DELETE_BY:
                 ColumnDeleteQuery deleteQuery = getDeleteParser().parse(methodName, args, getClassRepresentation());

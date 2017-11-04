@@ -90,11 +90,9 @@ public class RepositoryColumnBean implements Bean<Repository>, PassivationCapabl
         ColumnTemplate repository = provider.isEmpty() ? getInstance(ColumnTemplate.class) :
                 getInstance(ColumnTemplate.class, provider);
         Reflections reflections = getInstance(Reflections.class);
-        ColumnQueryParser queryParser = getInstance(ColumnQueryParser.class);
-        ColumnQueryDeleteParser deleteParser = getInstance(ColumnQueryDeleteParser.class);
 
         ColumnRepositoryProxy handler = new ColumnRepositoryProxy(repository,
-                classRepresentations, type, reflections,queryParser,deleteParser );
+                classRepresentations, type, reflections);
         return (Repository) Proxy.newProxyInstance(type.getClassLoader(),
                 new Class[]{type},
                 handler);
