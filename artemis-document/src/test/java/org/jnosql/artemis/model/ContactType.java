@@ -15,5 +15,5 @@
 package org.jnosql.artemis.model;
 
 public enum ContactType {
-    MOBILE, PHONE, EMAIL;
+    MOBILE, PHONE, EMAIL
 }
