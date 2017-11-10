@@ -16,13 +16,16 @@ package org.jnosql.artemis.reflection;
 
 
 import java.lang.reflect.Constructor;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toMap;
 
 class DefaultClassRepresentation implements ClassRepresentation {
@@ -51,12 +54,14 @@ class DefaultClassRepresentation implements ClassRepresentation {
         this.classInstance = classInstance;
         this.fields = fields;
         this.constructor = constructor;
+
         this.fieldsGroupedByName = fields.stream()
-                .collect(toMap(FieldRepresentation::getName,
-                        Function.identity()));
+                .collect(collectingAndThen(toMap(FieldRepresentation::getName,
+                        Function.identity()), Collections::unmodifiableMap));
+
         this.javaFieldGroupedByColumn = fields.stream()
-                .collect(toMap(FieldRepresentation::getFieldName,
-                        FieldRepresentation::getName));
+                .collect(collectingAndThen(toMap(FieldRepresentation::getFieldName,
+                        FieldRepresentation::getName), Collections::unmodifiableMap));
         this.id = fields.stream().filter(FieldRepresentation::isId).findFirst();
     }
 
