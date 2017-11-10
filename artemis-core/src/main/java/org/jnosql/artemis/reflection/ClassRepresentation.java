@@ -53,7 +53,7 @@ public interface ClassRepresentation extends Serializable {
 
 
     /**
-     * Gets javaField from Column
+     * Gets the native column name from the Java field name
      *
      * @param javaField the java field
      * @return the column name or column
