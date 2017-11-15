@@ -352,6 +352,18 @@ public class ColumnRepositoryProxyTest {
         assertNotNull(personRepository.toString());
     }
 
+    @Test
+    public void shouldReturnHasCode() {
+        assertNotNull(personRepository.hashCode());
+        assertEquals(personRepository.hashCode(), personRepository.hashCode());
+    }
+
+    @Test
+    public void shouldReturnEquals() {
+        assertNotNull(personRepository.equals(personRepository));
+    }
+
+
     interface PersonRepository extends Repository<Person, Long> {
 
         List<Person> findAll();
