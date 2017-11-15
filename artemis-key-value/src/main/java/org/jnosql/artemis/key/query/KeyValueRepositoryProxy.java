@@ -22,11 +22,22 @@ import org.jnosql.artemis.key.KeyValueTemplate;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 class KeyValueRepositoryProxy<T> implements InvocationHandler {
 
     private final DefaultKeyValueRepository crudRepository;
+
+    private static final List<Method> METHODS;
+
+   static{
+       METHODS = new ArrayList<>();
+       Stream.of(Object.class.getMethods()).forEach(METHODS::add);
+       Stream.of(Repository.class.getMethods()).forEach(METHODS::add);
+   }
 
     KeyValueRepositoryProxy(Class<?> repositoryType, KeyValueTemplate repository) {
         Class<T> typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
@@ -37,16 +48,11 @@ class KeyValueRepositoryProxy<T> implements InvocationHandler {
     @Override
     public Object invoke(Object o, Method method, Object[] args) throws Throwable {
 
-        switch (method.getName()) {
-            case "save":
-            case "deleteById":
-            case "findById":
-            case "existsById":
-                return method.invoke(crudRepository, args);
-                default:
-                    throw new DynamicQueryException("Key Value repository does not support query method");
-        }
-
+       if(METHODS.stream().anyMatch(method::equals)) {
+           return method.invoke(crudRepository, args);
+       } else {
+           throw new DynamicQueryException("Key Value repository does not support query method");
+       }
     }
 
     class DefaultKeyValueRepository implements Repository {

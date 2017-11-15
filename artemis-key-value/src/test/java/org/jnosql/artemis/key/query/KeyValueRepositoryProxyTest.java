@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -118,6 +119,22 @@ public class KeyValueRepositoryProxyTest {
     @Test(expected = DynamicQueryException.class)
     public void shouldReturnErrorWhenExecuteMethodQuery() {
         userRepository.findByName("name");
+    }
+
+    @Test
+    public void shouldReturnToString() {
+        assertNotNull(userRepository.toString());
+    }
+
+    @Test
+    public void shouldReturnHasCode() {
+        assertNotNull(userRepository.hashCode());
+        assertEquals(userRepository.hashCode(), userRepository.hashCode());
+    }
+
+    @Test
+    public void shouldReturnEquals() {
+        assertNotNull(userRepository.equals(userRepository));
     }
 
     interface UserRepository extends Repository<User, String> {
