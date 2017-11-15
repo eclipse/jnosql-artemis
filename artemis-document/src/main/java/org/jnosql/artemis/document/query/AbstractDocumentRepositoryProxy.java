@@ -74,6 +74,8 @@ public abstract class AbstractDocumentRepositoryProxy<T> implements InvocationHa
                 DocumentDeleteQuery deleteQuery = getDeleteQuery(args).get();
                 getTemplate().delete(deleteQuery);
                 return Void.class;
+            case OBJECT_METHOD:
+                return method.invoke(this, args);
             default:
                 return Void.class;
         }
