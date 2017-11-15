@@ -24,10 +24,17 @@ import java.util.stream.Stream;
 
 enum DocumentRepositoryType {
 
-    DEFAULT, FIND_BY, FIND_ALL, DELETE_BY, QUERY, QUERY_DELETE, UNKNOWN;
+    DEFAULT, FIND_BY, FIND_ALL, DELETE_BY, QUERY, QUERY_DELETE, UNKNOWN, OBJECT_METHOD;
 
+    private static final Method[] METHODS = Object.class.getMethods();
 
     static DocumentRepositoryType of(Method method, Object[] args) {
+
+
+        if (Stream.of(METHODS).anyMatch(method::equals)) {
+            return OBJECT_METHOD;
+        }
+
         String methodName = method.getName();
         switch (methodName) {
             case "save":
