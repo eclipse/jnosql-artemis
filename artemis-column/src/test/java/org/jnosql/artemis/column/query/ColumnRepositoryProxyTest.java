@@ -103,6 +103,7 @@ public class ColumnRepositoryProxyTest {
         assertEquals(person, value);
     }
 
+
     @Test
     public void shouldSaveUsingUpdateWhenDataExists() {
         when(template.singleResult(Mockito.any(ColumnQuery.class))).thenReturn(Optional.of(Person.builder().build()));
@@ -344,6 +345,11 @@ public class ColumnRepositoryProxyTest {
         assertFalse(query.getCondition().isPresent());
         assertEquals("Person", query.getColumnFamily());
 
+    }
+
+    @Test
+    public void shouldReturnToString() {
+        assertNotNull(personRepository.toString());
     }
 
     interface PersonRepository extends Repository<Person, Long> {
