@@ -71,6 +71,8 @@ public abstract class AbstractDocumentRepositoryAsyncProxy<T> implements Invocat
                 return executeQuery(getCallBack(args), documentQuery);
             case QUERY_DELETE:
                 return executeDelete(args, getDeleteQuery(args).get());
+            case OBJECT_METHOD:
+                return method.invoke(this, args);
             default:
                 return Void.class;
         }
