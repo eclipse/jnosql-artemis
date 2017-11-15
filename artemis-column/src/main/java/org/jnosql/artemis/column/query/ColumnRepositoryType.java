@@ -22,10 +22,17 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 enum ColumnRepositoryType {
-    DEFAULT, FIND_BY, DELETE_BY, QUERY, QUERY_DELETE, UNKNOWN, FIND_ALL;
+    DEFAULT, FIND_BY, DELETE_BY, QUERY, QUERY_DELETE, UNKNOWN, FIND_ALL, OBJECT_METHOD;
 
+
+    private static final Method[] METHODS = Object.class.getMethods();
 
     static ColumnRepositoryType of(Method method, Object[] args) {
+
+        if (Stream.of(METHODS).anyMatch(method::equals)) {
+            return OBJECT_METHOD;
+        }
+
         String methodName = method.getName();
         switch (methodName) {
             case "save":
