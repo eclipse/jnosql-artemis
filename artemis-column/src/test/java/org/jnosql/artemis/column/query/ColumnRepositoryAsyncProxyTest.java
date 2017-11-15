@@ -46,6 +46,7 @@ import static org.jnosql.diana.api.column.ColumnCondition.eq;
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -317,6 +318,22 @@ public class ColumnRepositoryAsyncProxyTest {
         verify(template).singleResult(any(ColumnQuery.class), any(Consumer.class));
 
 
+    }
+
+    @Test
+    public void shouldReturnToString() {
+        assertNotNull(personRepository.toString());
+    }
+
+    @Test
+    public void shouldReturnHasCode() {
+        assertNotNull(personRepository.hashCode());
+        assertEquals(personRepository.hashCode(), personRepository.hashCode());
+    }
+
+    @Test
+    public void shouldReturnEquals() {
+        assertNotNull(personRepository.equals(personRepository));
     }
 
     interface PersonAsyncRepository extends RepositoryAsync<Person, Long> {
