@@ -26,8 +26,8 @@ import org.mockito.Mockito;
 
 import javax.enterprise.inject.Produces;
 import java.math.BigDecimal;
-import java.util.Arrays;
 
+import static java.util.Collections.singletonList;
 import static org.mockito.Mockito.when;
 
 public class ManagerProducerProducer {
@@ -47,7 +47,7 @@ public class ManagerProducerProducer {
         entity.add(Document.of("name", "Ada"));
         entity.add(Document.of("age", 10));
         entity.add(Document.of("salary", BigDecimal.TEN));
-        entity.add(Document.of("phones", Arrays.asList("22342342")));
+        entity.add(Document.of("phones", singletonList("22342342")));
 
         when(collectionManager.insert(Mockito.any(DocumentEntity.class))).thenReturn(entity);
         when(collectionManager.update(Mockito.any(DocumentEntity.class))).thenReturn(entity);
@@ -62,7 +62,7 @@ public class ManagerProducerProducer {
         entity.add(Column.of("name", "Ada"));
         entity.add(Column.of("age", 10));
         entity.add(Column.of("salary", BigDecimal.TEN));
-        entity.add(Column.of("phones", Arrays.asList("22342342")));
+        entity.add(Column.of("phones", singletonList("22342342")));
 
         when(columnFamilyManager.insert(Mockito.any(ColumnEntity.class))).thenReturn(entity);
         when(columnFamilyManager.update(Mockito.any(ColumnEntity.class))).thenReturn(entity);
