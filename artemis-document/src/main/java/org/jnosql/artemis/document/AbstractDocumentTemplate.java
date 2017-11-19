@@ -45,8 +45,8 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
     @Override
     public <T> T insert(T entity) throws NullPointerException {
         Objects.requireNonNull(entity, "entity is required");
-        UnaryOperator<DocumentEntity> saveAction = e -> getManager().insert(e);
-        return getWorkflow().flow(entity, saveAction);
+        UnaryOperator<DocumentEntity> insert = e -> getManager().insert(e);
+        return getWorkflow().flow(entity, insert);
     }
 
 
@@ -54,8 +54,8 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
     public <T> T insert(T entity, Duration ttl) {
         Objects.requireNonNull(entity, "entity is required");
         Objects.requireNonNull(ttl, "ttl is required");
-        UnaryOperator<DocumentEntity> saveAction = e -> getManager().insert(e, ttl);
-        return getWorkflow().flow(entity, saveAction);
+        UnaryOperator<DocumentEntity> insert = e -> getManager().insert(e, ttl);
+        return getWorkflow().flow(entity, insert);
     }
 
 
@@ -63,8 +63,8 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
     @Override
     public <T> T update(T entity) {
         Objects.requireNonNull(entity, "entity is required");
-        UnaryOperator<DocumentEntity> saveAction = e -> getManager().update(e);
-        return getWorkflow().flow(entity, saveAction);
+        UnaryOperator<DocumentEntity> update = e -> getManager().update(e);
+        return getWorkflow().flow(entity, update);
     }
 
 

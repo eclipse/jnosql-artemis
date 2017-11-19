@@ -42,12 +42,15 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
 
     protected abstract ColumnEventPersistManager getEventManager();
 
+    private final UnaryOperator<ColumnEntity> insert = e -> getManager().insert(e);
+
+    private final UnaryOperator<ColumnEntity> update = e -> getManager().update(e);
 
     @Override
     public <T> T insert(T entity) throws NullPointerException {
         requireNonNull(entity, "entity is required");
-        UnaryOperator<ColumnEntity> save = e -> getManager().insert(e);
-        return getFlow().flow(entity, save);
+
+        return getFlow().flow(entity, insert);
     }
 
 
@@ -55,16 +58,15 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
     public <T> T insert(T entity, Duration ttl) {
         requireNonNull(entity, "entity is required");
         requireNonNull(ttl, "ttl is required");
-        UnaryOperator<ColumnEntity> save = e -> getManager().insert(e, ttl);
-        return getFlow().flow(entity, save);
+        UnaryOperator<ColumnEntity> insert = e -> getManager().insert(e, ttl);
+        return getFlow().flow(entity, insert);
     }
 
 
     @Override
     public <T> T update(T entity) {
         requireNonNull(entity, "entity is required");
-        UnaryOperator<ColumnEntity> save = e -> getManager().update(e);
-        return getFlow().flow(entity, save);
+        return getFlow().flow(entity, update);
     }
 
 
