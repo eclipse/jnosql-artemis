@@ -42,10 +42,13 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
 
     protected abstract DocumentEventPersistManager getPersistManager();
 
+    private final UnaryOperator<DocumentEntity> insert = e -> getManager().insert(e);
+
+    private final UnaryOperator<DocumentEntity> update = e -> getManager().update(e);
+
     @Override
     public <T> T insert(T entity) throws NullPointerException {
         Objects.requireNonNull(entity, "entity is required");
-        UnaryOperator<DocumentEntity> insert = e -> getManager().insert(e);
         return getWorkflow().flow(entity, insert);
     }
 
@@ -63,7 +66,6 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
     @Override
     public <T> T update(T entity) {
         Objects.requireNonNull(entity, "entity is required");
-        UnaryOperator<DocumentEntity> update = e -> getManager().update(e);
         return getWorkflow().flow(entity, update);
     }
 
