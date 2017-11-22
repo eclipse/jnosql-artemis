@@ -26,28 +26,12 @@ import static org.jnosql.artemis.document.query.DocumentQueryParserUtil.EMPTY;
 
 enum DocumentTokenProcessorType implements DocumentTokenProcessor {
 
-    BETWEEN("Between",2) {
+    BETWEEN("Between", 2) {
         @Override
         public DocumentCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
             checkContents(index, args.length, this.getFieldsRequired(), methodName);
             String name = getName(token, representation).replace(this.getType(), EMPTY);
             return DocumentCondition.between(Document.of(name, Arrays.asList(args[index], args[++index])));
-        }
-    },
-    LESS_THAN("LessThan", 1) {
-        @Override
-        public DocumentCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
-            checkContents(index, args.length, this.getFieldsRequired(), methodName);
-            String name = getName(token, representation).replace(this.getType(), EMPTY);
-            return DocumentCondition.lt(Document.of(name, args[index]));
-        }
-    },
-    GREATER_THAN("GreaterThan", 1) {
-        @Override
-        public DocumentCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
-            checkContents(index, args.length, this.getFieldsRequired(), methodName);
-            String name = getName(token, representation).replace(this.getType(), EMPTY);
-            return DocumentCondition.gt(Document.of(name, args[index]));
         }
     },
     LESS_THAN_EQUAL("LessEqualThan", 1) {
@@ -64,6 +48,22 @@ enum DocumentTokenProcessorType implements DocumentTokenProcessor {
             checkContents(index, args.length, this.getFieldsRequired(), methodName);
             String name = getName(token, representation).replace(this.getType(), EMPTY);
             return DocumentCondition.gte(Document.of(name, args[index]));
+        }
+    },
+    LESS_THAN("LessThan", 1) {
+        @Override
+        public DocumentCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
+            checkContents(index, args.length, this.getFieldsRequired(), methodName);
+            String name = getName(token, representation).replace(this.getType(), EMPTY);
+            return DocumentCondition.lt(Document.of(name, args[index]));
+        }
+    },
+    GREATER_THAN("GreaterThan", 1) {
+        @Override
+        public DocumentCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
+            checkContents(index, args.length, this.getFieldsRequired(), methodName);
+            String name = getName(token, representation).replace(this.getType(), EMPTY);
+            return DocumentCondition.gt(Document.of(name, args[index]));
         }
     },
     LIKE("Like", 1) {
