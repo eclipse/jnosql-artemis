@@ -15,8 +15,8 @@
 package org.jnosql.artemis.column.query;
 
 import org.hamcrest.Matchers;
-import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.CDIJUnitRunner;
+import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
@@ -27,7 +27,6 @@ import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnCondition;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnQuery;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,6 +46,10 @@ import java.util.stream.Stream;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.jnosql.diana.api.Condition.AND;
+import static org.jnosql.diana.api.Condition.GREATER_THAN;
+import static org.jnosql.diana.api.Condition.LESSER_EQUALS_THAN;
+import static org.jnosql.diana.api.Condition.LESSER_THAN;
 import static org.jnosql.diana.api.column.ColumnCondition.eq;
 import static org.jnosql.diana.api.column.ColumnCondition.gte;
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
@@ -381,11 +384,68 @@ public class ColumnRepositoryProxyTest {
         ColumnQuery query = captor.getValue();
         ColumnCondition condition = query.getCondition().get();
         assertEquals("Person", query.getColumnFamily());
-        assertEquals(Condition.AND, condition.getCondition());
+        assertEquals(AND, condition.getCondition());
         List<ColumnCondition> conditions = condition.getColumn().get(new TypeReference<List<ColumnCondition>>() {
         });
         assertThat(conditions, containsInAnyOrder(eq(Column.of("name", "Ada")),
                 gte(Column.of("age", 33))));
+
+    }
+
+    @Test
+    public void shouldFindByGreaterThan() {
+        Person ada = Person.builder()
+                .withAge(20).withName("Ada").build();
+
+        when(template.select(any(ColumnQuery.class)))
+                .thenReturn(singletonList(ada));
+
+        personRepository.findByAgeGreaterThan(33);
+        ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
+        verify(template).select(captor.capture());
+        ColumnQuery query = captor.getValue();
+        ColumnCondition condition = query.getCondition().get();
+        assertEquals("Person", query.getColumnFamily());
+        assertEquals(GREATER_THAN, condition.getCondition());
+        assertEquals(Column.of("age", 33), condition.getColumn());
+
+    }
+
+    @Test
+    public void shouldFindByAgeLessThanEqual() {
+        Person ada = Person.builder()
+                .withAge(20).withName("Ada").build();
+
+        when(template.select(any(ColumnQuery.class)))
+                .thenReturn(singletonList(ada));
+
+        personRepository.findByAgeLessThanEqual(33);
+        ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
+        verify(template).select(captor.capture());
+        ColumnQuery query = captor.getValue();
+        ColumnCondition condition = query.getCondition().get();
+        assertEquals("Person", query.getColumnFamily());
+        assertEquals(LESSER_THAN, condition.getCondition());
+        assertEquals(Column.of("age", 33), condition.getColumn());
+
+    }
+
+    @Test
+    public void shouldFindByAgeLessEqual() {
+        Person ada = Person.builder()
+                .withAge(20).withName("Ada").build();
+
+        when(template.select(any(ColumnQuery.class)))
+                .thenReturn(singletonList(ada));
+
+        personRepository.findByAgeLessEqual(33);
+        ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
+        verify(template).select(captor.capture());
+        ColumnQuery query = captor.getValue();
+        ColumnCondition condition = query.getCondition().get();
+        assertEquals("Person", query.getColumnFamily());
+        assertEquals(LESSER_EQUALS_THAN, condition.getCondition());
+        assertEquals(Column.of("age", 33), condition.getColumn());
 
     }
 
@@ -412,5 +472,11 @@ public class ColumnRepositoryProxyTest {
         void deleteQuery(ColumnDeleteQuery query);
 
         Set<Person> findByNameAndAgeGreaterEqualThan(String name, Integer age);
+
+        Set<Person> findByAgeGreaterThan(Integer age);
+
+        Set<Person> findByAgeLessThanEqual(Integer age);
+
+        Set<Person> findByAgeLessEqual(Integer age);
     }
 }
