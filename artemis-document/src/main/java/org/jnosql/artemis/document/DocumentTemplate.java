@@ -15,6 +15,7 @@
 package org.jnosql.artemis.document;
 
 
+import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentQuery;
@@ -129,6 +130,19 @@ public interface DocumentTemplate {
      * @throws NullPointerException when query is null
      */
     <T> List<T> select(DocumentQuery query) throws NullPointerException;
+
+    /**
+     * Finds by Id.
+     *
+     * @param entityClass the entity class
+     * @param id          the id value
+     * @param <T>         the entity class type
+     * @param <ID>        the id type
+     * @return the entity instance otherwise {@link Optional#empty()}
+     * @throws NullPointerException when either the entityClass or id are null
+     * @throws IdNotFoundException  when the entityClass does not have the Id annotation
+     */
+    <T, ID> Optional<T> find(Class<T> entityClass, ID id) throws NullPointerException, IdNotFoundException;
 
     /**
      * Returns a single entity from query

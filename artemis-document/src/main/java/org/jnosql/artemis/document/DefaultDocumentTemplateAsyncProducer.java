@@ -15,8 +15,10 @@
 package org.jnosql.artemis.document;
 
 
+import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 import java.util.Objects;
@@ -24,16 +26,20 @@ import java.util.Objects;
 /**
  * The default implementation of {@link DocumentTemplateAsyncProducer}
  */
+@ApplicationScoped
 class DefaultDocumentTemplateAsyncProducer implements DocumentTemplateAsyncProducer {
 
 
     @Inject
     private DocumentEntityConverter converter;
 
+    @Inject
+    private ClassRepresentations classRepresentations;
+
     @Override
     public DocumentTemplateAsync get(DocumentCollectionManagerAsync collectionManager) throws NullPointerException {
         Objects.requireNonNull(collectionManager, "collectionManager is required");
-        return new ProducerAbstractDocumentTemplateAsync(converter, collectionManager);
+        return new ProducerAbstractDocumentTemplateAsync(converter, collectionManager, classRepresentations);
     }
 
     @Vetoed
@@ -43,9 +49,14 @@ class DefaultDocumentTemplateAsyncProducer implements DocumentTemplateAsyncProdu
 
         private DocumentCollectionManagerAsync manager;
 
-        ProducerAbstractDocumentTemplateAsync(DocumentEntityConverter converter, DocumentCollectionManagerAsync manager) {
+        private ClassRepresentations classRepresentations;
+
+        ProducerAbstractDocumentTemplateAsync(DocumentEntityConverter converter,
+                                              DocumentCollectionManagerAsync manager,
+                                              ClassRepresentations classRepresentations) {
             this.converter = converter;
             this.manager = manager;
+            this.classRepresentations = classRepresentations;
         }
 
         ProducerAbstractDocumentTemplateAsync() {
@@ -59,6 +70,11 @@ class DefaultDocumentTemplateAsyncProducer implements DocumentTemplateAsyncProdu
         @Override
         protected DocumentCollectionManagerAsync getManager() {
             return manager;
+        }
+
+        @Override
+        protected ClassRepresentations getClassRepresentations() {
+            return classRepresentations;
         }
     }
 }

@@ -16,25 +16,31 @@ package org.jnosql.artemis.column;
 
 import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.model.Person;
+import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
+import org.jnosql.diana.api.column.ColumnQuery;
+import org.jnosql.diana.api.column.query.ColumnQueryBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.longThat;
 import static org.mockito.Mockito.verify;
 
 @RunWith(CDIJUnitRunner.class)
@@ -58,6 +64,9 @@ public class DefaultColumnTemplateAsyncTest {
     @Inject
     private ColumnEntityConverter converter;
 
+    @Inject
+    private ClassRepresentations classRepresentations;
+
     private ColumnFamilyManagerAsync managerMock;
 
     private DefaultColumnTemplateAsync subject;
@@ -72,11 +81,11 @@ public class DefaultColumnTemplateAsyncTest {
         captor = ArgumentCaptor.forClass(ColumnEntity.class);
         Instance<ColumnFamilyManagerAsync> instance = Mockito.mock(Instance.class);
         Mockito.when(instance.get()).thenReturn(managerMock);
-        this.subject = new DefaultColumnTemplateAsync(converter, instance);
+        this.subject = new DefaultColumnTemplateAsync(converter, instance, classRepresentations);
     }
 
     @Test
-    public void shouldSave() {
+    public void shouldInsert() {
         ColumnEntity document = ColumnEntity.of("Person");
         document.addAll(Stream.of(columns).collect(Collectors.toList()));
 
@@ -89,7 +98,7 @@ public class DefaultColumnTemplateAsyncTest {
 
 
     @Test
-    public void shouldSaveTTL() {
+    public void shouldInsertTTL() {
         ColumnEntity document = ColumnEntity.of("Person");
         document.addAll(Stream.of(columns).collect(Collectors.toList()));
 
@@ -116,5 +125,16 @@ public class DefaultColumnTemplateAsyncTest {
         ColumnDeleteQuery query = delete().from("delete").build();
         subject.delete(query);
         verify(managerMock).delete(query);
+    }
+
+    @Test
+    public void shouldSelect() {
+
+        ColumnQuery query = ColumnQueryBuilder.select().from("Person").build();
+        Consumer<List<Person>> callback = l -> {
+
+        };
+        subject.select(query, callback);
+        verify(managerMock).select(Mockito.eq(query), Mockito.any());
     }
 }

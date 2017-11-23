@@ -15,11 +15,16 @@
 package org.jnosql.artemis.column;
 
 import org.jnosql.artemis.CDIJUnitRunner;
+import org.jnosql.artemis.IdNotFoundException;
+import org.jnosql.artemis.model.Job;
 import org.jnosql.artemis.model.Person;
+import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.column.Column;
+import org.jnosql.diana.api.column.ColumnCondition;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
+import org.jnosql.diana.api.column.ColumnQuery;
 import org.jnosql.diana.api.column.query.ColumnQueryBuilder;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,7 +64,7 @@ public class DefaultColumnTemplateTest {
     private ColumnEntityConverter converter;
 
     @Inject
-    private ColumnEventPersistManager eventManager;
+    private ClassRepresentations classRepresentations;
 
     private ColumnFamilyManager managerMock;
 
@@ -77,11 +82,12 @@ public class DefaultColumnTemplateTest {
         captor = ArgumentCaptor.forClass(ColumnEntity.class);
         Instance<ColumnFamilyManager> instance = Mockito.mock(Instance.class);
         Mockito.when(instance.get()).thenReturn(managerMock);
-        this.subject = new DefaultColumnTemplate(converter, instance, new DefaultColumnWorkflow(columnEventPersistManager, converter), columnEventPersistManager);
+        this.subject = new DefaultColumnTemplate(converter, instance, new DefaultColumnWorkflow(columnEventPersistManager, converter),
+                columnEventPersistManager, classRepresentations);
     }
 
     @Test
-    public void shouldSave() {
+    public void shouldInsert() {
         ColumnEntity document = ColumnEntity.of("Person");
         document.addAll(Stream.of(columns).collect(Collectors.toList()));
 
@@ -102,7 +108,7 @@ public class DefaultColumnTemplateTest {
 
 
     @Test
-    public void shouldSaveTTL() {
+    public void shouldInsertTTL() {
         ColumnEntity document = ColumnEntity.of("Person");
         document.addAll(Stream.of(columns).collect(Collectors.toList()));
 
@@ -148,5 +154,40 @@ public class DefaultColumnTemplateTest {
         ColumnDeleteQuery query = ColumnQueryBuilder.delete().from("delete").build();
         subject.delete(query);
         verify(managerMock).delete(query);
+    }
+
+    @Test
+    public void shouldSelect() {
+        ColumnQuery query = ColumnQueryBuilder.select().from("delete").build();
+        subject.select(query);
+        verify(managerMock).select(query);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void shouldReturnErrorWhenFindIdHasIdNull() {
+        subject.find(Person.class, null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void shouldReturnErrorWhenFindIdHasClassNull() {
+        subject.find(null, "10");
+    }
+
+    @Test(expected = IdNotFoundException.class)
+    public void shouldReturnErrorWhenThereIsNotIdInFind() {
+        subject.find(Job.class, "10");
+    }
+
+    @Test
+    public void shouldReturnFind() {
+        subject.find(Person.class, "10");
+        ArgumentCaptor<ColumnQuery> queryCaptor = ArgumentCaptor.forClass(ColumnQuery.class);
+        verify(managerMock).select(queryCaptor.capture());
+        ColumnQuery query = queryCaptor.getValue();
+        ColumnCondition condition = query.getCondition().get();
+
+        assertEquals("Person", query.getColumnFamily());
+        assertEquals(ColumnCondition.eq(Column.of("_id", "10")), condition);
+
     }
 }

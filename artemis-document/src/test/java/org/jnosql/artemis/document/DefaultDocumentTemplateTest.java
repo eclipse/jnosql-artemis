@@ -15,11 +15,16 @@
 package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.CDIJUnitRunner;
+import org.jnosql.artemis.IdNotFoundException;
+import org.jnosql.artemis.model.Job;
 import org.jnosql.artemis.model.Person;
+import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
+import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentEntity;
+import org.jnosql.diana.api.document.DocumentQuery;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +39,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
+import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
@@ -61,6 +67,9 @@ public class DefaultDocumentTemplateTest {
     @Inject
     private DocumentEntityConverter converter;
 
+    @Inject
+    private ClassRepresentations classRepresentations;
+
     private DocumentCollectionManager managerMock;
 
     private DefaultDocumentTemplate subject;
@@ -78,7 +87,8 @@ public class DefaultDocumentTemplateTest {
         Instance<DocumentCollectionManager> instance = Mockito.mock(Instance.class);
         when(instance.get()).thenReturn(managerMock);
         DefaultDocumentWorkflow workflow = new DefaultDocumentWorkflow(documentEventPersistManager, converter);
-        this.subject = new DefaultDocumentTemplate(converter, instance, workflow, documentEventPersistManager);
+        this.subject = new DefaultDocumentTemplate(converter, instance, workflow,
+                documentEventPersistManager, classRepresentations);
     }
 
     @Test
@@ -152,6 +162,42 @@ public class DefaultDocumentTemplateTest {
         DocumentDeleteQuery query = delete().from("delete").build();
         subject.delete(query);
         verify(managerMock).delete(query);
+    }
+
+    @Test
+    public void shouldSelect() {
+        DocumentQuery query = select().from("delete").build();
+        subject.select(query);
+        verify(managerMock).select(query);
+    }
+
+
+    @Test(expected = NullPointerException.class)
+    public void shouldReturnErrorWhenFindIdHasIdNull() {
+        subject.find(Person.class, null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void shouldReturnErrorWhenFindIdHasClassNull() {
+        subject.find(null, "10");
+    }
+
+    @Test(expected = IdNotFoundException.class)
+    public void shouldReturnErrorWhenThereIsNotIdInFind() {
+        subject.find(Job.class, "10");
+    }
+
+    @Test
+    public void shouldReturnFind() {
+        subject.find(Person.class, "10");
+        ArgumentCaptor<DocumentQuery> queryCaptor = ArgumentCaptor.forClass(DocumentQuery.class);
+        verify(managerMock).select(queryCaptor.capture());
+        DocumentQuery query = queryCaptor.getValue();
+        DocumentCondition condition = query.getCondition().get();
+
+        assertEquals("Person", query.getDocumentCollection());
+        assertEquals(DocumentCondition.eq(Document.of("_id", "10")), condition);
+
     }
 
 }

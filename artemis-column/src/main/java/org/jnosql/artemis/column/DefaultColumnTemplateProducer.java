@@ -15,8 +15,10 @@
 package org.jnosql.artemis.column;
 
 
+import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 import java.util.Objects;
@@ -24,6 +26,7 @@ import java.util.Objects;
 /**
  * The default implementation of {@link ColumnTemplateProducer}
  */
+@ApplicationScoped
 class DefaultColumnTemplateProducer implements ColumnTemplateProducer {
 
 
@@ -36,11 +39,14 @@ class DefaultColumnTemplateProducer implements ColumnTemplateProducer {
     @Inject
     private ColumnEventPersistManager eventManager;
 
+    @Inject
+    private ClassRepresentations classRepresentations;
 
     @Override
     public ColumnTemplate get(ColumnFamilyManager columnFamilyManager) throws NullPointerException {
         Objects.requireNonNull(columnFamilyManager, "columnFamilyManager is required");
-        return new ProducerColumnTemplate(converter, columnWorkflow, columnFamilyManager, eventManager);
+        return new ProducerColumnTemplate(converter, columnWorkflow, columnFamilyManager,
+                eventManager, classRepresentations);
     }
 
 
@@ -55,12 +61,17 @@ class DefaultColumnTemplateProducer implements ColumnTemplateProducer {
 
         private ColumnEventPersistManager eventManager;
 
+        private ClassRepresentations classRepresentations;
+
         ProducerColumnTemplate(ColumnEntityConverter converter, ColumnWorkflow columnWorkflow,
-                               ColumnFamilyManager columnFamilyManager, ColumnEventPersistManager eventManager) {
+                               ColumnFamilyManager columnFamilyManager,
+                               ColumnEventPersistManager eventManager,
+                               ClassRepresentations classRepresentations) {
             this.converter = converter;
             this.columnWorkflow = columnWorkflow;
             this.columnFamilyManager = columnFamilyManager;
             this.eventManager = eventManager;
+            this.classRepresentations = classRepresentations;
         }
 
         ProducerColumnTemplate() {
@@ -84,6 +95,11 @@ class DefaultColumnTemplateProducer implements ColumnTemplateProducer {
         @Override
         protected ColumnEventPersistManager getEventManager() {
             return eventManager;
+        }
+
+        @Override
+        protected ClassRepresentations getClassRepresentations() {
+            return classRepresentations;
         }
     }
 }

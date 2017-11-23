@@ -15,13 +15,19 @@
 package org.jnosql.artemis.column;
 
 
+import org.jnosql.artemis.IdNotFoundException;
+import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.FieldRepresentation;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
 import org.jnosql.diana.api.column.ColumnQuery;
+import org.jnosql.diana.api.column.query.ColumnQueryBuilder;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -41,6 +47,8 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
     protected abstract ColumnWorkflow getFlow();
 
     protected abstract ColumnEventPersistManager getEventManager();
+
+    protected abstract ClassRepresentations getClassRepresentations();
 
     private final UnaryOperator<ColumnEntity> insert = e -> getManager().insert(e);
 
@@ -85,5 +93,19 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
         List<ColumnEntity> entities = getManager().select(query);
         Function<ColumnEntity, T> function = e -> getConverter().toEntity(e);
         return entities.stream().map(function).collect(Collectors.toList());
+    }
+
+    @Override
+    public <T, ID> Optional<T> find(Class<T> entityClass, ID id) throws NullPointerException, IdNotFoundException {
+        requireNonNull(entityClass, "entityClass is required");
+        requireNonNull(id, "id is required");
+        ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
+        FieldRepresentation idField = classRepresentation.getId()
+                .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
+
+        ColumnQuery query = ColumnQueryBuilder.select().from(classRepresentation.getName())
+                .where(idField.getName()).eq(id).build();
+
+        return singleResult(query);
     }
 }

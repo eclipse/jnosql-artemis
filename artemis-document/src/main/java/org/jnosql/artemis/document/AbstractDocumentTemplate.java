@@ -15,17 +15,25 @@
 package org.jnosql.artemis.document;
 
 
+import org.jnosql.artemis.IdNotFoundException;
+import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.FieldRepresentation;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentEntity;
 import org.jnosql.diana.api.document.DocumentQuery;
+import org.jnosql.diana.api.document.query.DocumentQueryBuilder;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * This class provides a skeletal implementation of the {@link DocumentTemplate} interface,
@@ -41,6 +49,8 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
     protected abstract DocumentWorkflow getWorkflow();
 
     protected abstract DocumentEventPersistManager getPersistManager();
+
+    protected abstract ClassRepresentations getClassRepresentations();
 
     private final UnaryOperator<DocumentEntity> insert = e -> getManager().insert(e);
 
@@ -85,5 +95,19 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
         List<DocumentEntity> entities = getManager().select(query);
         Function<DocumentEntity, T> function = e -> getConverter().toEntity(e);
         return entities.stream().map(function).collect(Collectors.toList());
+    }
+
+    @Override
+    public <T, ID> Optional<T> find(Class<T> entityClass, ID id) throws NullPointerException, IdNotFoundException {
+        requireNonNull(entityClass, "entityClass is required");
+        requireNonNull(id, "id is required");
+        ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
+        FieldRepresentation idField = classRepresentation.getId()
+                .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
+
+        DocumentQuery query = DocumentQueryBuilder.select().from(classRepresentation.getName())
+                .where(idField.getName()).eq(id).build();
+
+        return singleResult(query);
     }
 }
