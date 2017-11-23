@@ -36,6 +36,7 @@ import org.mockito.Mockito;
 import javax.inject.Inject;
 import java.lang.reflect.Proxy;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Queue;
@@ -47,9 +48,11 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.jnosql.diana.api.Condition.AND;
+import static org.jnosql.diana.api.Condition.BETWEEN;
 import static org.jnosql.diana.api.Condition.GREATER_THAN;
 import static org.jnosql.diana.api.Condition.LESSER_EQUALS_THAN;
 import static org.jnosql.diana.api.Condition.LESSER_THAN;
+import static org.jnosql.diana.api.Condition.LIKE;
 import static org.jnosql.diana.api.column.ColumnCondition.eq;
 import static org.jnosql.diana.api.column.ColumnCondition.gte;
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
@@ -449,6 +452,45 @@ public class ColumnRepositoryProxyTest {
 
     }
 
+    @Test
+    public void shouldFindByAgeBetween() {
+        Person ada = Person.builder()
+                .withAge(20).withName("Ada").build();
+
+        when(template.select(any(ColumnQuery.class)))
+                .thenReturn(singletonList(ada));
+
+        personRepository.findByAgeBetween(10,15);
+        ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
+        verify(template).select(captor.capture());
+        ColumnQuery query = captor.getValue();
+        ColumnCondition condition = query.getCondition().get();
+        assertEquals("Person", query.getColumnFamily());
+        assertEquals(BETWEEN, condition.getCondition());
+        assertEquals(Column.of("age", Arrays.asList(10, 15)), condition.getColumn());
+
+    }
+
+
+    @Test
+    public void shouldFindByNameLike() {
+        Person ada = Person.builder()
+                .withAge(20).withName("Ada").build();
+
+        when(template.select(any(ColumnQuery.class)))
+                .thenReturn(singletonList(ada));
+
+        personRepository.findByNameLike("Ada");
+        ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
+        verify(template).select(captor.capture());
+        ColumnQuery query = captor.getValue();
+        ColumnCondition condition = query.getCondition().get();
+        assertEquals("Person", query.getColumnFamily());
+        assertEquals(LIKE, condition.getCondition());
+        assertEquals(Column.of("name", "Ada"), condition.getColumn());
+
+    }
+
     interface PersonRepository extends Repository<Person, Long> {
 
         List<Person> findAll();
@@ -478,5 +520,9 @@ public class ColumnRepositoryProxyTest {
         Set<Person> findByAgeLessThanEqual(Integer age);
 
         Set<Person> findByAgeLessThan(Integer age);
+
+        Set<Person> findByAgeBetween(Integer ageA, Integer ageB);
+
+        Set<Person> findByNameLike(String name);
     }
 }
