@@ -111,16 +111,16 @@ public class ColumnQueryDeleteParserTest {
     }
 
     @Test
-    public void shouldDeleteByAgeLessEqualThan() {
-        ColumnDeleteQuery query = parser.parse("deleteByAgeLessEqualThan", new Object[]{10}, classRepresentation);
+    public void shouldDeleteByAgeLessThanEqual() {
+        ColumnDeleteQuery query = parser.parse("deleteByAgeLessThanEqual", new Object[]{10}, classRepresentation);
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.LESSER_EQUALS_THAN, query.getCondition().get().getCondition());
         assertEquals(Column.of("age", 10), query.getCondition().get().getColumn());
     }
 
     @Test
-    public void shouldDeleteByAgeGreaterEqualThan() {
-        ColumnDeleteQuery query = parser.parse("deleteByAgeGreaterEqualThan", new Object[]{10}, classRepresentation);
+    public void shouldDeleteByAgeGreaterThanEqual() {
+        ColumnDeleteQuery query = parser.parse("deleteByAgeGreaterThanEqual", new Object[]{10}, classRepresentation);
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.GREATER_EQUALS_THAN, query.getCondition().get().getCondition());
         assertEquals(Column.of("age", 10), query.getCondition().get().getColumn());
