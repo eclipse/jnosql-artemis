@@ -15,8 +15,10 @@
 package org.jnosql.artemis.document;
 
 
+import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 import java.util.Objects;
@@ -24,6 +26,7 @@ import java.util.Objects;
 /**
  * The default implementation of {@link DocumentTemplateProducer}
  */
+@ApplicationScoped
 class DefaultDocumentTemplateProducer implements DocumentTemplateProducer {
 
 
@@ -36,11 +39,15 @@ class DefaultDocumentTemplateProducer implements DocumentTemplateProducer {
     @Inject
     private DocumentEventPersistManager persistManager;
 
+    @Inject
+    private ClassRepresentations classRepresentations;
+
 
     @Override
     public DocumentTemplate get(DocumentCollectionManager collectionManager) throws NullPointerException {
         Objects.requireNonNull(collectionManager, "collectionManager is required");
-        return new ProducerDocumentTemplate(converter, collectionManager, workflow, persistManager);
+        return new ProducerDocumentTemplate(converter, collectionManager, workflow,
+                persistManager, classRepresentations);
     }
 
     @Vetoed
@@ -51,14 +58,19 @@ class DefaultDocumentTemplateProducer implements DocumentTemplateProducer {
         private DocumentCollectionManager manager;
 
         private DocumentWorkflow workflow;
+
         private DocumentEventPersistManager persistManager;
 
+        private ClassRepresentations classRepresentations;
         ProducerDocumentTemplate(DocumentEntityConverter converter, DocumentCollectionManager manager,
-                                 DocumentWorkflow workflow, DocumentEventPersistManager persistManager) {
+                                 DocumentWorkflow workflow,
+                                 DocumentEventPersistManager persistManager,
+                                 ClassRepresentations classRepresentations) {
             this.converter = converter;
             this.manager = manager;
             this.workflow = workflow;
             this.persistManager = persistManager;
+            this.classRepresentations = classRepresentations;
         }
 
         ProducerDocumentTemplate() {
@@ -82,6 +94,11 @@ class DefaultDocumentTemplateProducer implements DocumentTemplateProducer {
         @Override
         protected DocumentEventPersistManager getPersistManager() {
             return persistManager;
+        }
+
+        @Override
+        protected ClassRepresentations getClassRepresentations() {
+            return classRepresentations;
         }
     }
 }
