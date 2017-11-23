@@ -425,7 +425,7 @@ public class ColumnRepositoryProxyTest {
         ColumnQuery query = captor.getValue();
         ColumnCondition condition = query.getCondition().get();
         assertEquals("Person", query.getColumnFamily());
-        assertEquals(LESSER_THAN, condition.getCondition());
+        assertEquals(LESSER_EQUALS_THAN, condition.getCondition());
         assertEquals(Column.of("age", 33), condition.getColumn());
 
     }
@@ -444,7 +444,7 @@ public class ColumnRepositoryProxyTest {
         ColumnQuery query = captor.getValue();
         ColumnCondition condition = query.getCondition().get();
         assertEquals("Person", query.getColumnFamily());
-        assertEquals(LESSER_EQUALS_THAN, condition.getCondition());
+        assertEquals(LESSER_THAN, condition.getCondition());
         assertEquals(Column.of("age", 33), condition.getColumn());
 
     }
