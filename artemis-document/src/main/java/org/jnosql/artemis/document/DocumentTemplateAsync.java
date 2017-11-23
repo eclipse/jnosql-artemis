@@ -15,6 +15,7 @@
 package org.jnosql.artemis.document;
 
 
+import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
 import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
@@ -200,6 +201,20 @@ public interface DocumentTemplateAsync {
      */
     <T> void select(DocumentQuery query, Consumer<List<T>> callBack) throws
             ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
+
+    /**
+     * Finds by Id.
+     *
+     * @param entityClass the entity class
+     * @param id          the id value
+     * @param <T>         the entity class type
+     * @param <ID>        the id type
+     * @param callBack    the callBack
+     * @throws NullPointerException when either the entityClass or id are null
+     * @throws IdNotFoundException  when the entityClass does not have the Id annotation
+     */
+    <T, ID> void find(Class<T> entityClass, ID id, Consumer<Optional<T>> callBack) throws
+            NullPointerException, IdNotFoundException;
 
 
     /**
