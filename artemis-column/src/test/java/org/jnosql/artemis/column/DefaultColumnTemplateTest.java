@@ -15,12 +15,16 @@
 package org.jnosql.artemis.column;
 
 import org.jnosql.artemis.CDIJUnitRunner;
+import org.jnosql.artemis.IdNotFoundException;
+import org.jnosql.artemis.model.Animal;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.column.Column;
+import org.jnosql.diana.api.column.ColumnCondition;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
+import org.jnosql.diana.api.column.ColumnQuery;
 import org.jnosql.diana.api.column.query.ColumnQueryBuilder;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +36,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -150,5 +155,33 @@ public class DefaultColumnTemplateTest {
         ColumnDeleteQuery query = ColumnQueryBuilder.delete().from("delete").build();
         subject.delete(query);
         verify(managerMock).delete(query);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void shouldReturnErrorWhenFindIdHasIdNull() {
+        subject.find(Person.class, null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void shouldReturnErrorWhenFindIdHasClassNull() {
+        subject.find(null, "10");
+    }
+
+    @Test(expected = IdNotFoundException.class)
+    public void shouldReturnErrorWhenThereIsNotIdInFind() {
+        subject.find(Animal.class, "10");
+    }
+
+    @Test
+    public void shouldReturnFind() {
+        subject.find(Person.class, "10");
+        ArgumentCaptor<ColumnQuery> queryCaptor = ArgumentCaptor.forClass(ColumnQuery.class);
+        verify(managerMock).select(queryCaptor.capture());
+        ColumnQuery query = queryCaptor.getValue();
+        ColumnCondition condition = query.getCondition().get();
+
+        assertEquals("Person", query.getColumnFamily());
+        assertEquals(ColumnCondition.eq(Column.of("_id", "10")), condition);
+
     }
 }
