@@ -378,7 +378,7 @@ public class ColumnRepositoryProxyTest {
         when(template.select(any(ColumnQuery.class)))
                 .thenReturn(singletonList(ada));
 
-        personRepository.findByNameAndAgeGreaterEqualThan("Ada", 33);
+        personRepository.findByNameAndAgeGreaterThanEqual("Ada", 33);
         ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
         verify(template).select(captor.capture());
         ColumnQuery query = captor.getValue();
@@ -438,7 +438,7 @@ public class ColumnRepositoryProxyTest {
         when(template.select(any(ColumnQuery.class)))
                 .thenReturn(singletonList(ada));
 
-        personRepository.findByAgeLessEqual(33);
+        personRepository.findByAgeLessThan(33);
         ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
         verify(template).select(captor.capture());
         ColumnQuery query = captor.getValue();
@@ -471,12 +471,12 @@ public class ColumnRepositoryProxyTest {
 
         void deleteQuery(ColumnDeleteQuery query);
 
-        Set<Person> findByNameAndAgeGreaterEqualThan(String name, Integer age);
+        Set<Person> findByNameAndAgeGreaterThanEqual(String name, Integer age);
 
         Set<Person> findByAgeGreaterThan(Integer age);
 
         Set<Person> findByAgeLessThanEqual(Integer age);
 
-        Set<Person> findByAgeLessEqual(Integer age);
+        Set<Person> findByAgeLessThan(Integer age);
     }
 }
