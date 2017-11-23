@@ -16,6 +16,7 @@ package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.model.Person;
+import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
@@ -61,6 +62,9 @@ public class DefaultDocumentTemplateTest {
     @Inject
     private DocumentEntityConverter converter;
 
+    @Inject
+    private ClassRepresentations classRepresentations;
+
     private DocumentCollectionManager managerMock;
 
     private DefaultDocumentTemplate subject;
@@ -78,7 +82,8 @@ public class DefaultDocumentTemplateTest {
         Instance<DocumentCollectionManager> instance = Mockito.mock(Instance.class);
         when(instance.get()).thenReturn(managerMock);
         DefaultDocumentWorkflow workflow = new DefaultDocumentWorkflow(documentEventPersistManager, converter);
-        this.subject = new DefaultDocumentTemplate(converter, instance, workflow, documentEventPersistManager);
+        this.subject = new DefaultDocumentTemplate(converter, instance, workflow,
+                documentEventPersistManager, classRepresentations);
     }
 
     @Test
