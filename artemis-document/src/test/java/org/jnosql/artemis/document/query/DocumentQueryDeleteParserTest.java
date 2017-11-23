@@ -112,16 +112,16 @@ public class DocumentQueryDeleteParserTest {
     }
 
     @Test
-    public void shouldDeleteByAgeLessEqualThan() {
-        DocumentDeleteQuery query = parser.parse("deleteByAgeLessEqualThan", new Object[]{10}, classRepresentation);
+    public void shouldDeleteByAgeLessThanEqual() {
+        DocumentDeleteQuery query = parser.parse("deleteByAgeLessThanEqual", new Object[]{10}, classRepresentation);
         assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.LESSER_EQUALS_THAN, query.getCondition().get().getCondition());
         assertEquals(Document.of("age", 10), query.getCondition().get().getDocument());
     }
 
     @Test
-    public void shouldDeleteByAgeGreaterEqualThan() {
-        DocumentDeleteQuery query = parser.parse("deleteByAgeGreaterEqualThan", new Object[]{10}, classRepresentation);
+    public void shouldDeleteByAgeGreaterThanEqual() {
+        DocumentDeleteQuery query = parser.parse("deleteByAgeGreaterThanEqual", new Object[]{10}, classRepresentation);
         assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.GREATER_EQUALS_THAN, query.getCondition().get().getCondition());
         assertEquals(Document.of("age", 10), query.getCondition().get().getDocument());
