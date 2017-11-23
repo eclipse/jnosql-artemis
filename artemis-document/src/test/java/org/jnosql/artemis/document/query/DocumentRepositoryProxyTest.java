@@ -36,6 +36,7 @@ import org.mockito.Mockito;
 import javax.inject.Inject;
 import java.lang.reflect.Proxy;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Queue;
@@ -47,9 +48,11 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.jnosql.diana.api.Condition.AND;
+import static org.jnosql.diana.api.Condition.BETWEEN;
 import static org.jnosql.diana.api.Condition.GREATER_THAN;
 import static org.jnosql.diana.api.Condition.LESSER_EQUALS_THAN;
 import static org.jnosql.diana.api.Condition.LESSER_THAN;
+import static org.jnosql.diana.api.Condition.LIKE;
 import static org.jnosql.diana.api.document.DocumentCondition.eq;
 import static org.jnosql.diana.api.document.DocumentCondition.gte;
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
@@ -458,6 +461,45 @@ public class DocumentRepositoryProxyTest {
     }
 
 
+    @Test
+    public void shouldFindByAgeBetween() {
+        Person ada = Person.builder()
+                .withAge(20).withName("Ada").build();
+
+        when(template.select(any(DocumentQuery.class)))
+                .thenReturn(singletonList(ada));
+
+        personRepository.findByAgeBetween(10,15);
+        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
+        verify(template).select(captor.capture());
+        DocumentQuery query = captor.getValue();
+        DocumentCondition condition = query.getCondition().get();
+        assertEquals("Person", query.getDocumentCollection());
+        assertEquals(BETWEEN, condition.getCondition());
+        assertEquals(Document.of("age", Arrays.asList(10, 15)), condition.getDocument());
+
+    }
+
+
+    @Test
+    public void shouldFindByNameLike() {
+        Person ada = Person.builder()
+                .withAge(20).withName("Ada").build();
+
+        when(template.select(any(DocumentQuery.class)))
+                .thenReturn(singletonList(ada));
+
+        personRepository.findByNameLike("Ada");
+        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
+        verify(template).select(captor.capture());
+        DocumentQuery query = captor.getValue();
+        DocumentCondition condition = query.getCondition().get();
+        assertEquals("Person", query.getDocumentCollection());
+        assertEquals(LIKE, condition.getCondition());
+        assertEquals(Document.of("name", "Ada"), condition.getDocument());
+
+    }
+
     interface PersonRepository extends Repository<Person, Long> {
 
         List<Person> findAll();
@@ -465,8 +507,6 @@ public class DocumentRepositoryProxyTest {
         Person findByName(String name);
 
         void deleteByName(String name);
-
-        Optional<Person> findByAge(Integer age);
 
         List<Person> findByNameAndAge(String name, Integer age);
 
@@ -484,6 +524,9 @@ public class DocumentRepositoryProxyTest {
 
         Set<Person> findByAgeLessThan(Integer age);
 
+        Set<Person> findByAgeBetween(Integer ageA, Integer ageB);
+
+        Set<Person> findByNameLike(String name);
 
         Person query(DocumentQuery query);
 
