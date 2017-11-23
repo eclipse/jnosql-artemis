@@ -16,7 +16,7 @@ package org.jnosql.artemis.column;
 
 import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.IdNotFoundException;
-import org.jnosql.artemis.model.Animal;
+import org.jnosql.artemis.model.Job;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.column.Column;
@@ -175,7 +175,7 @@ public class DefaultColumnTemplateTest {
 
     @Test(expected = IdNotFoundException.class)
     public void shouldReturnErrorWhenThereIsNotIdInFind() {
-        subject.find(Animal.class, "10");
+        subject.find(Job.class, "10");
     }
 
     @Test
