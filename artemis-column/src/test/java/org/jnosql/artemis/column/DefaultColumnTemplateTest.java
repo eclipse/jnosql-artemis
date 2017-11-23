@@ -16,6 +16,7 @@ package org.jnosql.artemis.column;
 
 import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.model.Person;
+import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnEntity;
@@ -59,7 +60,7 @@ public class DefaultColumnTemplateTest {
     private ColumnEntityConverter converter;
 
     @Inject
-    private ColumnEventPersistManager eventManager;
+    private ClassRepresentations classRepresentations;
 
     private ColumnFamilyManager managerMock;
 
@@ -77,7 +78,8 @@ public class DefaultColumnTemplateTest {
         captor = ArgumentCaptor.forClass(ColumnEntity.class);
         Instance<ColumnFamilyManager> instance = Mockito.mock(Instance.class);
         Mockito.when(instance.get()).thenReturn(managerMock);
-        this.subject = new DefaultColumnTemplate(converter, instance, new DefaultColumnWorkflow(columnEventPersistManager, converter), columnEventPersistManager);
+        this.subject = new DefaultColumnTemplate(converter, instance, new DefaultColumnWorkflow(columnEventPersistManager, converter),
+                columnEventPersistManager, classRepresentations);
     }
 
     @Test
