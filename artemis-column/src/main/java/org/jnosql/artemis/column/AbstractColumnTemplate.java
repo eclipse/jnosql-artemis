@@ -15,6 +15,7 @@
 package org.jnosql.artemis.column;
 
 
+import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
@@ -22,6 +23,7 @@ import org.jnosql.diana.api.column.ColumnQuery;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -85,5 +87,12 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
         List<ColumnEntity> entities = getManager().select(query);
         Function<ColumnEntity, T> function = e -> getConverter().toEntity(e);
         return entities.stream().map(function).collect(Collectors.toList());
+    }
+
+    @Override
+    public <T, ID> Optional<T> find(Class<T> entityClass, ID id) throws NullPointerException, IdNotFoundException {
+        requireNonNull(entityClass, "entityClass is required");
+        requireNonNull(id, "id is required");
+        return Optional.empty();
     }
 }
