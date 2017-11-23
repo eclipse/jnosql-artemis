@@ -34,7 +34,7 @@ enum ColumnTokenProcessorType implements ColumnTokenProcessor {
             return ColumnCondition.between(Column.of(name, Arrays.asList(args[index], args[++index])));
         }
     },
-    LESS_THAN_EQUAL("LessEqualThan", 1) {
+    LESS_THAN_EQUAL("LessThanEqual", 1) {
         @Override
         public ColumnCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
             checkContents(index, args.length, this.getFieldsRequired(), methodName);
