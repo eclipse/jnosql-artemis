@@ -211,7 +211,6 @@ public interface ColumnTemplateAsync {
      * @param <T>         the entity class type
      * @param <ID>        the id type
      * @param callBack    the callBack
-     * @return the entity instance otherwise {@link Optional#empty()}
      * @throws NullPointerException when either the entityClass or id are null
      * @throws IdNotFoundException  when the entityClass does not have the Id annotation
      */
