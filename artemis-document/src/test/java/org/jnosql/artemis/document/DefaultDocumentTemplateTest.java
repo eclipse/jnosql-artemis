@@ -16,7 +16,7 @@ package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.IdNotFoundException;
-import org.jnosql.artemis.model.Animal;
+import org.jnosql.artemis.model.Job;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.document.Document;
@@ -39,6 +39,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
+import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
@@ -163,6 +164,13 @@ public class DefaultDocumentTemplateTest {
         verify(managerMock).delete(query);
     }
 
+    @Test
+    public void shouldSelect() {
+        DocumentQuery query = select().from("delete").build();
+        subject.select(query);
+        verify(managerMock).select(query);
+    }
+
 
     @Test(expected = NullPointerException.class)
     public void shouldReturnErrorWhenFindIdHasIdNull() {
@@ -176,7 +184,7 @@ public class DefaultDocumentTemplateTest {
 
     @Test(expected = IdNotFoundException.class)
     public void shouldReturnErrorWhenThereIsNotIdInFind() {
-        subject.find(Animal.class, "10");
+        subject.find(Job.class, "10");
     }
 
     @Test
