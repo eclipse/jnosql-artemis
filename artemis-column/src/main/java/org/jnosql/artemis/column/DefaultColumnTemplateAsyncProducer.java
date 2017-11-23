@@ -15,8 +15,10 @@
 package org.jnosql.artemis.column;
 
 
+import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 import java.util.Objects;
@@ -24,15 +26,19 @@ import java.util.Objects;
 /**
  * The default implementation of {@link ColumnTemplateAsyncProducer}
  */
+@ApplicationScoped
 class DefaultColumnTemplateAsyncProducer implements ColumnTemplateAsyncProducer {
 
     @Inject
     private ColumnEntityConverter converter;
 
+    @Inject
+    private ClassRepresentations classRepresentations;
+
     @Override
     public ColumnTemplateAsync get(ColumnFamilyManagerAsync columnFamilyManager) throws NullPointerException {
         Objects.requireNonNull(columnFamilyManager, "columnFamilyManager is required");
-        return new ProducerColumnTemplateAsync(converter, columnFamilyManager);
+        return new ProducerColumnTemplateAsync(converter, columnFamilyManager, classRepresentations);
     }
 
     @Vetoed
@@ -42,9 +48,13 @@ class DefaultColumnTemplateAsyncProducer implements ColumnTemplateAsyncProducer 
 
         private ColumnFamilyManagerAsync columnFamilyManager;
 
-        ProducerColumnTemplateAsync(ColumnEntityConverter converter, ColumnFamilyManagerAsync columnFamilyManager) {
+        private ClassRepresentations classRepresentations;
+
+        ProducerColumnTemplateAsync(ColumnEntityConverter converter, ColumnFamilyManagerAsync columnFamilyManager
+        ,ClassRepresentations classRepresentations) {
             this.converter = converter;
             this.columnFamilyManager = columnFamilyManager;
+            this.classRepresentations = classRepresentations;
         }
 
         ProducerColumnTemplateAsync() {
@@ -58,6 +68,11 @@ class DefaultColumnTemplateAsyncProducer implements ColumnTemplateAsyncProducer 
         @Override
         protected ColumnFamilyManagerAsync getManager() {
             return columnFamilyManager;
+        }
+
+        @Override
+        protected ClassRepresentations getClassRepresentations() {
+            return classRepresentations;
         }
     }
 }

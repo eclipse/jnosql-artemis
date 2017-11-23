@@ -16,6 +16,7 @@ package org.jnosql.artemis.column;
 
 import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.model.Person;
+import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnEntity;
@@ -58,6 +59,9 @@ public class DefaultColumnTemplateAsyncTest {
     @Inject
     private ColumnEntityConverter converter;
 
+    @Inject
+    private ClassRepresentations classRepresentations;
+
     private ColumnFamilyManagerAsync managerMock;
 
     private DefaultColumnTemplateAsync subject;
@@ -72,11 +76,11 @@ public class DefaultColumnTemplateAsyncTest {
         captor = ArgumentCaptor.forClass(ColumnEntity.class);
         Instance<ColumnFamilyManagerAsync> instance = Mockito.mock(Instance.class);
         Mockito.when(instance.get()).thenReturn(managerMock);
-        this.subject = new DefaultColumnTemplateAsync(converter, instance);
+        this.subject = new DefaultColumnTemplateAsync(converter, instance, classRepresentations);
     }
 
     @Test
-    public void shouldSave() {
+    public void shouldInsert() {
         ColumnEntity document = ColumnEntity.of("Person");
         document.addAll(Stream.of(columns).collect(Collectors.toList()));
 
@@ -89,7 +93,7 @@ public class DefaultColumnTemplateAsyncTest {
 
 
     @Test
-    public void shouldSaveTTL() {
+    public void shouldInsertTTL() {
         ColumnEntity document = ColumnEntity.of("Person");
         document.addAll(Stream.of(columns).collect(Collectors.toList()));
 
