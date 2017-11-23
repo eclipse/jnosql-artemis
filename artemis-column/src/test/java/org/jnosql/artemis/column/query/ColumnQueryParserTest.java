@@ -114,16 +114,16 @@ public class ColumnQueryParserTest {
     }
 
     @Test
-    public void shouldFindByAgeLessEqualThan() {
-        ColumnQuery query = parser.parse("findByAgeLessEqualThan", new Object[]{10}, classRepresentation);
+    public void shouldFindByAgeLessThanEqual() {
+        ColumnQuery query = parser.parse("findByAgeLessThanEqual", new Object[]{10}, classRepresentation);
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.LESSER_EQUALS_THAN, query.getCondition().get().getCondition());
         assertEquals(Column.of("age", 10), query.getCondition().get().getColumn());
     }
 
     @Test
-    public void shouldFindByAgeGreaterEqualThan() {
-        ColumnQuery query = parser.parse("findByAgeGreaterEqualThan", new Object[]{10}, classRepresentation);
+    public void shouldFindByAgeGreaterThanEqual() {
+        ColumnQuery query = parser.parse("findByAgeGreaterThanEqual", new Object[]{10}, classRepresentation);
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.GREATER_EQUALS_THAN, query.getCondition().get().getCondition());
         assertEquals(Column.of("age", 10), query.getCondition().get().getColumn());
