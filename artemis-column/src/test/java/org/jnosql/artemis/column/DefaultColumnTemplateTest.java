@@ -88,7 +88,7 @@ public class DefaultColumnTemplateTest {
     }
 
     @Test
-    public void shouldSave() {
+    public void shouldInsert() {
         ColumnEntity document = ColumnEntity.of("Person");
         document.addAll(Stream.of(columns).collect(Collectors.toList()));
 
@@ -109,7 +109,7 @@ public class DefaultColumnTemplateTest {
 
 
     @Test
-    public void shouldSaveTTL() {
+    public void shouldInsertTTL() {
         ColumnEntity document = ColumnEntity.of("Person");
         document.addAll(Stream.of(columns).collect(Collectors.toList()));
 
