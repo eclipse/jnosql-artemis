@@ -15,12 +15,16 @@
 package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.CDIJUnitRunner;
+import org.jnosql.artemis.IdNotFoundException;
+import org.jnosql.artemis.model.Animal;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
+import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentEntity;
+import org.jnosql.diana.api.document.DocumentQuery;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -157,6 +161,35 @@ public class DefaultDocumentTemplateTest {
         DocumentDeleteQuery query = delete().from("delete").build();
         subject.delete(query);
         verify(managerMock).delete(query);
+    }
+
+
+    @Test(expected = NullPointerException.class)
+    public void shouldReturnErrorWhenFindIdHasIdNull() {
+        subject.find(Person.class, null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void shouldReturnErrorWhenFindIdHasClassNull() {
+        subject.find(null, "10");
+    }
+
+    @Test(expected = IdNotFoundException.class)
+    public void shouldReturnErrorWhenThereIsNotIdInFind() {
+        subject.find(Animal.class, "10");
+    }
+
+    @Test
+    public void shouldReturnFind() {
+        subject.find(Person.class, "10");
+        ArgumentCaptor<DocumentQuery> queryCaptor = ArgumentCaptor.forClass(DocumentQuery.class);
+        verify(managerMock).select(queryCaptor.capture());
+        DocumentQuery query = queryCaptor.getValue();
+        DocumentCondition condition = query.getCondition().get();
+
+        assertEquals("Person", query.getDocumentCollection());
+        assertEquals(DocumentCondition.eq(Document.of("_id", "10")), condition);
+
     }
 
 }
