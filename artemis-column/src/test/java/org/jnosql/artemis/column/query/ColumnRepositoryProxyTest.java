@@ -22,10 +22,12 @@ import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.Condition;
+import org.jnosql.diana.api.TypeReference;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnCondition;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnQuery;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,7 +46,9 @@ import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.jnosql.diana.api.column.ColumnCondition.eq;
+import static org.jnosql.diana.api.column.ColumnCondition.gte;
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
 import static org.junit.Assert.assertEquals;
@@ -272,7 +276,7 @@ public class ColumnRepositoryProxyTest {
         ColumnQuery query = captor.getValue();
 
         assertEquals("Person", query.getColumnFamily());
-        assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), query.getCondition().get());
+        assertEquals(eq(Column.of("_id", 10L)), query.getCondition().get());
     }
 
     @Test
@@ -285,7 +289,7 @@ public class ColumnRepositoryProxyTest {
         ColumnQuery query = captor.getValue();
 
         assertEquals("Person", query.getColumnFamily());
-        assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), query.getCondition().get());
+        assertEquals(eq(Column.of("_id", 10L)), query.getCondition().get());
         personRepository.findById(asList(1L, 2L, 3L));
         verify(template, times(4)).singleResult(any(ColumnQuery.class));
     }
@@ -299,7 +303,7 @@ public class ColumnRepositoryProxyTest {
         ColumnDeleteQuery query = captor.getValue();
 
         assertEquals("Person", query.getColumnFamily());
-        assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), query.getCondition().get());
+        assertEquals(eq(Column.of("_id", 10L)), query.getCondition().get());
     }
 
     @Test
@@ -311,7 +315,7 @@ public class ColumnRepositoryProxyTest {
         ColumnDeleteQuery query = captor.getValue();
 
         assertEquals("Person", query.getColumnFamily());
-        assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), query.getCondition().get());
+        assertEquals(eq(Column.of("_id", 10L)), query.getCondition().get());
 
         personRepository.deleteById(asList(1L, 2L, 3L));
         verify(template, times(4)).delete(any(ColumnDeleteQuery.class));
@@ -363,6 +367,27 @@ public class ColumnRepositoryProxyTest {
         assertNotNull(personRepository.equals(personRepository));
     }
 
+    @Test
+    public void shouldFindByNameAndAgeGreaterEqualThan() {
+        Person ada = Person.builder()
+                .withAge(20).withName("Ada").build();
+
+        when(template.select(any(ColumnQuery.class)))
+                .thenReturn(singletonList(ada));
+
+        personRepository.findByNameAndAgeGreaterEqualThan("Ada", 33);
+        ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
+        verify(template).select(captor.capture());
+        ColumnQuery query = captor.getValue();
+        ColumnCondition condition = query.getCondition().get();
+        assertEquals("Person", query.getColumnFamily());
+        assertEquals(Condition.AND, condition.getCondition());
+        List<ColumnCondition> conditions = condition.getColumn().get(new TypeReference<List<ColumnCondition>>() {
+        });
+        assertThat(conditions, containsInAnyOrder(eq(Column.of("name", "Ada")),
+                gte(Column.of("age", 33))));
+
+    }
 
     interface PersonRepository extends Repository<Person, Long> {
 
@@ -385,5 +410,7 @@ public class ColumnRepositoryProxyTest {
         Person query(ColumnQuery query);
 
         void deleteQuery(ColumnDeleteQuery query);
+
+        Set<Person> findByNameAndAgeGreaterEqualThan(String name, Integer age);
     }
 }
