@@ -138,7 +138,7 @@ public interface ColumnTemplate {
     /**
      *Finds by Id.
      * @param entityClass the entity class
-     * @param id the id
+     * @param id the id value
      * @param <T> the entity class type
      * @param <ID> the id type
      * @return the entity instance otherwise {@link Optional#empty()}
