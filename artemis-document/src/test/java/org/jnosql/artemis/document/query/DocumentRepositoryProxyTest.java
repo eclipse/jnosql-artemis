@@ -15,13 +15,14 @@
 package org.jnosql.artemis.document.query;
 
 import org.hamcrest.Matchers;
-import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.CDIJUnitRunner;
+import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.document.DocumentTemplate;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.Condition;
+import org.jnosql.diana.api.TypeReference;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
@@ -44,7 +45,13 @@ import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.jnosql.diana.api.Condition.AND;
+import static org.jnosql.diana.api.Condition.GREATER_THAN;
+import static org.jnosql.diana.api.Condition.LESSER_EQUALS_THAN;
+import static org.jnosql.diana.api.Condition.LESSER_THAN;
 import static org.jnosql.diana.api.document.DocumentCondition.eq;
+import static org.jnosql.diana.api.document.DocumentCondition.gte;
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
 import static org.junit.Assert.assertEquals;
@@ -371,6 +378,85 @@ public class DocumentRepositoryProxyTest {
         assertNotNull(personRepository.equals(personRepository));
     }
 
+    @Test
+    public void shouldFindByNameAndAgeGreaterEqualThan() {
+        Person ada = Person.builder()
+                .withAge(20).withName("Ada").build();
+
+        when(template.select(any(DocumentQuery.class)))
+                .thenReturn(singletonList(ada));
+
+        personRepository.findByNameAndAgeGreaterThanEqual("Ada", 33);
+        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
+        verify(template).select(captor.capture());
+        DocumentQuery query = captor.getValue();
+        DocumentCondition condition = query.getCondition().get();
+        assertEquals("Person", query.getDocumentCollection());
+        assertEquals(AND, condition.getCondition());
+        List<DocumentCondition> conditions = condition.getDocument().get(new TypeReference<List<DocumentCondition>>() {
+        });
+        assertThat(conditions, containsInAnyOrder(eq(Document.of("name", "Ada")),
+                gte(Document.of("age", 33))));
+
+    }
+
+    @Test
+    public void shouldFindByGreaterThan() {
+        Person ada = Person.builder()
+                .withAge(20).withName("Ada").build();
+
+        when(template.select(any(DocumentQuery.class)))
+                .thenReturn(singletonList(ada));
+
+        personRepository.findByAgeGreaterThan(33);
+        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
+        verify(template).select(captor.capture());
+        DocumentQuery query = captor.getValue();
+        DocumentCondition condition = query.getCondition().get();
+        assertEquals("Person", query.getDocumentCollection());
+        assertEquals(GREATER_THAN, condition.getCondition());
+        assertEquals(Document.of("age", 33), condition.getDocument());
+
+    }
+
+    @Test
+    public void shouldFindByAgeLessThanEqual() {
+        Person ada = Person.builder()
+                .withAge(20).withName("Ada").build();
+
+        when(template.select(any(DocumentQuery.class)))
+                .thenReturn(singletonList(ada));
+
+        personRepository.findByAgeLessThanEqual(33);
+        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
+        verify(template).select(captor.capture());
+        DocumentQuery query = captor.getValue();
+        DocumentCondition condition = query.getCondition().get();
+        assertEquals("Person", query.getDocumentCollection());
+        assertEquals(LESSER_EQUALS_THAN, condition.getCondition());
+        assertEquals(Document.of("age", 33), condition.getDocument());
+
+    }
+
+    @Test
+    public void shouldFindByAgeLessEqual() {
+        Person ada = Person.builder()
+                .withAge(20).withName("Ada").build();
+
+        when(template.select(any(DocumentQuery.class)))
+                .thenReturn(singletonList(ada));
+
+        personRepository.findByAgeLessThan(33);
+        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
+        verify(template).select(captor.capture());
+        DocumentQuery query = captor.getValue();
+        DocumentCondition condition = query.getCondition().get();
+        assertEquals("Person", query.getDocumentCollection());
+        assertEquals(LESSER_THAN, condition.getCondition());
+        assertEquals(Document.of("age", 33), condition.getDocument());
+
+    }
+
 
     interface PersonRepository extends Repository<Person, Long> {
 
@@ -389,6 +475,14 @@ public class DocumentRepositoryProxyTest {
         Stream<Person> findByNameAndAgeOrderByName(String name, Integer age);
 
         Queue<Person> findByNameAndAgeOrderByAge(String name, Integer age);
+
+        Set<Person> findByNameAndAgeGreaterThanEqual(String name, Integer age);
+
+        Set<Person> findByAgeGreaterThan(Integer age);
+
+        Set<Person> findByAgeLessThanEqual(Integer age);
+
+        Set<Person> findByAgeLessThan(Integer age);
 
 
         Person query(DocumentQuery query);
