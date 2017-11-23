@@ -36,7 +36,6 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.time.Duration;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -155,6 +154,13 @@ public class DefaultColumnTemplateTest {
         ColumnDeleteQuery query = ColumnQueryBuilder.delete().from("delete").build();
         subject.delete(query);
         verify(managerMock).delete(query);
+    }
+
+    @Test
+    public void shouldSelect() {
+        ColumnQuery query = ColumnQueryBuilder.select().from("delete").build();
+        subject.select(query);
+        verify(managerMock).select(query);
     }
 
     @Test(expected = NullPointerException.class)
