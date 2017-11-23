@@ -21,21 +21,26 @@ import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
+import org.jnosql.diana.api.column.ColumnQuery;
+import org.jnosql.diana.api.column.query.ColumnQueryBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.longThat;
 import static org.mockito.Mockito.verify;
 
 @RunWith(CDIJUnitRunner.class)
@@ -120,5 +125,16 @@ public class DefaultColumnTemplateAsyncTest {
         ColumnDeleteQuery query = delete().from("delete").build();
         subject.delete(query);
         verify(managerMock).delete(query);
+    }
+
+    @Test
+    public void shouldSelect() {
+
+        ColumnQuery query = ColumnQueryBuilder.select().from("Person").build();
+        Consumer<List<Person>> callback = l -> {
+
+        };
+        subject.select(query, callback);
+        verify(managerMock).select(Mockito.eq(query), Mockito.any());
     }
 }
