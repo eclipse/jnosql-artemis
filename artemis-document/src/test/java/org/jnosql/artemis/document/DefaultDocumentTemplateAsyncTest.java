@@ -16,10 +16,13 @@ package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.model.Person;
+import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentEntity;
+import org.jnosql.diana.api.document.DocumentQuery;
+import org.jnosql.diana.api.document.query.DocumentQueryBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +33,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -61,6 +65,9 @@ public class DefaultDocumentTemplateAsyncTest {
     @Inject
     private DocumentEntityConverter converter;
 
+    @Inject
+    private ClassRepresentations classRepresentations;
+
     private DocumentCollectionManagerAsync managerMock;
 
     private DefaultDocumentTemplateAsync subject;
@@ -75,7 +82,7 @@ public class DefaultDocumentTemplateAsyncTest {
         captor = ArgumentCaptor.forClass(DocumentEntity.class);
         Instance<DocumentCollectionManagerAsync> instance = Mockito.mock(Instance.class);
         when(instance.get()).thenReturn(managerMock);
-        this.subject = new DefaultDocumentTemplateAsync(converter, instance);
+        this.subject = new DefaultDocumentTemplateAsync(converter, instance, classRepresentations);
     }
 
     @Test
@@ -128,5 +135,16 @@ public class DefaultDocumentTemplateAsyncTest {
         DocumentDeleteQuery query = delete().from("delete").build();
         subject.delete(query);
         verify(managerMock).delete(query);
+    }
+
+    @Test
+    public void shouldSelect() {
+
+        DocumentQuery query = DocumentQueryBuilder.select().from("Person").build();
+        Consumer<List<Person>> callback = l -> {
+
+        };
+        subject.select(query, callback);
+        verify(managerMock).select(Mockito.eq(query), Mockito.any());
     }
 }
