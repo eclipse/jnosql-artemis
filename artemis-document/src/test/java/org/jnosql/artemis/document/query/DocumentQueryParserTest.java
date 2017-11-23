@@ -114,16 +114,16 @@ public class DocumentQueryParserTest {
     }
 
     @Test
-    public void shouldFindByAgeLessEqualThan() {
-        DocumentQuery query = parser.parse("findByAgeLessEqualThan", new Object[]{10}, classRepresentation);
+    public void shouldFindByAgeLessThanEqual() {
+        DocumentQuery query = parser.parse("findByAgeLessThanEqual", new Object[]{10}, classRepresentation);
         assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.LESSER_EQUALS_THAN, query.getCondition().get().getCondition());
         assertEquals(Document.of("age", 10), query.getCondition().get().getDocument());
     }
 
     @Test
-    public void shouldFindByAgeGreaterEqualThan() {
-        DocumentQuery query = parser.parse("findByAgeGreaterEqualThan", new Object[]{10}, classRepresentation);
+    public void shouldFindByAgeGreaterThanEqual() {
+        DocumentQuery query = parser.parse("findByAgeGreaterThanEqual", new Object[]{10}, classRepresentation);
         assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.GREATER_EQUALS_THAN, query.getCondition().get().getCondition());
         assertEquals(Document.of("age", 10), query.getCondition().get().getDocument());
