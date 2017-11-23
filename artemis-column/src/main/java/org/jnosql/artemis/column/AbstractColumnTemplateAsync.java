@@ -14,14 +14,20 @@
  */
 package org.jnosql.artemis.column;
 
+import org.jnosql.artemis.IdNotFoundException;
+import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.FieldRepresentation;
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
 import org.jnosql.diana.api.column.ColumnQuery;
+import org.jnosql.diana.api.column.query.ColumnQueryBuilder;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
@@ -36,6 +42,8 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
     protected abstract ColumnEntityConverter getConverter();
 
     protected abstract ColumnFamilyManagerAsync getManager();
+
+    protected abstract ClassRepresentations getClassRepresentations();
 
     @Override
     public <T> void insert(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
@@ -106,4 +114,23 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
                         .collect(toList()));
         getManager().select(query, dianaCallBack);
     }
+
+    @Override
+    public <T, ID> void find(Class<T> entityClass, ID id, Consumer<Optional<T>> callBack) throws
+            NullPointerException, IdNotFoundException{
+
+        requireNonNull(entityClass, "entityClass is required");
+        requireNonNull(id, "id is required");
+        requireNonNull(callBack, "callBack is required");
+
+        ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
+        FieldRepresentation idField = classRepresentation.getId()
+                .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
+
+        ColumnQuery query = ColumnQueryBuilder.select().from(classRepresentation.getName())
+                .where(idField.getName()).eq(id).build();
+
+        singleResult(query, callBack);
+    }
 }
+
