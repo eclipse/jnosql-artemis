@@ -19,6 +19,7 @@ import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.artemis.model.Job;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
 import org.jnosql.diana.api.document.DocumentCondition;
@@ -35,12 +36,17 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -213,6 +219,47 @@ public class DefaultDocumentTemplateTest {
         verify(managerMock).select(query);
     }
 
+
+    @Test
+    public void shouldReturnSingleResult() {
+        DocumentEntity columnEntity = DocumentEntity.of("Person");
+        columnEntity.addAll(Stream.of(documents).collect(Collectors.toList()));
+
+        Mockito.when(managerMock
+                .select(any(DocumentQuery.class)))
+                .thenReturn(singletonList(columnEntity));
+
+        DocumentQuery query = select().from("person").build();
+
+        Optional<Person> result = subject.singleResult(query);
+        assertTrue(result.isPresent());
+    }
+
+    @Test
+    public void shouldReturnSingleResultIsEmpty() {
+        Mockito.when(managerMock
+                .select(any(DocumentQuery.class)))
+                .thenReturn(emptyList());
+
+        DocumentQuery query = select().from("person").build();
+
+        Optional<Person> result = subject.singleResult(query);
+        assertFalse(result.isPresent());
+    }
+
+    @Test(expected = NonUniqueResultException.class)
+    public void shouldReturnErrorWhenThereMoreThanASingleResult() {
+        DocumentEntity columnEntity = DocumentEntity.of("Person");
+        columnEntity.addAll(Stream.of(documents).collect(Collectors.toList()));
+
+        Mockito.when(managerMock
+                .select(any(DocumentQuery.class)))
+                .thenReturn(Arrays.asList(columnEntity, columnEntity));
+
+        DocumentQuery query = select().from("person").build();
+
+        subject.singleResult(query);
+    }
 
     @Test(expected = NullPointerException.class)
     public void shouldReturnErrorWhenFindIdHasIdNull() {
