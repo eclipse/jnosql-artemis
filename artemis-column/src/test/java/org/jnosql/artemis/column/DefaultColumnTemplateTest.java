@@ -19,6 +19,7 @@ import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.artemis.model.Job;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnCondition;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
@@ -36,10 +37,15 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -200,10 +206,52 @@ public class DefaultColumnTemplateTest {
 
     @Test
     public void shouldSelect() {
-        ColumnQuery query = ColumnQueryBuilder.select().from("delete").build();
+        ColumnQuery query = ColumnQueryBuilder.select().from("person").build();
         subject.select(query);
         verify(managerMock).select(query);
     }
+
+    @Test
+    public void shouldReturnSingleResult() {
+        ColumnEntity columnEntity = ColumnEntity.of("Person");
+        columnEntity.addAll(Stream.of(columns).collect(Collectors.toList()));
+
+        Mockito.when(managerMock
+                .select(any(ColumnQuery.class)))
+                .thenReturn(singletonList(columnEntity));
+
+        ColumnQuery query = ColumnQueryBuilder.select().from("person").build();
+
+        Optional<Person> result = subject.singleResult(query);
+        assertTrue(result.isPresent());
+    }
+
+    @Test
+    public void shouldReturnSingleResultIsEmpty() {
+        Mockito.when(managerMock
+                .select(any(ColumnQuery.class)))
+                .thenReturn(emptyList());
+
+        ColumnQuery query = ColumnQueryBuilder.select().from("person").build();
+
+        Optional<Person> result = subject.singleResult(query);
+        assertFalse(result.isPresent());
+    }
+
+    @Test(expected = NonUniqueResultException.class)
+    public void shouldReturnErrorWhenThereMoreThanASingleResult() {
+        ColumnEntity columnEntity = ColumnEntity.of("Person");
+        columnEntity.addAll(Stream.of(columns).collect(Collectors.toList()));
+
+        Mockito.when(managerMock
+                .select(any(ColumnQuery.class)))
+                .thenReturn(Arrays.asList(columnEntity, columnEntity));
+
+        ColumnQuery query = ColumnQueryBuilder.select().from("person").build();
+
+        subject.singleResult(query);
+    }
+
 
     @Test(expected = NullPointerException.class)
     public void shouldReturnErrorWhenFindIdHasIdNull() {
