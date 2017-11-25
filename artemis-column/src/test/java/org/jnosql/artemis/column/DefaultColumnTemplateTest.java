@@ -40,6 +40,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(CDIJUnitRunner.class)
@@ -92,15 +94,15 @@ public class DefaultColumnTemplateTest {
         document.addAll(Stream.of(columns).collect(Collectors.toList()));
 
         Mockito.when(managerMock
-                .insert(Mockito.any(ColumnEntity.class)))
+                .insert(any(ColumnEntity.class)))
                 .thenReturn(document);
 
         subject.insert(this.person);
         verify(managerMock).insert(captor.capture());
-        verify(columnEventPersistManager).firePostEntity(Mockito.any(Person.class));
-        verify(columnEventPersistManager).firePreEntity(Mockito.any(Person.class));
-        verify(columnEventPersistManager).firePreColumn(Mockito.any(ColumnEntity.class));
-        verify(columnEventPersistManager).firePostColumn(Mockito.any(ColumnEntity.class));
+        verify(columnEventPersistManager).firePostEntity(any(Person.class));
+        verify(columnEventPersistManager).firePreEntity(any(Person.class));
+        verify(columnEventPersistManager).firePreColumn(any(ColumnEntity.class));
+        verify(columnEventPersistManager).firePostColumn(any(ColumnEntity.class));
         ColumnEntity value = captor.getValue();
         assertEquals("Person", value.getName());
         assertEquals(4, value.getColumns().size());
@@ -113,16 +115,16 @@ public class DefaultColumnTemplateTest {
         document.addAll(Stream.of(columns).collect(Collectors.toList()));
 
         Mockito.when(managerMock
-                .insert(Mockito.any(ColumnEntity.class),
-                        Mockito.any(Duration.class)))
+                .insert(any(ColumnEntity.class),
+                        any(Duration.class)))
                 .thenReturn(document);
 
         subject.insert(this.person, Duration.ofHours(2));
         verify(managerMock).insert(captor.capture(), Mockito.eq(Duration.ofHours(2)));
-        verify(columnEventPersistManager).firePostEntity(Mockito.any(Person.class));
-        verify(columnEventPersistManager).firePreEntity(Mockito.any(Person.class));
-        verify(columnEventPersistManager).firePreColumn(Mockito.any(ColumnEntity.class));
-        verify(columnEventPersistManager).firePostColumn(Mockito.any(ColumnEntity.class));
+        verify(columnEventPersistManager).firePostEntity(any(Person.class));
+        verify(columnEventPersistManager).firePreEntity(any(Person.class));
+        verify(columnEventPersistManager).firePreColumn(any(ColumnEntity.class));
+        verify(columnEventPersistManager).firePostColumn(any(ColumnEntity.class));
         ColumnEntity value = captor.getValue();
         assertEquals("Person", value.getName());
         assertEquals(4, value.getColumns().size());
@@ -134,20 +136,59 @@ public class DefaultColumnTemplateTest {
         document.addAll(Stream.of(columns).collect(Collectors.toList()));
 
         Mockito.when(managerMock
-                .update(Mockito.any(ColumnEntity.class)))
+                .update(any(ColumnEntity.class)))
                 .thenReturn(document);
 
         subject.update(this.person);
         verify(managerMock).update(captor.capture());
-        verify(columnEventPersistManager).firePostEntity(Mockito.any(Person.class));
-        verify(columnEventPersistManager).firePreEntity(Mockito.any(Person.class));
-        verify(columnEventPersistManager).firePreColumn(Mockito.any(ColumnEntity.class));
-        verify(columnEventPersistManager).firePostColumn(Mockito.any(ColumnEntity.class));
+        verify(columnEventPersistManager).firePostEntity(any(Person.class));
+        verify(columnEventPersistManager).firePreEntity(any(Person.class));
+        verify(columnEventPersistManager).firePreColumn(any(ColumnEntity.class));
+        verify(columnEventPersistManager).firePostColumn(any(ColumnEntity.class));
         ColumnEntity value = captor.getValue();
         assertEquals("Person", value.getName());
         assertEquals(4, value.getColumns().size());
     }
 
+    @Test
+    public void shouldInsertEntitiesTTL() {
+        ColumnEntity columnEntity = ColumnEntity.of("Person");
+        columnEntity.addAll(Stream.of(columns).collect(Collectors.toList()));
+        Duration duration = Duration.ofHours(2);
+
+        Mockito.when(managerMock
+                .insert(any(ColumnEntity.class), Mockito.eq(duration)))
+                .thenReturn(columnEntity);
+
+        subject.insert(Arrays.asList(person, person), duration);
+        verify(managerMock, times(2)).insert(any(ColumnEntity.class), any(Duration.class));
+    }
+
+    @Test
+    public void shouldInsertEntities() {
+        ColumnEntity columnEntity = ColumnEntity.of("Person");
+        columnEntity.addAll(Stream.of(columns).collect(Collectors.toList()));
+
+        Mockito.when(managerMock
+                .insert(any(ColumnEntity.class)))
+                .thenReturn(columnEntity);
+
+        subject.insert(Arrays.asList(person, person));
+        verify(managerMock, times(2)).insert(any(ColumnEntity.class));
+    }
+
+    @Test
+    public void shouldUpdateEntities() {
+        ColumnEntity columnEntity = ColumnEntity.of("Person");
+        columnEntity.addAll(Stream.of(columns).collect(Collectors.toList()));
+
+        Mockito.when(managerMock
+                .update(any(ColumnEntity.class)))
+                .thenReturn(columnEntity);
+
+        subject.update(Arrays.asList(person, person));
+        verify(managerMock, times(2)).update(any(ColumnEntity.class));
+    }
     @Test
     public void shouldDelete() {
 
