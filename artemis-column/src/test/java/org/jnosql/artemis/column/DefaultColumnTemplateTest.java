@@ -43,6 +43,7 @@ import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -206,7 +207,7 @@ public class DefaultColumnTemplateTest {
 
     @Test
     public void shouldSelect() {
-        ColumnQuery query = ColumnQueryBuilder.select().from("person").build();
+        ColumnQuery query = select().from("person").build();
         subject.select(query);
         verify(managerMock).select(query);
     }
@@ -220,7 +221,7 @@ public class DefaultColumnTemplateTest {
                 .select(any(ColumnQuery.class)))
                 .thenReturn(singletonList(columnEntity));
 
-        ColumnQuery query = ColumnQueryBuilder.select().from("person").build();
+        ColumnQuery query = select().from("person").build();
 
         Optional<Person> result = subject.singleResult(query);
         assertTrue(result.isPresent());
@@ -232,7 +233,7 @@ public class DefaultColumnTemplateTest {
                 .select(any(ColumnQuery.class)))
                 .thenReturn(emptyList());
 
-        ColumnQuery query = ColumnQueryBuilder.select().from("person").build();
+        ColumnQuery query = select().from("person").build();
 
         Optional<Person> result = subject.singleResult(query);
         assertFalse(result.isPresent());
@@ -247,7 +248,7 @@ public class DefaultColumnTemplateTest {
                 .select(any(ColumnQuery.class)))
                 .thenReturn(Arrays.asList(columnEntity, columnEntity));
 
-        ColumnQuery query = ColumnQueryBuilder.select().from("person").build();
+        ColumnQuery query = select().from("person").build();
 
         subject.singleResult(query);
     }
