@@ -189,6 +189,7 @@ public class DefaultColumnTemplateTest {
         subject.update(Arrays.asList(person, person));
         verify(managerMock, times(2)).update(any(ColumnEntity.class));
     }
+
     @Test
     public void shouldDelete() {
 

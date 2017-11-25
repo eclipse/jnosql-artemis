@@ -42,6 +42,7 @@ import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -153,6 +154,47 @@ public class DefaultDocumentTemplateTest {
         DocumentEntity value = captor.getValue();
         assertEquals("Person", value.getName());
         assertEquals(4, value.getDocuments().size());
+    }
+
+
+    @Test
+    public void shouldInsertEntitiesTTL() {
+        DocumentEntity documentEntity = DocumentEntity.of("Person");
+        documentEntity.addAll(Stream.of(documents).collect(Collectors.toList()));
+        Duration duration = Duration.ofHours(2);
+
+        Mockito.when(managerMock
+                .insert(any(DocumentEntity.class), Mockito.eq(duration)))
+                .thenReturn(documentEntity);
+
+        subject.insert(Arrays.asList(person, person), duration);
+        verify(managerMock, times(2)).insert(any(DocumentEntity.class), any(Duration.class));
+    }
+
+    @Test
+    public void shouldInsertEntities() {
+        DocumentEntity documentEntity = DocumentEntity.of("Person");
+        documentEntity.addAll(Stream.of(documents).collect(Collectors.toList()));
+
+        Mockito.when(managerMock
+                .insert(any(DocumentEntity.class)))
+                .thenReturn(documentEntity);
+
+        subject.insert(Arrays.asList(person, person));
+        verify(managerMock, times(2)).insert(any(DocumentEntity.class));
+    }
+
+    @Test
+    public void shouldUpdateEntities() {
+        DocumentEntity documentEntity = DocumentEntity.of("Person");
+        documentEntity.addAll(Stream.of(documents).collect(Collectors.toList()));
+
+        Mockito.when(managerMock
+                .update(any(DocumentEntity.class)))
+                .thenReturn(documentEntity);
+
+        subject.update(Arrays.asList(person, person));
+        verify(managerMock, times(2)).update(any(DocumentEntity.class));
     }
 
 
