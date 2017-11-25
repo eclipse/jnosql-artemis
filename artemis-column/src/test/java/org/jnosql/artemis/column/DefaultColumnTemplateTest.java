@@ -90,12 +90,12 @@ public class DefaultColumnTemplateTest {
 
     @Test
     public void shouldInsert() {
-        ColumnEntity document = ColumnEntity.of("Person");
-        document.addAll(Stream.of(columns).collect(Collectors.toList()));
+        ColumnEntity columnEntity = ColumnEntity.of("Person");
+        columnEntity.addAll(Stream.of(columns).collect(Collectors.toList()));
 
         Mockito.when(managerMock
                 .insert(any(ColumnEntity.class)))
-                .thenReturn(document);
+                .thenReturn(columnEntity);
 
         subject.insert(this.person);
         verify(managerMock).insert(captor.capture());
@@ -111,13 +111,13 @@ public class DefaultColumnTemplateTest {
 
     @Test
     public void shouldInsertTTL() {
-        ColumnEntity document = ColumnEntity.of("Person");
-        document.addAll(Stream.of(columns).collect(Collectors.toList()));
+        ColumnEntity columnEntity = ColumnEntity.of("Person");
+        columnEntity.addAll(Stream.of(columns).collect(Collectors.toList()));
 
         Mockito.when(managerMock
                 .insert(any(ColumnEntity.class),
                         any(Duration.class)))
-                .thenReturn(document);
+                .thenReturn(columnEntity);
 
         subject.insert(this.person, Duration.ofHours(2));
         verify(managerMock).insert(captor.capture(), Mockito.eq(Duration.ofHours(2)));
@@ -132,12 +132,12 @@ public class DefaultColumnTemplateTest {
 
     @Test
     public void shouldUpdate() {
-        ColumnEntity document = ColumnEntity.of("Person");
-        document.addAll(Stream.of(columns).collect(Collectors.toList()));
+        ColumnEntity columnEntity = ColumnEntity.of("Person");
+        columnEntity.addAll(Stream.of(columns).collect(Collectors.toList()));
 
         Mockito.when(managerMock
                 .update(any(ColumnEntity.class)))
-                .thenReturn(document);
+                .thenReturn(columnEntity);
 
         subject.update(this.person);
         verify(managerMock).update(captor.capture());
