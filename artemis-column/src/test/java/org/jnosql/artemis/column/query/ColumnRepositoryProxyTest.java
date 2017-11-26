@@ -100,7 +100,7 @@ public class ColumnRepositoryProxyTest {
 
     @Test
     public void shouldSaveUsingInsertWhenDataDoesNotExist() {
-        when(template.singleResult(Mockito.any(ColumnQuery.class))).thenReturn(Optional.empty());
+        when(template.find(Person.class, 10L)).thenReturn(Optional.empty());
 
         ArgumentCaptor<Person> captor = ArgumentCaptor.forClass(Person.class);
         Person person = Person.builder().withName("Ada")
@@ -116,7 +116,8 @@ public class ColumnRepositoryProxyTest {
 
     @Test
     public void shouldSaveUsingUpdateWhenDataExists() {
-        when(template.singleResult(Mockito.any(ColumnQuery.class))).thenReturn(Optional.of(Person.builder().build()));
+
+        when(template.find(Person.class, 10L)).thenReturn(Optional.of(Person.builder().build()));
 
         ArgumentCaptor<Person> captor = ArgumentCaptor.forClass(Person.class);
         Person person = Person.builder().withName("Ada")
@@ -275,29 +276,20 @@ public class ColumnRepositoryProxyTest {
 
     @Test
     public void shouldFindById() {
-        ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
         personRepository.findById(10L);
-        verify(template).singleResult(captor.capture());
-
-        ColumnQuery query = captor.getValue();
-
-        assertEquals("Person", query.getColumnFamily());
-        assertEquals(eq(Column.of("_id", 10L)), query.getCondition().get());
+        verify(template).find(Mockito.eq(Person.class), Mockito.eq(10L));
     }
 
     @Test
     public void shouldFindByIds() {
-        when(template.singleResult(any(ColumnQuery.class))).thenReturn(Optional.of(Person.builder().build()));
-        ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
+        when(template.find(Mockito.eq(Person.class), Mockito.any(Long.class)))
+                .thenReturn(Optional.of(Person.builder().build()));
+
         personRepository.findById(singletonList(10L));
-        verify(template).singleResult(captor.capture());
+        verify(template).find(Mockito.eq(Person.class), Mockito.eq(10L));
 
-        ColumnQuery query = captor.getValue();
-
-        assertEquals("Person", query.getColumnFamily());
-        assertEquals(eq(Column.of("_id", 10L)), query.getCondition().get());
         personRepository.findById(asList(1L, 2L, 3L));
-        verify(template, times(4)).singleResult(any(ColumnQuery.class));
+        verify(template, times(4)).find(Mockito.eq(Person.class), Mockito.any(Long.class));
     }
 
     @Test
@@ -330,12 +322,12 @@ public class ColumnRepositoryProxyTest {
 
     @Test
     public void shouldContainsById() {
-        when(template.singleResult(any(ColumnQuery.class))).thenReturn(Optional.of(Person.builder().build()));
+        when(template.find(Person.class, 10L)).thenReturn(Optional.of(Person.builder().build()));
 
         assertTrue(personRepository.existsById(10L));
-        Mockito.verify(template).singleResult(any(ColumnQuery.class));
+        Mockito.verify(template).find(Person.class, 10L);
 
-        when(template.singleResult(any(ColumnQuery.class))).thenReturn(Optional.empty());
+        when(template.find(Person.class, 10L)).thenReturn(Optional.empty());
         assertFalse(personRepository.existsById(10L));
 
     }
