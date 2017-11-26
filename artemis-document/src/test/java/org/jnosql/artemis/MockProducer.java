@@ -29,6 +29,7 @@ import javax.enterprise.inject.Produces;
 import java.util.Optional;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -68,7 +69,7 @@ public class MockProducer {
                 .withName("documentRepositoryMock").build());
 
         when(documentTemplate.singleResult(any(DocumentQuery.class))).thenReturn(Optional.empty());
-
+        when(documentTemplate.find(eq(Person.class), Mockito.any())).thenReturn(Optional.empty());
         return documentTemplate;
     }
 
