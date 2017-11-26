@@ -14,10 +14,10 @@
  */
 package org.jnosql.artemis.column.query;
 
+import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.Pagination;
 import org.jnosql.artemis.RepositoryAsync;
-import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
@@ -89,7 +89,7 @@ public class ColumnRepositoryAsyncProxyTest {
                 .withPhones(singletonList("123123"))
                 .build();
         personRepository.save(person);
-        verify(template).singleResult(Mockito.any(ColumnQuery.class), consumerCaptor.capture());
+        verify(template).find(Mockito.eq(Person.class), Mockito.eq(10L), consumerCaptor.capture());
         Consumer consumer = consumerCaptor.getValue();
         consumer.accept(Optional.empty());
         verify(template).insert(captor.capture());
@@ -107,7 +107,7 @@ public class ColumnRepositoryAsyncProxyTest {
                 .withPhones(singletonList("123123"))
                 .build();
         personRepository.save(person);
-        verify(template).singleResult(Mockito.any(ColumnQuery.class), consumerCaptor.capture());
+        verify(template).find(Mockito.eq(Person.class), Mockito.eq(10L), consumerCaptor.capture());
         Consumer consumer = consumerCaptor.getValue();
         consumer.accept(Optional.of(Person.builder().build()));
         verify(template).update(captor.capture());
@@ -284,16 +284,11 @@ public class ColumnRepositoryAsyncProxyTest {
 
     @Test
     public void shouldFindById() {
-        ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
         Consumer<Optional<Person>> callBack = p -> {
         };
         personRepository.findById(10L, callBack);
-        verify(template).singleResult(captor.capture(), eq(callBack));
+        verify(template).find(Mockito.eq(Person.class), Mockito.eq(10L), eq(callBack));
 
-        ColumnQuery query = captor.getValue();
-
-        assertEquals("Person", query.getColumnFamily());
-        assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), query.getCondition().get());
     }
 
 
@@ -315,9 +310,7 @@ public class ColumnRepositoryAsyncProxyTest {
         Consumer<Boolean> callback = v -> {
         };
         personRepository.existsById(10L, callback);
-        verify(template).singleResult(any(ColumnQuery.class), any(Consumer.class));
-
-
+        verify(template).find(Mockito.eq(Person.class), Mockito.eq(10L), any(Consumer.class));
     }
 
     @Test
