@@ -87,12 +87,11 @@ public abstract class AbstractColumnRepository<T, ID> implements Repository<T, I
     public Optional<T> findById(ID id) throws NullPointerException {
         requireNonNull(id, "id is required");
 
-        String columnName = this.getIdField().getName();
+        return getTemplate().find(getEntityClass(), id);
+    }
 
-        ColumnQuery query = select().from(getClassRepresentation().getName())
-                .where(eq(Column.of(columnName, id))).build();
-
-        return getTemplate().singleResult(query);
+    private Class<T> getEntityClass() {
+        return (Class<T>) getClassRepresentation().getClassInstance();
     }
 
     @Override
