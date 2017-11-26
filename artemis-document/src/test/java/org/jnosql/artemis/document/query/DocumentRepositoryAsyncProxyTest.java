@@ -14,10 +14,10 @@
  */
 package org.jnosql.artemis.document.query;
 
+import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.Pagination;
 import org.jnosql.artemis.RepositoryAsync;
-import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.document.DocumentTemplateAsync;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
@@ -89,8 +89,9 @@ public class DocumentRepositoryAsyncProxyTest {
                 .withId(10L)
                 .withPhones(singletonList("123123"))
                 .build();
+
         personRepository.save(person);
-        verify(template).singleResult(Mockito.any(DocumentQuery.class), consumerCaptor.capture());
+        verify(template).find(Mockito.eq(Person.class),Mockito.eq(10L), consumerCaptor.capture());
         Consumer consumer = consumerCaptor.getValue();
         consumer.accept(Optional.empty());
         verify(template).insert(captor.capture());
@@ -108,7 +109,7 @@ public class DocumentRepositoryAsyncProxyTest {
                 .withPhones(singletonList("123123"))
                 .build();
         personRepository.save(person);
-        verify(template).singleResult(Mockito.any(DocumentQuery.class), consumerCaptor.capture());
+        verify(template).find(Mockito.eq(Person.class),Mockito.eq(10L), consumerCaptor.capture());
         Consumer consumer = consumerCaptor.getValue();
         consumer.accept(Optional.of(Person.builder().build()));
         verify(template).update(captor.capture());
@@ -289,12 +290,8 @@ public class DocumentRepositoryAsyncProxyTest {
         Consumer<Optional<Person>> callBack = p -> {
         };
         personRepository.findById(10L, callBack);
-        verify(template).singleResult(captor.capture(), Matchers.eq(callBack));
+        verify(template).find(Mockito.eq(Person.class),Mockito.eq(10L), Matchers.eq(callBack));
 
-        DocumentQuery query = captor.getValue();
-
-        assertEquals("Person", query.getDocumentCollection());
-        assertEquals(eq(Document.of("_id", 10L)), query.getCondition().get());
     }
 
 
@@ -316,7 +313,7 @@ public class DocumentRepositoryAsyncProxyTest {
         Consumer<Boolean> callback = v -> {
         };
         personRepository.existsById(10L, callback);
-        verify(template).singleResult(any(DocumentQuery.class), any(Consumer.class));
+        verify(template).find(Mockito.eq(Person.class), Mockito.eq(10L), any(Consumer.class));
 
 
     }
