@@ -101,7 +101,9 @@ public class DocumentRepositoryProxyTest {
 
     @Test
     public void shouldSaveUsingInsertWhenDataDoesNotExist() {
-        when(template.singleResult(Mockito.any(DocumentQuery.class))).thenReturn(Optional.empty());
+        when(template.find(Mockito.eq(Person.class), Mockito.eq(10L)))
+                .thenReturn(Optional.empty());
+
 
         ArgumentCaptor<Person> captor = ArgumentCaptor.forClass(Person.class);
         Person person = Person.builder().withName("Ada")
@@ -116,7 +118,8 @@ public class DocumentRepositoryProxyTest {
 
     @Test
     public void shouldSaveUsingUpdateWhenDataExists() {
-        when(template.singleResult(Mockito.any(DocumentQuery.class))).thenReturn(Optional.of(Person.builder().build()));
+        when(template.find(Mockito.eq(Person.class), Mockito.eq(10L)))
+                .thenReturn(Optional.of(Person.builder().build()));
 
         ArgumentCaptor<Person> captor = ArgumentCaptor.forClass(Person.class);
         Person person = Person.builder().withName("Ada")
@@ -328,12 +331,14 @@ public class DocumentRepositoryProxyTest {
 
     @Test
     public void shouldContainsById() {
-        when(template.singleResult(any(DocumentQuery.class))).thenReturn(Optional.of(Person.builder().build()));
+        when(template.find(Mockito.eq(Person.class), Mockito.any(Long.class)))
+                .thenReturn(Optional.of(Person.builder().build()));
 
         assertTrue(personRepository.existsById(10L));
-        Mockito.verify(template).singleResult(any(DocumentQuery.class));
+        Mockito.verify(template).find(Mockito.eq(Person.class), Mockito.eq(10L));
 
-        when(template.singleResult(any(DocumentQuery.class))).thenReturn(Optional.empty());
+        when(template.find(Mockito.eq(Person.class), Mockito.any(Long.class)))
+                .thenReturn(Optional.empty());
         assertFalse(personRepository.existsById(10L));
 
     }
