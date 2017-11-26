@@ -90,9 +90,6 @@ public abstract class AbstractDocumentRepository<T, ID> implements Repository<T,
         return getTemplate().find(getEntityClass(), id);
     }
 
-    private Class<T> getEntityClass() {
-        return (Class<T>) getClassRepresentation().getClassInstance();
-    }
 
     @Override
     public Iterable<T> findById(Iterable<ID> ids) throws NullPointerException {
@@ -110,6 +107,10 @@ public abstract class AbstractDocumentRepository<T, ID> implements Repository<T,
             Optional entity = this.findById((ID) id);
             return entity.isPresent() ? Stream.of(entity.get()) : Stream.empty();
         };
+    }
+
+    private Class<T> getEntityClass() {
+        return (Class<T>) getClassRepresentation().getClassInstance();
     }
 
     @Override

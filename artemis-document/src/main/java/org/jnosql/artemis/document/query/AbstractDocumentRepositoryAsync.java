@@ -23,7 +23,6 @@ import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
-import org.jnosql.diana.api.document.DocumentQuery;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -34,7 +33,6 @@ import static java.util.Objects.requireNonNull;
 import static org.jnosql.artemis.IdNotFoundException.KEY_NOT_FOUND_EXCEPTION_SUPPLIER;
 import static org.jnosql.diana.api.document.DocumentCondition.eq;
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
-import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
 
 /**
  * The {@link RepositoryAsync} template method
@@ -100,12 +98,12 @@ public abstract class AbstractDocumentRepositoryAsync<T, ID> implements Reposito
     public void findById(ID id, Consumer<Optional<T>> callBack) throws NullPointerException {
         requireNonNull(id, "id is required");
         requireNonNull(callBack, "callBack is required");
-        String columnName = this.getIdField().getName();
 
-        DocumentQuery query = select().from(getClassRepresentation()
-                .getName())
-                .where(eq(Document.of(columnName, id))).build();
-        getTemplate().singleResult(query, callBack);
+        getTemplate().find(getEntityClass(), id, callBack);
+    }
+
+    private Class<T> getEntityClass() {
+        return (Class<T>) getClassRepresentation().getClassInstance();
     }
 
     private FieldRepresentation getIdField() {
