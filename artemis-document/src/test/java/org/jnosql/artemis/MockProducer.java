@@ -53,6 +53,7 @@ public class MockProducer {
         entity.add(Document.of("age", 10));
         DocumentCollectionManager manager = mock(DocumentCollectionManager.class);
         when(manager.insert(Mockito.any(DocumentEntity.class))).thenReturn(entity);
+        when(manager.singleResult(Mockito.any(DocumentQuery.class))).thenReturn(Optional.empty());
         return manager;
 
     }
