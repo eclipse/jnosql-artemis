@@ -283,29 +283,19 @@ public class DocumentRepositoryProxyTest {
 
     @Test
     public void shouldFindById() {
-        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
         personRepository.findById(10L);
-        verify(template).singleResult(captor.capture());
-
-        DocumentQuery query = captor.getValue();
-
-        assertEquals("Person", query.getDocumentCollection());
-        assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), query.getCondition().get());
+        verify(template).find(Mockito.eq(Person.class), Mockito.eq(10L));
     }
 
     @Test
     public void shouldFindByIds() {
-        when(template.singleResult(any(DocumentQuery.class))).thenReturn(Optional.of(Person.builder().build()));
-        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
+        when(template.find(Mockito.eq(Person.class), Mockito.any(Long.class)))
+                .thenReturn(Optional.of(Person.builder().build()));;
+
         personRepository.findById(singletonList(10L));
-        verify(template).singleResult(captor.capture());
-
-        DocumentQuery query = captor.getValue();
-
-        assertEquals("Person", query.getDocumentCollection());
-        assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), query.getCondition().get());
-        personRepository.findById(asList(1L, 2L, 3L));
-        verify(template, times(4)).singleResult(any(DocumentQuery.class));
+        verify(template).find(Mockito.eq(Person.class), Mockito.eq(10L));
+        personRepository.findById(Arrays.asList(10L, 11L, 12L));
+        verify(template, times(4)).find(Mockito.eq(Person.class), any(Long.class));
     }
 
     @Test
