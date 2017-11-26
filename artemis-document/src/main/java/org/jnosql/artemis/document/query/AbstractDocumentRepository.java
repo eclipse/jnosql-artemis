@@ -88,12 +88,12 @@ public abstract class AbstractDocumentRepository<T, ID> implements Repository<T,
     public Optional<T> findById(ID id) throws NullPointerException {
         requireNonNull(id, "id is required");
 
-        String documentName = this.getIdField().getName();
-        DocumentQuery query = DocumentQueryBuilder.select()
-                .from(getClassRepresentation().getName())
-                .where((eq(Document.of(documentName, id))))
-                .build();
-        return getTemplate().singleResult(query);
+
+        return getTemplate().find(getEntityClass(), id);
+    }
+
+    private Class<T> getEntityClass() {
+        return (Class<T>) getClassRepresentation().getClassInstance();
     }
 
     @Override
