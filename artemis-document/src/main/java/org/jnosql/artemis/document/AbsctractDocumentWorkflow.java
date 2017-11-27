@@ -20,6 +20,9 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
+/**
+ * The template method to {@link DocumentWorkflow}
+ */
 public abstract class AbsctractDocumentWorkflow implements DocumentWorkflow {
 
     protected abstract DocumentEventPersistManager getColumnEventPersistManager();
