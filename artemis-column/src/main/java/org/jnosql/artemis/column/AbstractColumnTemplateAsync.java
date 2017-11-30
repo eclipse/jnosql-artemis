@@ -117,7 +117,7 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
 
     @Override
     public <T, ID> void find(Class<T> entityClass, ID id, Consumer<Optional<T>> callBack) throws
-            NullPointerException, IdNotFoundException{
+            NullPointerException, IdNotFoundException {
 
         requireNonNull(entityClass, "entityClass is required");
         requireNonNull(id, "id is required");
@@ -131,6 +131,40 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
                 .where(idField.getName()).eq(id).build();
 
         singleResult(query, callBack);
+    }
+
+    @Override
+    public <T, ID> void delete(Class<T> entityClass, ID id, Consumer<Void> callBack) throws
+            NullPointerException, IdNotFoundException {
+
+        requireNonNull(entityClass, "entityClass is required");
+        requireNonNull(id, "id is required");
+        requireNonNull(callBack, "callBack is required");
+
+        ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
+        FieldRepresentation idField = classRepresentation.getId()
+                .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
+
+        ColumnDeleteQuery query = ColumnQueryBuilder.delete().from(classRepresentation.getName())
+                .where(idField.getName()).eq(id).build();
+
+        delete(query, callBack);
+    }
+
+    @Override
+    public <T, ID> void delete(Class<T> entityClass, ID id) throws
+            NullPointerException, IdNotFoundException {
+        requireNonNull(entityClass, "entityClass is required");
+        requireNonNull(id, "id is required");
+
+        ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
+        FieldRepresentation idField = classRepresentation.getId()
+                .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
+
+        ColumnDeleteQuery query = ColumnQueryBuilder.delete().from(classRepresentation.getName())
+                .where(idField.getName()).eq(id).build();
+
+        delete(query);
     }
 }
 
