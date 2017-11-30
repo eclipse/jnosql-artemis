@@ -289,4 +289,17 @@ public class DefaultDocumentTemplateTest {
 
     }
 
+    @Test
+    public void shouldDeleteEntity() {
+        subject.delete(Person.class, "10");
+        ArgumentCaptor<DocumentDeleteQuery> queryCaptor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
+        verify(managerMock).delete(queryCaptor.capture());
+        DocumentDeleteQuery query = queryCaptor.getValue();
+        DocumentCondition condition = query.getCondition().get();
+
+        assertEquals("Person", query.getDocumentCollection());
+        assertEquals(DocumentCondition.eq(Document.of("_id", "10")), condition);
+
+    }
+
 }
