@@ -279,6 +279,21 @@ public class DefaultColumnTemplateTest {
 
         assertEquals("Person", query.getColumnFamily());
         assertEquals(ColumnCondition.eq(Column.of("_id", "10")), condition);
+    }
+
+    @Test
+    public void shouldDeleteEntity() {
+        subject.delete(Person.class, "10");
+        ArgumentCaptor<ColumnDeleteQuery> queryCaptor = ArgumentCaptor.forClass(ColumnDeleteQuery.class);
+        verify(managerMock).delete(queryCaptor.capture());
+
+        ColumnDeleteQuery query = queryCaptor.getValue();
+
+        ColumnCondition condition = query.getCondition().get();
+
+        assertEquals("Person", query.getColumnFamily());
+        assertEquals(ColumnCondition.eq(Column.of("_id", "10")), condition);
+
 
     }
 }
