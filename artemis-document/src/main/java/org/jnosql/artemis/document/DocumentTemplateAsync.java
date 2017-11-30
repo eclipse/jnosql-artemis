@@ -216,6 +216,35 @@ public interface DocumentTemplateAsync {
     <T, ID> void find(Class<T> entityClass, ID id, Consumer<Optional<T>> callBack) throws
             NullPointerException, IdNotFoundException;
 
+    /**
+     * Deletes by Id.
+     *
+     * @param entityClass the entity class
+     * @param id          the id value
+     * @param <T>         the entity class type
+     * @param <ID>        the id type
+     * @param callBack    the callBack
+     * @throws NullPointerException when either the entityClass or id are null
+     * @throws IdNotFoundException  when the entityClass does not have the Id annotation
+     */
+    <T, ID> void delete(Class<T> entityClass, ID id, Consumer<Void> callBack) throws
+            NullPointerException, IdNotFoundException;
+
+    /**
+     * Deletes by Id.
+     *
+     * @param entityClass the entity class
+     * @param id          the id value
+     * @param <T>         the entity class type
+     * @param <ID>        the id type
+     * @throws NullPointerException when either the entityClass or id are null
+     * @throws IdNotFoundException  when the entityClass does not have the Id annotation
+     */
+    <T, ID> void delete(Class<T> entityClass, ID id) throws
+            NullPointerException, IdNotFoundException;
+
+
+
 
     /**
      * Execute a query to consume an unique result
