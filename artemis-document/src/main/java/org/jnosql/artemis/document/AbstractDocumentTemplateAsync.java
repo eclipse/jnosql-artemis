@@ -144,7 +144,7 @@ public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateA
         requireNonNull(id, "id is required");
         requireNonNull(callBack, "callBack is required");
 
-        DocumentDeleteQuery query = getDocumentDeleteQuery(entityClass, id);
+        DocumentDeleteQuery query = getDeleteQuery(entityClass, id);
         delete(query, callBack);
     }
 
@@ -155,12 +155,12 @@ public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateA
         requireNonNull(entityClass, "entityClass is required");
         requireNonNull(id, "id is required");
 
-        DocumentDeleteQuery query = getDocumentDeleteQuery(entityClass, id);
+        DocumentDeleteQuery query = getDeleteQuery(entityClass, id);
 
         delete(query);
     }
 
-    private <T, ID> DocumentDeleteQuery getDocumentDeleteQuery(Class<T> entityClass, ID id) {
+    private <T, ID> DocumentDeleteQuery getDeleteQuery(Class<T> entityClass, ID id) {
         ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
         FieldRepresentation idField = classRepresentation.getId()
                 .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));

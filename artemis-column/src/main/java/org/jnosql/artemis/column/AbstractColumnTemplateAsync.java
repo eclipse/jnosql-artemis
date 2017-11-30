@@ -141,15 +141,11 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
         requireNonNull(id, "id is required");
         requireNonNull(callBack, "callBack is required");
 
-        ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
-        FieldRepresentation idField = classRepresentation.getId()
-                .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
-
-        ColumnDeleteQuery query = ColumnQueryBuilder.delete().from(classRepresentation.getName())
-                .where(idField.getName()).eq(id).build();
+        ColumnDeleteQuery query = getDeleteQuery(entityClass, id);
 
         delete(query, callBack);
     }
+
 
     @Override
     public <T, ID> void delete(Class<T> entityClass, ID id) throws
@@ -157,14 +153,18 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
         requireNonNull(entityClass, "entityClass is required");
         requireNonNull(id, "id is required");
 
+        ColumnDeleteQuery query = getDeleteQuery(entityClass, id);
+
+        delete(query);
+    }
+
+    private <T, ID> ColumnDeleteQuery getDeleteQuery(Class<T> entityClass, ID id) {
         ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
         FieldRepresentation idField = classRepresentation.getId()
                 .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
 
-        ColumnDeleteQuery query = ColumnQueryBuilder.delete().from(classRepresentation.getName())
+        return ColumnQueryBuilder.delete().from(classRepresentation.getName())
                 .where(idField.getName()).eq(id).build();
-
-        delete(query);
     }
 }
 
