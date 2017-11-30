@@ -19,8 +19,6 @@ import org.jnosql.artemis.document.DocumentTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.FieldRepresentation;
 import org.jnosql.artemis.reflection.Reflections;
-import org.jnosql.diana.api.document.Document;
-import org.jnosql.diana.api.document.DocumentDeleteQuery;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -34,8 +32,6 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.StreamSupport.stream;
 import static org.jnosql.artemis.IdNotFoundException.KEY_NOT_FOUND_EXCEPTION_SUPPLIER;
-import static org.jnosql.diana.api.document.DocumentCondition.eq;
-import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
 
 /**
  * The {@link Repository} template method
@@ -109,7 +105,7 @@ public abstract class AbstractDocumentRepository<T, ID> implements Repository<T,
     public boolean existsById(ID id) throws NullPointerException {
         return findById(id).isPresent();
     }
-    
+
     private Class<T> getEntityClass() {
         return (Class<T>) getClassRepresentation().getClassInstance();
     }
