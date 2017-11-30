@@ -110,4 +110,20 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
 
         return singleResult(query);
     }
+
+    @Override
+    public <T, ID> void delete(Class<T> entityClass, ID id) throws NullPointerException, IdNotFoundException{
+        requireNonNull(entityClass, "entityClass is required");
+        requireNonNull(id, "id is required");
+
+        ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
+        FieldRepresentation idField = classRepresentation.getId()
+                .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
+
+        DocumentDeleteQuery query = DocumentQueryBuilder.delete().from(classRepresentation.getName())
+                .where(idField.getName()).eq(id).build();
+        
+        delete(query);
+    }
+
 }
