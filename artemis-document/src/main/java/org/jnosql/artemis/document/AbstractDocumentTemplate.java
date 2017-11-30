@@ -122,7 +122,7 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
 
         DocumentDeleteQuery query = DocumentQueryBuilder.delete().from(classRepresentation.getName())
                 .where(idField.getName()).eq(id).build();
-        
+
         delete(query);
     }
 

@@ -69,11 +69,7 @@ public abstract class AbstractDocumentRepository<T, ID> implements Repository<T,
     @Override
     public void deleteById(ID id) throws NullPointerException {
         requireNonNull(id, "is is required");
-
-        String documentName = this.getIdField().getName();
-        DocumentDeleteQuery query = delete().from(getClassRepresentation().getName())
-                .where(eq(Document.of(documentName, id))).build();
-        getTemplate().delete(query);
+        getTemplate().delete(getEntityClass(), id);
     }
 
     @Override
@@ -109,13 +105,12 @@ public abstract class AbstractDocumentRepository<T, ID> implements Repository<T,
         };
     }
 
-    private Class<T> getEntityClass() {
-        return (Class<T>) getClassRepresentation().getClassInstance();
-    }
-
     @Override
     public boolean existsById(ID id) throws NullPointerException {
         return findById(id).isPresent();
     }
-
+    
+    private Class<T> getEntityClass() {
+        return (Class<T>) getClassRepresentation().getClassInstance();
+    }
 }
