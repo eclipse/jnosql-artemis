@@ -145,6 +145,18 @@ public interface DocumentTemplate {
     <T, ID> Optional<T> find(Class<T> entityClass, ID id) throws NullPointerException, IdNotFoundException;
 
     /**
+     * Deletes by Id.
+     *
+     * @param entityClass the entity class
+     * @param id          the id value
+     * @param <T>         the entity class type
+     * @param <ID>        the id type
+     * @throws NullPointerException when either the entityClass or id are null
+     * @throws IdNotFoundException  when the entityClass does not have the Id annotation
+     */
+    <T, ID> void delete(Class<T> entityClass, ID id) throws NullPointerException, IdNotFoundException;
+
+    /**
      * Returns a single entity from query
      *
      * @param query - query to figure out entities
