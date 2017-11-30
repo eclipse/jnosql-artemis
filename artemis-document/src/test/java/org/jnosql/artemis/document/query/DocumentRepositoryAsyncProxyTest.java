@@ -297,14 +297,8 @@ public class DocumentRepositoryAsyncProxyTest {
 
     @Test
     public void shouldDeleteById() {
-        ArgumentCaptor<DocumentDeleteQuery> captor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
         personRepository.deleteById(10L);
-        verify(template).delete(captor.capture());
-
-        DocumentDeleteQuery query = captor.getValue();
-
-        assertEquals("Person", query.getDocumentCollection());
-        assertEquals(eq(Document.of("_id", 10L)), query.getCondition().get());
+        verify(template).delete(Person.class, 10L);
     }
 
 
