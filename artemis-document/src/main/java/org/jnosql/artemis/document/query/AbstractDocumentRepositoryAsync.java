@@ -21,8 +21,6 @@ import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.FieldRepresentation;
 import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
-import org.jnosql.diana.api.document.Document;
-import org.jnosql.diana.api.document.DocumentDeleteQuery;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -31,8 +29,6 @@ import java.util.function.Consumer;
 import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 import static org.jnosql.artemis.IdNotFoundException.KEY_NOT_FOUND_EXCEPTION_SUPPLIER;
-import static org.jnosql.diana.api.document.DocumentCondition.eq;
-import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
 
 /**
  * The {@link RepositoryAsync} template method
@@ -76,14 +72,7 @@ public abstract class AbstractDocumentRepositoryAsync<T, ID> implements Reposito
     @Override
     public void deleteById(ID id) throws NullPointerException {
         requireNonNull(id, "is is required");
-
-        String documentName = this.getIdField().getName();
-
-        DocumentDeleteQuery query = delete().from(getClassRepresentation().getName())
-                .where(eq(Document.of(documentName, id)))
-                .build();
-
-        getTemplate().delete(query);
+        getTemplate().delete(getEntityClass(), id);
     }
 
 
