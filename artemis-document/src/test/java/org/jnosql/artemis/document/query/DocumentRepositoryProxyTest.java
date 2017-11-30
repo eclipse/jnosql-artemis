@@ -303,29 +303,18 @@ public class DocumentRepositoryProxyTest {
 
     @Test
     public void shouldDeleteById() {
-        ArgumentCaptor<DocumentDeleteQuery> captor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
         personRepository.deleteById(10L);
-        verify(template).delete(captor.capture());
+        verify(template).delete(Person.class, 10L);
 
-        DocumentDeleteQuery query = captor.getValue();
-
-        assertEquals("Person", query.getDocumentCollection());
-        assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), query.getCondition().get());
     }
 
     @Test
     public void shouldDeleteByIds() {
-        ArgumentCaptor<DocumentDeleteQuery> captor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
         personRepository.deleteById(singletonList(10L));
-        verify(template).delete(captor.capture());
-
-        DocumentDeleteQuery query = captor.getValue();
-
-        assertEquals("Person", query.getDocumentCollection());
-        assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), query.getCondition().get());
+        verify(template).delete(Person.class, 10L);
 
         personRepository.deleteById(asList(1L, 2L, 3L));
-        verify(template, times(4)).delete(any(DocumentDeleteQuery.class));
+        verify(template, times(4)).delete(Mockito.eq(Person.class), any(Long.class));
     }
 
 
