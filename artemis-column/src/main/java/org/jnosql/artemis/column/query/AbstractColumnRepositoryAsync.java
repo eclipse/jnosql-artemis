@@ -21,8 +21,6 @@ import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.FieldRepresentation;
 import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.ExecuteAsyncQueryException;
-import org.jnosql.diana.api.column.Column;
-import org.jnosql.diana.api.column.ColumnDeleteQuery;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -30,8 +28,6 @@ import java.util.function.Consumer;
 import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 import static org.jnosql.artemis.IdNotFoundException.KEY_NOT_FOUND_EXCEPTION_SUPPLIER;
-import static org.jnosql.diana.api.column.ColumnCondition.eq;
-import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
 
 /**
  * The template method to {@link RepositoryAsync}
@@ -76,12 +72,7 @@ public abstract class AbstractColumnRepositoryAsync<T, ID> implements Repository
     @Override
     public void deleteById(ID id) throws NullPointerException {
         requireNonNull(id, "is is required");
-
-        String columnName = this.getIdField().getName();
-
-        ColumnDeleteQuery query = delete().from(getClassRepresentation().getName())
-                .where(eq(Column.of(columnName, id))).build();
-        getTemplate().delete(query);
+        getTemplate().delete(getEntityClass(), id);
     }
 
 
