@@ -294,14 +294,8 @@ public class ColumnRepositoryAsyncProxyTest {
 
     @Test
     public void shouldDeleteById() {
-        ArgumentCaptor<ColumnDeleteQuery> captor = ArgumentCaptor.forClass(ColumnDeleteQuery.class);
         personRepository.deleteById(10L);
-        verify(template).delete(captor.capture());
-
-        ColumnDeleteQuery query = captor.getValue();
-
-        assertEquals("Person", query.getColumnFamily());
-        assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), query.getCondition().get());
+        verify(template).delete(Person.class, 10L);
     }
 
 
