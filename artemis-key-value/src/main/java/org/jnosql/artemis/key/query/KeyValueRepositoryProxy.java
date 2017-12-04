@@ -23,6 +23,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -35,8 +36,8 @@ class KeyValueRepositoryProxy<T> implements InvocationHandler {
 
    static{
        METHODS = new ArrayList<>();
-       Stream.of(Object.class.getMethods()).forEach(METHODS::add);
-       Stream.of(Repository.class.getMethods()).forEach(METHODS::add);
+       METHODS.addAll(Arrays.asList(Object.class.getMethods()));
+       METHODS.addAll(Arrays.asList(Repository.class.getMethods()));
    }
 
     KeyValueRepositoryProxy(Class<?> repositoryType, KeyValueTemplate repository) {
