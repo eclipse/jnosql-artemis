@@ -28,7 +28,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -40,7 +39,6 @@ import java.util.stream.Stream;
 
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.longThat;
 import static org.mockito.Mockito.verify;
 
 @RunWith(CDIJUnitRunner.class)

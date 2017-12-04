@@ -35,7 +35,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Artemis discoveryBean to CDI extension to register {@link Repository}
+ * Artemis discoveryBean to CDI extension to register {@link org.jnosql.artemis.Repository}
  */
 public class RepositoryDocumentBean implements Bean<Repository>, PassivationCapable {
 

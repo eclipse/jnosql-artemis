@@ -30,7 +30,7 @@ import static org.jnosql.artemis.document.query.ReturnTypeConverterUtil.returnOb
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
 
 /**
- * The template method to {@link Repository} to Document
+ * The template method to {@link org.jnosql.artemis.Repository} to Document
  *
  * @param <T> the class type
  */

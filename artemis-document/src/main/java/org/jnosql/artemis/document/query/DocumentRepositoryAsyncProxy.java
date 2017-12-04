@@ -24,7 +24,7 @@ import org.jnosql.artemis.reflection.Reflections;
 import java.lang.reflect.ParameterizedType;
 
 /**
- * Proxy handle to generate {@link RepositoryAsync}
+ * Proxy handle to generate {@link org.jnosql.artemis.RepositoryAsync}
  *
  * @param <T> the type
  */

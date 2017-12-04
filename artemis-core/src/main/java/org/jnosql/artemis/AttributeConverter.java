@@ -14,12 +14,11 @@
  */
 package org.jnosql.artemis;
 
-
 /**
  * A class that implements this interface can be used to convert entity attribute state into database column
  * representation and back again. Note that the X and Y types may be the same Java type.
- * <X> the type of the entity attribute
- * <Y> the type of the database column
+ * @param <X> the type of the entity attribute
+ * @param <Y> the type of the database column
  */
 public interface AttributeConverter<X, Y> {
 

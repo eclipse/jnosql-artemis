@@ -31,7 +31,7 @@ import static org.jnosql.artemis.document.query.DocumentRepositoryType.getQuery;
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
 
 /**
- * The template method to {@link RepositoryAsync} to Document
+ * The template method to {@link org.jnosql.artemis.RepositoryAsync} to Document
  *
  * @param <T> the class type
  */

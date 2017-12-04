@@ -31,7 +31,7 @@ import static java.util.Objects.requireNonNull;
 import static org.jnosql.artemis.IdNotFoundException.KEY_NOT_FOUND_EXCEPTION_SUPPLIER;
 
 /**
- * The {@link RepositoryAsync} template method
+ * The {@link org.jnosql.artemis.RepositoryAsync} template method
  */
 public abstract class AbstractDocumentRepositoryAsync<T, ID> implements RepositoryAsync<T, ID> {
 
