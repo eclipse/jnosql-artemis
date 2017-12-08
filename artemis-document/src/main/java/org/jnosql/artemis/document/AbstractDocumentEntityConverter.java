@@ -19,6 +19,7 @@ import org.jnosql.artemis.document.DocumentFieldConverters.DocumentFieldConverte
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.FieldType;
 import org.jnosql.artemis.reflection.FieldValue;
 import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.document.Document;
@@ -34,11 +35,12 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 import static org.jnosql.artemis.reflection.FieldType.EMBEDDED;
+import static org.jnosql.artemis.reflection.FieldType.SUBENTITY;
 
 /**
  * Template method to {@link DocumentEntityConverter}
  */
-public abstract class AbstractDocumentEntityConverter  implements DocumentEntityConverter {
+public abstract class AbstractDocumentEntityConverter implements DocumentEntityConverter {
 
     protected abstract ClassRepresentations getClassRepresentations();
 
@@ -72,7 +74,7 @@ public abstract class AbstractDocumentEntityConverter  implements DocumentEntity
 
     }
 
-    protected  <T> T toEntity(Class<T> entityClass, List<Document> documents) {
+    protected <T> T toEntity(Class<T> entityClass, List<Document> documents) {
         ClassRepresentation representation = getClassRepresentations().get(entityClass);
         T instance = getReflections().newInstance(representation.getConstructor());
         return convertEntity(documents, representation, instance);
@@ -89,13 +91,16 @@ public abstract class AbstractDocumentEntityConverter  implements DocumentEntity
     }
 
     private <T> T convertEntity(List<Document> documents, ClassRepresentation representation, T instance) {
-        Map<String, FieldRepresentation> fieldsGroupByName = representation.getFieldsGroupByName();
-
-        List<String> names = documents.stream().map(Document::getName).sorted().collect(Collectors.toList());
-        Predicate<String> existField = k -> Collections.binarySearch(names, k) >= 0;
+        final Map<String, FieldRepresentation> fieldsGroupByName = representation.getFieldsGroupByName();
+        final List<String> names = documents.stream().map(Document::getName).sorted().collect(Collectors.toList());
+        final Predicate<String> existField = k -> Collections.binarySearch(names, k) >= 0;
+        final Predicate<String> isElementType = k -> {
+            FieldType type = fieldsGroupByName.get(k).getType();
+            return EMBEDDED.equals(type) || SUBENTITY.equals(type);
+        };
 
         fieldsGroupByName.keySet().stream()
-                .filter(existField.or(k -> EMBEDDED.equals(fieldsGroupByName.get(k).getType())))
+                .filter(existField.or(isElementType))
                 .forEach(feedObject(instance, documents, fieldsGroupByName));
 
         return instance;
@@ -116,7 +121,6 @@ public abstract class AbstractDocumentEntityConverter  implements DocumentEntity
         Object value = getReflections().getValue(entityInstance, field.getNativeField());
         return DefaultDocumentFieldValue.of(value, field);
     }
-
 
 
 }
