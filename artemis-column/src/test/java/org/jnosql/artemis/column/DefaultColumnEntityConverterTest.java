@@ -17,6 +17,7 @@ package org.jnosql.artemis.column;
 import org.hamcrest.Matchers;
 import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.model.Actor;
+import org.jnosql.artemis.model.Address;
 import org.jnosql.artemis.model.AppointmentBook;
 import org.jnosql.artemis.model.Contact;
 import org.jnosql.artemis.model.ContactType;
@@ -26,6 +27,7 @@ import org.jnosql.artemis.model.Money;
 import org.jnosql.artemis.model.Movie;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.model.Worker;
+import org.jnosql.artemis.model.Zipcode;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.TypeReference;
 import org.jnosql.diana.api.Value;
@@ -264,7 +266,7 @@ public class DefaultColumnEntityConverterTest {
         worker.setJob(job);
         ColumnEntity entity = converter.toColumn(worker);
         Worker worker1 = converter.toEntity(entity);
-        Assert.assertEquals(worker.getSalary(), worker1.getSalary());
+        assertEquals(worker.getSalary(), worker1.getSalary());
         assertEquals(job.getCity(), worker1.getJob().getCity());
         assertEquals(job.getDescription(), worker1.getJob().getDescription());
     }
@@ -310,6 +312,30 @@ public class DefaultColumnEntityConverterTest {
         assertEquals("ids", appointmentBook.getId());
         assertEquals("Ada", contacts.stream().map(Contact::getName).distinct().findFirst().get());
 
+    }
+
+
+    @Test
+    public void shouldConvertSubEntity() {
+        Zipcode zipcode = new Zipcode();
+        zipcode.setZip("12321");
+        zipcode.setPlusFour("1234");
+        Address address = new Address();
+        address.setCity("Salvador");
+        address.setState("Bahia");
+        address.setStreet("Rua Engenheiro Jose Anasoh");
+        address.setZipcode(zipcode);
+
+        ColumnEntity columnEntity = converter.toColumn(address);
+        List<Column> columns = columnEntity.getColumns();
+        assertEquals("Address", columnEntity.getName());
+        assertEquals(5, columns.size());
+
+        assertEquals("", getValue(columnEntity.find("street")));
+        assertEquals("", getValue(columnEntity.find("city")));
+        assertEquals("", getValue(columnEntity.find("state")));
+        assertEquals("", getValue(columnEntity.find("zip")));
+        assertEquals("", getValue(columnEntity.find("plusFour")));
     }
 
     private Object getValue(Optional<Column> document) {
