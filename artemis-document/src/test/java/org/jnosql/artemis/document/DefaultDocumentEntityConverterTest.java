@@ -17,6 +17,7 @@ package org.jnosql.artemis.document;
 import org.hamcrest.Matchers;
 import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.model.Actor;
+import org.jnosql.artemis.model.Address;
 import org.jnosql.artemis.model.AppointmentBook;
 import org.jnosql.artemis.model.Contact;
 import org.jnosql.artemis.model.ContactType;
@@ -26,6 +27,7 @@ import org.jnosql.artemis.model.Money;
 import org.jnosql.artemis.model.Movie;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.model.Worker;
+import org.jnosql.artemis.model.Zipcode;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.TypeReference;
 import org.jnosql.diana.api.Value;
@@ -171,7 +173,7 @@ public class DefaultDocumentEntityConverterTest {
 
 
     @Test
-    public void shouldConvertToEmbeddedClassWhenHasSubColumn() {
+    public void shouldConvertToEmbeddedClassWhenHasSubDocument() {
         Movie movie = new Movie("Matrix", 2012, singleton("Actor"));
         Director director = Director.builderDiretor().withAge(12)
                 .withId(12)
@@ -189,7 +191,7 @@ public class DefaultDocumentEntityConverterTest {
 
 
     @Test
-    public void shouldConvertToEmbeddedClassWhenHasSubColumn2() {
+    public void shouldConvertToEmbeddedClassWhenHasSubDocument2() {
         Movie movie = new Movie("Matrix", 2012, singleton("Actor"));
         Director director = Director.builderDiretor().withAge(12)
                 .withId(12)
@@ -211,7 +213,7 @@ public class DefaultDocumentEntityConverterTest {
 
 
     @Test
-    public void shouldConvertToEmbeddedClassWhenHasSubColumn3() {
+    public void shouldConvertToEmbeddedClassWhenHasSubDocument3() {
         Movie movie = new Movie("Matrix", 2012, singleton("Actor"));
         Director director = Director.builderDiretor().withAge(12)
                 .withId(12)
@@ -309,6 +311,52 @@ public class DefaultDocumentEntityConverterTest {
         List<Contact> contacts = appointmentBook.getContacts();
         assertEquals("ids", appointmentBook.getId());
         assertEquals("Ada", contacts.stream().map(Contact::getName).distinct().findFirst().get());
+
+    }
+
+
+    @Test
+    public void shouldConvertSubEntity() {
+        Zipcode zipcode = new Zipcode();
+        zipcode.setZip("12321");
+        zipcode.setPlusFour("1234");
+
+        Address address = new Address();
+        address.setCity("Salvador");
+        address.setState("Bahia");
+        address.setStreet("Rua Engenheiro Jose Anasoh");
+        address.setZipcode(zipcode);
+
+        DocumentEntity documentEntity = converter.toDocument(address);
+        List<Document> documents = documentEntity.getDocuments();
+        assertEquals("Address", documentEntity.getName());
+        assertEquals(5, documents.size());
+
+        assertEquals("Rua Engenheiro Jose Anasoh", getValue(documentEntity.find("street")));
+        assertEquals("Salvador", getValue(documentEntity.find("city")));
+        assertEquals("Bahia", getValue(documentEntity.find("state")));
+        assertEquals("12321", getValue(documentEntity.find("zip")));
+        assertEquals("1234", getValue(documentEntity.find("plusFour")));
+    }
+
+    @Test
+    public void shouldConvertDocumentInSubEntity() {
+
+        DocumentEntity entity = DocumentEntity.of("Address");
+
+        entity.add(Document.of("street", "Rua Engenheiro Jose Anasoh"));
+        entity.add(Document.of("city", "Salvador"));
+        entity.add(Document.of("state", "Bahia"));
+        entity.add(Document.of("zip", "12321"));
+        entity.add(Document.of("plusFour", "1234"));
+
+        Address address = converter.toEntity(entity);
+
+        assertEquals("Rua Engenheiro Jose Anasoh", address.getStreet());
+        assertEquals("Salvador", address.getCity());
+        assertEquals("Bahia", address.getState());
+        assertEquals("12321", address.getZipcode().getZip());
+        assertEquals("1234",  address.getZipcode().getPlusFour());
 
     }
 
