@@ -15,21 +15,18 @@
 package org.jnosql.artemis.key.query;
 
 
-import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.key.KeyValueTemplate;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
-class KeyValueRepositoryProxy<T> implements InvocationHandler {
+class KeyValueRepositoryProxy<T> extends AbstractKeyValueRepositoryProxy {
 
-    private final DefaultKeyValueRepository crudRepository;
+    private final DefaultKeyValueRepository repository;
 
     private static final List<Method> METHODS;
 
@@ -39,67 +36,18 @@ class KeyValueRepositoryProxy<T> implements InvocationHandler {
        METHODS.addAll(Arrays.asList(Repository.class.getMethods()));
    }
 
-    KeyValueRepositoryProxy(Class<?> repositoryType, KeyValueTemplate repository) {
+    KeyValueRepositoryProxy(Class<?> repositoryType, KeyValueTemplate template) {
+       super(Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
+               .getActualTypeArguments()[0]), template);
         Class<T> typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
-        this.crudRepository = new DefaultKeyValueRepository(typeClass, repository);
+        this.repository = new DefaultKeyValueRepository(typeClass, template);
     }
 
     @Override
-    public Object invoke(Object o, Method method, Object[] args) throws Throwable {
-
-       if(METHODS.stream().anyMatch(method::equals)) {
-           return method.invoke(crudRepository, args);
-       } else {
-           throw new DynamicQueryException("Key Value repository does not support query method");
-       }
+    protected Repository getRepository() {
+        return repository;
     }
 
-    class DefaultKeyValueRepository implements Repository {
 
-        private final Class<T> typeClass;
-
-        private final KeyValueTemplate repository;
-
-        public DefaultKeyValueRepository(Class<T> typeClass, KeyValueTemplate repository) {
-            this.typeClass = typeClass;
-            this.repository = repository;
-        }
-
-
-        @Override
-        public Object save(Object entity) throws NullPointerException {
-            return repository.put(entity);
-        }
-
-        @Override
-        public Iterable save(Iterable entities) throws NullPointerException {
-            return repository.put(entities);
-        }
-
-        @Override
-        public void deleteById(Object key) throws NullPointerException {
-            repository.remove(key);
-        }
-
-        @Override
-        public void deleteById(Iterable ids) throws NullPointerException {
-            repository.remove(ids);
-        }
-
-        @Override
-        public Optional findById(Object key) throws NullPointerException {
-            return repository.get(key, typeClass);
-        }
-
-        @Override
-        public Iterable findById(Iterable keys) throws NullPointerException {
-            return repository.get(keys, typeClass);
-        }
-
-        @Override
-        public boolean existsById(Object key) throws NullPointerException {
-            return repository.get(key, typeClass).isPresent();
-        }
-    }
 }
