@@ -16,6 +16,7 @@ package org.jnosql.artemis.reflection;
 
 import org.jnosql.artemis.Embeddable;
 import org.jnosql.artemis.Entity;
+import org.jnosql.artemis.Subentity;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
@@ -48,6 +49,9 @@ public enum FieldType {
         if (field.getType().isAnnotationPresent(Embeddable.class) ||
                 field.getType().isAnnotationPresent(Entity.class)) {
             return EMBEDDED;
+        }
+        if (field.getType().isAnnotationPresent(Subentity.class)) {
+            return SUBENTITY;
         }
 
         return DEFAULT;
