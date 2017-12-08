@@ -18,12 +18,14 @@ import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.reflection.FieldValue;
 import org.jnosql.diana.api.column.Column;
 
+import java.util.List;
+
 /**
  * The specialist {@link FieldValue} to column
  */
 public interface ColumnFieldValue extends FieldValue {
 
 
-    Column toColumn(ColumnEntityConverter converter, Converters converters);
+    List<Column> toColumn(ColumnEntityConverter converter, Converters converters);
 
 }
