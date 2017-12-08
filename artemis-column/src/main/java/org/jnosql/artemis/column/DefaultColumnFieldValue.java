@@ -24,13 +24,13 @@ import org.jnosql.diana.api.column.Column;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static java.util.Collections.singletonList;
 import static org.jnosql.artemis.reflection.FieldType.COLLECTION;
 import static org.jnosql.artemis.reflection.FieldType.EMBEDDED;
+import static org.jnosql.artemis.reflection.FieldType.SUBENTITY;
 
 class DefaultColumnFieldValue implements ColumnFieldValue {
 
@@ -59,6 +59,8 @@ class DefaultColumnFieldValue implements ColumnFieldValue {
 
         if (EMBEDDED.equals(getType())) {
             return singletonList(Column.of(getName(), converter.toColumn(getValue()).getColumns()));
+        } else if (SUBENTITY.equals(getType())) {
+            return converter.toColumn(getValue()).getColumns();
         } else if (isEmbeddableCollection()) {
             return singletonList(Column.of(getName(), getColumns(converter)));
         }

@@ -64,6 +64,7 @@ public abstract class AbstractColumnEntityConverter implements ColumnEntityConve
                 .map(f -> to(f, entityInstance))
                 .filter(FieldValue::isNotEmpty)
                 .map(f -> f.toColumn(this, getConverters()))
+                .flatMap(List::stream)
                 .forEach(entity::add);
         return entity;
     }
