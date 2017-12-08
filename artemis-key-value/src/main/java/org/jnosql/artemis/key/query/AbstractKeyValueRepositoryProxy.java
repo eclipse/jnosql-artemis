@@ -16,11 +16,9 @@ package org.jnosql.artemis.key.query;
 
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.Repository;
-import org.jnosql.artemis.key.KeyValueTemplate;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,10 +34,6 @@ public abstract class AbstractKeyValueRepositoryProxy<T> implements InvocationHa
         METHODS.addAll(Arrays.asList(Repository.class.getMethods()));
     }
 
-    AbstractKeyValueRepositoryProxy(Class<?> repositoryType, KeyValueTemplate repository) {
-        Class<T> typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
-                .getActualTypeArguments()[0]);
-    }
 
     protected abstract Repository getRepository();
 
