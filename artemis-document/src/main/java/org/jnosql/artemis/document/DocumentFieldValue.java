@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Collections.singletonList;
 import static org.jnosql.artemis.reflection.FieldType.COLLECTION;
 
 /**
@@ -50,22 +51,22 @@ class DocumentFieldValue implements FieldValue {
     }
 
 
-    public Document toDocument(DocumentEntityConverter converter, Converters converters) {
+    public List<Document> toDocument(DocumentEntityConverter converter, Converters converters) {
         if (FieldType.EMBEDDED.equals(getType())) {
-            return Document.of(getName(), converter.toDocument(getValue()).getDocuments());
+            return singletonList(Document.of(getName(), converter.toDocument(getValue()).getDocuments()));
         } else if (COLLECTION.equals(getType()) && isEmbeddableElement()) {
             List<List<Document>> documents = new ArrayList<>();
             for (Object element : Iterable.class.cast(getValue())) {
                 documents.add(converter.toDocument(element).getDocuments());
             }
-            return Document.of(getName(), documents);
+            return singletonList(Document.of(getName(), documents));
         }
         Optional<Class<? extends AttributeConverter>> optionalConverter = getField().getConverter();
         if (optionalConverter.isPresent()) {
             AttributeConverter attributeConverter = converters.get(optionalConverter.get());
-            return Document.of(getName(), attributeConverter.convertToDatabaseColumn(getValue()));
+            return singletonList(Document.of(getName(), attributeConverter.convertToDatabaseColumn(getValue())));
         }
-        return Document.of(getName(), getValue());
+        return singletonList(Document.of(getName(), getValue()));
     }
 
     @Override

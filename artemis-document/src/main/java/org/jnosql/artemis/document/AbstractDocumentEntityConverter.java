@@ -64,6 +64,7 @@ public abstract class AbstractDocumentEntityConverter  implements DocumentEntity
                 .map(f -> to(f, entityInstance))
                 .filter(FieldValue::isNotEmpty)
                 .map(f -> f.toDocument(this, getConverters()))
+                .flatMap(List::stream)
                 .forEach(entity::add);
         return entity;
 
