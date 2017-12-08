@@ -24,9 +24,11 @@ import org.jnosql.diana.api.column.Column;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Collections.singletonList;
 import static org.jnosql.artemis.reflection.FieldType.COLLECTION;
 import static org.jnosql.artemis.reflection.FieldType.EMBEDDED;
 
@@ -53,20 +55,20 @@ class DefaultColumnFieldValue implements ColumnFieldValue {
         return fieldValue.isNotEmpty();
     }
 
-    public Column toColumn(ColumnEntityConverter converter, Converters converters) {
+    public List<Column> toColumn(ColumnEntityConverter converter, Converters converters) {
 
         if (EMBEDDED.equals(getType())) {
-            return Column.of(getName(), converter.toColumn(getValue()).getColumns());
+            return singletonList(Column.of(getName(), converter.toColumn(getValue()).getColumns()));
         } else if (isEmbeddableCollection()) {
-            return Column.of(getName(), getColumns(converter));
+            return singletonList(Column.of(getName(), getColumns(converter)));
         }
         Optional<Class<? extends AttributeConverter>> optionalConverter = getField().getConverter();
         if (optionalConverter.isPresent()) {
             AttributeConverter attributeConverter = converters.get(optionalConverter.get());
-            return Column.of(getName(), attributeConverter.convertToDatabaseColumn(getValue()));
+            return singletonList(Column.of(getName(), attributeConverter.convertToDatabaseColumn(getValue())));
         }
 
-        return Column.of(getName(), getValue());
+        return singletonList(Column.of(getName(), getValue()));
     }
 
     private List<List<Column>> getColumns(ColumnEntityConverter converter) {
