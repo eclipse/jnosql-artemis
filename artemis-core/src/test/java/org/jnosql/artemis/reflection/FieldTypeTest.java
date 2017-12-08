@@ -15,6 +15,7 @@
 package org.jnosql.artemis.reflection;
 
 import org.jnosql.artemis.model.Actor;
+import org.jnosql.artemis.model.Address;
 import org.jnosql.artemis.model.Director;
 import org.jnosql.artemis.model.Movie;
 import org.jnosql.artemis.model.Person;
@@ -64,6 +65,12 @@ public class FieldTypeTest {
     public void shouldReturnEmbedded() throws NoSuchFieldException{
         Field field = Worker.class.getDeclaredField("job");
         Assert.assertEquals(FieldType.EMBEDDED, FieldType.of(field));
+    }
+
+    @Test
+    public void shouldReturnSubEntity() throws NoSuchFieldException{
+        Field field = Address.class.getDeclaredField("zipcode");
+        Assert.assertEquals(FieldType.SUBENTITY, FieldType.of(field));
     }
 
 }
