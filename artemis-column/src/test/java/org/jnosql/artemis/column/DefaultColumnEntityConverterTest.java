@@ -331,11 +331,11 @@ public class DefaultColumnEntityConverterTest {
         assertEquals("Address", columnEntity.getName());
         assertEquals(5, columns.size());
 
-        assertEquals("", getValue(columnEntity.find("street")));
-        assertEquals("", getValue(columnEntity.find("city")));
-        assertEquals("", getValue(columnEntity.find("state")));
-        assertEquals("", getValue(columnEntity.find("zip")));
-        assertEquals("", getValue(columnEntity.find("plusFour")));
+        assertEquals("Rua Engenheiro Jose Anasoh", getValue(columnEntity.find("street")));
+        assertEquals("Salvador", getValue(columnEntity.find("city")));
+        assertEquals("Bahia", getValue(columnEntity.find("state")));
+        assertEquals("12321", getValue(columnEntity.find("zip")));
+        assertEquals("1234", getValue(columnEntity.find("plusFour")));
     }
 
     private Object getValue(Optional<Column> document) {
