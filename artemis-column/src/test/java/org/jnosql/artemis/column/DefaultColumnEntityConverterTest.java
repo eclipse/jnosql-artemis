@@ -339,6 +339,26 @@ public class DefaultColumnEntityConverterTest {
         assertEquals("1234", getValue(columnEntity.find("plusFour")));
     }
 
+    @Test
+    public void shouldConvertColumnInSubEntity() {
+
+        ColumnEntity entity = ColumnEntity.of("Address");
+
+        entity.add(Column.of("street", "Rua Engenheiro Jose Anasoh"));
+        entity.add(Column.of("city", "Salvador"));
+        entity.add(Column.of("state", "Bahia"));
+        entity.add(Column.of("zip", "12321"));
+        entity.add(Column.of("plusFour", "1234"));
+
+        Address address = converter.toEntity(entity);
+
+        assertEquals("Rua Engenheiro Jose Anasoh", address.getStreet());
+        assertEquals("Salvador", address.getCity());
+        assertEquals("Bahia", address.getState());
+        assertEquals("12321", address.getZipcode().getZip());
+        assertEquals("1234",  address.getZipcode().getPlusFour());
+
+    }
     private Object getValue(Optional<Column> document) {
         return document.map(Column::getValue).map(Value::get).orElse(null);
     }
