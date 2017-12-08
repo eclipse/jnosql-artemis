@@ -17,6 +17,7 @@ package org.jnosql.artemis.reflection;
 
 import org.jnosql.artemis.Embeddable;
 import org.jnosql.artemis.Entity;
+import org.jnosql.artemis.Subentity;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
@@ -52,19 +53,24 @@ public class ClassRepresentationsExtension implements Extension {
      */
     public <T> void initializePropertyLoading(final @Observes ProcessAnnotatedType<T> target) {
 
-        AnnotatedType<T> at = target.getAnnotatedType();
-        if (at.isAnnotationPresent(Entity.class)) {
+        AnnotatedType<T> annotatedType = target.getAnnotatedType();
+        if (annotatedType.isAnnotationPresent(Entity.class)) {
             Class<T> javaClass = target.getAnnotatedType().getJavaClass();
             LOGGER.info("scanning type: " + javaClass.getName());
             ClassRepresentation classRepresentation = classConverter.create(javaClass);
             representations.put(classRepresentation.getName(), classRepresentation);
             classes.put(javaClass, classRepresentation);
-        } else if (at.isAnnotationPresent(Embeddable.class)) {
+        } else if (isSubElement(annotatedType)) {
             Class<T> javaClass = target.getAnnotatedType().getJavaClass();
             ClassRepresentation classRepresentation = classConverter.create(javaClass);
             classes.put(javaClass, classRepresentation);
         }
 
+    }
+
+    private <T> boolean isSubElement(AnnotatedType<T> annotatedType) {
+        return annotatedType.isAnnotationPresent(Embeddable.class) ||
+                annotatedType.isAnnotationPresent(Subentity.class);
     }
 
 
