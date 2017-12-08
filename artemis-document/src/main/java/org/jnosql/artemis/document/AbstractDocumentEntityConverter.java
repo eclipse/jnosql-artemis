@@ -120,7 +120,7 @@ public abstract class AbstractDocumentEntityConverter  implements DocumentEntity
 
     private DocumentFieldValue to(FieldRepresentation field, Object entityInstance) {
         Object value = getReflections().getValue(entityInstance, field.getNativeField());
-        return DocumentFieldValue.of(value, field);
+        return DefaultDocumentFieldValue.of(value, field);
     }
 
 

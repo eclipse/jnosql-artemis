@@ -28,6 +28,7 @@ import java.util.Optional;
 
 import static java.util.Collections.singletonList;
 import static org.jnosql.artemis.reflection.FieldType.COLLECTION;
+import static org.jnosql.artemis.reflection.FieldType.SUBENTITY;
 
 class DefaultDocumentFieldValue implements DocumentFieldValue {
 
@@ -51,12 +52,10 @@ class DefaultDocumentFieldValue implements DocumentFieldValue {
     public List<Document> toDocument(DocumentEntityConverter converter, Converters converters) {
         if (FieldType.EMBEDDED.equals(getType())) {
             return singletonList(Document.of(getName(), converter.toDocument(getValue()).getDocuments()));
-        } else if (COLLECTION.equals(getType()) && isEmbeddableElement()) {
-            List<List<Document>> documents = new ArrayList<>();
-            for (Object element : Iterable.class.cast(getValue())) {
-                documents.add(converter.toDocument(element).getDocuments());
-            }
-            return singletonList(Document.of(getName(), documents));
+        }  else if (SUBENTITY.equals(getType())) {
+            return converter.toDocument(getValue()).getDocuments();
+        } else if (isEmbeddableCollection()) {
+            return singletonList(Document.of(getName(), getDocuments(converter)));
         }
         Optional<Class<? extends AttributeConverter>> optionalConverter = getField().getConverter();
         if (optionalConverter.isPresent()) {
@@ -64,6 +63,18 @@ class DefaultDocumentFieldValue implements DocumentFieldValue {
             return singletonList(Document.of(getName(), attributeConverter.convertToDatabaseColumn(getValue())));
         }
         return singletonList(Document.of(getName(), getValue()));
+    }
+
+    private List<List<Document>> getDocuments(DocumentEntityConverter converter) {
+        List<List<Document>> documents = new ArrayList<>();
+        for (Object element : Iterable.class.cast(getValue())) {
+            documents.add(converter.toDocument(element).getDocuments());
+        }
+        return documents;
+    }
+
+    private boolean isEmbeddableCollection() {
+        return COLLECTION.equals(getType()) && isEmbeddableElement();
     }
 
     @Override
