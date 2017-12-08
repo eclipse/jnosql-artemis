@@ -19,6 +19,7 @@ import org.jnosql.artemis.column.ColumnFieldConverters.ColumnFieldConverterFacto
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.FieldType;
 import org.jnosql.artemis.reflection.FieldValue;
 import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.column.Column;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 import static org.jnosql.artemis.reflection.FieldType.EMBEDDED;
+import static org.jnosql.artemis.reflection.FieldType.SUBENTITY;
 
 /**
  * Template method to {@link ColumnEntityConverter}
@@ -70,7 +72,7 @@ public abstract class AbstractColumnEntityConverter implements ColumnEntityConve
         return toEntity(entityClass, entity.getColumns());
     }
 
-    protected  <T> T toEntity(Class<T> entityClass, List<Column> columns) {
+    protected <T> T toEntity(Class<T> entityClass, List<Column> columns) {
         ClassRepresentation representation = getClassRepresentations().get(entityClass);
         T instance = getReflections().newInstance(representation.getConstructor());
         return convertEntity(columns, representation, instance);
@@ -90,7 +92,7 @@ public abstract class AbstractColumnEntityConverter implements ColumnEntityConve
         return DefaultColumnFieldValue.of(value, field);
     }
 
-    protected  <T> Consumer<String> feedObject(T instance, List<Column> columns, Map<String, FieldRepresentation> fieldsGroupByName) {
+    protected <T> Consumer<String> feedObject(T instance, List<Column> columns, Map<String, FieldRepresentation> fieldsGroupByName) {
         return (String k) -> {
             Optional<Column> column = columns.stream().filter(c -> c.getName().equals(k)).findFirst();
             FieldRepresentation field = fieldsGroupByName.get(k);
@@ -100,15 +102,18 @@ public abstract class AbstractColumnEntityConverter implements ColumnEntityConve
     }
 
     private <T> T convertEntity(List<Column> columns, ClassRepresentation representation, T instance) {
-        Map<String, FieldRepresentation> fieldsGroupByName = representation.getFieldsGroupByName();
-        List<String> names = columns.stream().map(Column::getName).sorted().collect(Collectors.toList());
-        Predicate<String> existField = k -> Collections.binarySearch(names, k) >= 0;
+        final Map<String, FieldRepresentation> fieldsGroupByName = representation.getFieldsGroupByName();
+        final List<String> names = columns.stream().map(Column::getName).sorted().collect(Collectors.toList());
+        final Predicate<String> existField = k -> Collections.binarySearch(names, k) >= 0;
+        final Predicate<String> isElementType = k -> {
+            FieldType type = fieldsGroupByName.get(k).getType();
+            return EMBEDDED.equals(type) || SUBENTITY.equals(type);
+        };
         fieldsGroupByName.keySet().stream()
-                .filter(existField.or(k -> EMBEDDED.equals(fieldsGroupByName.get(k).getType())))
+                .filter(existField.or(isElementType))
                 .forEach(feedObject(instance, columns, fieldsGroupByName));
 
         return instance;
     }
-
 
 }

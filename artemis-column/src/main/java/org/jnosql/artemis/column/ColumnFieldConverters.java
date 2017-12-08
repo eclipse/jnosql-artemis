@@ -21,6 +21,7 @@ import org.jnosql.diana.api.TypeReference;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.column.Column;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.function.Consumer;
 
 import static org.jnosql.artemis.reflection.FieldType.COLLECTION;
 import static org.jnosql.artemis.reflection.FieldType.EMBEDDED;
+import static org.jnosql.artemis.reflection.FieldType.SUBENTITY;
 
 class ColumnFieldConverters {
 
@@ -38,10 +40,13 @@ class ColumnFieldConverters {
         private final EmbeddedFieldConverter embeddedFieldConverter = new EmbeddedFieldConverter();
         private final DefaultConverter defaultConverter = new DefaultConverter();
         private final CollectionEmbeddableConverter embeddableConverter = new CollectionEmbeddableConverter();
+        private final SubEntityConverter subEntityConverter = new SubEntityConverter();
 
         ColumnFieldConverter get(FieldRepresentation field) {
             if (EMBEDDED.equals(field.getType())) {
                 return embeddedFieldConverter;
+            } else if (SUBENTITY.equals(field.getType())) {
+                return subEntityConverter;
             } else if (isCollectionEmbeddable(field)) {
                 return embeddableConverter;
             } else {
@@ -60,6 +65,7 @@ class ColumnFieldConverters {
         @Override
         public <T> void convert(T instance, List<Column> columns, Optional<Column> column, FieldRepresentation field,
                                 AbstractColumnEntityConverter converter) {
+
             if (column.isPresent()) {
                 Column subColumn = column.get();
                 Object value = subColumn.get();
@@ -98,6 +104,21 @@ class ColumnFieldConverters {
             } else {
                 converter.getReflections().setValue(instance, field.getNativeField(), field.getValue(value));
             }
+        }
+    }
+
+    private static class SubEntityConverter implements ColumnFieldConverter {
+
+
+        @Override
+        public <T> void convert(T instance, List<Column> columns, Optional<Column> column,
+                                FieldRepresentation field, AbstractColumnEntityConverter converter) {
+
+
+            Field nativeField = field.getNativeField();
+            Object subEntity = converter.toEntity(nativeField.getType(), columns);
+            converter.getReflections().setValue(instance, nativeField, subEntity);
+
         }
     }
 
