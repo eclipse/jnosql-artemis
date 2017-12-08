@@ -25,7 +25,7 @@ import java.util.Map;
  * enum that contains kinds of annotations to fields on java.
  */
 public enum FieldType {
-    EMBEDDED, MAP, COLLECTION, DEFAULT;
+    SUBENTITY, EMBEDDED, MAP, COLLECTION, DEFAULT;
 
     /**
      * select you the kind of annotation on field and then define a enum type, follow the sequences:
