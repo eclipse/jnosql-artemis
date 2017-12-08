@@ -21,6 +21,7 @@ import org.jnosql.diana.api.TypeReference;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.document.Document;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.function.Consumer;
 
 import static org.jnosql.artemis.reflection.FieldType.COLLECTION;
 import static org.jnosql.artemis.reflection.FieldType.EMBEDDED;
+import static org.jnosql.artemis.reflection.FieldType.SUBENTITY;
 
 class DocumentFieldConverters {
 
@@ -38,10 +40,13 @@ class DocumentFieldConverters {
         private final EmbeddedFieldConverter embeddedFieldConverter = new EmbeddedFieldConverter();
         private final DefaultConverter defaultConverter = new DefaultConverter();
         private final CollectionEmbeddableConverter embeddableConverter = new CollectionEmbeddableConverter();
+        private final SubEntityConverter subEntityConverter = new SubEntityConverter();
 
         DocumentFieldConverter get(FieldRepresentation field) {
             if (EMBEDDED.equals(field.getType())) {
                 return embeddedFieldConverter;
+            } else if (SUBENTITY.equals(field.getType())) {
+                return subEntityConverter;
             } else if (isCollectionEmbeddable(field)) {
                 return embeddableConverter;
             } else {
@@ -54,7 +59,7 @@ class DocumentFieldConverters {
         }
     }
 
-    static class EmbeddedFieldConverter implements DocumentFieldConverter {
+    private static class EmbeddedFieldConverter implements DocumentFieldConverter {
 
         @Override
         public <T> void convert(T instance, List<Document> documents, Optional<Document> document,
@@ -73,7 +78,7 @@ class DocumentFieldConverters {
                 } else {
                     converter.getReflections().setValue(instance, field.getNativeField(), converter.toEntity(field.getNativeField().getType(),
                             sudDocument.get(new TypeReference<List<Document>>() {
-                    })));
+                            })));
                 }
 
             } else {
@@ -82,7 +87,7 @@ class DocumentFieldConverters {
         }
     }
 
-    static class DefaultConverter  implements DocumentFieldConverter {
+    private static class DefaultConverter implements DocumentFieldConverter {
 
         @Override
         public <T> void convert(T instance, List<Document> documents, Optional<Document> document,
@@ -100,7 +105,7 @@ class DocumentFieldConverters {
         }
     }
 
-    static class CollectionEmbeddableConverter implements DocumentFieldConverter {
+    private static class CollectionEmbeddableConverter implements DocumentFieldConverter {
 
         @Override
         public <T> void convert(T instance, List<Document> documents, Optional<Document> document,
@@ -119,6 +124,20 @@ class DocumentFieldConverters {
                 }
                 converter.getReflections().setValue(instance, field.getNativeField(), collection);
             };
+        }
+    }
+
+    private static class SubEntityConverter implements DocumentFieldConverter {
+
+
+        @Override
+        public <T> void convert(T instance, List<Document> documents, Optional<Document> document,
+                                FieldRepresentation field, AbstractDocumentEntityConverter converter) {
+
+            Field nativeField = field.getNativeField();
+            Object subEntity = converter.toEntity(nativeField.getType(), documents);
+            converter.getReflections().setValue(instance, nativeField, subEntity);
+
         }
     }
 }
