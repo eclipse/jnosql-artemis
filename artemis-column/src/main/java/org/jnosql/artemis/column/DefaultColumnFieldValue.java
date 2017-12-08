@@ -57,7 +57,7 @@ class DefaultColumnFieldValue implements ColumnFieldValue {
 
         if (EMBEDDED.equals(getType())) {
             return Column.of(getName(), converter.toColumn(getValue()).getColumns());
-        } else if (COLLECTION.equals(getType()) && isEmbeddableElement()) {
+        } else if (isEmbeddableCollection()) {
             List<List<Column>> columns = new ArrayList<>();
             for (Object element : Iterable.class.cast(getValue())) {
                 columns.add(converter.toColumn(element).getColumns());
@@ -71,6 +71,10 @@ class DefaultColumnFieldValue implements ColumnFieldValue {
         }
 
         return Column.of(getName(), getValue());
+    }
+
+    private boolean isEmbeddableCollection() {
+        return COLLECTION.equals(getType()) && isEmbeddableElement();
     }
 
     private FieldType getType() {

@@ -320,6 +320,7 @@ public class DefaultColumnEntityConverterTest {
         Zipcode zipcode = new Zipcode();
         zipcode.setZip("12321");
         zipcode.setPlusFour("1234");
+
         Address address = new Address();
         address.setCity("Salvador");
         address.setState("Bahia");
