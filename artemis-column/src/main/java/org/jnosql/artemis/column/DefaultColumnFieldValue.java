@@ -58,11 +58,7 @@ class DefaultColumnFieldValue implements ColumnFieldValue {
         if (EMBEDDED.equals(getType())) {
             return Column.of(getName(), converter.toColumn(getValue()).getColumns());
         } else if (isEmbeddableCollection()) {
-            List<List<Column>> columns = new ArrayList<>();
-            for (Object element : Iterable.class.cast(getValue())) {
-                columns.add(converter.toColumn(element).getColumns());
-            }
-            return Column.of(getName(), columns);
+            return Column.of(getName(), getColumns(converter));
         }
         Optional<Class<? extends AttributeConverter>> optionalConverter = getField().getConverter();
         if (optionalConverter.isPresent()) {
@@ -71,6 +67,14 @@ class DefaultColumnFieldValue implements ColumnFieldValue {
         }
 
         return Column.of(getName(), getValue());
+    }
+
+    private List<List<Column>> getColumns(ColumnEntityConverter converter) {
+        List<List<Column>> columns = new ArrayList<>();
+        for (Object element : Iterable.class.cast(getValue())) {
+            columns.add(converter.toColumn(element).getColumns());
+        }
+        return columns;
     }
 
     private boolean isEmbeddableCollection() {
