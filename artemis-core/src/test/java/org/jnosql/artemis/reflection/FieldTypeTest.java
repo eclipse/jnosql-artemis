@@ -20,10 +20,11 @@ import org.jnosql.artemis.model.Director;
 import org.jnosql.artemis.model.Movie;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.model.Worker;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
+
+import static org.junit.Assert.assertEquals;
 
 
 public class FieldTypeTest {
@@ -32,45 +33,45 @@ public class FieldTypeTest {
     @Test
     public void shouldReturnList() throws NoSuchFieldException {
         Field field = Person.class.getDeclaredField("phones");
-        Assert.assertEquals(FieldType.COLLECTION, FieldType.of(field));
+        assertEquals(FieldType.COLLECTION, FieldType.of(field));
     }
 
     @Test
     public void shouldReturnSet() throws NoSuchFieldException {
         Field field = Movie.class.getDeclaredField("actors");
-        Assert.assertEquals(FieldType.COLLECTION, FieldType.of(field));
+        assertEquals(FieldType.COLLECTION, FieldType.of(field));
     }
 
     @Test
     public void shouldReturnMap() throws NoSuchFieldException {
         Field field = Actor.class.getDeclaredField("movieCharacter");
-        Assert.assertEquals(FieldType.MAP, FieldType.of(field));
+        assertEquals(FieldType.MAP, FieldType.of(field));
     }
 
     @Test
     public void shouldReturnDefault() throws NoSuchFieldException {
         Field field = Person.class.getDeclaredField("name");
-        Assert.assertEquals(FieldType.DEFAULT, FieldType.of(field));
+        assertEquals(FieldType.DEFAULT, FieldType.of(field));
     }
 
 
     @Test
     public void shouldReturnEmbeddedAsEntity() throws NoSuchFieldException{
         Field field = Director.class.getDeclaredField("movie");
-        Assert.assertEquals(FieldType.EMBEDDED, FieldType.of(field));
+        assertEquals(FieldType.EMBEDDED, FieldType.of(field));
     }
 
 
     @Test
     public void shouldReturnEmbedded() throws NoSuchFieldException{
         Field field = Worker.class.getDeclaredField("job");
-        Assert.assertEquals(FieldType.EMBEDDED, FieldType.of(field));
+        assertEquals(FieldType.EMBEDDED, FieldType.of(field));
     }
 
     @Test
     public void shouldReturnSubEntity() throws NoSuchFieldException{
         Field field = Address.class.getDeclaredField("zipcode");
-        Assert.assertEquals(FieldType.SUBENTITY, FieldType.of(field));
+        assertEquals(FieldType.SUBENTITY, FieldType.of(field));
     }
 
 }
