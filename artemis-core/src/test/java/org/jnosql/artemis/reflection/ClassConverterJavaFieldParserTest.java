@@ -17,11 +17,15 @@ package org.jnosql.artemis.reflection;
 import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.model.Address;
 import org.jnosql.artemis.model.Person;
+import org.jnosql.artemis.model.Worker;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
+import java.util.List;
+import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(CDIJUnitRunner.class)
@@ -54,7 +58,26 @@ public class ClassConverterJavaFieldParserTest {
     public void shouldReturnAllFieldWhenSelectTheSubEntityField() {
         ClassRepresentation classRepresentation = classConverter.create(Address.class);
         String result = classRepresentation.getColumnField("zipcode");
-        assertEquals("zip,plusFour", result);
+        List<String> resultList = Stream.of(result.split(",")).sorted().collect(toList());
+        List<String> expected = Stream.of("plusFour", "zip").sorted().collect(toList());
+        assertEquals(expected, resultList);
+    }
+
+    //
+    @Test
+    public void shouldReadFieldWhenFieldIsEmbedded() {
+        ClassRepresentation classRepresentation = classConverter.create(Worker.class);
+        String result = classRepresentation.getColumnField("job.city");
+        assertEquals("job.city", result);
+    }
+
+    @Test
+    public void shouldReturnAllFieldWhenSelectTheEmbeddedField() {
+        ClassRepresentation classRepresentation = classConverter.create(Address.class);
+        String result = classRepresentation.getColumnField("job");
+        List<String> resultList = Stream.of(result.split(",")).sorted().collect(toList());
+        List<String> expected = Stream.of("job.description", "job.city").sorted().collect(toList());
+        assertEquals(expected, resultList);
     }
 
     //should test simple field

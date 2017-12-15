@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -87,22 +86,23 @@ class ClassConverter {
 
         switch (field.getType()) {
             case SUBENTITY:
-                Class<?> entityClass = field.getNativeField().getType();
-                final Consumer<FieldRepresentation> consumer = f ->
-                        appendValue(nativeFieldGrouopByJavaField, f,
-                                appendPrefix(javaField, field.getFieldName()), nativeField);
+                Class<?> subentityClass = field.getNativeField().getType();
+                Map<String, String> subenityMap = getNativeFieldGroupByJavaField(
+                        reflections.getFields(subentityClass)
+                                .stream().map(this::to).collect(toList()),
+                        appendPreparePrefix(javaField, field.getFieldName()), nativeField);
 
-                reflections.getFields(entityClass)
-                        .stream().map(this::to)
-                        .forEach(consumer);
+                String subentityNative = subenityMap.values().stream().collect(Collectors.joining(","));
+                nativeFieldGrouopByJavaField.put(appendPrefix(javaField, field.getFieldName()), subentityNative);
+                nativeFieldGrouopByJavaField.putAll(subenityMap);
                 return;
             case EMBEDDED:
                 Class<?> embeddedEntityClass = field.getNativeField().getType();
                 Map<String, String> embeddedMap = getNativeFieldGroupByJavaField(
                         reflections.getFields(embeddedEntityClass)
                                 .stream().map(this::to).collect(toList()),
-                        appendPrefix(javaField, field.getFieldName()),
-                        appendPrefix(nativeField, field.getName()));
+                        appendPreparePrefix(javaField, field.getFieldName()),
+                        appendPreparePrefix(nativeField, field.getName()));
 
                 String embeddedNative = embeddedMap.values().stream().collect(Collectors.joining(","));
                 nativeFieldGrouopByJavaField.put(appendPrefix(javaField, field.getFieldName()), embeddedNative);
@@ -116,11 +116,15 @@ class ClassConverter {
         }
     }
 
+    private String appendPreparePrefix(String prefix, String field) {
+        return appendPrefix(prefix, field).concat(".");
+    }
+
     private String appendPrefix(String prefix, String field) {
         if (prefix.isEmpty()) {
-            return field.concat(".");
+            return field;
         } else {
-            return prefix.concat(field).concat(".");
+            return prefix.concat(field);
         }
     }
 
