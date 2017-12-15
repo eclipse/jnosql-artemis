@@ -58,6 +58,7 @@ class DefaultClassRepresentation implements ClassRepresentation {
                 .collect(collectingAndThen(toMap(FieldRepresentation::getName,
                         Function.identity()), Collections::unmodifiableMap));
 
+
         this.javaFieldGroupedByColumn = fields.stream()
                 .collect(collectingAndThen(toMap(FieldRepresentation::getFieldName,
                         FieldRepresentation::getName), Collections::unmodifiableMap));

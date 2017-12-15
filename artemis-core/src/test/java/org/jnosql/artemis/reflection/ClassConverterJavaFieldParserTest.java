@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(CDIJUnitRunner.class)
-public class ClassConverterJavaFieldParser {
+public class ClassConverterJavaFieldParserTest {
 
     @Inject
     private ClassConverter classConverter;
@@ -42,7 +42,7 @@ public class ClassConverterJavaFieldParser {
         String notFound = classRepresentation.getColumnField("notFound");
         assertEquals("notFound", notFound);
     }
-    
+
     @Test
     public void shouldReadFieldWhenFieldIsSubEntity() {
         ClassRepresentation classRepresentation = classConverter.create(Address.class);

@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
@@ -46,6 +47,9 @@ class ClassConverter {
         List<FieldRepresentation> fields = reflections.getFields(entityClass)
                 .stream().map(this::to).collect(toList());
         List<String> fieldsName = fields.stream().map(FieldRepresentation::getName).collect(toList());
+
+        Map<String, String> nativeFieldGroupByJavaField = JavaFieldNativeMapper.getJavaNativeField(fields);
+
         return DefaultClassRepresentation.builder().withName(entityName)
                 .withClassInstance(entityClass)
                 .withFields(fields)
