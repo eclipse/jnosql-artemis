@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.collectingAndThen;
@@ -54,7 +55,8 @@ class ClassConverter {
                 .stream().map(this::to).collect(toList());
         List<String> fieldsName = fields.stream().map(FieldRepresentation::getName).collect(toList());
 
-        Map<String, String> nativeFieldGroupByJavaField = getNativeFieldGroupByJavaField(fields);
+        Map<String, String> nativeFieldGroupByJavaField =
+                getNativeFieldGroupByJavaField(fields, "", "");
 
         Map<String, FieldRepresentation> fieldsGroupedByName = fields.stream()
                 .collect(collectingAndThen(toMap(FieldRepresentation::getName,
@@ -70,12 +72,12 @@ class ClassConverter {
                 .build();
     }
 
-    private Map<String, String> getNativeFieldGroupByJavaField(List<FieldRepresentation> fields) {
+    private Map<String, String> getNativeFieldGroupByJavaField(List<FieldRepresentation> fields,
+                                                               String javaField, String nativeField) {
+
         Map<String, String> nativeFieldGrouopByJavaField = new HashMap<>();
-
-
         for (FieldRepresentation field : fields) {
-            appendValue(nativeFieldGrouopByJavaField, field, "", "");
+            appendValue(nativeFieldGrouopByJavaField, field, javaField, nativeField);
         }
         return nativeFieldGrouopByJavaField;
     }
@@ -88,7 +90,7 @@ class ClassConverter {
                 Class<?> entityClass = field.getNativeField().getType();
                 final Consumer<FieldRepresentation> consumer = f ->
                         appendValue(nativeFieldGrouopByJavaField, f,
-                                appendField(javaField, field.getFieldName()), nativeField);
+                                appendPrefix(javaField, field.getFieldName()), nativeField);
 
                 reflections.getFields(entityClass)
                         .stream().map(this::to)
@@ -96,12 +98,15 @@ class ClassConverter {
                 return;
             case EMBEDDED:
                 Class<?> embeddedEntityClass = field.getNativeField().getType();
-                final Consumer<FieldRepresentation> fieldConsumer = f -> appendValue(nativeFieldGrouopByJavaField, f,
-                        appendField(javaField, field.getFieldName()), appendField(nativeField, field.getName()));
+                Map<String, String> embeddedMap = getNativeFieldGroupByJavaField(
+                        reflections.getFields(embeddedEntityClass)
+                                .stream().map(this::to).collect(toList()),
+                        appendPrefix(javaField, field.getFieldName()),
+                        appendPrefix(nativeField, field.getName()));
 
-                reflections.getFields(embeddedEntityClass)
-                        .stream().map(this::to)
-                        .forEach(fieldConsumer);
+                String embeddedNative = embeddedMap.values().stream().collect(Collectors.joining(","));
+                nativeFieldGrouopByJavaField.put(appendPrefix(javaField, field.getFieldName()), embeddedNative);
+                nativeFieldGrouopByJavaField.putAll(embeddedMap);
                 return;
             case COLLECTION:
             default:
@@ -111,7 +116,7 @@ class ClassConverter {
         }
     }
 
-    private String appendField(String prefix, String field) {
+    private String appendPrefix(String prefix, String field) {
         if (prefix.isEmpty()) {
             return field.concat(".");
         } else {
