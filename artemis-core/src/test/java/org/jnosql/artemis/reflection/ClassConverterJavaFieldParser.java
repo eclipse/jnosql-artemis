@@ -15,13 +15,42 @@
 package org.jnosql.artemis.reflection;
 
 import org.jnosql.artemis.CDIJUnitRunner;
+import org.jnosql.artemis.model.Address;
+import org.jnosql.artemis.model.Person;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(CDIJUnitRunner.class)
 public class ClassConverterJavaFieldParser {
 
     @Inject
     private ClassConverter classConverter;
+
+    @Test(expected = NullPointerException.class)
+    public void shouldReturnErrorWhenParameterIsNull() {
+        ClassRepresentation classRepresentation = classConverter.create(Person.class);
+        classRepresentation.getColumnField(null);
+    }
+
+    @Test
+    public void shouldReturnTheSameValueWhenTheFieldDoesNotExistInTheClassRepresentation() {
+        ClassRepresentation classRepresentation = classConverter.create(Person.class);
+        String notFound = classRepresentation.getColumnField("notFound");
+        assertEquals("notFound", notFound);
+    }
+    
+    @Test
+    public void shouldReadFieldWhenFieldIsSubEntity() {
+        ClassRepresentation classRepresentation = classConverter.create(Address.class);
+        String result = classRepresentation.getColumnField("zipcode.plusFour");
+        assertEquals("plusFour", result);
+    }
+
+    //should test simple field
+    //should return
+    //should test
 }
