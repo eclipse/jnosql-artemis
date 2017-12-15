@@ -48,10 +48,14 @@ class ClassConverter {
     }
 
     public ClassRepresentation create(Class<?> entityClass) {
+
         Constructor constructor = reflections.makeAccessible(entityClass);
+
         String entityName = reflections.getEntityName(entityClass);
+
         List<FieldRepresentation> fields = reflections.getFields(entityClass)
                 .stream().map(this::to).collect(toList());
+
         List<String> fieldsName = fields.stream().map(FieldRepresentation::getName).collect(toList());
 
         Map<String, String> nativeFieldGroupByJavaField =
@@ -75,14 +79,17 @@ class ClassConverter {
                                                                String javaField, String nativeField) {
 
         Map<String, String> nativeFieldGrouopByJavaField = new HashMap<>();
+
         for (FieldRepresentation field : fields) {
             appendValue(nativeFieldGrouopByJavaField, field, javaField, nativeField);
         }
+
         return nativeFieldGrouopByJavaField;
     }
 
     private void appendValue(Map<String, String> nativeFieldGrouopByJavaField, FieldRepresentation field,
                              String javaField, String nativeField) {
+
 
         switch (field.getType()) {
             case SUBENTITY:
@@ -114,6 +121,7 @@ class ClassConverter {
                         nativeField.concat(field.getName()));
                 return;
         }
+        
     }
 
     private String appendPreparePrefix(String prefix, String field) {
@@ -154,6 +162,5 @@ class ClassConverter {
 
         }
     }
-
 
 }
