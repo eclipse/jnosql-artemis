@@ -20,6 +20,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,14 +42,14 @@ class ClassConverter {
     ClassConverter() {
     }
 
-    public ClassRepresentation create(Class entityClass) {
+    public ClassRepresentation create(Class<?> entityClass) {
         Constructor constructor = reflections.makeAccessible(entityClass);
         String entityName = reflections.getEntityName(entityClass);
         List<FieldRepresentation> fields = reflections.getFields(entityClass)
                 .stream().map(this::to).collect(toList());
         List<String> fieldsName = fields.stream().map(FieldRepresentation::getName).collect(toList());
 
-        Map<String, String> nativeFieldGroupByJavaField = JavaFieldNativeMapper.getJavaNativeField(fields);
+        Map<String, String> nativeFieldGroupByJavaField = getNativeFieldGroupByJavaField(fields);
 
         return DefaultClassRepresentation.builder().withName(entityName)
                 .withClassInstance(entityClass)
@@ -56,6 +57,39 @@ class ClassConverter {
                 .withFieldsName(fieldsName)
                 .withConstructor(constructor)
                 .build();
+    }
+
+    private Map<String, String> getNativeFieldGroupByJavaField(List<FieldRepresentation> fields) {
+        Map<String, String> nativeFieldGrouopByJavaField = new HashMap<>();
+
+
+        for (FieldRepresentation field : fields) {
+            appendValue(nativeFieldGrouopByJavaField, field, "", "");
+        }
+        return nativeFieldGrouopByJavaField;
+    }
+
+    private void appendValue(Map<String, String> nativeFieldGrouopByJavaField, FieldRepresentation field,
+                             String javaField, String nativeField) {
+
+        switch (field.getType()) {
+            case SUBENTITY:
+                Class<?> entityClass = field.getNativeField().getType();
+                reflections.getFields(entityClass)
+                        .stream().map(this::to)
+                        .forEach(f -> appendValue(nativeFieldGrouopByJavaField, f, javaField, nativeField));
+            case EMBEDDED:
+                Class<?> embeddedEntityClass = field.getNativeField().getType();
+                reflections.getFields(embeddedEntityClass)
+                        .stream().map(this::to)
+                        .forEach(f -> appendValue(nativeFieldGrouopByJavaField, f,
+                                javaField + "." + field.getFieldName(),
+                                nativeField + "." + field.getNativeField()));
+            case COLLECTION:
+            default:
+                nativeFieldGrouopByJavaField.put(javaField.concat(field.getFieldName()),
+                        nativeField.concat(field.getName()));
+        }
     }
 
 

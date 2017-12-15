@@ -38,12 +38,11 @@ public class ClassRepresentationsExtension implements Extension {
 
     private static final Logger LOGGER = Logger.getLogger(ClassRepresentationsExtension.class.getName());
 
-    private final ClassConverter classConverter = new ClassConverter(new DefaultReflections());
-
     private final Map<String, ClassRepresentation> representations = new ConcurrentHashMap<>();
 
     private final Map<Class<?>, ClassRepresentation> classes = new ConcurrentHashMap<>();
 
+    private final ClassConverter classConverter = new ClassConverter(new DefaultReflections());
 
     /**
      * Event observer
