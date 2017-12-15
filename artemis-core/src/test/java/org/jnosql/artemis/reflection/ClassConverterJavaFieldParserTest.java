@@ -50,6 +50,13 @@ public class ClassConverterJavaFieldParserTest {
         assertEquals("plusFour", result);
     }
 
+    @Test
+    public void shouldReturnAllFieldWhenSelectTheSubEntityField() {
+        ClassRepresentation classRepresentation = classConverter.create(Address.class);
+        String result = classRepresentation.getColumnField("zipcode");
+        assertEquals("zip,plusFour", result);
+    }
+
     //should test simple field
     //should return
     //should test

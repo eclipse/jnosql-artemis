@@ -98,6 +98,7 @@ class ClassConverter {
                 Class<?> embeddedEntityClass = field.getNativeField().getType();
                 final Consumer<FieldRepresentation> fieldConsumer = f -> appendValue(nativeFieldGrouopByJavaField, f,
                         appendField(javaField, field.getFieldName()), appendField(nativeField, field.getName()));
+
                 reflections.getFields(embeddedEntityClass)
                         .stream().map(this::to)
                         .forEach(fieldConsumer);
