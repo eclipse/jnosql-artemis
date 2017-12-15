@@ -63,7 +63,6 @@ public class ClassConverterJavaFieldParserTest {
         assertEquals(expected, resultList);
     }
 
-    //
     @Test
     public void shouldReadFieldWhenFieldIsEmbedded() {
         ClassRepresentation classRepresentation = classConverter.create(Worker.class);
@@ -73,14 +72,11 @@ public class ClassConverterJavaFieldParserTest {
 
     @Test
     public void shouldReturnAllFieldWhenSelectTheEmbeddedField() {
-        ClassRepresentation classRepresentation = classConverter.create(Address.class);
+        ClassRepresentation classRepresentation = classConverter.create(Worker.class);
         String result = classRepresentation.getColumnField("job");
         List<String> resultList = Stream.of(result.split(",")).sorted().collect(toList());
         List<String> expected = Stream.of("job.description", "job.city").sorted().collect(toList());
         assertEquals(expected, resultList);
     }
 
-    //should test simple field
-    //should return
-    //should test
 }
