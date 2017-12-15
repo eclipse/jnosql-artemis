@@ -121,7 +121,7 @@ class ClassConverter {
                         nativeField.concat(field.getName()));
                 return;
         }
-        
+
     }
 
     private String appendPreparePrefix(String prefix, String field) {

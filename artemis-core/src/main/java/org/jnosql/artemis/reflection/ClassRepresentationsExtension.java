@@ -61,6 +61,7 @@ public class ClassRepresentationsExtension implements Extension {
             classes.put(javaClass, classRepresentation);
         } else if (isSubElement(annotatedType)) {
             Class<T> javaClass = target.getAnnotatedType().getJavaClass();
+            LOGGER.info("scanning type: " + javaClass.getName());
             ClassRepresentation classRepresentation = classConverter.create(javaClass);
             classes.put(javaClass, classRepresentation);
         }
