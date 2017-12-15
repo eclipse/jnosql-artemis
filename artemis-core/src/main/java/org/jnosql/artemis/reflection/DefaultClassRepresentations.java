@@ -30,7 +30,7 @@ class DefaultClassRepresentations implements ClassRepresentations {
 
     private Map<String, ClassRepresentation> representations;
 
-    private Map<Class, ClassRepresentation> classes;
+    private Map<Class<?>, ClassRepresentation> classes;
 
 
     @Inject

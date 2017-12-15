@@ -42,7 +42,7 @@ public class ClassRepresentationsExtension implements Extension {
 
     private final Map<String, ClassRepresentation> representations = new ConcurrentHashMap<>();
 
-    private final Map<Class, ClassRepresentation> classes = new ConcurrentHashMap<>();
+    private final Map<Class<?>, ClassRepresentation> classes = new ConcurrentHashMap<>();
 
 
     /**
@@ -88,7 +88,7 @@ public class ClassRepresentationsExtension implements Extension {
      *
      * @return the map instance
      */
-    public Map<Class, ClassRepresentation> getClasses() {
+    public Map<Class<?>, ClassRepresentation> getClasses() {
         return classes;
     }
 
