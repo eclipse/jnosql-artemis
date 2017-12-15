@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static java.util.Objects.nonNull;
@@ -85,20 +86,35 @@ class ClassConverter {
         switch (field.getType()) {
             case SUBENTITY:
                 Class<?> entityClass = field.getNativeField().getType();
+                final Consumer<FieldRepresentation> consumer = f ->
+                        appendValue(nativeFieldGrouopByJavaField, f,
+                                appendField(javaField, field.getFieldName()), nativeField);
+
                 reflections.getFields(entityClass)
                         .stream().map(this::to)
-                        .forEach(f -> appendValue(nativeFieldGrouopByJavaField, f, javaField, nativeField));
+                        .forEach(consumer);
+                return;
             case EMBEDDED:
                 Class<?> embeddedEntityClass = field.getNativeField().getType();
+                final Consumer<FieldRepresentation> fieldConsumer = f -> appendValue(nativeFieldGrouopByJavaField, f,
+                        appendField(javaField, field.getFieldName()), appendField(nativeField, field.getName()));
                 reflections.getFields(embeddedEntityClass)
                         .stream().map(this::to)
-                        .forEach(f -> appendValue(nativeFieldGrouopByJavaField, f,
-                                javaField + "." + field.getFieldName(),
-                                nativeField + "." + field.getNativeField()));
+                        .forEach(fieldConsumer);
+                return;
             case COLLECTION:
             default:
                 nativeFieldGrouopByJavaField.put(javaField.concat(field.getFieldName()),
                         nativeField.concat(field.getName()));
+                return;
+        }
+    }
+
+    private String appendField(String prefix, String field) {
+        if (prefix.isEmpty()) {
+            return field.concat(".");
+        } else {
+            return prefix.concat(field).concat(".");
         }
     }
 
