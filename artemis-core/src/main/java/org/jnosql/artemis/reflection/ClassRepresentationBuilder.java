@@ -17,6 +17,9 @@ package org.jnosql.artemis.reflection;
 import java.lang.reflect.Constructor;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+
+import static java.util.Collections.emptyMap;
 
 class ClassRepresentationBuilder {
 
@@ -29,6 +32,10 @@ class ClassRepresentationBuilder {
     private Constructor constructor;
 
     private List<FieldRepresentation> fields = Collections.emptyList();
+
+    private Map<String, String> javaFieldGroupedByColumn = emptyMap();
+
+    private Map<String, FieldRepresentation> fieldsGroupedByName = emptyMap();
 
     public ClassRepresentationBuilder withName(String name) {
         this.name = name;
@@ -55,7 +62,18 @@ class ClassRepresentationBuilder {
         return this;
     }
 
+    public ClassRepresentationBuilder withJavaFieldGroupedByColumn(Map<String, String> javaFieldGroupedByColumn) {
+        this.javaFieldGroupedByColumn = javaFieldGroupedByColumn;
+        return this;
+    }
+
+    public ClassRepresentationBuilder withFieldsGroupedByName(Map<String, FieldRepresentation> fieldsGroupedByName) {
+        this.fieldsGroupedByName = fieldsGroupedByName;
+        return this;
+    }
+
     public ClassRepresentation build() {
-        return new DefaultClassRepresentation(name, fieldsName, classInstance, fields, constructor);
+        return new DefaultClassRepresentation(name, fieldsName, classInstance, fields,
+                constructor, javaFieldGroupedByColumn, fieldsGroupedByName);
     }
 }
