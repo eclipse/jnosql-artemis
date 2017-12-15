@@ -20,12 +20,16 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 @ApplicationScoped
 class ClassConverter {
@@ -51,11 +55,17 @@ class ClassConverter {
 
         Map<String, String> nativeFieldGroupByJavaField = getNativeFieldGroupByJavaField(fields);
 
+        Map<String, FieldRepresentation> fieldsGroupedByName = fields.stream()
+                .collect(collectingAndThen(toMap(FieldRepresentation::getName,
+                        Function.identity()), Collections::unmodifiableMap));
+
         return DefaultClassRepresentation.builder().withName(entityName)
                 .withClassInstance(entityClass)
                 .withFields(fields)
                 .withFieldsName(fieldsName)
                 .withConstructor(constructor)
+                .withJavaFieldGroupedByColumn(nativeFieldGroupByJavaField)
+                .withFieldsGroupedByName(fieldsGroupedByName)
                 .build();
     }
 
