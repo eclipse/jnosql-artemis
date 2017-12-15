@@ -39,6 +39,13 @@ public class ClassConverterJavaFieldParserTest {
         ClassRepresentation classRepresentation = classConverter.create(Person.class);
         classRepresentation.getColumnField(null);
     }
+    
+    @Test
+    public void shouldReturnTheNativeName() {
+        ClassRepresentation classRepresentation = classConverter.create(Worker.class);
+        String notFound = classRepresentation.getColumnField("salary");
+        assertEquals("money", notFound);
+    }
 
     @Test
     public void shouldReturnTheSameValueWhenTheFieldDoesNotExistInTheClassRepresentation() {
