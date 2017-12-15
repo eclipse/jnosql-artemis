@@ -16,16 +16,12 @@ package org.jnosql.artemis.reflection;
 
 
 import java.lang.reflect.Constructor;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.toMap;
 
 class DefaultClassRepresentation implements ClassRepresentation {
 
@@ -47,21 +43,16 @@ class DefaultClassRepresentation implements ClassRepresentation {
     private final Optional<FieldRepresentation> id;
 
     DefaultClassRepresentation(String name, List<String> fieldsName, Class<?> classInstance,
-                               List<FieldRepresentation> fields, Constructor constructor) {
+                               List<FieldRepresentation> fields, Constructor constructor,
+                               Map<String, String> javaFieldGroupedByColumn,
+                               Map<String, FieldRepresentation> fieldsGroupedByName) {
         this.name = name;
         this.fieldsName = fieldsName;
         this.classInstance = classInstance;
         this.fields = fields;
         this.constructor = constructor;
-
-        this.fieldsGroupedByName = fields.stream()
-                .collect(collectingAndThen(toMap(FieldRepresentation::getName,
-                        Function.identity()), Collections::unmodifiableMap));
-
-
-        this.javaFieldGroupedByColumn = fields.stream()
-                .collect(collectingAndThen(toMap(FieldRepresentation::getFieldName,
-                        FieldRepresentation::getName), Collections::unmodifiableMap));
+        this.fieldsGroupedByName = fieldsGroupedByName;
+        this.javaFieldGroupedByColumn = javaFieldGroupedByColumn;
         this.id = fields.stream().filter(FieldRepresentation::isId).findFirst();
     }
 
