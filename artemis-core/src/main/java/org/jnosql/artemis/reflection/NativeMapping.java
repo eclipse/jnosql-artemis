@@ -40,7 +40,7 @@ class NativeMapping {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()){
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
         NativeMapping that = (NativeMapping) o;
@@ -60,5 +60,9 @@ class NativeMapping {
         sb.append(", fieldRepresentation=").append(fieldRepresentation);
         sb.append('}');
         return sb.toString();
+    }
+
+    public static NativeMapping of(String nativeField, FieldRepresentation field) {
+        return new NativeMapping(nativeField, field);
     }
 }
