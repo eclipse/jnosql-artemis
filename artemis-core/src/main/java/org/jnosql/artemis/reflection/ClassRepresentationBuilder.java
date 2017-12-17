@@ -33,7 +33,7 @@ class ClassRepresentationBuilder {
 
     private List<FieldRepresentation> fields = Collections.emptyList();
 
-    private Map<String, String> javaFieldGroupedByColumn = emptyMap();
+    private Map<String, NativeMapping> javaFieldGroupedByColumn = emptyMap();
 
     private Map<String, FieldRepresentation> fieldsGroupedByName = emptyMap();
 
@@ -62,7 +62,7 @@ class ClassRepresentationBuilder {
         return this;
     }
 
-    public ClassRepresentationBuilder withJavaFieldGroupedByColumn(Map<String, String> javaFieldGroupedByColumn) {
+    public ClassRepresentationBuilder withJavaFieldGroupedByColumn(Map<String, NativeMapping> javaFieldGroupedByColumn) {
         this.javaFieldGroupedByColumn = javaFieldGroupedByColumn;
         return this;
     }

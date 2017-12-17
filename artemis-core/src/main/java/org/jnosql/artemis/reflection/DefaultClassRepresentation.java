@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 
 class DefaultClassRepresentation implements ClassRepresentation {
 
@@ -36,7 +37,7 @@ class DefaultClassRepresentation implements ClassRepresentation {
 
     private final Constructor constructor;
 
-    private final Map<String, String> javaFieldGroupedByColumn;
+    private final Map<String, NativeMapping> javaFieldGroupedByColumn;
 
     private final Map<String, FieldRepresentation> fieldsGroupedByName;
 
@@ -44,7 +45,7 @@ class DefaultClassRepresentation implements ClassRepresentation {
 
     DefaultClassRepresentation(String name, List<String> fieldsName, Class<?> classInstance,
                                List<FieldRepresentation> fields, Constructor constructor,
-                               Map<String, String> javaFieldGroupedByColumn,
+                               Map<String, NativeMapping> javaFieldGroupedByColumn,
                                Map<String, FieldRepresentation> fieldsGroupedByName) {
         this.name = name;
         this.fieldsName = fieldsName;
@@ -85,7 +86,8 @@ class DefaultClassRepresentation implements ClassRepresentation {
     @Override
     public String getColumnField(String javaField) throws NullPointerException {
         requireNonNull(javaField, "javaField is required");
-        return javaFieldGroupedByColumn.getOrDefault(javaField, javaField);
+        return ofNullable(javaFieldGroupedByColumn.get(javaField))
+                .map(NativeMapping::getNativeField).orElse(javaField);
 
     }
 
