@@ -62,6 +62,15 @@ public interface ClassRepresentation extends Serializable {
     String getColumnField(String javaField) throws NullPointerException;
 
     /**
+     * Gets the {@link FieldRepresentation} from the java field name
+     *
+     * @param javaField the java field
+     * @return the field representation otherwise {@link Optional#EMPTY}
+     * @throws NullPointerException when the javaField is null
+     */
+    Optional<FieldRepresentation> getFieldRepresentation(String javaField) throws NullPointerException;
+
+    /**
      * Returns a Fields grouped by the name
      *
      * @return a {@link FieldRepresentation} grouped by
