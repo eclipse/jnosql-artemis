@@ -92,6 +92,13 @@ class DefaultClassRepresentation implements ClassRepresentation {
     }
 
     @Override
+    public Optional<FieldRepresentation> getFieldRepresentation(String javaField) throws NullPointerException {
+        requireNonNull(javaField, "javaField is required");
+        return ofNullable(javaFieldGroupedByColumn.get(javaField))
+                .map(NativeMapping::getFieldRepresentation);
+    }
+
+    @Override
     public Map<String, FieldRepresentation> getFieldsGroupByName() {
         return fieldsGroupedByName;
     }
