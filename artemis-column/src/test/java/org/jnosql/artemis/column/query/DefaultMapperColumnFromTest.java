@@ -17,6 +17,7 @@ package org.jnosql.artemis.column.query;
 import org.hamcrest.Matchers;
 import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.column.ColumnQueryMapperBuilder;
+import org.jnosql.artemis.model.Money;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.model.Worker;
 import org.jnosql.diana.api.Condition;
@@ -31,6 +32,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -177,6 +179,15 @@ public class DefaultMapperColumnFromTest {
         ColumnQuery queryExpected = select().from("Person").where("_id").eq(20L)
                 .build();
 
+        Assert.assertEquals(queryExpected, query);
+    }
+
+    @Test
+    public void shouldUseAttibuteConverter() {
+        ColumnQuery query = mapperBuilder.selectFrom(Worker.class).where("salary")
+                .eq(new Money("USD", BigDecimal.TEN)).build();
+        ColumnQuery queryExpected = select().from("Worker").where("money")
+                .eq("USD 10").build();
         Assert.assertEquals(queryExpected, query);
     }
 

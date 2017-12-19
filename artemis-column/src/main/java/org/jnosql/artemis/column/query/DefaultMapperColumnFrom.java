@@ -241,6 +241,11 @@ class DefaultMapperColumnFrom implements ColumnFrom, ColumnLimit, ColumnStart,
                         .map(a -> a.convertToDatabaseColumn(value))
                         .orElseGet(() -> Value.of(value).get(nativeField.getType()));
             }
+
+            return field.getConverter()
+                    .map(converters::get)
+                    .map(a -> a.convertToDatabaseColumn(value))
+                    .orElse(value);
         }
         return value;
     }
