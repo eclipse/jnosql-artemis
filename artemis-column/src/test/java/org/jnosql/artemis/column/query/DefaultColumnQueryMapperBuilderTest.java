@@ -17,6 +17,7 @@ package org.jnosql.artemis.column.query;
 import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.column.ColumnQueryMapperBuilder;
 import org.jnosql.artemis.model.Person;
+import org.jnosql.diana.api.column.query.ColumnDeleteFrom;
 import org.jnosql.diana.api.column.query.ColumnFrom;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,5 +43,16 @@ public class DefaultColumnQueryMapperBuilderTest {
     public void shouldReturnSelectFrom() {
         ColumnFrom columnFrom = mapperBuilder.selectFrom(Person.class);
         assertNotNull(columnFrom);
+    }
+    
+    @Test(expected = NullPointerException.class)
+    public void shouldReturnErrorWhenDeleteEntityClassIsNull() {
+        mapperBuilder.deleteFrom(null);
+    }
+
+    @Test
+    public void shouldReturnDeleteFrom() {
+        ColumnDeleteFrom columnDeleteFrom = mapperBuilder.deleteFrom(Person.class);
+        assertNotNull(columnDeleteFrom);
     }
 }
