@@ -255,7 +255,7 @@ public class ColumnRepositoryProxyTest {
                 .thenReturn(Optional.of(ada));
 
 
-        ColumnQuery query = select().from("Person").where(eq(Column.of("name", "Ada"))).build();
+        ColumnQuery query = select().from("Person").where("name").eq("Ada").build();
         Person person = personRepository.query(query);
         verify(template).singleResult(captor.capture());
         assertEquals(ada, person);
@@ -267,7 +267,7 @@ public class ColumnRepositoryProxyTest {
     public void shouldDeleteQuery() {
         ArgumentCaptor<ColumnDeleteQuery> captor = ArgumentCaptor.forClass(ColumnDeleteQuery.class);
 
-        ColumnDeleteQuery query = delete().from("Person").where(eq(Column.of("name", "Ada"))).build();
+        ColumnDeleteQuery query = delete().from("Person").where("name").eq("Ada").build();
         personRepository.deleteQuery(query);
         verify(template).delete(captor.capture());
         assertEquals(query, captor.getValue());

@@ -18,12 +18,10 @@ import org.jnosql.artemis.column.query.ColumnQueryParserUtil.ConditionResult;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.column.ColumnCondition;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
-import org.jnosql.diana.api.column.query.ColumnDeleteFrom;
 
 import static org.jnosql.artemis.column.query.ColumnQueryParserUtil.and;
 import static org.jnosql.artemis.column.query.ColumnQueryParserUtil.or;
 import static org.jnosql.artemis.column.query.ColumnQueryParserUtil.toCondition;
-import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
 
 /**
  * Class the returns a {@link ColumnDeleteQuery}
@@ -58,12 +56,7 @@ public class ColumnQueryDeleteParser {
             }
         }
 
-        ColumnDeleteFrom from = delete().from(representation.getName());
-        if (condition == null) {
-            return from.build();
-        } else {
-            return from.where(condition).build();
-        }
+        return new ArtemisColumnDeleteFrom(representation.getName(), condition);
 
     }
 

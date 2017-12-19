@@ -19,7 +19,6 @@ import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.Sort;
 import org.jnosql.diana.api.column.ColumnCondition;
 import org.jnosql.diana.api.column.ColumnQuery;
-import org.jnosql.diana.api.column.query.ColumnFrom;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +27,6 @@ import java.util.logging.Logger;
 import static org.jnosql.artemis.column.query.ColumnQueryParserUtil.and;
 import static org.jnosql.artemis.column.query.ColumnQueryParserUtil.or;
 import static org.jnosql.artemis.column.query.ColumnQueryParserUtil.toCondition;
-import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
 
 /**
  * Class the returns a {@link ColumnQuery}
@@ -86,15 +84,7 @@ public class ColumnQueryParser {
             index++;
         }
 
-        ColumnFrom from = select().from(representation.getName());
-        if (condition == null) {
-            sorts.forEach(from::orderBy);
-            return from.limit(limit).start(start).build();
-        } else {
-            from.where(condition);
-            sorts.forEach(from::orderBy);
-            return from.start(start).limit(limit).build();
-        }
+        return new ArtemisColumnQuery(sorts, limit, start, condition, representation.getName());
     }
 
 

@@ -42,7 +42,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import static java.util.Collections.singletonList;
-import static org.jnosql.diana.api.column.ColumnCondition.eq;
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
 import static org.junit.Assert.assertEquals;
@@ -258,7 +257,7 @@ public class ColumnRepositoryAsyncProxyTest {
 
         ColumnQuery query = select()
                 .from("Person")
-                .where(eq(Column.of("name", "Ada")))
+                .where("name").eq( "Ada")
                 .build();
 
         personRepository.query(query, callback);
@@ -274,7 +273,7 @@ public class ColumnRepositoryAsyncProxyTest {
         ArgumentCaptor<ColumnDeleteQuery> captor = ArgumentCaptor.forClass(ColumnDeleteQuery.class);
 
         ColumnDeleteQuery deleteQuery = delete().from("Person")
-                .where(eq(Column.of("name", "Ada")))
+                .where("name").eq( "Ada")
                 .build();
 
         personRepository.deleteQuery(deleteQuery);
