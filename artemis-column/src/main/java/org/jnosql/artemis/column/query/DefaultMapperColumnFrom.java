@@ -14,7 +14,6 @@
  */
 package org.jnosql.artemis.column.query;
 
-import org.jnosql.artemis.AttributeConverter;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.FieldRepresentation;
@@ -36,9 +35,7 @@ import org.jnosql.diana.api.column.query.ColumnWhereName;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static java.util.Arrays.asList;
