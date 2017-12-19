@@ -20,6 +20,7 @@ import org.jnosql.diana.api.document.DocumentQuery;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 class ArtemisDocumentQuery implements DocumentQuery {
@@ -65,6 +66,27 @@ class ArtemisDocumentQuery implements DocumentQuery {
     @Override
     public List<String> getDocuments() {
         return Collections.emptyList();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof DocumentQuery)) {
+            return false;
+        }
+        DocumentQuery that = (DocumentQuery) o;
+        return limit == that.getMaxResults() &&
+                start == that.getFirstResult() &&
+                Objects.equals(sorts, that.getSorts()) &&
+                Objects.equals(condition, that.getCondition().orElse(null)) &&
+                Objects.equals(documentCollection, that.getDocumentCollection());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(limit, start, documentCollection, condition, sorts, Collections.emptyList());
     }
 }
 

@@ -19,22 +19,23 @@ import org.jnosql.diana.api.document.DocumentDeleteQuery;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 class ArtemisDocumentDeleteQuery implements DocumentDeleteQuery {
 
-    private final String documentCondition;
+    private final String documentCollection;
 
     private final DocumentCondition condition;
 
-    ArtemisDocumentDeleteQuery(String documentCondition, DocumentCondition condition) {
-        this.documentCondition = documentCondition;
+    ArtemisDocumentDeleteQuery(String documentCollection, DocumentCondition condition) {
+        this.documentCollection = documentCollection;
         this.condition = condition;
     }
 
     @Override
     public String getDocumentCollection() {
-        return documentCondition;
+        return documentCollection;
     }
 
     @Override
@@ -45,5 +46,23 @@ class ArtemisDocumentDeleteQuery implements DocumentDeleteQuery {
     @Override
     public List<String> getDocuments() {
         return Collections.emptyList();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof DocumentDeleteQuery)) {
+            return false;
+        }
+        DocumentDeleteQuery that = (DocumentDeleteQuery) o;
+        return Objects.equals(documentCollection, that.getDocumentCollection()) &&
+                Objects.equals(condition, that.getCondition()) && Objects.equals(Collections.emptyList(), that.getDocuments());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(documentCollection, condition, Collections.emptyList());
     }
 }
