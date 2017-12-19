@@ -141,50 +141,26 @@ public class DefaultMapperColumnFromTest {
 
     @Test
     public void shouldSelectWhereNameNot() {
-        String columnFamily = "columnFamily";
-        String name = "Ada Lovelace";
-        ColumnQuery query = select().from(columnFamily).where("name").not().eq(name).build();
-        ColumnCondition condition = query.getCondition().get();
-
-        Column column = condition.getColumn();
-        ColumnCondition negate = column.get(ColumnCondition.class);
-        assertTrue(query.getColumns().isEmpty());
-        assertEquals(columnFamily, query.getColumnFamily());
-        assertEquals(Condition.NOT, condition.getCondition());
-        assertEquals(Condition.EQUALS, negate.getCondition());
-        assertEquals("name", negate.getColumn().getName());
-        assertEquals(name, negate.getColumn().get());
+        ColumnQuery query = mapperBuilder.selectFrom(Person.class).where("name").not().like("Ada").build();
+        ColumnQuery queryExpected = select().from("Person").where("name").not().like("Ada").build();
+        Assert.assertEquals(queryExpected, query);
     }
 
 
     @Test
     public void shouldSelectWhereNameAnd() {
-        String columnFamily = "columnFamily";
-        String name = "Ada Lovelace";
-        ColumnQuery query = select().from(columnFamily).where("name").eq(name).and("age").gt(10).build();
-        ColumnCondition condition = query.getCondition().get();
+        ColumnQuery query = mapperBuilder.selectFrom(Person.class).where("id").between(10, 20).and( "name").eq("Ada").build();
+        ColumnQuery queryExpected = select().from("Person").where("_id").between(10, 20).and( "name").eq("Ada").build();
 
-        Column column = condition.getColumn();
-        List<ColumnCondition> conditions = column.get(new TypeReference<List<ColumnCondition>>() {
-        });
-        assertEquals(Condition.AND, condition.getCondition());
-        assertThat(conditions, containsInAnyOrder(ColumnCondition.eq(Column.of("name", name)),
-                ColumnCondition.gt(Column.of("age", 10))));
+        Assert.assertEquals(queryExpected, query);
     }
 
     @Test
     public void shouldSelectWhereNameOr() {
-        String columnFamily = "columnFamily";
-        String name = "Ada Lovelace";
-        ColumnQuery query = select().from(columnFamily).where("name").eq(name).or("age").gt(10).build();
-        ColumnCondition condition = query.getCondition().get();
+        ColumnQuery query = mapperBuilder.selectFrom(Person.class).where("id").between(10, 20).or( "name").eq("Ada").build();
+        ColumnQuery queryExpected = select().from("Person").where("_id").between(10, 20).or( "name").eq("Ada").build();
 
-        Column column = condition.getColumn();
-        List<ColumnCondition> conditions = column.get(new TypeReference<List<ColumnCondition>>() {
-        });
-        assertEquals(Condition.OR, condition.getCondition());
-        assertThat(conditions, containsInAnyOrder(ColumnCondition.eq(Column.of("name", name)),
-                ColumnCondition.gt(Column.of("age", 10))));
+        Assert.assertEquals(queryExpected, query);
     }
 
 
