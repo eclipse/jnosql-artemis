@@ -43,7 +43,7 @@ import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-class DefaultMapperColumnFrom implements ColumnFrom, ColumnLimit, ColumnStart,
+class DefaultColumnMapperSelectBuilder implements ColumnFrom, ColumnLimit, ColumnStart,
         ColumnOrder, ColumnWhereName, ColumnNameCondition, ColumnNotCondition, ColumnNameOrder, ColumnWhere {
 
     private final ClassRepresentation representation;
@@ -66,7 +66,7 @@ class DefaultMapperColumnFrom implements ColumnFrom, ColumnLimit, ColumnStart,
 
     private boolean and;
 
-    DefaultMapperColumnFrom(ClassRepresentation representation, Converters converters) {
+    DefaultColumnMapperSelectBuilder(ClassRepresentation representation, Converters converters) {
         this.representation = representation;
         this.converters = converters;
         this.columnFamily = representation.getName();

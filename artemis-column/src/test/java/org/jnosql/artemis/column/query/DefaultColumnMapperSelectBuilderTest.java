@@ -43,7 +43,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(CDIJUnitRunner.class)
-public class DefaultMapperColumnFromTest {
+public class DefaultColumnMapperSelectBuilderTest {
 
     @Inject
     private ColumnQueryMapperBuilder mapperBuilder;

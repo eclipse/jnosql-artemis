@@ -40,7 +40,7 @@ class DefaultColumnQueryMapperBuilder implements ColumnQueryMapperBuilder {
     public <T> ColumnFrom selectFrom(Class<T> entityClass) throws NullPointerException {
         requireNonNull(entityClass, "entity is required");
         ClassRepresentation representation = classRepresentations.get().get(entityClass);
-        return new DefaultMapperColumnFrom(representation, converters.get());
+        return new DefaultColumnMapperSelectBuilder(representation, converters.get());
     }
 
     @Override
