@@ -17,6 +17,7 @@ package org.jnosql.artemis.column.query;
 import org.hamcrest.Matchers;
 import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.column.ColumnQueryMapperBuilder;
+import org.jnosql.artemis.model.Address;
 import org.jnosql.artemis.model.Money;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.model.Worker;
@@ -188,6 +189,26 @@ public class DefaultMapperColumnFromTest {
                 .eq(new Money("USD", BigDecimal.TEN)).build();
         ColumnQuery queryExpected = select().from("Worker").where("money")
                 .eq("USD 10").build();
+        Assert.assertEquals(queryExpected, query);
+    }
+
+    @Test
+    public void shouldQueryByEmbeddable() {
+        ColumnQuery query = mapperBuilder.selectFrom(Worker.class).where("job.city").eq("Salvador")
+                .build();
+        ColumnQuery queryExpected = select().from("Worker").where("job.city").eq("Salvador")
+                .build();
+
+        Assert.assertEquals(queryExpected, query);
+    }
+
+    @Test
+    public void shouldQueryBySubEntity() {
+        ColumnQuery query = mapperBuilder.selectFrom(Address.class).where("zipcode.zip").eq("01312321")
+                .build();
+        ColumnQuery queryExpected = select().from("Address").where("zip").eq("01312321")
+                .build();
+
         Assert.assertEquals(queryExpected, query);
     }
 
