@@ -172,7 +172,6 @@ class DefaultMapperColumnFrom implements ColumnFrom, ColumnLimit, ColumnStart,
 
     @Override
     public ColumnNameOrder asc() {
-
         this.sorts.add(Sort.of(representation.getColumnField(name), Sort.SortType.ASC));
         return this;
     }

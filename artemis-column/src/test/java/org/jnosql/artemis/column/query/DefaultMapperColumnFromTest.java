@@ -28,6 +28,9 @@ import org.junit.runner.RunWith;
 import javax.inject.Inject;
 
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(CDIJUnitRunner.class)
 public class DefaultMapperColumnFromTest {
@@ -55,6 +58,26 @@ public class DefaultMapperColumnFromTest {
     public void shouldSelectOrderDesc() {
         ColumnQuery query = mapperBuilder.selectFrom(Worker.class).orderBy("salary").desc().build();
         ColumnQuery queryExpected = select().from("Worker").orderBy("money").desc().build();
+        Assert.assertEquals(queryExpected, query);
+    }
+
+
+    @Test(expected = NullPointerException.class)
+    public void shouldReturnErrorSelectWhenOrderIsNull() {
+        mapperBuilder.selectFrom(Worker.class).orderBy(null);
+    }
+
+    @Test
+    public void shouldSelectLimit() {
+        ColumnQuery query = mapperBuilder.selectFrom(Worker.class).limit(10).build();
+        ColumnQuery queryExpected = select().from("Worker").limit(10).build();
+        Assert.assertEquals(queryExpected, query);
+    }
+
+    @Test
+    public void shouldSelectStart() {
+        ColumnQuery query = mapperBuilder.selectFrom(Worker.class).start(10).build();
+        ColumnQuery queryExpected = select().from("Worker").start(10).build();
         Assert.assertEquals(queryExpected, query);
     }
 
