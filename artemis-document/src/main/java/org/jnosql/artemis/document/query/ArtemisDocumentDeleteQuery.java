@@ -58,7 +58,7 @@ class ArtemisDocumentDeleteQuery implements DocumentDeleteQuery {
         }
         DocumentDeleteQuery that = (DocumentDeleteQuery) o;
         return Objects.equals(documentCollection, that.getDocumentCollection()) &&
-                Objects.equals(condition, that.getCondition()) && Objects.equals(Collections.emptyList(), that.getDocuments());
+                Objects.equals(condition, that.getCondition().orElse(null)) && Objects.equals(Collections.emptyList(), that.getDocuments());
     }
 
     @Override

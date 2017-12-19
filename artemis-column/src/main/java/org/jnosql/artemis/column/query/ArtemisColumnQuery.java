@@ -20,6 +20,7 @@ import org.jnosql.diana.api.column.ColumnQuery;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 class ArtemisColumnQuery implements ColumnQuery {
@@ -66,5 +67,27 @@ class ArtemisColumnQuery implements ColumnQuery {
     @Override
     public List<Sort> getSorts() {
         return sorts;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ColumnQuery)) {
+            return false;
+        }
+        ColumnQuery that = (ColumnQuery) o;
+        return limit == that.getMaxResults()
+                && start == that.getFirstResult()
+                && Objects.equals(sorts, that.getSorts())
+                && Objects.equals(condition, that.getCondition().orElse(null))
+                && Objects.equals(columnFamily, that.getColumnFamily());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(limit, start, columnFamily, Collections.emptyList(), sorts, condition);
     }
 }

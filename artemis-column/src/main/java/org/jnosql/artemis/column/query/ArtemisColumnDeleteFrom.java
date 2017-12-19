@@ -19,6 +19,7 @@ import org.jnosql.diana.api.column.ColumnDeleteQuery;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 class ArtemisColumnDeleteFrom implements ColumnDeleteQuery {
@@ -46,5 +47,24 @@ class ArtemisColumnDeleteFrom implements ColumnDeleteQuery {
     @Override
     public List<String> getColumns() {
         return Collections.emptyList();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ColumnDeleteQuery)) {
+            return false;
+        }
+        ColumnDeleteQuery that = (ColumnDeleteQuery) o;
+        return Objects.equals(columnFamily, that.getColumnFamily())
+                && Objects.equals(condition, that.getCondition().orElse(null))
+                && Objects.equals(Collections.emptyList(), that.getColumns());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(columnFamily, condition, Collections.emptyList());
     }
 }
