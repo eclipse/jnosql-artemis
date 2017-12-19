@@ -18,10 +18,11 @@ import org.jnosql.diana.api.Sort;
 import org.jnosql.diana.api.column.ColumnCondition;
 import org.jnosql.diana.api.column.ColumnQuery;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import static java.util.Collections.emptyList;
 
 class ArtemisColumnQuery implements ColumnQuery {
 
@@ -61,7 +62,7 @@ class ArtemisColumnQuery implements ColumnQuery {
 
     @Override
     public List<String> getColumns() {
-        return Collections.emptyList();
+        return emptyList();
     }
 
     @Override
@@ -88,6 +89,19 @@ class ArtemisColumnQuery implements ColumnQuery {
 
     @Override
     public int hashCode() {
-        return Objects.hash(limit, start, columnFamily, Collections.emptyList(), sorts, condition);
+        return Objects.hash(limit, start, columnFamily, emptyList(), sorts, condition);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("ArtemisColumnQuery{");
+        sb.append("maxResults=").append(limit);
+        sb.append(", firstResult=").append(start);
+        sb.append(", columnFamily='").append(columnFamily).append('\'');
+        sb.append(", columns=").append(emptyList());
+        sb.append(", sorts=").append(sorts);
+        sb.append(", condition=").append(condition);
+        sb.append('}');
+        return sb.toString();
     }
 }

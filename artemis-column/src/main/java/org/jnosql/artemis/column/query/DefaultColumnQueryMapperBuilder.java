@@ -12,8 +12,9 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis.column;
+package org.jnosql.artemis.column.query;
 
+import org.jnosql.artemis.column.ColumnQueryMapperBuilder;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.column.query.ColumnFrom;
