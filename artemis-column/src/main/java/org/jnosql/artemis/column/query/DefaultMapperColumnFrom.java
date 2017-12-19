@@ -115,7 +115,7 @@ class DefaultMapperColumnFrom implements ColumnFrom, ColumnLimit, ColumnStart,
     @Override
     public <T> ColumnWhere eq(T value) throws NullPointerException {
         requireNonNull(value, "value is required");
-        ColumnCondition newCondition = ColumnCondition.eq(Column.of(name, value));
+        ColumnCondition newCondition = ColumnCondition.eq(Column.of(representation.getColumnField(name), value));
         return appendCondition(newCondition);
     }
 
@@ -123,35 +123,35 @@ class DefaultMapperColumnFrom implements ColumnFrom, ColumnLimit, ColumnStart,
     @Override
     public ColumnWhere like(String value) throws NullPointerException {
         requireNonNull(value, "value is required");
-        ColumnCondition newCondition = ColumnCondition.like(Column.of(name, value));
+        ColumnCondition newCondition = ColumnCondition.like(Column.of(representation.getColumnField(name), value));
         return appendCondition(newCondition);
     }
 
     @Override
     public ColumnWhere gt(Number value) throws NullPointerException {
         requireNonNull(value, "value is required");
-        ColumnCondition newCondition = ColumnCondition.gt(Column.of(name, value));
+        ColumnCondition newCondition = ColumnCondition.gt(Column.of(representation.getColumnField(name), value));
         return appendCondition(newCondition);
     }
 
     @Override
     public ColumnWhere gte(Number value) throws NullPointerException {
         requireNonNull(value, "value is required");
-        ColumnCondition newCondition = ColumnCondition.gte(Column.of(name, value));
+        ColumnCondition newCondition = ColumnCondition.gte(Column.of(representation.getColumnField(name), value));
         return appendCondition(newCondition);
     }
 
     @Override
     public ColumnWhere lt(Number value) throws NullPointerException {
         requireNonNull(value, "value is required");
-        ColumnCondition newCondition = ColumnCondition.lt(Column.of(name, value));
+        ColumnCondition newCondition = ColumnCondition.lt(Column.of(representation.getColumnField(name), value));
         return appendCondition(newCondition);
     }
 
     @Override
     public ColumnWhere lte(Number value) throws NullPointerException {
         requireNonNull(value, "value is required");
-        ColumnCondition newCondition = ColumnCondition.lte(Column.of(name, value));
+        ColumnCondition newCondition = ColumnCondition.lte(Column.of(representation.getColumnField(name), value));
         return appendCondition(newCondition);
     }
 
@@ -159,14 +159,14 @@ class DefaultMapperColumnFrom implements ColumnFrom, ColumnLimit, ColumnStart,
     public ColumnWhere between(Number valueA, Number valueB) throws NullPointerException {
         requireNonNull(valueA, "valueA is required");
         requireNonNull(valueB, "valueB is required");
-        ColumnCondition newCondition = ColumnCondition.between(Column.of(name, asList(valueA, valueB)));
+        ColumnCondition newCondition = ColumnCondition.between(Column.of(representation.getColumnField(name), asList(valueA, valueB)));
         return appendCondition(newCondition);
     }
 
     @Override
     public <T> ColumnWhere in(Iterable<T> values) throws NullPointerException {
         requireNonNull(values, "values is required");
-        ColumnCondition newCondition = ColumnCondition.in(Column.of(name, values));
+        ColumnCondition newCondition = ColumnCondition.in(Column.of(representation.getColumnField(name), values));
         return this;
     }
 
