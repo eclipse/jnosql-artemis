@@ -18,6 +18,7 @@ import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.column.ColumnQueryMapperBuilder;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.diana.api.column.query.ColumnDeleteFrom;
 import org.jnosql.diana.api.column.query.ColumnFrom;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -43,8 +44,9 @@ class DefaultColumnQueryMapperBuilder implements ColumnQueryMapperBuilder {
     }
 
     @Override
-    public <T> ColumnFrom deleteFrom(Class<T> entityClass) throws NullPointerException {
+    public <T> ColumnDeleteFrom deleteFrom(Class<T> entityClass) throws NullPointerException {
         requireNonNull(entityClass, "entity is required");
-        return null;
+        ClassRepresentation representation = classRepresentations.get().get(entityClass);
+        return new DefaultMapperColumnDeleteFrom(representation, converters.get());
     }
 }

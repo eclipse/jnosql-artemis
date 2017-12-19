@@ -14,6 +14,7 @@
  */
 package org.jnosql.artemis.column;
 
+import org.jnosql.diana.api.column.query.ColumnDeleteFrom;
 import org.jnosql.diana.api.column.query.ColumnFrom;
 
 /**
@@ -33,12 +34,12 @@ public interface ColumnQueryMapperBuilder {
     <T> ColumnFrom selectFrom(Class<T> entityClass) throws NullPointerException;
 
     /**
-     * Returns a {@link ColumnFrom} implementation that does the object mapper API.
+     * Returns a {@link ColumnDeleteFrom} implementation that does the object mapper API.
      *
      * @param entityClass the entity class
      * @param <T>         the entity type
-     * @return a {@link ColumnFrom} instance
+     * @return a {@link ColumnDeleteFrom} instance
      * @throws NullPointerException when entityClass is null
      */
-    <T> ColumnFrom deleteFrom(Class<T> entityClass) throws NullPointerException;
+    <T> ColumnDeleteFrom deleteFrom(Class<T> entityClass) throws NullPointerException;
 }
