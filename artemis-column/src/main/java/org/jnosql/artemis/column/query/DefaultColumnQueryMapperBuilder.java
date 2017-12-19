@@ -47,6 +47,6 @@ class DefaultColumnQueryMapperBuilder implements ColumnQueryMapperBuilder {
     public <T> ColumnDeleteFrom deleteFrom(Class<T> entityClass) throws NullPointerException {
         requireNonNull(entityClass, "entity is required");
         ClassRepresentation representation = classRepresentations.get().get(entityClass);
-        return new DefaultMapperColumnDeleteFrom(representation, converters.get());
+        return new DefaultColumnMapperDeleteBuilder(representation, converters.get());
     }
 }

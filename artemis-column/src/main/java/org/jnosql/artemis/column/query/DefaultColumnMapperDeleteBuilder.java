@@ -29,7 +29,7 @@ import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 
-class DefaultMapperColumnDeleteFrom implements ColumnDeleteFrom,
+class DefaultColumnMapperDeleteBuilder implements ColumnDeleteFrom,
         ColumnDeleteWhere, ColumnDeleteWhereName, ColumnDeleteNotCondition {
 
     private final ClassRepresentation representation;
@@ -45,7 +45,7 @@ class DefaultMapperColumnDeleteFrom implements ColumnDeleteFrom,
 
     private boolean and;
 
-    DefaultMapperColumnDeleteFrom(ClassRepresentation representation, Converters converters) {
+    DefaultColumnMapperDeleteBuilder(ClassRepresentation representation, Converters converters) {
         this.representation = representation;
         this.converters = converters;
     }
@@ -138,7 +138,7 @@ class DefaultMapperColumnDeleteFrom implements ColumnDeleteFrom,
         return appendCondition(newCondition);
     }
 
-    private DefaultMapperColumnDeleteFrom appendCondition(ColumnCondition newCondition) {
+    private DefaultColumnMapperDeleteBuilder appendCondition(ColumnCondition newCondition) {
         if (negate) {
             newCondition = newCondition.negate();
         }
