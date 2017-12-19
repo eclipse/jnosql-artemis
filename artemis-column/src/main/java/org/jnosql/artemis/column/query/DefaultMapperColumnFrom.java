@@ -14,8 +14,12 @@
  */
 package org.jnosql.artemis.column.query;
 
+import org.jnosql.artemis.AttributeConverter;
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.FieldRepresentation;
 import org.jnosql.diana.api.Sort;
+import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnCondition;
 import org.jnosql.diana.api.column.ColumnQuery;
@@ -29,17 +33,25 @@ import org.jnosql.diana.api.column.query.ColumnStart;
 import org.jnosql.diana.api.column.query.ColumnWhere;
 import org.jnosql.diana.api.column.query.ColumnWhereName;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 class DefaultMapperColumnFrom implements ColumnFrom, ColumnLimit, ColumnStart,
         ColumnOrder, ColumnWhereName, ColumnNameCondition, ColumnNotCondition, ColumnNameOrder, ColumnWhere {
 
     private final ClassRepresentation representation;
+
+    private final Converters converters;
 
     private final String columnFamily;
 
@@ -57,8 +69,9 @@ class DefaultMapperColumnFrom implements ColumnFrom, ColumnLimit, ColumnStart,
 
     private boolean and;
 
-    DefaultMapperColumnFrom(ClassRepresentation representation) {
+    DefaultMapperColumnFrom(ClassRepresentation representation, Converters converters) {
         this.representation = representation;
+        this.converters = converters;
         this.columnFamily = representation.getName();
     }
 
@@ -115,43 +128,49 @@ class DefaultMapperColumnFrom implements ColumnFrom, ColumnLimit, ColumnStart,
     @Override
     public <T> ColumnWhere eq(T value) throws NullPointerException {
         requireNonNull(value, "value is required");
-        ColumnCondition newCondition = ColumnCondition.eq(Column.of(representation.getColumnField(name), value));
+
+        ColumnCondition newCondition = ColumnCondition
+                .eq(Column.of(representation.getColumnField(name), getValue(value)));
         return appendCondition(newCondition);
     }
-
 
     @Override
     public ColumnWhere like(String value) throws NullPointerException {
         requireNonNull(value, "value is required");
-        ColumnCondition newCondition = ColumnCondition.like(Column.of(representation.getColumnField(name), value));
+        ColumnCondition newCondition = ColumnCondition
+                .like(Column.of(representation.getColumnField(name), getValue(value)));
         return appendCondition(newCondition);
     }
 
     @Override
     public ColumnWhere gt(Number value) throws NullPointerException {
         requireNonNull(value, "value is required");
-        ColumnCondition newCondition = ColumnCondition.gt(Column.of(representation.getColumnField(name), value));
+        ColumnCondition newCondition = ColumnCondition
+                .gt(Column.of(representation.getColumnField(name), getValue(value)));
         return appendCondition(newCondition);
     }
 
     @Override
     public ColumnWhere gte(Number value) throws NullPointerException {
         requireNonNull(value, "value is required");
-        ColumnCondition newCondition = ColumnCondition.gte(Column.of(representation.getColumnField(name), value));
+        ColumnCondition newCondition = ColumnCondition
+                .gte(Column.of(representation.getColumnField(name), getValue(value)));
         return appendCondition(newCondition);
     }
 
     @Override
     public ColumnWhere lt(Number value) throws NullPointerException {
         requireNonNull(value, "value is required");
-        ColumnCondition newCondition = ColumnCondition.lt(Column.of(representation.getColumnField(name), value));
+        ColumnCondition newCondition = ColumnCondition
+                .lt(Column.of(representation.getColumnField(name), getValue(value)));
         return appendCondition(newCondition);
     }
 
     @Override
     public ColumnWhere lte(Number value) throws NullPointerException {
         requireNonNull(value, "value is required");
-        ColumnCondition newCondition = ColumnCondition.lte(Column.of(representation.getColumnField(name), value));
+        ColumnCondition newCondition = ColumnCondition
+                .lte(Column.of(representation.getColumnField(name), getValue(value)));
         return appendCondition(newCondition);
     }
 
@@ -159,15 +178,19 @@ class DefaultMapperColumnFrom implements ColumnFrom, ColumnLimit, ColumnStart,
     public ColumnWhere between(Number valueA, Number valueB) throws NullPointerException {
         requireNonNull(valueA, "valueA is required");
         requireNonNull(valueB, "valueB is required");
-        ColumnCondition newCondition = ColumnCondition.between(Column.of(representation.getColumnField(name), asList(valueA, valueB)));
+        ColumnCondition newCondition = ColumnCondition
+                .between(Column.of(representation.getColumnField(name), asList(getValue(valueA), getValue(valueB))));
         return appendCondition(newCondition);
     }
 
     @Override
     public <T> ColumnWhere in(Iterable<T> values) throws NullPointerException {
         requireNonNull(values, "values is required");
-        ColumnCondition newCondition = ColumnCondition.in(Column.of(representation.getColumnField(name), values));
-        return this;
+        List<Object> convertedValues = StreamSupport.stream(values.spliterator(), false)
+                .map(this::getValue).collect(toList());
+        ColumnCondition newCondition = ColumnCondition
+                .in(Column.of(representation.getColumnField(name), convertedValues));
+        return appendCondition(newCondition);
     }
 
     @Override
@@ -205,5 +228,22 @@ class DefaultMapperColumnFrom implements ColumnFrom, ColumnLimit, ColumnStart,
         this.name = null;
         return this;
     }
+
+
+    private Object getValue(Object value) {
+        Optional<FieldRepresentation> fieldOptional = representation.getFieldRepresentation(name);
+        if (fieldOptional.isPresent()) {
+            FieldRepresentation field = fieldOptional.get();
+            Field nativeField = field.getNativeField();
+            if (!nativeField.getType().equals(value.getClass())) {
+                return field.getConverter()
+                        .map(converters::get)
+                        .map(a -> a.convertToDatabaseColumn(value))
+                        .orElseGet(() -> Value.of(value).get(nativeField.getType()));
+            }
+        }
+        return value;
+    }
+
 
 }

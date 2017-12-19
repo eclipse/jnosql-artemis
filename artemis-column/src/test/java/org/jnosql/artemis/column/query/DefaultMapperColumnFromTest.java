@@ -77,17 +77,16 @@ public class DefaultMapperColumnFromTest {
     @Test
     public void shouldSelectLimit() {
         ColumnQuery query = mapperBuilder.selectFrom(Worker.class).limit(10).build();
-        ColumnQuery queryExpected = select().from("Worker").limit(10).build();
+        ColumnQuery queryExpected = select().from("Worker").limit(10L).build();
         Assert.assertEquals(queryExpected, query);
     }
 
     @Test
     public void shouldSelectStart() {
         ColumnQuery query = mapperBuilder.selectFrom(Worker.class).start(10).build();
-        ColumnQuery queryExpected = select().from("Worker").start(10).build();
+        ColumnQuery queryExpected = select().from("Worker").start(10L).build();
         Assert.assertEquals(queryExpected, query);
     }
-
 
 
     @Test
@@ -107,35 +106,37 @@ public class DefaultMapperColumnFromTest {
     @Test
     public void shouldSelectWhereNameGt() {
         ColumnQuery query = mapperBuilder.selectFrom(Person.class).where("id").gt(10).build();
-        ColumnQuery queryExpected = select().from("Person").where("_id").gt(10).build();
+        ColumnQuery queryExpected = select().from("Person").where("_id").gt(10L).build();
         Assert.assertEquals(queryExpected, query);
     }
 
     @Test
     public void shouldSelectWhereNameGte() {
         ColumnQuery query = mapperBuilder.selectFrom(Person.class).where("id").gte(10).build();
-        ColumnQuery queryExpected = select().from("Person").where("_id").gte(10).build();
+        ColumnQuery queryExpected = select().from("Person").where("_id").gte(10L).build();
         Assert.assertEquals(queryExpected, query);
     }
 
     @Test
     public void shouldSelectWhereNameLt() {
         ColumnQuery query = mapperBuilder.selectFrom(Person.class).where("id").lt(10).build();
-        ColumnQuery queryExpected = select().from("Person").where("_id").lt(10).build();
+        ColumnQuery queryExpected = select().from("Person").where("_id").lt(10L).build();
         Assert.assertEquals(queryExpected, query);
     }
 
     @Test
     public void shouldSelectWhereNameLte() {
         ColumnQuery query = mapperBuilder.selectFrom(Person.class).where("id").lte(10).build();
-        ColumnQuery queryExpected = select().from("Person").where("_id").lte(10).build();
+        ColumnQuery queryExpected = select().from("Person").where("_id").lte(10L).build();
         Assert.assertEquals(queryExpected, query);
     }
 
     @Test
     public void shouldSelectWhereNameBetween() {
-        ColumnQuery query = mapperBuilder.selectFrom(Person.class).where("id").between(10, 20).build();
-        ColumnQuery queryExpected = select().from("Person").where("_id").between(10, 20).build();
+        ColumnQuery query = mapperBuilder.selectFrom(Person.class).where("id")
+                .between(10, 20).build();
+        ColumnQuery queryExpected = select().from("Person").where("_id")
+                .between(10L, 20L).build();
         Assert.assertEquals(queryExpected, query);
     }
 
@@ -149,19 +150,34 @@ public class DefaultMapperColumnFromTest {
 
     @Test
     public void shouldSelectWhereNameAnd() {
-        ColumnQuery query = mapperBuilder.selectFrom(Person.class).where("id").between(10, 20).and( "name").eq("Ada").build();
-        ColumnQuery queryExpected = select().from("Person").where("_id").between(10, 20).and( "name").eq("Ada").build();
+        ColumnQuery query = mapperBuilder.selectFrom(Person.class).where("age").between(10, 20)
+                .and("name").eq("Ada").build();
+        ColumnQuery queryExpected = select().from("Person").where("age")
+                .between(10, 20)
+                .and("name").eq("Ada").build();
 
         Assert.assertEquals(queryExpected, query);
     }
 
     @Test
     public void shouldSelectWhereNameOr() {
-        ColumnQuery query = mapperBuilder.selectFrom(Person.class).where("id").between(10, 20).or( "name").eq("Ada").build();
-        ColumnQuery queryExpected = select().from("Person").where("_id").between(10, 20).or( "name").eq("Ada").build();
+        ColumnQuery query = mapperBuilder.selectFrom(Person.class).where("id").between(10, 20)
+                .or("name").eq("Ada").build();
+        ColumnQuery queryExpected = select().from("Person").where("_id")
+                .between(10L, 20L)
+                .or("name").eq("Ada").build();
 
         Assert.assertEquals(queryExpected, query);
     }
 
+    @Test
+    public void shouldConvertField() {
+        ColumnQuery query = mapperBuilder.selectFrom(Person.class).where("id").eq("20")
+                .build();
+        ColumnQuery queryExpected = select().from("Person").where("_id").eq(20L)
+                .build();
+
+        Assert.assertEquals(queryExpected, query);
+    }
 
 }

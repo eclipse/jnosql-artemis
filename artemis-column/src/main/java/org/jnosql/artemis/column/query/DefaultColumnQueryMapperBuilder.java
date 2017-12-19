@@ -14,6 +14,7 @@
  */
 package org.jnosql.artemis.column.query;
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.column.ColumnQueryMapperBuilder;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
@@ -31,11 +32,14 @@ class DefaultColumnQueryMapperBuilder implements ColumnQueryMapperBuilder {
     @Inject
     private Instance<ClassRepresentations> classRepresentations;
 
+    @Inject
+    private Instance<Converters> converters;
+
     @Override
     public <T> ColumnFrom selectFrom(Class<T> entityClass) throws NullPointerException {
         requireNonNull(entityClass, "entity is required");
         ClassRepresentation representation = classRepresentations.get().get(entityClass);
-        return new DefaultMapperColumnFrom(representation);
+        return new DefaultMapperColumnFrom(representation, converters.get());
     }
 
     @Override
