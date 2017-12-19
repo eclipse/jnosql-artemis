@@ -16,8 +16,6 @@ package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.reflection.ClassRepresentation;
-import org.jnosql.diana.api.column.Column;
-import org.jnosql.diana.api.column.ColumnCondition;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.query.ColumnDeleteFrom;
 import org.jnosql.diana.api.column.query.ColumnDeleteNameCondition;
@@ -25,29 +23,14 @@ import org.jnosql.diana.api.column.query.ColumnDeleteNotCondition;
 import org.jnosql.diana.api.column.query.ColumnDeleteWhere;
 import org.jnosql.diana.api.column.query.ColumnDeleteWhereName;
 
-import static java.util.Arrays.asList;
-import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 
-class DefaultColumnMapperDeleteBuilder implements ColumnDeleteFrom,
+class DefaultColumnMapperDeleteBuilder extends AbstractMapperQuery implements ColumnDeleteFrom,
         ColumnDeleteWhere, ColumnDeleteWhereName, ColumnDeleteNotCondition {
 
-    private final ClassRepresentation representation;
-    private final Converters converters;
-
-    private String columnFamily;
-
-    private ColumnCondition condition;
-
-    private String name;
-
-    private boolean negate;
-
-    private boolean and;
 
     DefaultColumnMapperDeleteBuilder(ClassRepresentation representation, Converters converters) {
-        this.representation = representation;
-        this.converters = converters;
+        super(representation, converters);
     }
 
     @Override
@@ -83,81 +66,57 @@ class DefaultColumnMapperDeleteBuilder implements ColumnDeleteFrom,
 
     @Override
     public <T> ColumnDeleteWhere eq(T value) throws NullPointerException {
-        requireNonNull(value, "value is required");
-        ColumnCondition newCondition = ColumnCondition.eq(Column.of(name, value));
-        return appendCondition(newCondition);
+        eqImpl(value);
+        return this;
     }
 
     @Override
     public ColumnDeleteWhere like(String value) throws NullPointerException {
-        requireNonNull(value, "value is required");
-        ColumnCondition newCondition = ColumnCondition.like(Column.of(name, value));
-        return appendCondition(newCondition);
+        likeImpl(value);
+        return this;
     }
 
     @Override
     public ColumnDeleteWhere gt(Number value) throws NullPointerException {
-        requireNonNull(value, "value is required");
-        ColumnCondition newCondition = ColumnCondition.gt(Column.of(name, value));
-        return appendCondition(newCondition);
+        gtImpl(value);
+        return this;
     }
 
     @Override
     public ColumnDeleteWhere gte(Number value) throws NullPointerException {
-        requireNonNull(value, "value is required");
-        ColumnCondition newCondition = ColumnCondition.gte(Column.of(name, value));
-        return appendCondition(newCondition);
+        gteImpl(value);
+        return this;
     }
 
     @Override
     public ColumnDeleteWhere lt(Number value) throws NullPointerException {
-        requireNonNull(value, "value is required");
-        ColumnCondition newCondition = ColumnCondition.lt(Column.of(name, value));
-        return appendCondition(newCondition);
+        ltImpl(value);
+        return this;
     }
 
     @Override
     public ColumnDeleteWhere lte(Number value) throws NullPointerException {
-        requireNonNull(value, "value is required");
-        ColumnCondition newCondition = ColumnCondition.lte(Column.of(name, value));
-        return appendCondition(newCondition);
+        lteImpl(value);
+        return this;
     }
 
     @Override
     public ColumnDeleteWhere between(Number valueA, Number valueB) throws NullPointerException {
-        requireNonNull(valueA, "valueA is required");
-        requireNonNull(valueB, "valueB is required");
-        ColumnCondition newCondition = ColumnCondition.between(Column.of(name, asList(valueA, valueB)));
-        return appendCondition(newCondition);
+        betweenImpl(valueA, valueB);
+        return this;
     }
+
 
     @Override
     public <T> ColumnDeleteWhere in(Iterable<T> values) throws NullPointerException {
-        requireNonNull(values, "values is required");
-        ColumnCondition newCondition = ColumnCondition.in(Column.of(name, values));
-        return appendCondition(newCondition);
-    }
-
-    private DefaultColumnMapperDeleteBuilder appendCondition(ColumnCondition newCondition) {
-        if (negate) {
-            newCondition = newCondition.negate();
-        }
-        if (nonNull(condition)) {
-            if (and) {
-                this.condition = condition.and(newCondition);
-            } else {
-                this.condition = condition.or(newCondition);
-            }
-        } else {
-            this.condition = newCondition;
-        }
-        this.negate = false;
-        this.name = null;
+        inImpl(values);
         return this;
     }
+
 
     @Override
     public ColumnDeleteQuery build() {
         return new ArtemisColumnDeleteQuery(columnFamily, condition);
     }
+
 }
