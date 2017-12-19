@@ -44,7 +44,7 @@ public class DefaultColumnQueryMapperBuilderTest {
         ColumnFrom columnFrom = mapperBuilder.selectFrom(Person.class);
         assertNotNull(columnFrom);
     }
-    
+
     @Test(expected = NullPointerException.class)
     public void shouldReturnErrorWhenDeleteEntityClassIsNull() {
         mapperBuilder.deleteFrom(null);
