@@ -88,5 +88,18 @@ class ArtemisDocumentQuery implements DocumentQuery {
     public int hashCode() {
         return Objects.hash(limit, start, documentCollection, condition, sorts, Collections.emptyList());
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("ArtemisDocumentQuery{");
+        sb.append("maxResult=").append(limit);
+        sb.append(", firstResult=").append(start);
+        sb.append(", documentCollection='").append(documentCollection).append('\'');
+        sb.append(", condition=").append(condition);
+        sb.append(", sorts=").append(sorts);
+        sb.append(", documents=").append(Collections.emptyList());
+        sb.append('}');
+        return sb.toString();
+    }
 }
 

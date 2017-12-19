@@ -65,4 +65,14 @@ class ArtemisDocumentDeleteQuery implements DocumentDeleteQuery {
     public int hashCode() {
         return Objects.hash(documentCollection, condition, Collections.emptyList());
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("ArtemisDocumentDeleteQuery{");
+        sb.append("documentCollection='").append(documentCollection).append('\'');
+        sb.append(", condition=").append(condition);
+        sb.append(", documents=").append(Collections.emptyList());
+        sb.append('}');
+        return sb.toString();
+    }
 }
