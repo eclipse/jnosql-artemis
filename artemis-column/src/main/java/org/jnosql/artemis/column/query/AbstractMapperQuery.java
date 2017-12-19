@@ -31,7 +31,7 @@ import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-class AbstractMapperQuery {
+abstract class AbstractMapperQuery {
 
     protected final String columnFamily;
 
