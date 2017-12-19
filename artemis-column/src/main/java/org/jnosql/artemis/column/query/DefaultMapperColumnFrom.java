@@ -41,11 +41,7 @@ class DefaultMapperColumnFrom implements ColumnFrom, ColumnLimit, ColumnStart,
 
     private final ClassRepresentation representation;
 
-    DefaultMapperColumnFrom(ClassRepresentation representation) {
-        this.representation = representation;
-    }
-
-    private String columnFamily;
+    private final String columnFamily;
 
     private ColumnCondition condition;
 
@@ -60,6 +56,11 @@ class DefaultMapperColumnFrom implements ColumnFrom, ColumnLimit, ColumnStart,
     private boolean negate;
 
     private boolean and;
+
+    DefaultMapperColumnFrom(ClassRepresentation representation) {
+        this.representation = representation;
+        this.columnFamily = representation.getName();
+    }
 
 
     @Override
