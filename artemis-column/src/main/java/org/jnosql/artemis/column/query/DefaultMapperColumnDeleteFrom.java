@@ -158,6 +158,6 @@ class DefaultMapperColumnDeleteFrom implements ColumnDeleteFrom,
 
     @Override
     public ColumnDeleteQuery build() {
-        return new ArtemisColumnDeleteFrom(columnFamily, condition);
+        return new ArtemisColumnDeleteQuery(columnFamily, condition);
     }
 }

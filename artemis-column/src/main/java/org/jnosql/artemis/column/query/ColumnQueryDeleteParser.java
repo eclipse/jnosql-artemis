@@ -56,7 +56,7 @@ public class ColumnQueryDeleteParser {
             }
         }
 
-        return new ArtemisColumnDeleteFrom(representation.getName(), condition);
+        return new ArtemisColumnDeleteQuery(representation.getName(), condition);
 
     }
 
