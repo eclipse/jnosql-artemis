@@ -264,7 +264,7 @@ public class DocumentRepositoryProxyTest {
 
 
         DocumentQuery query = select().from("Person")
-                .where(eq(Document.of("name", "Ada")))
+                .where("name").eq("Ada")
                 .build();
         Person person = personRepository.query(query);
         verify(template).singleResult(captor.capture());
@@ -277,7 +277,7 @@ public class DocumentRepositoryProxyTest {
     public void shouldDeleteQuery() {
         ArgumentCaptor<DocumentDeleteQuery> captor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
 
-        DocumentDeleteQuery query = delete().from("Person").where(eq(Document.of("name", "Ada"))).build();
+        DocumentDeleteQuery query = delete().from("Person").where("name").eq("Ada").build();
         personRepository.deleteQuery(query);
         verify(template).delete(captor.capture());
         assertEquals(query, captor.getValue());

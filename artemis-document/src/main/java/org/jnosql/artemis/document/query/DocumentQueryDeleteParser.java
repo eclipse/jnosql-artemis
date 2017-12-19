@@ -18,12 +18,10 @@ import org.jnosql.artemis.document.query.DocumentQueryParserUtil.ConditionResult
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
-import org.jnosql.diana.api.document.query.DocumentDeleteFrom;
 
 import static org.jnosql.artemis.document.query.DocumentQueryParserUtil.and;
 import static org.jnosql.artemis.document.query.DocumentQueryParserUtil.or;
 import static org.jnosql.artemis.document.query.DocumentQueryParserUtil.toCondition;
-import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
 
 /**
  * Class the returns a {@link DocumentDeleteQuery}
@@ -55,12 +53,7 @@ public class DocumentQueryDeleteParser {
                 index++;
             }
         }
-        DocumentDeleteFrom from = delete().from(representation.getName());
-        if (condition == null) {
-            return from.build();
-        } else {
-            return from.where(condition).build();
-        }
+        return new ArtemisDocumentDeleteQuery(representation.getName(), condition);
     }
 
 }

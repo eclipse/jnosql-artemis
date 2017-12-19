@@ -43,7 +43,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import static java.util.Collections.singletonList;
-import static org.jnosql.diana.api.document.DocumentCondition.eq;
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
 import static org.junit.Assert.assertEquals;
@@ -259,7 +258,7 @@ public class DocumentRepositoryAsyncProxyTest {
         ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
 
         DocumentQuery query = select().from("Person")
-                .where(eq(Document.of("name", "Ada")))
+                .where("name").eq("Ada")
                 .build();
 
         personRepository.query(query, callback);
@@ -276,7 +275,7 @@ public class DocumentRepositoryAsyncProxyTest {
         ArgumentCaptor<DocumentDeleteQuery> captor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
 
         DocumentDeleteQuery deleteQuery = delete().from("Person")
-                .where(eq(Document.of("name", "Ada")))
+                .where("name").eq("Ada")
                 .build();
 
         personRepository.deleteQuery(deleteQuery);

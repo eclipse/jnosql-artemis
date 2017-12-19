@@ -19,7 +19,6 @@ import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.Sort;
 import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentQuery;
-import org.jnosql.diana.api.document.query.DocumentFrom;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +32,6 @@ import static org.jnosql.artemis.document.query.DocumentQueryParserUtil.or;
 import static org.jnosql.artemis.document.query.DocumentQueryParserUtil.toCondition;
 import static org.jnosql.diana.api.Sort.SortType.ASC;
 import static org.jnosql.diana.api.Sort.SortType.DESC;
-import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
 
 /**
  * Class the returns a {@link org.jnosql.diana.api.document.DocumentQuery}
@@ -94,15 +92,7 @@ public class DocumentQueryParser {
             index++;
         }
 
-        DocumentFrom from = select().from(representation.getName());
-        if (condition == null) {
-            sorts.forEach(from::orderBy);
-            return from.limit(limit).start(start).build();
-        } else {
-            from.where(condition);
-            sorts.forEach(from::orderBy);
-            return from.start(start).limit(limit).build();
-        }
+        return new ArtemisDocumentQuery(sorts, limit, start, condition, representation.getName());
     }
 
 
