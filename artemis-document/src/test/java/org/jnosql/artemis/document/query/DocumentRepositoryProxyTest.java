@@ -50,6 +50,7 @@ import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.jnosql.diana.api.Condition.AND;
 import static org.jnosql.diana.api.Condition.BETWEEN;
+import static org.jnosql.diana.api.Condition.EQUALS;
 import static org.jnosql.diana.api.Condition.GREATER_THAN;
 import static org.jnosql.diana.api.Condition.LESSER_EQUALS_THAN;
 import static org.jnosql.diana.api.Condition.LESSER_THAN;
@@ -485,7 +486,24 @@ public class DocumentRepositoryProxyTest {
         assertEquals("Person", query.getDocumentCollection());
         assertEquals(LIKE, condition.getCondition());
         assertEquals(Document.of("name", "Ada"), condition.getDocument());
+    }
 
+    @Test
+    public void shouldConvertTheToTheType() {
+        Person ada = Person.builder()
+                .withAge(20).withName("Ada").build();
+
+        when(template.select(any(DocumentQuery.class)))
+                .thenReturn(singletonList(ada));
+
+        personRepository.findByAge("120");
+        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
+        verify(template).select(captor.capture());
+        DocumentQuery query = captor.getValue();
+        DocumentCondition condition = query.getCondition().get();
+        assertEquals("Person", query.getDocumentCollection());
+        assertEquals(EQUALS, condition.getCondition());
+        assertEquals(Document.of("age", 120), condition.getDocument());
     }
 
     interface PersonRepository extends Repository<Person, Long> {
@@ -493,6 +511,9 @@ public class DocumentRepositoryProxyTest {
         List<Person> findAll();
 
         Person findByName(String name);
+
+
+        List<Person> findByAge(String age);
 
         void deleteByName(String name);
 
