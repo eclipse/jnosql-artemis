@@ -14,14 +14,16 @@
  */
 package org.jnosql.artemis.document.query;
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.document.DocumentCondition;
 
 interface DocumentTokenProcessor {
 
     DocumentCondition process(String token,
-                                  int index,
-                                  Object[] args,
-                                  String methodName,
-                                  ClassRepresentation representation);
+                              int index,
+                              Object[] args,
+                              String methodName,
+                              ClassRepresentation representation,
+                              Converters converters);
 }

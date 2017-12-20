@@ -14,6 +14,7 @@
  */
 package org.jnosql.artemis.document.query;
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.document.Document;
@@ -28,58 +29,73 @@ enum DocumentTokenProcessorType implements DocumentTokenProcessor {
 
     BETWEEN("Between", 2) {
         @Override
-        public DocumentCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
+        public DocumentCondition process(String token, int index, Object[] args, String methodName,
+                                         ClassRepresentation representation, Converters converters) {
             checkContents(index, args.length, this.getFieldsRequired(), methodName);
             String name = getName(token, representation).replace(this.getType(), EMPTY);
-            return DocumentCondition.between(Document.of(name, Arrays.asList(args[index], args[++index])));
+            Object valueA = getValue(token, args[index], representation, converters);
+            Object valueB = getValue(token, args[++index], representation, converters);
+            return DocumentCondition.between(Document.of(name, Arrays.asList(valueA, valueB)));
         }
     },
     LESS_THAN_EQUAL("LessThanEqual", 1) {
         @Override
-        public DocumentCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
+        public DocumentCondition process(String token, int index, Object[] args, String methodName,
+                                         ClassRepresentation representation, Converters converters) {
             checkContents(index, args.length, this.getFieldsRequired(), methodName);
             String name = getName(token, representation).replace(this.getType(), EMPTY);
-            return DocumentCondition.lte(Document.of(name, args[index]));
+            Object value = getValue(token, args[index], representation, converters);
+            return DocumentCondition.lte(Document.of(name, value));
         }
     },
     GREATER_THAN_EQUAL("GreaterThanEqual", 1) {
         @Override
-        public DocumentCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
+        public DocumentCondition process(String token, int index, Object[] args, String methodName,
+                                         ClassRepresentation representation, Converters converters) {
             checkContents(index, args.length, this.getFieldsRequired(), methodName);
             String name = getName(token, representation).replace(this.getType(), EMPTY);
-            return DocumentCondition.gte(Document.of(name, args[index]));
+            Object value = getValue(token, args[index], representation, converters);
+            return DocumentCondition.gte(Document.of(name, value));
         }
     },
     LESS_THAN("LessThan", 1) {
         @Override
-        public DocumentCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
+        public DocumentCondition process(String token, int index, Object[] args, String methodName,
+                                         ClassRepresentation representation, Converters converters) {
             checkContents(index, args.length, this.getFieldsRequired(), methodName);
             String name = getName(token, representation).replace(this.getType(), EMPTY);
-            return DocumentCondition.lt(Document.of(name, args[index]));
+            Object value = getValue(token, args[index], representation, converters);
+            return DocumentCondition.lt(Document.of(name, value));
         }
     },
     GREATER_THAN("GreaterThan", 1) {
         @Override
-        public DocumentCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
+        public DocumentCondition process(String token, int index, Object[] args, String methodName,
+                                         ClassRepresentation representation, Converters converters) {
             checkContents(index, args.length, this.getFieldsRequired(), methodName);
             String name = getName(token, representation).replace(this.getType(), EMPTY);
-            return DocumentCondition.gt(Document.of(name, args[index]));
+            Object value = getValue(token, args[index], representation, converters);
+            return DocumentCondition.gt(Document.of(name, value));
         }
     },
     LIKE("Like", 1) {
         @Override
-        public DocumentCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
+        public DocumentCondition process(String token, int index, Object[] args, String methodName,
+                                         ClassRepresentation representation, Converters converters) {
             checkContents(index, args.length, this.getFieldsRequired(), methodName);
             String name = getName(token, representation).replace(this.getType(), EMPTY);
-            return DocumentCondition.like(Document.of(name, args[index]));
+            Object value = getValue(token, args[index], representation, converters);
+            return DocumentCondition.like(Document.of(name, value));
         }
     },
     DEFAULT("", 1) {
         @Override
-        public DocumentCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
+        public DocumentCondition process(String token, int index, Object[] args, String methodName,
+                                         ClassRepresentation representation, Converters converters) {
             checkContents(index, args.length, this.getFieldsRequired(), methodName);
             String name = getName(token, representation);
-            return DocumentCondition.eq(Document.of(name, args[index]));
+            Object value = getValue(token, args[index], representation, converters);
+            return DocumentCondition.eq(Document.of(name, value));
         }
     };
 
@@ -111,8 +127,19 @@ enum DocumentTokenProcessorType implements DocumentTokenProcessor {
 
 
     private static String getName(String token, ClassRepresentation representation) {
-        return representation.getColumnField(String.valueOf(Character.toLowerCase(token.charAt(0)))
-                .concat(token.substring(1)));
+        return representation.getColumnField(getJavaField(token));
+    }
+
+    private static Object getValue(String token, Object value, ClassRepresentation representation,
+                                   Converters converters) {
+
+        String javaField = getJavaField(token);
+        return ConverterUtil.getValue(value, representation, javaField, converters);
+    }
+
+    private static String getJavaField(String token) {
+        return String.valueOf(Character.toLowerCase(token.charAt(0)))
+                .concat(token.substring(1));
     }
 
     static DocumentTokenProcessorType of(String token) {
