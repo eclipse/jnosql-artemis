@@ -16,14 +16,10 @@ package org.jnosql.artemis.document.query;
 
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.reflection.ClassRepresentation;
-import org.jnosql.artemis.reflection.FieldRepresentation;
-import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCondition;
 
-import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.StreamSupport;
 
 import static java.util.Arrays.asList;
@@ -141,22 +137,6 @@ abstract class AbstractMapperQuery {
 
 
     protected Object getValue(Object value) {
-        Optional<FieldRepresentation> fieldOptional = representation.getFieldRepresentation(name);
-        if (fieldOptional.isPresent()) {
-            FieldRepresentation field = fieldOptional.get();
-            Field nativeField = field.getNativeField();
-            if (!nativeField.getType().equals(value.getClass())) {
-                return field.getConverter()
-                        .map(converters::get)
-                        .map(a -> a.convertToDatabaseColumn(value))
-                        .orElseGet(() -> Value.of(value).get(nativeField.getType()));
-            }
-
-            return field.getConverter()
-                    .map(converters::get)
-                    .map(a -> a.convertToDatabaseColumn(value))
-                    .orElse(value);
-        }
-        return value;
+      return ConverterUtil.getValue(value, representation,name, converters);
     }
 }
