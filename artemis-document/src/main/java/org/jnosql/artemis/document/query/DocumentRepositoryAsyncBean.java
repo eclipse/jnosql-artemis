@@ -14,6 +14,7 @@
  */
 package org.jnosql.artemis.document.query;
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
@@ -90,9 +91,10 @@ public class DocumentRepositoryAsyncBean implements Bean<RepositoryAsync>, Passi
         DocumentTemplateAsync repository = provider.isEmpty() ? getInstance(DocumentTemplateAsync.class) :
                 getInstance(DocumentTemplateAsync.class, provider);
         Reflections reflections = getInstance(Reflections.class);
+        Converters converters = getInstance(Converters.class);
 
         DocumentRepositoryAsyncProxy handler = new DocumentRepositoryAsyncProxy(repository,
-                classRepresentations, type, reflections);
+                classRepresentations, type, reflections, converters);
         return (RepositoryAsync) Proxy.newProxyInstance(type.getClassLoader(),
                 new Class[]{type},
                 handler);

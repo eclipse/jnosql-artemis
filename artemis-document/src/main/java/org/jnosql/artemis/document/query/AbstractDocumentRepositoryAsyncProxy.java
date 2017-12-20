@@ -15,6 +15,7 @@
 package org.jnosql.artemis.document.query;
 
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.document.DocumentTemplateAsync;
@@ -48,6 +49,8 @@ public abstract class AbstractDocumentRepositoryAsyncProxy<T> implements Invocat
 
     protected abstract ClassRepresentation getClassRepresentation();
 
+    protected abstract Converters getConverters();
+
     @Override
     public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
 
@@ -59,12 +62,14 @@ public abstract class AbstractDocumentRepositoryAsyncProxy<T> implements Invocat
             case DEFAULT:
                 return method.invoke(getRepository(), args);
             case FIND_BY:
-                DocumentQuery query = getQueryParser().parse(methodName, args, getClassRepresentation());
+                DocumentQuery query = getQueryParser().parse(methodName, args, getClassRepresentation(),
+                        getConverters());
                 return executeQuery(getCallBack(args), query);
             case FIND_ALL:
                 return executeQuery(getCallBack(args), select().from(getClassRepresentation().getName()).build());
             case DELETE_BY:
-                DocumentDeleteQuery deleteQuery = getDeleteParser().parse(methodName, args, getClassRepresentation());
+                DocumentDeleteQuery deleteQuery = getDeleteParser().parse(methodName, args, getClassRepresentation(),
+                        getConverters());
                 return executeDelete(args, deleteQuery);
             case QUERY:
                 DocumentQuery documentQuery = getQuery(args).get();

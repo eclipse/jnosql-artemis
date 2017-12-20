@@ -14,6 +14,7 @@
  */
 package org.jnosql.artemis.document.query;
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.model.Person;
@@ -40,6 +41,9 @@ public class DocumentQueryDeleteParserTest {
     @Inject
     private ClassRepresentations classRepresentations;
 
+    @Inject
+    private Converters converters;
+
     private DocumentQueryDeleteParser parser;
 
     private ClassRepresentation classRepresentation;
@@ -53,7 +57,8 @@ public class DocumentQueryDeleteParserTest {
 
     @Test
     public void shouldDeleteByName() {
-        DocumentDeleteQuery query = parser.parse("deleteByName", new Object[]{"name"}, classRepresentation);
+        DocumentDeleteQuery query = parser.parse("deleteByName", new Object[]{"name"},
+                classRepresentation, converters);
         assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
         assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
@@ -62,7 +67,8 @@ public class DocumentQueryDeleteParserTest {
 
     @Test
     public void shouldDeleteByNameAndAge() {
-        DocumentDeleteQuery query = parser.parse("deleteByNameAndAge", new Object[]{"name", 10}, classRepresentation);
+        DocumentDeleteQuery query = parser.parse("deleteByNameAndAge", new Object[]{"name", 10},
+                classRepresentation, converters);
         DocumentCondition condition = query.getCondition().get();
         assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.AND, condition.getCondition());
@@ -79,7 +85,8 @@ public class DocumentQueryDeleteParserTest {
 
     @Test
     public void shouldDeleteByNameOrAge() {
-        DocumentDeleteQuery query = parser.parse("deleteByNameOrAge", new Object[]{"name", 10}, classRepresentation);
+        DocumentDeleteQuery query = parser.parse("deleteByNameOrAge", new Object[]{"name", 10},
+                classRepresentation, converters);
         DocumentCondition condition = query.getCondition().get();
         assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.OR, condition.getCondition());
@@ -97,7 +104,8 @@ public class DocumentQueryDeleteParserTest {
 
     @Test
     public void shouldDeleteByAgeLessThan() {
-        DocumentDeleteQuery query = parser.parse("deleteByAgeLessThan", new Object[]{10}, classRepresentation);
+        DocumentDeleteQuery query = parser.parse("deleteByAgeLessThan", new Object[]{10},
+                classRepresentation, converters);
         assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.LESSER_THAN, query.getCondition().get().getCondition());
         assertEquals(Document.of("age", 10), query.getCondition().get().getDocument());
@@ -105,7 +113,8 @@ public class DocumentQueryDeleteParserTest {
 
     @Test
     public void shouldDeleteByAgeGreaterThan() {
-        DocumentDeleteQuery query = parser.parse("deleteByAgeGreaterThan", new Object[]{10}, classRepresentation);
+        DocumentDeleteQuery query = parser.parse("deleteByAgeGreaterThan", new Object[]{10},
+                classRepresentation, converters);
         assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.GREATER_THAN, query.getCondition().get().getCondition());
         assertEquals(Document.of("age", 10), query.getCondition().get().getDocument());
@@ -113,7 +122,8 @@ public class DocumentQueryDeleteParserTest {
 
     @Test
     public void shouldDeleteByAgeLessThanEqual() {
-        DocumentDeleteQuery query = parser.parse("deleteByAgeLessThanEqual", new Object[]{10}, classRepresentation);
+        DocumentDeleteQuery query = parser.parse("deleteByAgeLessThanEqual", new Object[]{10},
+                classRepresentation, converters);
         assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.LESSER_EQUALS_THAN, query.getCondition().get().getCondition());
         assertEquals(Document.of("age", 10), query.getCondition().get().getDocument());
@@ -121,7 +131,8 @@ public class DocumentQueryDeleteParserTest {
 
     @Test
     public void shouldDeleteByAgeGreaterThanEqual() {
-        DocumentDeleteQuery query = parser.parse("deleteByAgeGreaterThanEqual", new Object[]{10}, classRepresentation);
+        DocumentDeleteQuery query = parser.parse("deleteByAgeGreaterThanEqual", new Object[]{10},
+                classRepresentation, converters);
         assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.GREATER_EQUALS_THAN, query.getCondition().get().getCondition());
         assertEquals(Document.of("age", 10), query.getCondition().get().getDocument());
@@ -129,7 +140,8 @@ public class DocumentQueryDeleteParserTest {
 
     @Test
     public void shouldDeleteByNameLike() {
-        DocumentDeleteQuery query = parser.parse("deleteByNameLike", new Object[]{"name"}, classRepresentation);
+        DocumentDeleteQuery query = parser.parse("deleteByNameLike", new Object[]{"name"},
+                classRepresentation, converters);
         assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.LIKE, query.getCondition().get().getCondition());
         assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
@@ -140,7 +152,7 @@ public class DocumentQueryDeleteParserTest {
     @Test
     public void shouldDeleteByNameAndAAgeBetween() {
         DocumentDeleteQuery query = parser.parse("deleteByNameAndAgeBetween", new Object[]{"name", 10, 11},
-                classRepresentation);
+                classRepresentation, converters);
         assertEquals("Person", query.getDocumentCollection());
         DocumentCondition condition = query.getCondition().get();
         assertEquals(Condition.AND, condition.getCondition());
@@ -159,13 +171,13 @@ public class DocumentQueryDeleteParserTest {
     @Test(expected = DynamicQueryException.class)
     public void shouldReturnErrorWhenIsMissedArgument() {
        parser.parse("deleteByNameAndAgeBetween", new Object[]{"name", 10},
-                classRepresentation);
+                classRepresentation, converters);
     }
 
     @Test(expected = DynamicQueryException.class)
     public void shouldReturnErrorWhenIsMissedArgument2() {
        parser.parse("deleteByName", new Object[]{},
-                classRepresentation);
+                classRepresentation, converters);
     }
 
 

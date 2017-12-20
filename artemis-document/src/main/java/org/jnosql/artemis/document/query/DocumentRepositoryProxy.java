@@ -15,6 +15,7 @@
 package org.jnosql.artemis.document.query;
 
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.document.DocumentTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentation;
@@ -41,9 +42,11 @@ class DocumentRepositoryProxy<T> extends AbstractDocumentRepositoryProxy<T> {
 
     private final DocumentQueryDeleteParser deleteQueryParser;
 
+    private final Converters converters;
+
 
     DocumentRepositoryProxy(DocumentTemplate template, ClassRepresentations classRepresentations,
-                            Class<?> repositoryType, Reflections reflections) {
+                            Class<?> repositoryType, Reflections reflections, Converters converters) {
         this.template = template;
         Class<T> typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
@@ -51,6 +54,7 @@ class DocumentRepositoryProxy<T> extends AbstractDocumentRepositoryProxy<T> {
         this.repository = new DocumentRepository(template, classRepresentation, reflections);
         this.queryParser = new DocumentQueryParser();
         this.deleteQueryParser = new DocumentQueryDeleteParser();
+        this.converters = converters;
     }
 
 
@@ -77,6 +81,11 @@ class DocumentRepositoryProxy<T> extends AbstractDocumentRepositoryProxy<T> {
     @Override
     protected ClassRepresentation getClassRepresentation() {
         return classRepresentation;
+    }
+
+    @Override
+    protected Converters getConverters() {
+        return converters;
     }
 
 

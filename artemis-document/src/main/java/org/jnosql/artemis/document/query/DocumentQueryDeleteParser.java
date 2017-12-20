@@ -14,6 +14,7 @@
  */
 package org.jnosql.artemis.document.query;
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.document.query.DocumentQueryParserUtil.ConditionResult;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.document.DocumentCondition;
@@ -33,7 +34,7 @@ public class DocumentQueryDeleteParser {
     private static final String TOKENIZER = "(?=And|OrderBy|Or)";
 
 
-    public DocumentDeleteQuery parse(String methodName, Object[] args, ClassRepresentation representation) {
+    public DocumentDeleteQuery parse(String methodName, Object[] args, ClassRepresentation representation, Converters converters) {
         String[] tokens = methodName.replace(PREFIX, DocumentQueryParserUtil.EMPTY).split(TOKENIZER);
 
         DocumentCondition condition = null;
@@ -41,15 +42,15 @@ public class DocumentQueryDeleteParser {
         int index = 0;
         for (String token : tokens) {
             if (token.startsWith(DocumentQueryParserUtil.AND)) {
-                ConditionResult result = and(args, index, token, methodName, representation, condition);
+                ConditionResult result = and(args, index, token, methodName, representation, condition, converters);
                 condition = result.getCondition();
                 index = result.getIndex();
             } else if (token.startsWith(DocumentQueryParserUtil.OR)) {
-                ConditionResult result = or(args, index, token, methodName, representation, condition);
+                ConditionResult result = or(args, index, token, methodName, representation, condition, converters);
                 condition = result.getCondition();
                 index = result.getIndex();
             } else {
-                condition = toCondition(token, index, args, methodName, representation);
+                condition = toCondition(token, index, args, methodName, representation, converters);
                 index++;
             }
         }

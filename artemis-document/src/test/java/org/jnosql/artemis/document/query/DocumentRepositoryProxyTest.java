@@ -16,6 +16,7 @@ package org.jnosql.artemis.document.query;
 
 import org.hamcrest.Matchers;
 import org.jnosql.artemis.CDIJUnitRunner;
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.document.DocumentTemplate;
 import org.jnosql.artemis.model.Person;
@@ -79,6 +80,9 @@ public class DocumentRepositoryProxyTest {
     @Inject
     private Reflections reflections;
 
+    @Inject
+    private Converters converters;
+
     private PersonRepository personRepository;
 
 
@@ -87,7 +91,7 @@ public class DocumentRepositoryProxyTest {
         this.template = Mockito.mock(DocumentTemplate.class);
 
         DocumentRepositoryProxy handler = new DocumentRepositoryProxy(template,
-                classRepresentations, PersonRepository.class, reflections);
+                classRepresentations, PersonRepository.class, reflections, converters);
 
         when(template.insert(any(Person.class))).thenReturn(Person.builder().build());
         when(template.insert(any(Person.class), any(Duration.class))).thenReturn(Person.builder().build());

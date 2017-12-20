@@ -14,6 +14,7 @@
  */
 package org.jnosql.artemis.document.query;
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.Condition;
 import org.jnosql.diana.api.document.DocumentCondition;
@@ -37,10 +38,11 @@ public final class DocumentQueryParserUtil {
                                                 int index,
                                                 Object[] args,
                                                 String methodName,
-                                                ClassRepresentation representation) {
+                                                ClassRepresentation representation,
+                                                Converters converters) {
 
         DocumentTokenProcessor processor = DocumentTokenProcessorType.of(token);
-        return processor.process(token, index, args, methodName, representation);
+        return processor.process(token, index, args, methodName, representation, converters);
 
     }
 
@@ -48,9 +50,10 @@ public final class DocumentQueryParserUtil {
                               String token,
                               String methodName,
                               ClassRepresentation representation,
-                              DocumentCondition queryCondition) {
+                              DocumentCondition queryCondition,
+                              Converters converters) {
         String field = token.replace(DocumentQueryParserUtil.OR, DocumentQueryParserUtil.EMPTY);
-        DocumentCondition conditionResult = toCondition(field, index, args, methodName, representation);
+        DocumentCondition conditionResult = toCondition(field, index, args, methodName, representation, converters);
         DocumentCondition condition = null;
 
         if (queryCondition == null) {
@@ -70,10 +73,11 @@ public final class DocumentQueryParserUtil {
                                String token,
                                String methodName,
                                ClassRepresentation representation,
-                               DocumentCondition queryCondition) {
-        String field = token.replace(DocumentQueryParserUtil.AND, DocumentQueryParserUtil.EMPTY);
-        DocumentCondition conditionResult = toCondition(field, index, args, methodName, representation);
+                               DocumentCondition queryCondition, Converters converters) {
 
+
+        String field = token.replace(DocumentQueryParserUtil.AND, DocumentQueryParserUtil.EMPTY);
+        DocumentCondition conditionResult = toCondition(field, index, args, methodName, representation, converters);
         DocumentCondition condition = null;
 
         if (queryCondition == null) {

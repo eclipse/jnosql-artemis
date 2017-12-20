@@ -14,6 +14,7 @@
  */
 package org.jnosql.artemis.document.query;
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.Pagination;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.Sort;
@@ -45,7 +46,7 @@ public class DocumentQueryParser {
     private static final String TOKENIZER = "(?=And|OrderBy|Or)";
 
 
-    public DocumentQuery parse(String methodName, Object[] args, ClassRepresentation representation) {
+    public DocumentQuery parse(String methodName, Object[] args, ClassRepresentation representation, Converters converters) {
 
 
         String[] tokens = methodName.replace(PREFIX, EMPTY).split(TOKENIZER);
@@ -60,18 +61,20 @@ public class DocumentQueryParser {
         for (String token : tokens) {
 
             if (token.startsWith(AND)) {
-                DocumentQueryParserUtil.ConditionResult result = and(args, index, token, methodName, representation, condition);
+                DocumentQueryParserUtil.ConditionResult result = and(args, index, token, methodName,
+                        representation, condition, converters);
                 condition = result.getCondition();
                 index = result.getIndex();
             } else {
                 if (token.startsWith(ORDER_BY)) {
                     sort(sorts, token, representation);
                 } else if (token.startsWith(DocumentQueryParserUtil.OR)) {
-                    DocumentQueryParserUtil.ConditionResult result = or(args, index, token, methodName, representation, condition);
+                    DocumentQueryParserUtil.ConditionResult result = or(args, index, token, methodName,
+                            representation, condition, converters);
                     condition = result.getCondition();
                     index = result.getIndex();
                 } else {
-                    condition = toCondition(token, index, args, methodName, representation);
+                    condition = toCondition(token, index, args, methodName, representation, converters);
                     index++;
                 }
             }

@@ -15,6 +15,7 @@
 package org.jnosql.artemis.document.query;
 
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.document.DocumentTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentation;
@@ -47,6 +48,8 @@ public abstract class AbstractDocumentRepositoryProxy<T> implements InvocationHa
 
     protected abstract ClassRepresentation getClassRepresentation();
 
+    protected abstract Converters getConverters();
+
 
     @Override
     public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
@@ -59,13 +62,13 @@ public abstract class AbstractDocumentRepositoryProxy<T> implements InvocationHa
             case DEFAULT:
                 return method.invoke(getRepository(), args);
             case FIND_BY:
-                DocumentQuery query = getQueryParser().parse(methodName, args, getClassRepresentation());
+                DocumentQuery query = getQueryParser().parse(methodName, args, getClassRepresentation(), getConverters());
                 return returnObject(query, getTemplate(), typeClass, method);
             case FIND_ALL:
                 return returnObject(select().from(getClassRepresentation().getName()).build(), getTemplate(),
                         typeClass, method);
             case DELETE_BY:
-                getTemplate().delete(getDeleteParser().parse(methodName, args, getClassRepresentation()));
+                getTemplate().delete(getDeleteParser().parse(methodName, args, getClassRepresentation(), getConverters()));
                 return null;
             case QUERY:
                 DocumentQuery documentQuery = getQuery(args).get();
