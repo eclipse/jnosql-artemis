@@ -16,6 +16,7 @@ package org.jnosql.artemis.reflection;
 
 import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.model.Address;
+import org.jnosql.artemis.model.AppointmentBook;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.model.Worker;
 import org.junit.Test;
@@ -84,6 +85,14 @@ public class ClassConverterJavaFieldParserTest {
         List<String> resultList = Stream.of(result.split(",")).sorted().collect(toList());
         List<String> expected = Stream.of("job.description", "job.city").sorted().collect(toList());
         assertEquals(expected, resultList);
+    }
+
+
+    @Test
+    public void shouldReturnEmbeddedFieldInCollection() {
+        ClassRepresentation classRepresentation = classConverter.create(AppointmentBook.class);
+        String result = classRepresentation.getColumnField("contacts.name");
+        assertEquals("contacts.contact_name", result);
     }
 
 }

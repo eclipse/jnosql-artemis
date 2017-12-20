@@ -25,7 +25,7 @@ public class Contact {
     @Column
     private ContactType type;
 
-    @Column
+    @Column("contact_name")
     private String name;
 
     @Column
