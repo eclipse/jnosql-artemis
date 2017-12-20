@@ -278,9 +278,9 @@ public class DocumentQueryParserTest {
 
     @Test
     public void shouldConvertsJavaFieldToColumn() {
-        DocumentQuery query = parser.parse("findById", new Object[]{"id"}, classRepresentation, converters);
+        DocumentQuery query = parser.parse("findById", new Object[]{"10"}, classRepresentation, converters);
         assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
-        assertEquals(Document.of("_id", "id"), query.getCondition().get().getDocument());
+        assertEquals(Document.of("_id", 10L), query.getCondition().get().getDocument());
     }
 }
