@@ -87,41 +87,55 @@ class ClassConverter {
         return nativeFieldGrouopByJavaField;
     }
 
-    private void appendValue(Map<String, NativeMapping> nativeFieldGrouopByJavaField, FieldRepresentation field,
+    private void appendValue(Map<String, NativeMapping> nativeFieldGroupByJavaField, FieldRepresentation field,
                              String javaField, String nativeField) {
 
 
         switch (field.getType()) {
             case SUBENTITY:
-                appendFields(nativeFieldGrouopByJavaField, field, javaField, nativeField);
+                appendFields(nativeFieldGroupByJavaField, field, javaField, nativeField);
                 return;
             case EMBEDDED:
-                appendFields(nativeFieldGrouopByJavaField, field, javaField, appendPreparePrefix(nativeField, field.getName()));
+                appendFields(nativeFieldGroupByJavaField, field, javaField, appendPreparePrefix(nativeField, field.getName()));
                 return;
             case COLLECTION:
+                if(GenericFieldRepresentation.class.cast(field).isEmbeddable()) {
+                    Class<?> entityClass = GenericFieldRepresentation.class.cast(field).getElementType();
+                    String nativeFieldAppended = appendPreparePrefix(nativeField, field.getName());
+                    appendFields(nativeFieldGroupByJavaField, field, javaField, nativeFieldAppended, entityClass);
+                    return;
+                }
 
             default:
-                nativeFieldGrouopByJavaField.put(javaField.concat(field.getFieldName()),
+                nativeFieldGroupByJavaField.put(javaField.concat(field.getFieldName()),
                         NativeMapping.of(nativeField.concat(field.getName()), field));
                 return;
         }
 
     }
 
-    private void appendFields(Map<String, NativeMapping> nativeFieldGrouopByJavaField,
+    private void appendFields(Map<String, NativeMapping> nativeFieldGroupByJavaField,
                               FieldRepresentation field,
                               String javaField, String nativeField) {
-        Class<?> subentityClass = field.getNativeField().getType();
-        Map<String, NativeMapping> subenityMap = getNativeFieldGroupByJavaField(
-                reflections.getFields(subentityClass)
+
+        Class<?> entityClass = field.getNativeField().getType();
+        appendFields(nativeFieldGroupByJavaField, field, javaField, nativeField, entityClass);
+    }
+
+    private void appendFields(Map<String, NativeMapping> nativeFieldGroupByJavaField,
+                              FieldRepresentation field, String javaField, String nativeField,
+                              Class<?> entityClass) {
+
+        Map<String, NativeMapping> entityMap = getNativeFieldGroupByJavaField(
+                reflections.getFields(entityClass)
                         .stream().map(this::to).collect(toList()),
                 appendPreparePrefix(javaField, field.getFieldName()), nativeField);
 
-        String subentityNative = subenityMap.values().stream().map(NativeMapping::getNativeField)
+        String nativeElement = entityMap.values().stream().map(NativeMapping::getNativeField)
                 .collect(Collectors.joining(","));
 
-        nativeFieldGrouopByJavaField.put(appendPrefix(javaField, field.getFieldName()), NativeMapping.of(subentityNative, field));
-        nativeFieldGrouopByJavaField.putAll(subenityMap);
+        nativeFieldGroupByJavaField.put(appendPrefix(javaField, field.getFieldName()), NativeMapping.of(nativeElement, field));
+        nativeFieldGroupByJavaField.putAll(entityMap);
     }
 
     private String appendPreparePrefix(String prefix, String field) {
