@@ -105,13 +105,20 @@ class ClassConverter {
                     appendFields(nativeFieldGroupByJavaField, field, javaField, nativeFieldAppended, entityClass);
                     return;
                 }
-
+                appendDefaultField(nativeFieldGroupByJavaField, field, javaField, nativeField);
+                return;
             default:
-                nativeFieldGroupByJavaField.put(javaField.concat(field.getFieldName()),
-                        NativeMapping.of(nativeField.concat(field.getName()), field));
+                appendDefaultField(nativeFieldGroupByJavaField, field, javaField, nativeField);
                 return;
         }
 
+    }
+
+    private void appendDefaultField(Map<String, NativeMapping> nativeFieldGroupByJavaField,
+                                    FieldRepresentation field, String javaField, String nativeField) {
+
+        nativeFieldGroupByJavaField.put(javaField.concat(field.getFieldName()),
+                NativeMapping.of(nativeField.concat(field.getName()), field));
     }
 
     private void appendFields(Map<String, NativeMapping> nativeFieldGroupByJavaField,
