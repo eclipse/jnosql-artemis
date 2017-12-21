@@ -15,6 +15,7 @@
 package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.CDIJUnitRunner;
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.artemis.model.Job;
 import org.jnosql.artemis.model.Person;
@@ -77,6 +78,9 @@ public class DefaultDocumentTemplateTest {
     @Inject
     private ClassRepresentations classRepresentations;
 
+    @Inject
+    private Converters converters;
+
     private DocumentCollectionManager managerMock;
 
     private DefaultDocumentTemplate subject;
@@ -95,7 +99,7 @@ public class DefaultDocumentTemplateTest {
         when(instance.get()).thenReturn(managerMock);
         DefaultDocumentWorkflow workflow = new DefaultDocumentWorkflow(documentEventPersistManager, converter);
         this.subject = new DefaultDocumentTemplate(converter, instance, workflow,
-                documentEventPersistManager, classRepresentations);
+                documentEventPersistManager, classRepresentations, converters);
     }
 
     @Test

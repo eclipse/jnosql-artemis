@@ -15,6 +15,7 @@
 package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.CDIJUnitRunner;
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.document.Document;
@@ -68,6 +69,9 @@ public class DefaultDocumentTemplateAsyncTest {
     @Inject
     private ClassRepresentations classRepresentations;
 
+    @Inject
+    private Converters converters;
+
     private DocumentCollectionManagerAsync managerMock;
 
     private DefaultDocumentTemplateAsync subject;
@@ -82,7 +86,7 @@ public class DefaultDocumentTemplateAsyncTest {
         captor = ArgumentCaptor.forClass(DocumentEntity.class);
         Instance<DocumentCollectionManagerAsync> instance = Mockito.mock(Instance.class);
         when(instance.get()).thenReturn(managerMock);
-        this.subject = new DefaultDocumentTemplateAsync(converter, instance, classRepresentations);
+        this.subject = new DefaultDocumentTemplateAsync(converter, instance, classRepresentations, converters);
     }
 
     @Test
