@@ -489,7 +489,7 @@ public class DocumentRepositoryProxyTest {
     }
 
     @Test
-    public void shouldConvertTheToTheType() {
+    public void shouldConvertFieldToTheType() {
         Person ada = Person.builder()
                 .withAge(20).withName("Ada").build();
 

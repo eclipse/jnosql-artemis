@@ -50,6 +50,7 @@ import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.jnosql.diana.api.Condition.AND;
 import static org.jnosql.diana.api.Condition.BETWEEN;
+import static org.jnosql.diana.api.Condition.EQUALS;
 import static org.jnosql.diana.api.Condition.GREATER_THAN;
 import static org.jnosql.diana.api.Condition.LESSER_EQUALS_THAN;
 import static org.jnosql.diana.api.Condition.LESSER_THAN;
@@ -474,15 +475,35 @@ public class ColumnRepositoryProxyTest {
 
     }
 
+    @Test
+    public void shouldConvertFieldToTheType() {
+        Person ada = Person.builder()
+                .withAge(20).withName("Ada").build();
+
+        when(template.select(any(ColumnQuery.class)))
+                .thenReturn(singletonList(ada));
+
+        personRepository.findByAge("120");
+        ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
+        verify(template).select(captor.capture());
+        ColumnQuery query = captor.getValue();
+        ColumnCondition condition = query.getCondition().get();
+        assertEquals("Person", query.getColumnFamily());
+        assertEquals(EQUALS, condition.getCondition());
+        assertEquals(Column.of("age", 120), condition.getColumn());
+    }
+
+
     interface PersonRepository extends Repository<Person, Long> {
 
         List<Person> findAll();
 
         Person findByName(String name);
 
+
         void deleteByName(String name);
 
-        Optional<Person> findByAge(Integer age);
+        List<Person> findByAge(String age);
 
         List<Person> findByNameAndAge(String name, Integer age);
 
