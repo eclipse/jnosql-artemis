@@ -15,6 +15,7 @@
 package org.jnosql.artemis.column.query;
 
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentation;
@@ -45,15 +46,18 @@ class ColumnRepositoryProxy<T, ID> extends AbstractColumnRepositoryProxy {
 
     private final ColumnQueryDeleteParser deleteParser;
 
+    private final Converters converters;
+
 
     ColumnRepositoryProxy(ColumnTemplate template, ClassRepresentations classRepresentations, Class<?> repositoryType,
-                          Reflections reflections) {
+                          Reflections reflections, Converters converters) {
         this.template = template;
         Class<T> typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
         this.repository = new ColumnRepository(template, classRepresentation);
         this.reflections = reflections;
+        this.converters = converters;
         this.queryParser = new ColumnQueryParser();
         this.deleteParser = new ColumnQueryDeleteParser();
     }
@@ -81,6 +85,11 @@ class ColumnRepositoryProxy<T, ID> extends AbstractColumnRepositoryProxy {
     @Override
     protected ColumnTemplate getTemplate() {
         return template;
+    }
+
+    @Override
+    protected Converters getConverters() {
+        return converters;
     }
 
 

@@ -16,6 +16,7 @@ package org.jnosql.artemis.column.query;
 
 import org.hamcrest.Matchers;
 import org.jnosql.artemis.CDIJUnitRunner;
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.model.Person;
@@ -79,6 +80,9 @@ public class ColumnRepositoryProxyTest {
     @Inject
     private Reflections reflections;
 
+    @Inject
+    private Converters converters;
+
     private PersonRepository personRepository;
 
 
@@ -87,7 +91,7 @@ public class ColumnRepositoryProxyTest {
         this.template = Mockito.mock(ColumnTemplate.class);
 
         ColumnRepositoryProxy handler = new ColumnRepositoryProxy(template,
-                classRepresentations, PersonRepository.class, reflections);
+                classRepresentations, PersonRepository.class, reflections, converters);
 
         when(template.insert(any(Person.class))).thenReturn(Person.builder().build());
         when(template.insert(any(Person.class), any(Duration.class))).thenReturn(Person.builder().build());

@@ -14,6 +14,7 @@
  */
 package org.jnosql.artemis.column.query;
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.Condition;
 import org.jnosql.diana.api.column.ColumnCondition;
@@ -37,10 +38,10 @@ final class ColumnQueryParserUtil {
                                        int index,
                                        Object[] args,
                                        String methodName,
-                                       ClassRepresentation representation) {
+                                       ClassRepresentation representation, Converters converters) {
 
         ColumnTokenProcessor processor = ColumnTokenProcessorType.of(token);
-        return processor.process(token, index, args, methodName, representation);
+        return processor.process(token, index, args, methodName, representation, converters);
 
     }
 
@@ -49,9 +50,10 @@ final class ColumnQueryParserUtil {
                               String token,
                               String methodName,
                               ClassRepresentation representation,
-                              ColumnCondition queryCondition) {
+                              ColumnCondition queryCondition, Converters converters) {
+
         String field = token.replace(ColumnQueryParserUtil.OR, ColumnQueryParserUtil.EMPTY);
-        ColumnCondition conditionResult = toCondition(field, index, args, methodName, representation);
+        ColumnCondition conditionResult = toCondition(field, index, args, methodName, representation, converters);
         ColumnCondition condition = null;
 
         if (queryCondition == null) {
@@ -71,9 +73,9 @@ final class ColumnQueryParserUtil {
                                String token,
                                String methodName,
                                ClassRepresentation representation,
-                               ColumnCondition queryCondition) {
+                               ColumnCondition queryCondition, Converters converters) {
         String field = token.replace(ColumnQueryParserUtil.AND, ColumnQueryParserUtil.EMPTY);
-        ColumnCondition conditionResult = toCondition(field, index, args, methodName, representation);
+        ColumnCondition conditionResult = toCondition(field, index, args, methodName, representation, converters);
 
         ColumnCondition condition = null;
 

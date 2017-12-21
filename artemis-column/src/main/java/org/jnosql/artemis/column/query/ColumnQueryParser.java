@@ -14,6 +14,7 @@
  */
 package org.jnosql.artemis.column.query;
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.Pagination;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.Sort;
@@ -40,7 +41,8 @@ public class ColumnQueryParser {
     private static final String TOKENIZER = "(?=And|OrderBy|Or)";
 
 
-    public ColumnQuery parse(String methodName, Object[] args, ClassRepresentation representation) {
+    public ColumnQuery parse(String methodName, Object[] args, ClassRepresentation representation,
+                             Converters converters) {
 
 
         ColumnCondition condition = null;
@@ -54,17 +56,19 @@ public class ColumnQueryParser {
         for (String token : tokens) {
             if (token.startsWith(ColumnQueryParserUtil.AND)) {
 
-                ColumnQueryParserUtil.ConditionResult result = and(args, index, token, methodName, representation, condition);
+                ColumnQueryParserUtil.ConditionResult result = and(args, index, token, methodName, representation,
+                        condition, converters);
                 condition = result.getCondition();
                 index = result.getIndex();
             } else if (token.startsWith(ColumnQueryParserUtil.ORDER_BY)) {
                 sort(sorts, token, representation);
             } else if (token.startsWith(ColumnQueryParserUtil.OR)) {
-                ColumnQueryParserUtil.ConditionResult result = or(args, index, token, methodName, representation, condition);
+                ColumnQueryParserUtil.ConditionResult result = or(args, index, token, methodName, representation,
+                        condition, converters);
                 condition = result.getCondition();
                 index = result.getIndex();
             } else {
-                condition = toCondition(token, index, args, methodName, representation);
+                condition = toCondition(token, index, args, methodName, representation, converters);
                 index++;
             }
         }

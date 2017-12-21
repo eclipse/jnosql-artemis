@@ -15,6 +15,7 @@
 package org.jnosql.artemis.column.query;
 
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentation;
@@ -47,6 +48,8 @@ public abstract class AbstractColumnRepositoryProxy<T, ID> implements Invocation
 
     protected abstract ColumnTemplate getTemplate();
 
+    protected abstract Converters getConverters();
+
     @Override
     public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
         String methodName = method.getName();
@@ -57,13 +60,15 @@ public abstract class AbstractColumnRepositoryProxy<T, ID> implements Invocation
             case DEFAULT:
                 return method.invoke(getRepository(), args);
             case FIND_BY:
-                ColumnQuery query = getQueryParser().parse(methodName, args, getClassRepresentation());
+                ColumnQuery query = getQueryParser().parse(methodName, args, getClassRepresentation(),
+                        getConverters());
                 return returnObject(query, getTemplate(), typeClass, method);
             case FIND_ALL:
                 return returnObject(select().from(getClassRepresentation().getName()).build(),
                         getTemplate(), typeClass, method);
             case DELETE_BY:
-                ColumnDeleteQuery deleteQuery = getDeleteParser().parse(methodName, args, getClassRepresentation());
+                ColumnDeleteQuery deleteQuery = getDeleteParser().parse(methodName, args, getClassRepresentation(),
+                        getConverters());
                 getTemplate().delete(deleteQuery);
                 return Void.class;
             case QUERY:

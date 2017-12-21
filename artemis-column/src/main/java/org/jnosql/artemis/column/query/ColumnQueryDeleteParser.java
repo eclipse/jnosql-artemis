@@ -14,6 +14,7 @@
  */
 package org.jnosql.artemis.column.query;
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.column.query.ColumnQueryParserUtil.ConditionResult;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.column.ColumnCondition;
@@ -33,7 +34,8 @@ public class ColumnQueryDeleteParser {
     private static final String TOKENIZER = "(?=And|OrderBy|Or)";
 
 
-    public ColumnDeleteQuery parse(String methodName, Object[] args, ClassRepresentation representation) {
+    public ColumnDeleteQuery parse(String methodName, Object[] args, ClassRepresentation representation,
+                                   Converters converters) {
 
 
         ColumnCondition condition = null;
@@ -42,16 +44,16 @@ public class ColumnQueryDeleteParser {
         int index = 0;
         for (String token : tokens) {
             if (token.startsWith(ColumnQueryParserUtil.AND)) {
-                ConditionResult result = and(args, index, token, methodName, representation, condition);
+                ConditionResult result = and(args, index, token, methodName, representation, condition, converters);
                 condition = result.getCondition();
                 index = result.getIndex();
 
             } else if (token.startsWith(ColumnQueryParserUtil.OR)) {
-                ConditionResult result = or(args, index, token, methodName, representation, condition);
+                ConditionResult result = or(args, index, token, methodName, representation, condition, converters);
                 condition = result.getCondition();
                 index = result.getIndex();
             } else {
-                condition = toCondition(token, index, args, methodName, representation);
+                condition = toCondition(token, index, args, methodName, representation, converters);
                 index++;
             }
         }

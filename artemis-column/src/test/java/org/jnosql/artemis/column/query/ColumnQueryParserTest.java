@@ -15,6 +15,7 @@
 package org.jnosql.artemis.column.query;
 
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.Pagination;
 import org.jnosql.artemis.CDIJUnitRunner;
@@ -43,6 +44,9 @@ public class ColumnQueryParserTest {
     @Inject
     private ClassRepresentations classRepresentations;
 
+    @Inject
+    private Converters converters;
+
     private ColumnQueryParser parser;
 
     private ClassRepresentation classRepresentation;
@@ -55,7 +59,8 @@ public class ColumnQueryParserTest {
 
     @Test
     public void shouldFindByName() {
-        ColumnQuery query = parser.parse("findByName", new Object[]{"name"}, classRepresentation);
+        ColumnQuery query = parser.parse("findByName", new Object[]{"name"},
+                classRepresentation, converters);
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
         assertEquals(Column.of("name", "name"), query.getCondition().get().getColumn());
@@ -64,7 +69,8 @@ public class ColumnQueryParserTest {
 
     @Test
     public void shouldFindByNameAndAge() {
-        ColumnQuery query = parser.parse("findByNameAndAge", new Object[]{"name", 10}, classRepresentation);
+        ColumnQuery query = parser.parse("findByNameAndAge", new Object[]{"name", 10},
+                classRepresentation, converters);
         ColumnCondition condition = query.getCondition().get();
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.AND, condition.getCondition());
@@ -81,7 +87,8 @@ public class ColumnQueryParserTest {
 
     @Test
     public void shouldFindByNameOrAge() {
-        ColumnQuery query = parser.parse("findByNameOrAge", new Object[]{"name", 10}, classRepresentation);
+        ColumnQuery query = parser.parse("findByNameOrAge", new Object[]{"name", 10},
+                classRepresentation, converters);
         ColumnCondition condition = query.getCondition().get();
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.OR, condition.getCondition());
@@ -99,7 +106,8 @@ public class ColumnQueryParserTest {
 
     @Test
     public void shouldFindByAgeLessThan() {
-        ColumnQuery query = parser.parse("findByAgeLessThan", new Object[]{10}, classRepresentation);
+        ColumnQuery query = parser.parse("findByAgeLessThan", new Object[]{10},
+                classRepresentation, converters);
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.LESSER_THAN, query.getCondition().get().getCondition());
         assertEquals(Column.of("age", 10), query.getCondition().get().getColumn());
@@ -107,7 +115,8 @@ public class ColumnQueryParserTest {
 
     @Test
     public void shouldFindByAgeGreaterThan() {
-        ColumnQuery query = parser.parse("findByAgeGreaterThan", new Object[]{10}, classRepresentation);
+        ColumnQuery query = parser.parse("findByAgeGreaterThan", new Object[]{10},
+                classRepresentation, converters);
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.GREATER_THAN, query.getCondition().get().getCondition());
         assertEquals(Column.of("age", 10), query.getCondition().get().getColumn());
@@ -115,7 +124,8 @@ public class ColumnQueryParserTest {
 
     @Test
     public void shouldFindByAgeLessThanEqual() {
-        ColumnQuery query = parser.parse("findByAgeLessThanEqual", new Object[]{10}, classRepresentation);
+        ColumnQuery query = parser.parse("findByAgeLessThanEqual", new Object[]{10},
+                classRepresentation, converters);
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.LESSER_EQUALS_THAN, query.getCondition().get().getCondition());
         assertEquals(Column.of("age", 10), query.getCondition().get().getColumn());
@@ -123,7 +133,8 @@ public class ColumnQueryParserTest {
 
     @Test
     public void shouldFindByAgeGreaterThanEqual() {
-        ColumnQuery query = parser.parse("findByAgeGreaterThanEqual", new Object[]{10}, classRepresentation);
+        ColumnQuery query = parser.parse("findByAgeGreaterThanEqual", new Object[]{10},
+                classRepresentation, converters);
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.GREATER_EQUALS_THAN, query.getCondition().get().getCondition());
         assertEquals(Column.of("age", 10), query.getCondition().get().getColumn());
@@ -131,7 +142,8 @@ public class ColumnQueryParserTest {
 
     @Test
     public void shouldFindByNameLike() {
-        ColumnQuery query = parser.parse("findByNameLike", new Object[]{"name"}, classRepresentation);
+        ColumnQuery query = parser.parse("findByNameLike", new Object[]{"name"},
+                classRepresentation, converters);
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.LIKE, query.getCondition().get().getCondition());
         assertEquals(Column.of("name", "name"), query.getCondition().get().getColumn());
@@ -139,7 +151,8 @@ public class ColumnQueryParserTest {
 
     @Test
     public void shouldFindByNameLikeOrderByName() {
-        ColumnQuery query = parser.parse("findByNameLikeOrderByName", new Object[]{"name"}, classRepresentation);
+        ColumnQuery query = parser.parse("findByNameLikeOrderByName", new Object[]{"name"},
+                classRepresentation, converters);
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.LIKE, query.getCondition().get().getCondition());
         assertEquals(Column.of("name", "name"), query.getCondition().get().getColumn());
@@ -148,7 +161,8 @@ public class ColumnQueryParserTest {
 
     @Test
     public void shouldFindByNameLikeOrderByNameAsc() {
-        ColumnQuery query = parser.parse("findByNameLikeOrderByNameAsc", new Object[]{"name"}, classRepresentation);
+        ColumnQuery query = parser.parse("findByNameLikeOrderByNameAsc", new Object[]{"name"},
+                classRepresentation, converters);
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.LIKE, query.getCondition().get().getCondition());
         assertEquals(Column.of("name", "name"), query.getCondition().get().getColumn());
@@ -157,7 +171,8 @@ public class ColumnQueryParserTest {
 
     @Test
     public void shouldFindByNameLikeOrderByNameDesc() {
-        ColumnQuery query = parser.parse("findByNameLikeOrderByNameDesc", new Object[]{"name"}, classRepresentation);
+        ColumnQuery query = parser.parse("findByNameLikeOrderByNameDesc", new Object[]{"name"},
+                classRepresentation, converters);
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.LIKE, query.getCondition().get().getCondition());
         assertEquals(Column.of("name", "name"), query.getCondition().get().getColumn());
@@ -166,7 +181,8 @@ public class ColumnQueryParserTest {
 
     @Test
     public void shouldFindByNameLikeOrderByNameDescOrderByAgeAsc() {
-        ColumnQuery query = parser.parse("findByNameLikeOrderByNameDescOrderByAgeAsc", new Object[]{"name"}, classRepresentation);
+        ColumnQuery query = parser.parse("findByNameLikeOrderByNameDescOrderByAgeAsc", new Object[]{"name"},
+                classRepresentation, converters);
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.LIKE, query.getCondition().get().getCondition());
         assertEquals(Column.of("name", "name"), query.getCondition().get().getColumn());
@@ -177,7 +193,7 @@ public class ColumnQueryParserTest {
     @Test
     public void shouldFindByNameAndAAgeBetween() {
         ColumnQuery query = parser.parse("findByNameAndAgeBetween", new Object[]{"name", 10, 11},
-                classRepresentation);
+                classRepresentation, converters);
         assertEquals("Person", query.getColumnFamily());
         ColumnCondition condition = query.getCondition().get();
         assertEquals(Condition.AND, condition.getCondition());
@@ -196,20 +212,20 @@ public class ColumnQueryParserTest {
     @Test(expected = DynamicQueryException.class)
     public void shouldReturnErrorWhenIsMissedArgument() {
         ColumnQuery query = parser.parse("findByNameAndAgeBetween", new Object[]{"name", 10},
-                classRepresentation);
+                classRepresentation, converters);
     }
 
     @Test(expected = DynamicQueryException.class)
     public void shouldReturnErrorWhenIsMissedArgument2() {
         ColumnQuery query = parser.parse("findByName", new Object[]{},
-                classRepresentation);
+                classRepresentation, converters);
     }
 
     @Test
     public void shouldFindByNameWithSortArgument() {
         Sort sort = Sort.of("age", Sort.SortType.ASC);
         ColumnQuery query = parser.parse("findByName", new Object[]{"name",
-                sort}, classRepresentation);
+                sort}, classRepresentation, converters);
 
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
@@ -221,7 +237,7 @@ public class ColumnQueryParserTest {
     public void shouldFindByNameWithPageArgument() {
         Pagination pagination = Pagination.of(2L, 10);
         ColumnQuery query = parser.parse("findByName", new Object[]{"name",
-                pagination}, classRepresentation);
+                pagination}, classRepresentation, converters);
 
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
@@ -235,7 +251,7 @@ public class ColumnQueryParserTest {
         Pagination pagination = Pagination.of(2L, 10);
         Sort sort = Sort.of("age", Sort.SortType.ASC);
         ColumnQuery query = parser.parse("findByName", new Object[]{"name",
-                pagination, sort}, classRepresentation);
+                pagination, sort}, classRepresentation, converters);
 
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
@@ -250,7 +266,7 @@ public class ColumnQueryParserTest {
         Pagination pagination = Pagination.of(2L, 10);
         Sort sort = Sort.of("age", Sort.SortType.ASC);
         ColumnQuery query = parser.parse("findByName", new Object[]{"name",
-                pagination, sort, "ignore"}, classRepresentation);
+                pagination, sort, "ignore"}, classRepresentation, converters);
 
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
@@ -262,9 +278,9 @@ public class ColumnQueryParserTest {
 
     @Test
     public void shouldConvertsJavaFieldToColumn() {
-        ColumnQuery query = parser.parse("findById", new Object[]{"id"}, classRepresentation);
+        ColumnQuery query = parser.parse("findById", new Object[]{"10"}, classRepresentation, converters);
         assertEquals("Person", query.getColumnFamily());
         assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
-        assertEquals(Column.of("_id", "id"), query.getCondition().get().getColumn());
+        assertEquals(Column.of("_id", 10L), query.getCondition().get().getColumn());
     }
 }

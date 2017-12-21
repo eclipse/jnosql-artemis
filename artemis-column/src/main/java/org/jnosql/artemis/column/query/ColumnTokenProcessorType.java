@@ -14,6 +14,7 @@
  */
 package org.jnosql.artemis.column.query;
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.column.Column;
@@ -28,57 +29,72 @@ enum ColumnTokenProcessorType implements ColumnTokenProcessor {
 
     BETWEEN("Between", 2) {
         @Override
-        public ColumnCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
+        public ColumnCondition process(String token, int index, Object[] args, String methodName,
+                                       ClassRepresentation representation, Converters converters) {
             checkContents(index, args.length, this.getFieldsRequired(), methodName);
             String name = getName(token, representation).replace(this.getType(), EMPTY);
-            return ColumnCondition.between(Column.of(name, Arrays.asList(args[index], args[++index])));
+            Object valueA = getValue(token, args[index], representation, converters);
+            Object valueB = getValue(token, args[++index], representation, converters);
+            return ColumnCondition.between(Column.of(name, Arrays.asList(valueA, valueB)));
         }
     },
     LESS_THAN_EQUAL("LessThanEqual", 1) {
         @Override
-        public ColumnCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
+        public ColumnCondition process(String token, int index, Object[] args, String methodName,
+                                       ClassRepresentation representation,Converters converters) {
             checkContents(index, args.length, this.getFieldsRequired(), methodName);
             String name = getName(token, representation).replace(this.getType(), EMPTY);
-            return ColumnCondition.lte(Column.of(name, args[index]));
+            Object value = getValue(token, args[index], representation, converters);
+            return ColumnCondition.lte(Column.of(name, value));
         }
     },
     GREATER_THAN_EQUAL("GreaterThanEqual", 1) {
         @Override
-        public ColumnCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
+        public ColumnCondition process(String token, int index, Object[] args, String methodName,
+                                       ClassRepresentation representation,Converters converters) {
             checkContents(index, args.length, this.getFieldsRequired(), methodName);
             String name = getName(token, representation).replace(this.getType(), EMPTY);
-            return ColumnCondition.gte(Column.of(name, args[index]));
+            Object value = getValue(token, args[index], representation, converters);
+            return ColumnCondition.gte(Column.of(name, value));
         }
     },
     LESS_THAN("LessThan", 1) {
         @Override
-        public ColumnCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
+        public ColumnCondition process(String token, int index, Object[] args, String methodName,
+                                       ClassRepresentation representation,Converters converters) {
             checkContents(index, args.length, this.getFieldsRequired(), methodName);
             String name = getName(token, representation).replace(this.getType(), EMPTY);
-            return ColumnCondition.lt(Column.of(name, args[index]));
+            Object value = getValue(token, args[index], representation, converters);
+            return ColumnCondition.lt(Column.of(name, value));
         }
     },
     GREATER_THAN("GreaterThan", 1) {
         @Override
-        public ColumnCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
+        public ColumnCondition process(String token, int index, Object[] args, String methodName,
+                                       ClassRepresentation representation,Converters converters) {
             checkContents(index, args.length, this.getFieldsRequired(), methodName);
             String name = getName(token, representation).replace(this.getType(), EMPTY);
-            return ColumnCondition.gt(Column.of(name, args[index]));
+            Object value = getValue(token, args[index], representation, converters);
+            return ColumnCondition.gt(Column.of(name, value));
         }
     },
     LIKE("Like", 1) {
         @Override
-        public ColumnCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
+        public ColumnCondition process(String token, int index, Object[] args, String methodName,
+                                       ClassRepresentation representation,Converters converters) {
             checkContents(index, args.length, this.getFieldsRequired(), methodName);
             String name = getName(token, representation).replace(this.getType(), EMPTY);
-            return ColumnCondition.like(Column.of(name, args[index]));
+            Object value = getValue(token, args[index], representation, converters);
+            return ColumnCondition.like(Column.of(name, value));
         }
     }, DEFAULT("", 1) {
         @Override
-        public ColumnCondition process(String token, int index, Object[] args, String methodName, ClassRepresentation representation) {
+        public ColumnCondition process(String token, int index, Object[] args, String methodName,
+                                       ClassRepresentation representation,Converters converters) {
             checkContents(index, args.length, this.getFieldsRequired(), methodName);
             String name = getName(token, representation);
-            return ColumnCondition.eq(Column.of(name, args[index]));
+            Object value = getValue(token, args[index], representation, converters);
+            return ColumnCondition.eq(Column.of(name,value));
         }
     };
 
@@ -114,8 +130,19 @@ enum ColumnTokenProcessorType implements ColumnTokenProcessor {
     }
 
     private static String getName(String token, ClassRepresentation representation) {
-        return representation.getColumnField(String.valueOf(Character.toLowerCase(token.charAt(0)))
-                .concat(token.substring(1)));
+        return representation.getColumnField(getJavaField(token));
+    }
+
+    private static Object getValue(String token, Object value, ClassRepresentation representation,
+                                   Converters converters) {
+
+        String javaField = getJavaField(token);
+        return ConverterUtil.getValue(value, representation, javaField, converters);
+    }
+
+    private static String getJavaField(String token) {
+        return String.valueOf(Character.toLowerCase(token.charAt(0)))
+                .concat(token.substring(1));
     }
 
 }

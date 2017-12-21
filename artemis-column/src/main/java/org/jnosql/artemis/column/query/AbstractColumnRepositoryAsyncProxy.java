@@ -15,6 +15,7 @@
 package org.jnosql.artemis.column.query;
 
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.column.ColumnTemplateAsync;
@@ -45,6 +46,8 @@ public abstract class AbstractColumnRepositoryAsyncProxy<T> implements Invocatio
 
     protected abstract ColumnTemplateAsync getTemplate();
 
+    protected abstract Converters getConverters();
+
     @Override
     public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
 
@@ -55,12 +58,12 @@ public abstract class AbstractColumnRepositoryAsyncProxy<T> implements Invocatio
             case DEFAULT:
                 return method.invoke(getRepository(), args);
             case FIND_BY:
-                ColumnQuery query = getQueryParser().parse(methodName, args, getClassRepresentation());
+                ColumnQuery query = getQueryParser().parse(methodName, args, getClassRepresentation(), getConverters());
                 return executeQuery(getCallBack(args), query);
             case FIND_ALL:
                 return executeQuery(getCallBack(args), select().from(getClassRepresentation().getName()).build());
             case DELETE_BY:
-                ColumnDeleteQuery deleteQuery = getDeleteParser().parse(methodName, args, getClassRepresentation());
+                ColumnDeleteQuery deleteQuery = getDeleteParser().parse(methodName, args, getClassRepresentation(), getConverters());
                 return executeDelete(getCallBack(args), deleteQuery);
             case QUERY:
                 ColumnQuery columnQuery = ColumnRepositoryType.getQuery(args).get();
