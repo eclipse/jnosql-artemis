@@ -14,6 +14,7 @@
  */
 package org.jnosql.artemis.document.query;
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.document.DocumentTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentation;
@@ -77,8 +78,6 @@ public abstract class AbstractDocumentRepository<T, ID> implements Repository<T,
     @Override
     public Optional<T> findById(ID id) throws NullPointerException {
         requireNonNull(id, "id is required");
-
-
         return getTemplate().find(getEntityClass(), id);
     }
 

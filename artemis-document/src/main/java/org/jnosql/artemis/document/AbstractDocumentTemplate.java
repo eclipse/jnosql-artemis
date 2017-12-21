@@ -15,7 +15,9 @@
 package org.jnosql.artemis.document;
 
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.IdNotFoundException;
+import org.jnosql.artemis.document.util.ConverterUtil;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.FieldRepresentation;
@@ -51,6 +53,8 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
     protected abstract DocumentEventPersistManager getPersistManager();
 
     protected abstract ClassRepresentations getClassRepresentations();
+
+    protected abstract Converters getConverters();
 
     private final UnaryOperator<DocumentEntity> insert = e -> getManager().insert(e);
 
@@ -105,8 +109,9 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
         FieldRepresentation idField = classRepresentation.getId()
                 .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
 
+        Object value = ConverterUtil.getValue(id, classRepresentation, idField.getName(), getConverters());
         DocumentQuery query = DocumentQueryBuilder.select().from(classRepresentation.getName())
-                .where(idField.getName()).eq(id).build();
+                .where(idField.getName()).eq(value).build();
 
         return singleResult(query);
     }
@@ -120,8 +125,9 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
         FieldRepresentation idField = classRepresentation.getId()
                 .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
 
+        Object value = ConverterUtil.getValue(id, classRepresentation, idField.getName(), getConverters());
         DocumentDeleteQuery query = DocumentQueryBuilder.delete().from(classRepresentation.getName())
-                .where(idField.getName()).eq(id).build();
+                .where(idField.getName()).eq(value).build();
 
         delete(query);
     }
