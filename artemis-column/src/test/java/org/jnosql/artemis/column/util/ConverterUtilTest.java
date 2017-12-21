@@ -12,10 +12,11 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis.column.query;
+package org.jnosql.artemis.column.util;
 
 import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.Converters;
+import org.jnosql.artemis.column.util.ConverterUtil;
 import org.jnosql.artemis.model.Money;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.model.Worker;
