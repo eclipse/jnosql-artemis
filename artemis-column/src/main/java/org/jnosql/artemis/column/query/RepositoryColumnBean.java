@@ -14,11 +14,10 @@
  */
 package org.jnosql.artemis.column.query;
 
-import org.jnosql.artemis.Convert;
 import org.jnosql.artemis.Converters;
-import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
+import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.Reflections;
