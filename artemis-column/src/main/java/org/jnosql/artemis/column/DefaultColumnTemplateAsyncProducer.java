@@ -15,6 +15,7 @@
 package org.jnosql.artemis.column;
 
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
 
@@ -35,10 +36,13 @@ class DefaultColumnTemplateAsyncProducer implements ColumnTemplateAsyncProducer 
     @Inject
     private ClassRepresentations classRepresentations;
 
+    @Inject
+    private Converters converters;
+
     @Override
     public ColumnTemplateAsync get(ColumnFamilyManagerAsync columnFamilyManager) throws NullPointerException {
         Objects.requireNonNull(columnFamilyManager, "columnFamilyManager is required");
-        return new ProducerColumnTemplateAsync(converter, columnFamilyManager, classRepresentations);
+        return new ProducerColumnTemplateAsync(converter, columnFamilyManager, classRepresentations, converters);
     }
 
     @Vetoed
@@ -50,11 +54,14 @@ class DefaultColumnTemplateAsyncProducer implements ColumnTemplateAsyncProducer 
 
         private ClassRepresentations classRepresentations;
 
+        private Converters converters;
+
         ProducerColumnTemplateAsync(ColumnEntityConverter converter, ColumnFamilyManagerAsync columnFamilyManager
-        ,ClassRepresentations classRepresentations) {
+        ,ClassRepresentations classRepresentations, Converters converters) {
             this.converter = converter;
             this.columnFamilyManager = columnFamilyManager;
             this.classRepresentations = classRepresentations;
+            this.converters = converters;
         }
 
         ProducerColumnTemplateAsync() {
@@ -73,6 +80,11 @@ class DefaultColumnTemplateAsyncProducer implements ColumnTemplateAsyncProducer 
         @Override
         protected ClassRepresentations getClassRepresentations() {
             return classRepresentations;
+        }
+
+        @Override
+        protected Converters getConverters() {
+            return converters;
         }
     }
 }

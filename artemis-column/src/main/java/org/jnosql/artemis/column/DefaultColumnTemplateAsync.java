@@ -15,6 +15,7 @@
 package org.jnosql.artemis.column;
 
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
 
@@ -33,13 +34,16 @@ class DefaultColumnTemplateAsync extends AbstractColumnTemplateAsync {
 
     private ClassRepresentations classRepresentations;
 
+    private Converters converters;
+
 
     @Inject
     DefaultColumnTemplateAsync(ColumnEntityConverter converter, Instance<ColumnFamilyManagerAsync> manager,
-                               ClassRepresentations classRepresentations) {
+                               ClassRepresentations classRepresentations, Converters converters) {
         this.converter = converter;
         this.manager = manager;
         this.classRepresentations = classRepresentations;
+        this.converters = converters;
     }
 
     DefaultColumnTemplateAsync() {
@@ -59,5 +63,10 @@ class DefaultColumnTemplateAsync extends AbstractColumnTemplateAsync {
     @Override
     protected ClassRepresentations getClassRepresentations() {
         return classRepresentations;
+    }
+
+    @Override
+    protected Converters getConverters() {
+        return converters;
     }
 }

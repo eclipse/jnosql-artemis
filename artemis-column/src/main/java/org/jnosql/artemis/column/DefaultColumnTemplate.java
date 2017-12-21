@@ -14,6 +14,7 @@
  */
 package org.jnosql.artemis.column;
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
 
@@ -36,16 +37,19 @@ class DefaultColumnTemplate extends AbstractColumnTemplate {
 
     private ClassRepresentations classRepresentations;
 
+    private Converters converters;
+
     @Inject
     DefaultColumnTemplate(ColumnEntityConverter converter, Instance<ColumnFamilyManager> manager,
                           ColumnWorkflow flow,
                           ColumnEventPersistManager eventManager,
-                          ClassRepresentations classRepresentations) {
+                          ClassRepresentations classRepresentations, Converters converters) {
         this.converter = converter;
         this.manager = manager;
         this.flow = flow;
         this.eventManager = eventManager;
         this.classRepresentations = classRepresentations;
+        this.converters = converters;
     }
 
     DefaultColumnTemplate() {
@@ -75,5 +79,10 @@ class DefaultColumnTemplate extends AbstractColumnTemplate {
     @Override
     protected ClassRepresentations getClassRepresentations() {
         return classRepresentations;
+    }
+
+    @Override
+    protected Converters getConverters() {
+        return converters;
     }
 }

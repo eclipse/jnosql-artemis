@@ -15,6 +15,7 @@
 package org.jnosql.artemis.column;
 
 import org.jnosql.artemis.CDIJUnitRunner;
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.artemis.model.Job;
 import org.jnosql.artemis.model.Person;
@@ -75,6 +76,9 @@ public class DefaultColumnTemplateTest {
     @Inject
     private ClassRepresentations classRepresentations;
 
+    @Inject
+    private Converters converters;
+
     private ColumnFamilyManager managerMock;
 
     private DefaultColumnTemplate subject;
@@ -92,7 +96,7 @@ public class DefaultColumnTemplateTest {
         Instance<ColumnFamilyManager> instance = Mockito.mock(Instance.class);
         Mockito.when(instance.get()).thenReturn(managerMock);
         this.subject = new DefaultColumnTemplate(converter, instance, new DefaultColumnWorkflow(columnEventPersistManager, converter),
-                columnEventPersistManager, classRepresentations);
+                columnEventPersistManager, classRepresentations, converters);
     }
 
     @Test

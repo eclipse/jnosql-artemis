@@ -15,7 +15,9 @@
 package org.jnosql.artemis.column;
 
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.IdNotFoundException;
+import org.jnosql.artemis.column.util.ConverterUtil;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.FieldRepresentation;
@@ -49,6 +51,8 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
     protected abstract ColumnEventPersistManager getEventManager();
 
     protected abstract ClassRepresentations getClassRepresentations();
+
+    protected abstract Converters getConverters();
 
     private final UnaryOperator<ColumnEntity> insert = e -> getManager().insert(e);
 
@@ -103,8 +107,9 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
         FieldRepresentation idField = classRepresentation.getId()
                 .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
 
+        Object value = ConverterUtil.getValue(id, classRepresentation, idField.getFieldName(), getConverters());
         ColumnQuery query = ColumnQueryBuilder.select().from(classRepresentation.getName())
-                .where(idField.getName()).eq(id).build();
+                .where(idField.getName()).eq(value).build();
 
         return singleResult(query);
     }
@@ -117,8 +122,10 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
         ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
         FieldRepresentation idField = classRepresentation.getId()
                 .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
+        Object value = ConverterUtil.getValue(id, classRepresentation, idField.getFieldName(), getConverters());
+
         ColumnDeleteQuery query = ColumnQueryBuilder.delete().from(classRepresentation.getName())
-                .where(idField.getName()).eq(id).build();
+                .where(idField.getName()).eq(value).build();
         getManager().delete(query);
     }
 }

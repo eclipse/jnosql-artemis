@@ -14,7 +14,9 @@
  */
 package org.jnosql.artemis.column;
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.IdNotFoundException;
+import org.jnosql.artemis.column.util.ConverterUtil;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.FieldRepresentation;
@@ -44,6 +46,8 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
     protected abstract ColumnFamilyManagerAsync getManager();
 
     protected abstract ClassRepresentations getClassRepresentations();
+
+    protected abstract Converters getConverters();
 
     @Override
     public <T> void insert(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
@@ -127,8 +131,10 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
         FieldRepresentation idField = classRepresentation.getId()
                 .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
 
+        Object value = ConverterUtil.getValue(id, classRepresentation, idField.getFieldName(), getConverters());
+
         ColumnQuery query = ColumnQueryBuilder.select().from(classRepresentation.getName())
-                .where(idField.getName()).eq(id).build();
+                .where(idField.getName()).eq(value).build();
 
         singleResult(query, callBack);
     }
@@ -163,8 +169,9 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
         FieldRepresentation idField = classRepresentation.getId()
                 .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
 
+        Object value = ConverterUtil.getValue(id, classRepresentation, idField.getFieldName(), getConverters());
         return ColumnQueryBuilder.delete().from(classRepresentation.getName())
-                .where(idField.getName()).eq(id).build();
+                .where(idField.getName()).eq(value).build();
     }
 }
 
