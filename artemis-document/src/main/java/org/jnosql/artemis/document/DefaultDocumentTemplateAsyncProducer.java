@@ -15,6 +15,7 @@
 package org.jnosql.artemis.document;
 
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
 
@@ -36,10 +37,13 @@ class DefaultDocumentTemplateAsyncProducer implements DocumentTemplateAsyncProdu
     @Inject
     private ClassRepresentations classRepresentations;
 
+    @Inject
+    private Converters converters;
+
     @Override
     public DocumentTemplateAsync get(DocumentCollectionManagerAsync collectionManager) throws NullPointerException {
         Objects.requireNonNull(collectionManager, "collectionManager is required");
-        return new ProducerAbstractDocumentTemplateAsync(converter, collectionManager, classRepresentations);
+        return new ProducerAbstractDocumentTemplateAsync(converter, collectionManager, classRepresentations, converters);
     }
 
     @Vetoed
@@ -51,9 +55,12 @@ class DefaultDocumentTemplateAsyncProducer implements DocumentTemplateAsyncProdu
 
         private ClassRepresentations classRepresentations;
 
+        private Converters converters;
+
         ProducerAbstractDocumentTemplateAsync(DocumentEntityConverter converter,
                                               DocumentCollectionManagerAsync manager,
-                                              ClassRepresentations classRepresentations) {
+                                              ClassRepresentations classRepresentations,
+                                              Converters converters) {
             this.converter = converter;
             this.manager = manager;
             this.classRepresentations = classRepresentations;
@@ -75,6 +82,11 @@ class DefaultDocumentTemplateAsyncProducer implements DocumentTemplateAsyncProdu
         @Override
         protected ClassRepresentations getClassRepresentations() {
             return classRepresentations;
+        }
+
+        @Override
+        protected Converters getConverters() {
+            return converters;
         }
     }
 }

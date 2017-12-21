@@ -14,6 +14,7 @@
  */
 package org.jnosql.artemis.document;
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
 
@@ -37,16 +38,19 @@ class DefaultDocumentTemplate extends AbstractDocumentTemplate {
 
     private ClassRepresentations classRepresentations;
 
+    private Converters converters;
+
 
     @Inject
     DefaultDocumentTemplate(DocumentEntityConverter converter, Instance<DocumentCollectionManager> manager,
                             DocumentWorkflow workflow, DocumentEventPersistManager persistManager,
-                            ClassRepresentations classRepresentations) {
+                            ClassRepresentations classRepresentations, Converters converters) {
         this.converter = converter;
         this.manager = manager;
         this.workflow = workflow;
         this.persistManager = persistManager;
         this.classRepresentations = classRepresentations;
+        this.converters = converters;
     }
 
     DefaultDocumentTemplate() {
@@ -75,5 +79,10 @@ class DefaultDocumentTemplate extends AbstractDocumentTemplate {
     @Override
     protected ClassRepresentations getClassRepresentations() {
         return classRepresentations;
+    }
+
+    @Override
+    protected Converters getConverters() {
+        return converters;
     }
 }

@@ -15,6 +15,7 @@
 package org.jnosql.artemis.document;
 
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
 
@@ -42,12 +43,15 @@ class DefaultDocumentTemplateProducer implements DocumentTemplateProducer {
     @Inject
     private ClassRepresentations classRepresentations;
 
+    @Inject
+    private Converters converters;
+
 
     @Override
     public DocumentTemplate get(DocumentCollectionManager collectionManager) throws NullPointerException {
         Objects.requireNonNull(collectionManager, "collectionManager is required");
         return new ProducerDocumentTemplate(converter, collectionManager, workflow,
-                persistManager, classRepresentations);
+                persistManager, classRepresentations, converters);
     }
 
     @Vetoed
@@ -61,16 +65,19 @@ class DefaultDocumentTemplateProducer implements DocumentTemplateProducer {
 
         private DocumentEventPersistManager persistManager;
 
+        private Converters converters;
+
         private ClassRepresentations classRepresentations;
         ProducerDocumentTemplate(DocumentEntityConverter converter, DocumentCollectionManager manager,
                                  DocumentWorkflow workflow,
                                  DocumentEventPersistManager persistManager,
-                                 ClassRepresentations classRepresentations) {
+                                 ClassRepresentations classRepresentations, Converters converters) {
             this.converter = converter;
             this.manager = manager;
             this.workflow = workflow;
             this.persistManager = persistManager;
             this.classRepresentations = classRepresentations;
+            this.converters = converters;
         }
 
         ProducerDocumentTemplate() {
@@ -99,6 +106,11 @@ class DefaultDocumentTemplateProducer implements DocumentTemplateProducer {
         @Override
         protected ClassRepresentations getClassRepresentations() {
             return classRepresentations;
+        }
+
+        @Override
+        protected Converters getConverters() {
+            return converters;
         }
     }
 }

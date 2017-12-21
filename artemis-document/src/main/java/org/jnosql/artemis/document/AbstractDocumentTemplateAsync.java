@@ -15,7 +15,9 @@
 package org.jnosql.artemis.document;
 
 
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.IdNotFoundException;
+import org.jnosql.artemis.document.util.ConverterUtil;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.FieldRepresentation;
@@ -46,6 +48,8 @@ public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateA
     protected abstract DocumentCollectionManagerAsync getManager();
 
     protected abstract ClassRepresentations getClassRepresentations();
+
+    protected abstract Converters getConverters();
 
     @Override
     public <T> void insert(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
@@ -130,8 +134,9 @@ public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateA
         FieldRepresentation idField = classRepresentation.getId()
                 .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
 
+        Object value = ConverterUtil.getValue(id, classRepresentation, idField.getName(), getConverters());
         DocumentQuery query = DocumentQueryBuilder.select().from(classRepresentation.getName())
-                .where(idField.getName()).eq(id).build();
+                .where(idField.getName()).eq(value).build();
 
         singleResult(query, callBack);
     }
@@ -165,7 +170,9 @@ public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateA
         FieldRepresentation idField = classRepresentation.getId()
                 .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
 
+        Object value = ConverterUtil.getValue(id, classRepresentation, idField.getName(), getConverters());
+
         return DocumentQueryBuilder.delete().from(classRepresentation.getName())
-                .where(idField.getName()).eq(id).build();
+                .where(idField.getName()).eq(value).build();
     }
 }

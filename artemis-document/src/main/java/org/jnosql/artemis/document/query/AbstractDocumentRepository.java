@@ -14,7 +14,6 @@
  */
 package org.jnosql.artemis.document.query;
 
-import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.document.DocumentTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentation;
