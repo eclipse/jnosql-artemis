@@ -289,7 +289,7 @@ public class DefaultDocumentTemplateTest {
         DocumentCondition condition = query.getCondition().get();
 
         assertEquals("Person", query.getDocumentCollection());
-        assertEquals(DocumentCondition.eq(Document.of("_id", "10")), condition);
+        assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), condition);
 
     }
 
@@ -302,7 +302,7 @@ public class DefaultDocumentTemplateTest {
         DocumentCondition condition = query.getCondition().get();
 
         assertEquals("Person", query.getDocumentCollection());
-        assertEquals(DocumentCondition.eq(Document.of("_id", "10")), condition);
+        assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), condition);
 
     }
 
