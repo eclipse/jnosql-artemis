@@ -109,7 +109,7 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
         FieldRepresentation idField = classRepresentation.getId()
                 .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
 
-        Object value = ConverterUtil.getValue(id, classRepresentation, idField.getName(), getConverters());
+        Object value = ConverterUtil.getValue(id, classRepresentation, idField.getFieldName(), getConverters());
         DocumentQuery query = DocumentQueryBuilder.select().from(classRepresentation.getName())
                 .where(idField.getName()).eq(value).build();
 
@@ -125,7 +125,7 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
         FieldRepresentation idField = classRepresentation.getId()
                 .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
 
-        Object value = ConverterUtil.getValue(id, classRepresentation, idField.getName(), getConverters());
+        Object value = ConverterUtil.getValue(id, classRepresentation, idField.getFieldName(), getConverters());
         DocumentDeleteQuery query = DocumentQueryBuilder.delete().from(classRepresentation.getName())
                 .where(idField.getName()).eq(value).build();
 
