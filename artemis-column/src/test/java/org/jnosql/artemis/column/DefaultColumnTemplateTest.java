@@ -282,7 +282,7 @@ public class DefaultColumnTemplateTest {
         ColumnCondition condition = query.getCondition().get();
 
         assertEquals("Person", query.getColumnFamily());
-        assertEquals(ColumnCondition.eq(Column.of("_id", "10")), condition);
+        assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), condition);
     }
 
     @Test
@@ -296,7 +296,7 @@ public class DefaultColumnTemplateTest {
         ColumnCondition condition = query.getCondition().get();
 
         assertEquals("Person", query.getColumnFamily());
-        assertEquals(ColumnCondition.eq(Column.of("_id", "10")), condition);
+        assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), condition);
 
 
     }

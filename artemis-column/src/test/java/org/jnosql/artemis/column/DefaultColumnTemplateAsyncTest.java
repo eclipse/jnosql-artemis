@@ -15,6 +15,7 @@
 package org.jnosql.artemis.column;
 
 import org.jnosql.artemis.CDIJUnitRunner;
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.column.Column;
@@ -65,6 +66,9 @@ public class DefaultColumnTemplateAsyncTest {
     @Inject
     private ClassRepresentations classRepresentations;
 
+    @Inject
+    private Converters converters;
+
     private ColumnFamilyManagerAsync managerMock;
 
     private DefaultColumnTemplateAsync subject;
@@ -79,7 +83,7 @@ public class DefaultColumnTemplateAsyncTest {
         captor = ArgumentCaptor.forClass(ColumnEntity.class);
         Instance<ColumnFamilyManagerAsync> instance = Mockito.mock(Instance.class);
         Mockito.when(instance.get()).thenReturn(managerMock);
-        this.subject = new DefaultColumnTemplateAsync(converter, instance, classRepresentations);
+        this.subject = new DefaultColumnTemplateAsync(converter, instance, classRepresentations, converters);
     }
 
     @Test
