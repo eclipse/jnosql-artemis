@@ -52,13 +52,13 @@ public class DocumentRepositoryExtensionTest {
     @Test
     public void shouldIniciateAsync() {
         assertNotNull(repositoryAsync);
-        repositoryAsync.save(Person.builder().build());
+        repositoryAsync.save(Person.builder().withId(1L).build());
     }
 
     @Test
     public void shouldGetQualifierAsync() {
         assertNotNull(repositoryMockAsync);
-        repositoryMockAsync.save(Person.builder().build());
+        repositoryMockAsync.save(Person.builder().withId(2L).build());
     }
 
 
