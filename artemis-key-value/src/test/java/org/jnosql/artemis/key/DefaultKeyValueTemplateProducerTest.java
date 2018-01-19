@@ -14,17 +14,18 @@
  */
 package org.jnosql.artemis.key;
 
-import org.jnosql.artemis.CDIJUnitRunner;
+import org.jnosql.artemis.CDIExtension;
 import org.jnosql.diana.api.key.BucketManager;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 
 import javax.inject.Inject;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(CDIExtension.class)
 public class DefaultKeyValueTemplateProducerTest {
 
 
@@ -32,9 +33,11 @@ public class DefaultKeyValueTemplateProducerTest {
     private KeyValueTemplateProducer producer;
 
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenManagerNull() {
+        assertThrows(NullPointerException.class, () ->{
         producer.get(null);
+        });
     }
 
     @Test

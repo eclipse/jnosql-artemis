@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @RunWith(CDIJUnitRunner.class)
 public class DefaultDocumentQueryMapperBuilderTest {
