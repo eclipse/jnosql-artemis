@@ -14,23 +14,23 @@
  */
 package org.jnosql.artemis.key;
 
-import org.jnosql.artemis.CDIJUnitRunner;
+import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.model.User;
 import org.jnosql.diana.api.key.BucketManager;
 import org.jnosql.diana.api.key.KeyValueEntity;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(CDIExtension.class)
 public class DefaultKeyValueTemplateTest {
 
     @Inject
@@ -46,7 +46,7 @@ public class DefaultKeyValueTemplateTest {
     private KeyValueTemplate subject;
 
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.manager = Mockito.mock(BucketManager.class);
         Instance<BucketManager> instance = Mockito.mock(Instance.class);

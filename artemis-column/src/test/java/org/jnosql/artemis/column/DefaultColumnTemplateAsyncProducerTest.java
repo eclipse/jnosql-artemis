@@ -14,17 +14,18 @@
  */
 package org.jnosql.artemis.column;
 
-import org.jnosql.artemis.CDIJUnitRunner;
+import org.jnosql.artemis.CDIExtension;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 
 import javax.inject.Inject;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(CDIExtension.class)
 public class DefaultColumnTemplateAsyncProducerTest {
 
 
@@ -32,9 +33,11 @@ public class DefaultColumnTemplateAsyncProducerTest {
     private ColumnTemplateAsyncProducer producer;
 
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenColumnFamilyManagerNull() {
+        Assertions.assertThrows(NullPointerException.class, () ->{
         producer.get(null);
+        });
     }
 
     @Test

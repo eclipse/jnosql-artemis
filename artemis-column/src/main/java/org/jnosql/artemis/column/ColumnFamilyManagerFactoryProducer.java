@@ -31,6 +31,9 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
+import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
 
 /**
  * The class that creates {@link ColumnFamilyManagerFactory} and {@link ColumnFamilyManagerAsyncFactory}
@@ -75,7 +78,9 @@ class ColumnFamilyManagerFactoryProducer {
 
     private <T extends ColumnFamilyManagerAsync> ColumnFamilyManagerAsyncFactory<T> gettColumnFamilyManagerAsyncFactory(InjectionPoint injectionPoint) {
         Annotated annotated = injectionPoint.getAnnotated();
-        ConfigurationUnit annotation = annotated.getAnnotation(ConfigurationUnit.class);
+
+        ConfigurationUnit annotation = getConfigurationUnit(injectionPoint, annotated)
+                .orElseThrow(() -> new IllegalStateException("The @ConfigurationUnit does not found"));
 
         ConfigurationSettingsUnit unit = configurationReader.get().read(annotation, ColumnConfigurationAsync.class);
         Class<ColumnConfigurationAsync> configurationClass = unit.<ColumnConfigurationAsync>getProvider()
@@ -88,7 +93,9 @@ class ColumnFamilyManagerFactoryProducer {
 
     private <T extends ColumnFamilyManager> ColumnFamilyManagerFactory<T> gettColumnFamilyManagerFactory(InjectionPoint injectionPoint) {
         Annotated annotated = injectionPoint.getAnnotated();
-        ConfigurationUnit annotation = annotated.getAnnotation(ConfigurationUnit.class);
+
+        ConfigurationUnit annotation = getConfigurationUnit(injectionPoint, annotated)
+                .orElseThrow(() -> new IllegalStateException("The @ConfigurationUnit does not found"));
 
         ConfigurationSettingsUnit unit = configurationReader.get().read(annotation, ColumnConfiguration.class);
         Class<ColumnConfiguration> configurationClass = unit.<ColumnConfiguration>getProvider()
@@ -97,5 +104,16 @@ class ColumnFamilyManagerFactoryProducer {
         ColumnConfiguration columnConfiguration = reflections.newInstance(configurationClass);
 
         return columnConfiguration.get(unit.getSettings());
+    }
+
+    private Optional<ConfigurationUnit> getConfigurationUnit(InjectionPoint injectionPoint, Annotated annotated) {
+
+        if (annotated == null) {
+            return injectionPoint.getQualifiers().stream()
+                    .filter(annotation -> ConfigurationUnit.class.equals(annotation.annotationType()))
+                    .map(ConfigurationUnit.class::cast)
+                    .findFirst();
+        }
+        return ofNullable(annotated.getAnnotation(ConfigurationUnit.class));
     }
 }

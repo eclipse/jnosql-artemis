@@ -14,10 +14,10 @@
  */
 package org.jnosql.artemis.document.query;
 
+import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.Pagination;
-import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
@@ -27,18 +27,19 @@ import org.jnosql.diana.api.TypeReference;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentQuery;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(CDIExtension.class)
 public class DocumentQueryParserTest {
 
     @Inject
@@ -51,7 +52,7 @@ public class DocumentQueryParserTest {
 
     private ClassRepresentation classRepresentation;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         parser = new DocumentQueryParser();
         classRepresentation = classRepresentations.get(Person.class);
@@ -162,7 +163,7 @@ public class DocumentQueryParserTest {
     @Test
     public void shouldFindByNameLikeOrderByNameAsc() {
         DocumentQuery query = parser.parse("findByNameLikeOrderByNameAsc", new Object[]{"name"}
-        , classRepresentation, converters);
+                , classRepresentation, converters);
         assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.LIKE, query.getCondition().get().getCondition());
         assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
@@ -209,16 +210,20 @@ public class DocumentQueryParserTest {
         assertEquals(Document.of("age", Arrays.asList(10, 11)), condition2.getDocument());
     }
 
-    @Test(expected = DynamicQueryException.class)
+    @Test
     public void shouldReturnErrorWhenIsMissedArgument() {
-        DocumentQuery query = parser.parse("findByNameAndAgeBetween", new Object[]{"name", 10},
-                classRepresentation, converters);
+        assertThrows(DynamicQueryException.class, () -> {
+            DocumentQuery query = parser.parse("findByNameAndAgeBetween", new Object[]{"name", 10},
+                    classRepresentation, converters);
+        });
     }
 
-    @Test(expected = DynamicQueryException.class)
+    @Test
     public void shouldReturnErrorWhenIsMissedArgument2() {
-        DocumentQuery query = parser.parse("findByName", new Object[]{},
-                classRepresentation, converters);
+        assertThrows(DynamicQueryException.class, () -> {
+            DocumentQuery query = parser.parse("findByName", new Object[]{},
+                    classRepresentation, converters);
+        });
     }
 
     @Test

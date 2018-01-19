@@ -15,10 +15,10 @@
 package org.jnosql.artemis.column.query;
 
 
+import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.Pagination;
-import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
@@ -28,17 +28,18 @@ import org.jnosql.diana.api.TypeReference;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnCondition;
 import org.jnosql.diana.api.column.ColumnQuery;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(CDIExtension.class)
 public class ColumnQueryParserTest {
 
     @Inject
@@ -51,7 +52,7 @@ public class ColumnQueryParserTest {
 
     private ClassRepresentation classRepresentation;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         parser = new ColumnQueryParser();
         classRepresentation = classRepresentations.get(Person.class);
@@ -209,16 +210,20 @@ public class ColumnQueryParserTest {
         assertEquals(Column.of("age", Arrays.asList(10, 11)), condition2.getColumn());
     }
 
-    @Test(expected = DynamicQueryException.class)
+    @Test
     public void shouldReturnErrorWhenIsMissedArgument() {
+        Assertions.assertThrows(DynamicQueryException.class, () ->{
         ColumnQuery query = parser.parse("findByNameAndAgeBetween", new Object[]{"name", 10},
                 classRepresentation, converters);
+        });
     }
 
-    @Test(expected = DynamicQueryException.class)
+    @Test
     public void shouldReturnErrorWhenIsMissedArgument2() {
-        ColumnQuery query = parser.parse("findByName", new Object[]{},
-                classRepresentation, converters);
+        Assertions.assertThrows(DynamicQueryException.class, () -> {
+            ColumnQuery query = parser.parse("findByName", new Object[]{},
+                    classRepresentation, converters);
+        });
     }
 
     @Test

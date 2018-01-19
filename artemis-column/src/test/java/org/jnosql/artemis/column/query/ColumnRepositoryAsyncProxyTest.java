@@ -14,7 +14,7 @@
  */
 package org.jnosql.artemis.column.query;
 
-import org.jnosql.artemis.CDIJUnitRunner;
+import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.Pagination;
@@ -29,9 +29,11 @@ import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnCondition;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnQuery;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
@@ -45,13 +47,13 @@ import java.util.function.Consumer;
 import static java.util.Collections.singletonList;
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(CDIExtension.class)
 public class ColumnRepositoryAsyncProxyTest {
 
     private ColumnTemplateAsync template;
@@ -68,7 +70,7 @@ public class ColumnRepositoryAsyncProxyTest {
     private PersonAsyncRepository personRepository;
 
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.template = Mockito.mock(ColumnTemplateAsync.class);
 
@@ -164,9 +166,11 @@ public class ColumnRepositoryAsyncProxyTest {
     }
 
 
-    @Test(expected = DynamicQueryException.class)
+    @Test
     public void shoudReturnErrorOnFindByName() {
-        personRepository.findByName("name");
+        Assertions.assertThrows(DynamicQueryException.class, () -> {
+            personRepository.findByName("name");
+        });
     }
 
     @Test
@@ -261,7 +265,7 @@ public class ColumnRepositoryAsyncProxyTest {
 
         ColumnQuery query = select()
                 .from("Person")
-                .where("name").eq( "Ada")
+                .where("name").eq("Ada")
                 .build();
 
         personRepository.query(query, callback);
@@ -277,7 +281,7 @@ public class ColumnRepositoryAsyncProxyTest {
         ArgumentCaptor<ColumnDeleteQuery> captor = ArgumentCaptor.forClass(ColumnDeleteQuery.class);
 
         ColumnDeleteQuery deleteQuery = delete().from("Person")
-                .where("name").eq( "Ada")
+                .where("name").eq("Ada")
                 .build();
 
         personRepository.deleteQuery(deleteQuery);

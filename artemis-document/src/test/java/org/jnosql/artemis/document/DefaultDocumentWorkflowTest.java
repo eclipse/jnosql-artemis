@@ -14,13 +14,16 @@
  */
 package org.jnosql.artemis.document;
 
+import org.jnosql.artemis.MockitoExtension;
+import org.jnosql.artemis.model.Person;
 import org.jnosql.diana.api.document.DocumentEntity;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
 
 import java.util.function.UnaryOperator;
 
@@ -28,7 +31,8 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+
+@ExtendWith(MockitoExtension.class)
 public class DefaultDocumentWorkflowTest {
 
 
@@ -44,35 +48,41 @@ public class DefaultDocumentWorkflowTest {
     @Mock
     private DocumentEntity columnEntity;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         when(converter.toDocument(any(Object.class)))
                 .thenReturn(columnEntity);
+        when(converter.toEntity(Mockito.eq(Person.class), any(DocumentEntity.class)))
+                .thenReturn(Person.builder().build());
 
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenEntityIsNull() {
-        UnaryOperator<DocumentEntity> action = t -> t;
-        subject.flow(null, action);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            UnaryOperator<DocumentEntity> action = t -> t;
+            subject.flow(null, action);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenActionIsNull() {
-        subject.flow("", null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            subject.flow("", null);
+        });
     }
 
     @Test
     public void shouldFollowWorkflow() {
         UnaryOperator<DocumentEntity> action = t -> t;
-        subject.flow("entity", action);
+        subject.flow(Person.builder().withId(1L).withAge().withName("Ada").build(), action);
 
         verify(columnEventPersistManager).firePreDocument(any(DocumentEntity.class));
         verify(columnEventPersistManager).firePostDocument(any(DocumentEntity.class));
-        verify(columnEventPersistManager).firePreEntity(any(DocumentEntity.class));
-        verify(columnEventPersistManager).firePostEntity(any(DocumentEntity.class));
-        verify(columnEventPersistManager).firePreDocumentEntity(any(DocumentEntity.class));
-        verify(columnEventPersistManager).firePostDocumentEntity(any(DocumentEntity.class));
+        verify(columnEventPersistManager).firePreEntity(any(Person.class));
+        verify(columnEventPersistManager).firePostEntity(any(Person.class));
+        verify(columnEventPersistManager).firePreDocumentEntity(any(Person.class));
+        verify(columnEventPersistManager).firePostDocumentEntity(any(Person.class));
         verify(converter).toDocument(any(Object.class));
     }
 

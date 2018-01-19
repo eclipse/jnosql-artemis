@@ -14,7 +14,7 @@
  */
 package org.jnosql.artemis.column;
 
-import org.jnosql.artemis.CDIJUnitRunner;
+import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.artemis.model.Job;
@@ -28,9 +28,10 @@ import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
 import org.jnosql.diana.api.column.ColumnQuery;
 import org.jnosql.diana.api.column.query.ColumnQueryBuilder;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
@@ -45,14 +46,14 @@ import java.util.stream.Stream;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(CDIExtension.class)
 public class DefaultColumnTemplateTest {
 
     private Person person = Person.builder().
@@ -88,7 +89,7 @@ public class DefaultColumnTemplateTest {
     private ColumnEventPersistManager columnEventPersistManager;
 
     @SuppressWarnings("unchecked")
-    @Before
+    @BeforeEach
     public void setUp() {
         managerMock = Mockito.mock(ColumnFamilyManager.class);
         columnEventPersistManager = Mockito.mock(ColumnEventPersistManager.class);
@@ -243,34 +244,42 @@ public class DefaultColumnTemplateTest {
         assertFalse(result.isPresent());
     }
 
-    @Test(expected = NonUniqueResultException.class)
+    @Test
     public void shouldReturnErrorWhenThereMoreThanASingleResult() {
-        ColumnEntity columnEntity = ColumnEntity.of("Person");
-        columnEntity.addAll(Stream.of(columns).collect(Collectors.toList()));
+        Assertions.assertThrows(NonUniqueResultException.class, () -> {
+            ColumnEntity columnEntity = ColumnEntity.of("Person");
+            columnEntity.addAll(Stream.of(columns).collect(Collectors.toList()));
 
-        Mockito.when(managerMock
-                .select(any(ColumnQuery.class)))
-                .thenReturn(Arrays.asList(columnEntity, columnEntity));
+            Mockito.when(managerMock
+                    .select(any(ColumnQuery.class)))
+                    .thenReturn(Arrays.asList(columnEntity, columnEntity));
 
-        ColumnQuery query = select().from("person").build();
+            ColumnQuery query = select().from("person").build();
 
-        subject.singleResult(query);
+            subject.singleResult(query);
+        });
     }
 
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenFindIdHasIdNull() {
-        subject.find(Person.class, null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            subject.find(Person.class, null);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenFindIdHasClassNull() {
-        subject.find(null, "10");
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            subject.find(null, "10");
+        });
     }
 
-    @Test(expected = IdNotFoundException.class)
+    @Test
     public void shouldReturnErrorWhenThereIsNotIdInFind() {
-        subject.find(Job.class, "10");
+        Assertions.assertThrows(IdNotFoundException.class, () -> {
+            subject.find(Job.class, "10");
+        });
     }
 
     @Test

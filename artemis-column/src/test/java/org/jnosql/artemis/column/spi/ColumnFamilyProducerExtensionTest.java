@@ -14,21 +14,21 @@
  */
 package org.jnosql.artemis.column.spi;
 
+import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.Database;
 import org.jnosql.artemis.DatabaseType;
-import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.model.Person;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(CDIExtension.class)
 public class ColumnFamilyProducerExtensionTest {
 
     @Inject
@@ -47,8 +47,8 @@ public class ColumnFamilyProducerExtensionTest {
 
     @Test
     public void shouldInstance() {
-        Assert.assertNotNull(manager);
-        Assert.assertNotNull(managerMock);
+        assertNotNull(manager);
+        assertNotNull(managerMock);
     }
 
     @Test

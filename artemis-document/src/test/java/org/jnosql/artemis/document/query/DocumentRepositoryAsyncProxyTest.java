@@ -14,7 +14,7 @@
  */
 package org.jnosql.artemis.document.query;
 
-import org.jnosql.artemis.CDIJUnitRunner;
+import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.Pagination;
@@ -29,9 +29,10 @@ import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentQuery;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
@@ -46,13 +47,13 @@ import java.util.function.Consumer;
 import static java.util.Collections.singletonList;
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(CDIExtension.class)
 public class DocumentRepositoryAsyncProxyTest {
 
     private DocumentTemplateAsync template;
@@ -69,7 +70,7 @@ public class DocumentRepositoryAsyncProxyTest {
     private PersonAsyncRepository personRepository;
 
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.template = Mockito.mock(DocumentTemplateAsync.class);
 
@@ -94,7 +95,7 @@ public class DocumentRepositoryAsyncProxyTest {
                 .build();
 
         personRepository.save(person);
-        verify(template).find(Mockito.eq(Person.class),Mockito.eq(10L), consumerCaptor.capture());
+        verify(template).find(Mockito.eq(Person.class), Mockito.eq(10L), consumerCaptor.capture());
         Consumer consumer = consumerCaptor.getValue();
         consumer.accept(Optional.empty());
         verify(template).insert(captor.capture());
@@ -112,7 +113,7 @@ public class DocumentRepositoryAsyncProxyTest {
                 .withPhones(singletonList("123123"))
                 .build();
         personRepository.save(person);
-        verify(template).find(Mockito.eq(Person.class),Mockito.eq(10L), consumerCaptor.capture());
+        verify(template).find(Mockito.eq(Person.class), Mockito.eq(10L), consumerCaptor.capture());
         Consumer consumer = consumerCaptor.getValue();
         consumer.accept(Optional.of(Person.builder().build()));
         verify(template).update(captor.capture());
@@ -166,9 +167,11 @@ public class DocumentRepositoryAsyncProxyTest {
     }
 
 
-    @Test(expected = DynamicQueryException.class)
+    @Test
     public void shoudReturnErrorOnFindByName() {
-        personRepository.findByName("name");
+        Assertions.assertThrows(DynamicQueryException.class, () -> {
+            personRepository.findByName("name");
+        });
     }
 
     @Test
@@ -293,7 +296,7 @@ public class DocumentRepositoryAsyncProxyTest {
         Consumer<Optional<Person>> callBack = p -> {
         };
         personRepository.findById(10L, callBack);
-        verify(template).find(Mockito.eq(Person.class),Mockito.eq(10L), Matchers.eq(callBack));
+        verify(template).find(Mockito.eq(Person.class), Mockito.eq(10L), Matchers.eq(callBack));
 
     }
 
@@ -330,7 +333,6 @@ public class DocumentRepositoryAsyncProxyTest {
     public void shouldReturnEquals() {
         assertNotNull(personRepository.equals(personRepository));
     }
-
 
 
     interface PersonAsyncRepository extends RepositoryAsync<Person, Long> {

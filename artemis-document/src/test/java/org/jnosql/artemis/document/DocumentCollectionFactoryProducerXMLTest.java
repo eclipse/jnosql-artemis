@@ -14,22 +14,22 @@
  */
 package org.jnosql.artemis.document;
 
+import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.ConfigurationUnit;
-import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.diana.api.Settings;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsyncFactory;
 import org.jnosql.diana.api.document.DocumentCollectionManagerFactory;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(CDIExtension.class)
 public class DocumentCollectionFactoryProducerXMLTest {
 
     @Inject
@@ -53,7 +53,7 @@ public class DocumentCollectionFactoryProducerXMLTest {
     @Test
     public void shouldReadInjectDocumentCollection() {
         factoryA.get("database");
-        Assert.assertTrue(DocumentCollectionManagerMock.DocumentMock.class.isInstance(factoryA));
+        assertTrue(DocumentCollectionManagerMock.DocumentMock.class.isInstance(factoryA));
         DocumentCollectionManagerMock.DocumentMock mock = DocumentCollectionManagerMock.DocumentMock.class.cast(factoryA);
         Map<String, Object> settings = new HashMap<>();
         settings.put("key","value");
@@ -64,7 +64,7 @@ public class DocumentCollectionFactoryProducerXMLTest {
     @Test
     public void shouldReadInjectDocumentCollectionB() {
         factoryB.get("database");
-        Assert.assertTrue(DocumentCollectionManagerMock.DocumentMock.class.isInstance(factoryB));
+        assertTrue(DocumentCollectionManagerMock.DocumentMock.class.isInstance(factoryB));
         DocumentCollectionManagerMock.DocumentMock mock = DocumentCollectionManagerMock.DocumentMock.class.cast(factoryB);
         Map<String, Object> settings = new HashMap<>();
         settings.put("key","value");
@@ -76,7 +76,7 @@ public class DocumentCollectionFactoryProducerXMLTest {
     @Test
     public void shouldReadInjectDocumentCollectionAsync() {
         factoryAsyncA.getAsync("database");
-        Assert.assertTrue(DocumentCollectionManagerMock.DocumentMock.class.isInstance(factoryAsyncA));
+        assertTrue(DocumentCollectionManagerMock.DocumentMock.class.isInstance(factoryAsyncA));
         DocumentCollectionManagerMock.DocumentMock mock = DocumentCollectionManagerMock.DocumentMock.class.cast(factoryAsyncA);
         Map<String, Object> settings = new HashMap<>();
         settings.put("key","value");
@@ -87,7 +87,7 @@ public class DocumentCollectionFactoryProducerXMLTest {
     @Test
     public void shouldReadInjectDocumentCollectionAsyncB() {
         factoryAsyncB.getAsync("database");
-        Assert.assertTrue(DocumentCollectionManagerMock.DocumentMock.class.isInstance(factoryAsyncB));
+        assertTrue(DocumentCollectionManagerMock.DocumentMock.class.isInstance(factoryAsyncB));
         DocumentCollectionManagerMock.DocumentMock mock = DocumentCollectionManagerMock.DocumentMock.class.cast(factoryAsyncB);
         Map<String, Object> settings = new HashMap<>();
         settings.put("key","value");

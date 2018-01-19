@@ -14,13 +14,16 @@
  */
 package org.jnosql.artemis.column;
 
+import org.jnosql.artemis.MockitoExtension;
+import org.jnosql.artemis.model.Person;
 import org.jnosql.diana.api.column.ColumnEntity;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
 
 import java.util.function.UnaryOperator;
 
@@ -29,7 +32,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DefaultColumnWorkflowTest {
 
 
@@ -45,36 +48,42 @@ public class DefaultColumnWorkflowTest {
     @Mock
     private ColumnEntity columnEntity;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         when(converter.toColumn(any(Object.class)))
                 .thenReturn(columnEntity);
+        when(converter.toEntity(Mockito.eq(Person.class), any(ColumnEntity.class)))
+                .thenReturn(Person.builder().build());
 
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenEntityIsNull() {
-        UnaryOperator<ColumnEntity> action = t -> t;
-        subject.flow(null, action);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            UnaryOperator<ColumnEntity> action = t -> t;
+            subject.flow(null, action);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenActionIsNull() {
-        subject.flow("", null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            subject.flow("", null);
+        });
     }
 
     @Test
     public void shouldFollowWorkflow() {
         UnaryOperator<ColumnEntity> action = t -> t;
-        subject.flow("entity", action);
+        subject.flow(Person.builder().withId(1L).withAge().withName("Ada").build(), action);
 
         verify(columnEventPersistManager).firePreColumn(any(ColumnEntity.class));
         verify(columnEventPersistManager).firePostColumn(any(ColumnEntity.class));
-        verify(columnEventPersistManager).firePreEntity(any(ColumnEntity.class));
-        verify(columnEventPersistManager).firePostEntity(any(ColumnEntity.class));
+        verify(columnEventPersistManager).firePreEntity(any(Person.class));
+        verify(columnEventPersistManager).firePostEntity(any(Person.class));
 
-        verify(columnEventPersistManager).firePreColumnEntity(any(ColumnEntity.class));
-        verify(columnEventPersistManager).firePostColumnEntity(any(ColumnEntity.class));
+        verify(columnEventPersistManager).firePreColumnEntity(any(Person.class));
+        verify(columnEventPersistManager).firePostColumnEntity(any(Person.class));
         verify(converter).toColumn(any(Object.class));
     }
 

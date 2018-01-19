@@ -14,19 +14,20 @@
  */
 package org.jnosql.artemis.column.query;
 
-import org.jnosql.artemis.CDIJUnitRunner;
+import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.column.ColumnQueryMapperBuilder;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.diana.api.column.query.ColumnDeleteFrom;
 import org.jnosql.diana.api.column.query.ColumnFrom;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(CDIExtension.class)
 public class DefaultColumnQueryMapperBuilderTest {
 
 
@@ -34,9 +35,11 @@ public class DefaultColumnQueryMapperBuilderTest {
     private ColumnQueryMapperBuilder mapperBuilder;
 
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenEntityClassIsNull() {
+        Assertions.assertThrows(NullPointerException.class, () ->{
         mapperBuilder.selectFrom(null);
+        });
     }
 
     @Test
@@ -45,9 +48,11 @@ public class DefaultColumnQueryMapperBuilderTest {
         assertNotNull(columnFrom);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenDeleteEntityClassIsNull() {
-        mapperBuilder.deleteFrom(null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            mapperBuilder.deleteFrom(null);
+        });
     }
 
     @Test
