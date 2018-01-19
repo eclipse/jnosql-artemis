@@ -14,39 +14,46 @@
  */
 package org.jnosql.artemis.key;
 
+import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.IdNotFoundException;
-import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.model.User;
 import org.jnosql.artemis.model.Worker;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.key.KeyValueEntity;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(CDIExtension.class)
 public class DefaultKeyValueEntityConverterTest {
 
     @Inject
     private KeyValueEntityConverter converter;
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnNPEWhenEntityIsNull() {
-        converter.toKeyValue(null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            converter.toKeyValue(null);
+        });
     }
 
-    @Test(expected = IdNotFoundException.class)
+    @Test
     public void shouldReturnErrorWhenThereIsNotKeyAnnotation() {
-        converter.toKeyValue(new Worker());
+        Assertions.assertThrows(IdNotFoundException.class, () -> {
+            converter.toKeyValue(new Worker());
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenTheKeyIsNull() {
-        User user = new User(null, "name", 24);
-        converter.toKeyValue(user);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            User user = new User(null, "name", 24);
+            converter.toKeyValue(user);
+        });
     }
 
     @Test
@@ -57,19 +64,25 @@ public class DefaultKeyValueEntityConverterTest {
         assertEquals(user, keyValueEntity.getValue().get());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnNPEWhenKeyValueIsNull() {
-        converter.toEntity(User.class, (KeyValueEntity<?>) null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            converter.toEntity(User.class, (KeyValueEntity<?>) null);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnNPEWhenClassIsNull() {
-        converter.toEntity(null, KeyValueEntity.of("user", new User("nickname", "name", 21)));
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            converter.toEntity(null, KeyValueEntity.of("user", new User("nickname", "name", 21)));
+        });
     }
 
-    @Test(expected = IdNotFoundException.class)
+    @Test
     public void shouldReturnErrorWhenTheKeyIsMissing() {
-        converter.toEntity(Worker.class, KeyValueEntity.of("worker", new Worker()));
+        Assertions.assertThrows(IdNotFoundException.class, () -> {
+            converter.toEntity(Worker.class, KeyValueEntity.of("worker", new Worker()));
+        });
     }
 
     @Test

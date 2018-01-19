@@ -14,21 +14,21 @@
  */
 package org.jnosql.artemis.key;
 
+import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.ConfigurationUnit;
-import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.diana.api.Settings;
 import org.jnosql.diana.api.key.BucketManagerFactory;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(CDIExtension.class)
 public class BucketManagerFactoryProducerTest {
 
     @Inject
@@ -43,7 +43,7 @@ public class BucketManagerFactoryProducerTest {
     @Test
     public void shouldReadBucketManager() {
         factoryA.getBucketManager("database");
-        Assert.assertTrue(KeyValueConfigurationMock.BucketManagerFactoryMock.class.isInstance(factoryA));
+        assertTrue(KeyValueConfigurationMock.BucketManagerFactoryMock.class.isInstance(factoryA));
         KeyValueConfigurationMock.BucketManagerFactoryMock mock = KeyValueConfigurationMock.BucketManagerFactoryMock.class.cast(factoryA);
         Map<String, Object> settings = new HashMap<>();
         settings.put("key","value");
@@ -54,7 +54,7 @@ public class BucketManagerFactoryProducerTest {
     @Test
     public void shouldReadBucketManagerB() {
         factoryB.getBucketManager("database");
-        Assert.assertTrue(KeyValueConfigurationMock.BucketManagerFactoryMock.class.isInstance(factoryB));
+        assertTrue(KeyValueConfigurationMock.BucketManagerFactoryMock.class.isInstance(factoryB));
         KeyValueConfigurationMock.BucketManagerFactoryMock mock = KeyValueConfigurationMock.BucketManagerFactoryMock.class.cast(factoryB);
         Map<String, Object> settings = new HashMap<>();
         settings.put("key","value");

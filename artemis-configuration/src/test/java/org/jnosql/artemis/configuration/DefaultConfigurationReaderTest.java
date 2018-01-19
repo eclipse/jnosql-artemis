@@ -17,21 +17,20 @@ package org.jnosql.artemis.configuration;
 import org.jnosql.artemis.ConfigurationReader;
 import org.jnosql.artemis.ConfigurationSettingsUnit;
 import org.jnosql.artemis.ConfigurationUnit;
-import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.diana.api.Settings;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(CDIExtension.class)
 public class DefaultConfigurationReaderTest {
 
 
