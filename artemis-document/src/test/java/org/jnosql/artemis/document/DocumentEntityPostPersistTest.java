@@ -15,16 +15,19 @@
 package org.jnosql.artemis.document;
 
 import org.jnosql.diana.api.document.DocumentEntity;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class DocumentEntityPostPersistTest {
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnNPEWhenEntityIsNull() {
-        DocumentEntityPostPersist.of(null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            DocumentEntityPostPersist.of(null);
+        });
     }
 
     @Test

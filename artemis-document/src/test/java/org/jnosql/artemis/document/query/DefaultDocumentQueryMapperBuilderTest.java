@@ -14,17 +14,18 @@
  */
 package org.jnosql.artemis.document.query;
 
-import org.jnosql.artemis.CDIJUnitRunner;
+import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.document.DocumentQueryMapperBuilder;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.diana.api.document.query.DocumentDeleteFrom;
 import org.jnosql.diana.api.document.query.DocumentFrom;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(CDIExtension.class)
 public class DefaultDocumentQueryMapperBuilderTest {
@@ -34,9 +35,11 @@ public class DefaultDocumentQueryMapperBuilderTest {
     private DocumentQueryMapperBuilder mapperBuilder;
 
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenEntityClassIsNull() {
-        mapperBuilder.selectFrom(null);
+        assertThrows(NullPointerException.class, () -> {
+            mapperBuilder.selectFrom(null);
+        });
     }
 
     @Test
@@ -45,9 +48,11 @@ public class DefaultDocumentQueryMapperBuilderTest {
         assertNotNull(documentFrom);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenDeleteEntityClassIsNull() {
-        mapperBuilder.deleteFrom(null);
+        assertThrows(NullPointerException.class, () -> {
+            mapperBuilder.deleteFrom(null);
+        });
     }
 
     @Test

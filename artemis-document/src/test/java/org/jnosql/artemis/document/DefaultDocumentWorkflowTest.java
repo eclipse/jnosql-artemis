@@ -14,14 +14,14 @@
  */
 package org.jnosql.artemis.document;
 
+import org.jnosql.artemis.MockitoExtension;
 import org.jnosql.diana.api.document.DocumentEntity;
-import org.junit.Before;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.function.UnaryOperator;
 
@@ -29,7 +29,8 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+
+@ExtendWith(MockitoExtension.class)
 public class DefaultDocumentWorkflowTest {
 
 
@@ -52,15 +53,19 @@ public class DefaultDocumentWorkflowTest {
 
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenEntityIsNull() {
-        UnaryOperator<DocumentEntity> action = t -> t;
-        subject.flow(null, action);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            UnaryOperator<DocumentEntity> action = t -> t;
+            subject.flow(null, action);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenActionIsNull() {
-        subject.flow("", null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            subject.flow("", null);
+        });
     }
 
     @Test

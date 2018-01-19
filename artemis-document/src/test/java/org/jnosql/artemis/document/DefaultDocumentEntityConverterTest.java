@@ -15,7 +15,7 @@
 package org.jnosql.artemis.document;
 
 import org.hamcrest.Matchers;
-import org.jnosql.artemis.CDIJUnitRunner;
+import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.model.Actor;
 import org.jnosql.artemis.model.Address;
 import org.jnosql.artemis.model.AppointmentBook;
@@ -33,10 +33,9 @@ import org.jnosql.diana.api.TypeReference;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentEntity;
-import org.junit.Assert;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
@@ -52,10 +51,10 @@ import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 @ExtendWith(CDIExtension.class)
 public class DefaultDocumentEntityConverterTest {
@@ -76,7 +75,7 @@ public class DefaultDocumentEntityConverterTest {
             .withMovierRating(Collections.singletonMap("JavaZone", 10))
             .build();
 
-    @Before
+    @BeforeEach
     public void init() {
 
         documents = new Document[]{Document.of("_id", 12L),
@@ -267,7 +266,7 @@ public class DefaultDocumentEntityConverterTest {
         worker.setJob(job);
         DocumentEntity entity = converter.toDocument(worker);
         Worker worker1 = converter.toEntity(entity);
-        Assert.assertEquals(worker.getSalary(), worker1.getSalary());
+        assertEquals(worker.getSalary(), worker1.getSalary());
         assertEquals(job.getCity(), worker1.getJob().getCity());
         assertEquals(job.getDescription(), worker1.getJob().getDescription());
     }

@@ -14,7 +14,7 @@
  */
 package org.jnosql.artemis.document;
 
-import org.jnosql.artemis.CDIJUnitRunner;
+import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.artemis.model.Job;
@@ -27,9 +27,10 @@ import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentEntity;
 import org.jnosql.diana.api.document.DocumentQuery;
-import org.junit.Before;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
@@ -90,7 +91,7 @@ public class DefaultDocumentTemplateTest {
     private DocumentEventPersistManager documentEventPersistManager;
 
     @SuppressWarnings("unchecked")
-    @Before
+    @BeforeEach
     public void setUp() {
         managerMock = Mockito.mock(DocumentCollectionManager.class);
         documentEventPersistManager = Mockito.mock(DocumentEventPersistManager.class);
@@ -251,33 +252,41 @@ public class DefaultDocumentTemplateTest {
         assertFalse(result.isPresent());
     }
 
-    @Test(expected = NonUniqueResultException.class)
+    @Test
     public void shouldReturnErrorWhenThereMoreThanASingleResult() {
-        DocumentEntity columnEntity = DocumentEntity.of("Person");
-        columnEntity.addAll(Stream.of(documents).collect(Collectors.toList()));
+        Assertions.assertThrows(NonUniqueResultException.class, () -> {
+            DocumentEntity columnEntity = DocumentEntity.of("Person");
+            columnEntity.addAll(Stream.of(documents).collect(Collectors.toList()));
 
-        Mockito.when(managerMock
-                .select(any(DocumentQuery.class)))
-                .thenReturn(Arrays.asList(columnEntity, columnEntity));
+            Mockito.when(managerMock
+                    .select(any(DocumentQuery.class)))
+                    .thenReturn(Arrays.asList(columnEntity, columnEntity));
 
-        DocumentQuery query = select().from("person").build();
+            DocumentQuery query = select().from("person").build();
 
-        subject.singleResult(query);
+            subject.singleResult(query);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenFindIdHasIdNull() {
-        subject.find(Person.class, null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            subject.find(Person.class, null);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenFindIdHasClassNull() {
-        subject.find(null, "10");
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            subject.find(null, "10");
+        });
     }
 
-    @Test(expected = IdNotFoundException.class)
+    @Test
     public void shouldReturnErrorWhenThereIsNotIdInFind() {
-        subject.find(Job.class, "10");
+        Assertions.assertThrows(IdNotFoundException.class, () -> {
+            subject.find(Job.class, "10");
+        });
     }
 
     @Test

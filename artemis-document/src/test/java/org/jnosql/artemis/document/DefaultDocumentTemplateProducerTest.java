@@ -14,10 +14,11 @@
  */
 package org.jnosql.artemis.document;
 
-import org.jnosql.artemis.CDIJUnitRunner;
+import org.jnosql.artemis.CDIExtension;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 
 import javax.inject.Inject;
@@ -32,9 +33,11 @@ public class DefaultDocumentTemplateProducerTest {
     private DocumentTemplateProducer producer;
 
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenManagerNull() {
-        producer.get(null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            producer.get(null);
+        });
     }
 
     @Test
