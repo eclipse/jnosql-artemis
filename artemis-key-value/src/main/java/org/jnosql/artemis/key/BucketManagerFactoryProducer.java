@@ -56,7 +56,7 @@ class BucketManagerFactoryProducer {
 
     private <T extends BucketManager> BucketManagerFactory<T> getBuckerManagerFactocy(InjectionPoint injectionPoint) {
         Annotated annotated = injectionPoint.getAnnotated();
-        ConfigurationUnit annotation = annotated.getAnnotation(ConfigurationUnit.class);
+        ConfigurationUnit annotation = getConfigurationUnit(injectionPoint, annotated);
 
         ConfigurationSettingsUnit unit = configurationReader.get().read(annotation, KeyValueConfiguration.class);
         Class<KeyValueConfiguration> configurationClass = unit.<KeyValueConfiguration>getProvider()
@@ -65,5 +65,15 @@ class BucketManagerFactoryProducer {
         KeyValueConfiguration columnConfiguration = reflections.newInstance(configurationClass);
 
         return columnConfiguration.get(unit.getSettings());
+    }
+
+    private ConfigurationUnit getConfigurationUnit(InjectionPoint injectionPoint, Annotated annotated) {
+        ConfigurationUnit annotation = annotated.getAnnotation(ConfigurationUnit.class);
+        if(annotation == null) {
+            return (ConfigurationUnit) injectionPoint.getQualifiers().stream()
+                    .filter(ConfigurationUnit.class::equals)
+                    .findFirst().orElseThrow(() -> new IllegalStateException(""));
+        }
+        return annotation;
     }
 }
