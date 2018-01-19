@@ -14,7 +14,7 @@
  */
 package org.jnosql.artemis.configuration;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;

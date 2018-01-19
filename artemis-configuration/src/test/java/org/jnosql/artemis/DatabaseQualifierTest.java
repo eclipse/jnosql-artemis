@@ -14,7 +14,8 @@
  */
 package org.jnosql.artemis;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import static org.jnosql.artemis.DatabaseType.COLUMN;
 import static org.jnosql.artemis.DatabaseType.DOCUMENT;
@@ -40,9 +41,11 @@ public class DatabaseQualifierTest {
         assertEquals(COLUMN, qualifier.value());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenColumnNull() {
-        DatabaseQualifier.ofColumn(null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            DatabaseQualifier.ofColumn(null);
+        });
     }
 
     @Test
@@ -60,14 +63,18 @@ public class DatabaseQualifierTest {
         assertEquals(DOCUMENT, qualifier.value());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenDocumentNull() {
-        DatabaseQualifier.ofDocument(null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            DatabaseQualifier.ofDocument(null);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenKeyValueNull() {
-        DatabaseQualifier.ofKeyValue(null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            DatabaseQualifier.ofKeyValue(null);
+        });
     }
 
     @Test
@@ -86,9 +93,11 @@ public class DatabaseQualifierTest {
     }
 
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenGraphNull() {
-        DatabaseQualifier.ofGraph(null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            DatabaseQualifier.ofGraph(null);
+        });
     }
 
     @Test

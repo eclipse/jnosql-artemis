@@ -20,6 +20,7 @@ import org.jnosql.artemis.MockitoExtension;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.key.KeyValueTemplate;
 import org.jnosql.artemis.model.User;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -78,7 +79,6 @@ public class KeyValueRepositoryProxyTest {
     }
 
 
-
     @Test
     public void shouldDeleve() {
         userRepository.deleteById("key");
@@ -114,11 +114,13 @@ public class KeyValueRepositoryProxyTest {
 
         assertThat(userRepository.findById(keys), Matchers.containsInAnyOrder(user, user2));
     }
-    
 
-    @Test(expected = DynamicQueryException.class)
+
+    @Test
     public void shouldReturnErrorWhenExecuteMethodQuery() {
-        userRepository.findByName("name");
+        Assertions.assertThrows(DynamicQueryException.class, () -> {
+            userRepository.findByName("name");
+        });
     }
 
     @Test

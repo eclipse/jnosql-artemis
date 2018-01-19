@@ -16,19 +16,19 @@ package org.jnosql.artemis.key.spi;
 
 import org.jnosql.artemis.Database;
 import org.jnosql.artemis.DatabaseType;
+import org.jnosql.artemis.MockitoExtension;
 import org.jnosql.artemis.UserRepository;
-import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.key.KeyValueTemplate;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.model.User;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class BucketManagerProducerExtensionTest {
 
     @Inject

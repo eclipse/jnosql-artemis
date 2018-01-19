@@ -14,10 +14,12 @@
  */
 package org.jnosql.artemis.configuration;
 
+import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.ConfigurationReader;
 import org.jnosql.artemis.ConfigurationSettingsUnit;
 import org.jnosql.artemis.ConfigurationUnit;
 import org.jnosql.diana.api.Settings;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -38,84 +40,106 @@ public class DefaultConfigurationReaderTest {
     private ConfigurationReader configurationReader;
 
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnNPEWhenAnnotationIsNull() {
+        Assertions.assertThrows(NullPointerException.class, () ->{
         configurationReader.read(null, MockConfiguration.class);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnNPEWhenConfigurationIsNull() {
-        ConfigurationUnit annotation = mock(ConfigurationUnit.class);
-        configurationReader.read(annotation, null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            ConfigurationUnit annotation = mock(ConfigurationUnit.class);
+            configurationReader.read(annotation, null);
+        });
     }
 
-    @Test(expected = ConfigurationException.class)
+    @Test
     public void shouldReturnErrorWhenFileDoesNotExist() {
-        ConfigurationUnit annotation = mock(ConfigurationUnit.class);
-        when(annotation.fileName()).thenReturn("unknown.json");
-        configurationReader.read(annotation, MockConfiguration.class);
+        Assertions.assertThrows(ConfigurationException.class, () -> {
+            ConfigurationUnit annotation = mock(ConfigurationUnit.class);
+            when(annotation.fileName()).thenReturn("unknown.json");
+            configurationReader.read(annotation, MockConfiguration.class);
+        });
     }
 
-    @Test(expected = ConfigurationException.class)
+    @Test
     public void shouldReturnErrorWhenFileIsInvalid() {
-        ConfigurationUnit annotation = mock(ConfigurationUnit.class);
-        when(annotation.fileName()).thenReturn("invalid.json");
-        configurationReader.read(annotation, MockConfiguration.class);
+        Assertions.assertThrows(ConfigurationException.class, () -> {
+            ConfigurationUnit annotation = mock(ConfigurationUnit.class);
+            when(annotation.fileName()).thenReturn("invalid.json");
+            configurationReader.read(annotation, MockConfiguration.class);
+        });
     }
 
-    @Test(expected = ConfigurationException.class)
+    @Test
     public void shouldReturnAnErrorWhenTheExtensionDoesNotSupport() {
-        ConfigurationUnit annotation = mock(ConfigurationUnit.class);
-        when(annotation.fileName()).thenReturn("invalid.invalid");
-        configurationReader.read(annotation, MockConfiguration.class);
+        Assertions.assertThrows(ConfigurationException.class, () -> {
+            ConfigurationUnit annotation = mock(ConfigurationUnit.class);
+            when(annotation.fileName()).thenReturn("invalid.invalid");
+            configurationReader.read(annotation, MockConfiguration.class);
+        });
     }
 
-    @Test(expected = ConfigurationException.class)
+    @Test
     public void shouldReturnAnErrorWhenTheFileIsInvalid() {
-        ConfigurationUnit annotation = mock(ConfigurationUnit.class);
-        when(annotation.fileName()).thenReturn("invalid");
-        configurationReader.read(annotation, MockConfiguration.class);
+        Assertions.assertThrows(ConfigurationException.class, () -> {
+            ConfigurationUnit annotation = mock(ConfigurationUnit.class);
+            when(annotation.fileName()).thenReturn("invalid");
+            configurationReader.read(annotation, MockConfiguration.class);
+        });
     }
 
 
-    @Test(expected = ConfigurationException.class)
+    @Test
     public void shouldReturnErrorWhenUnitNameIsNotFind() {
-        ConfigurationUnit annotation = mock(ConfigurationUnit.class);
-        when(annotation.fileName()).thenReturn("jnosql.json");
-        when(annotation.name()).thenReturn("unknown");
-        configurationReader.read(annotation, MockConfiguration.class);
+        Assertions.assertThrows(ConfigurationException.class, () -> {
+            ConfigurationUnit annotation = mock(ConfigurationUnit.class);
+            when(annotation.fileName()).thenReturn("jnosql.json");
+            when(annotation.name()).thenReturn("unknown");
+            configurationReader.read(annotation, MockConfiguration.class);
+        });
     }
 
-    @Test(expected = ConfigurationException.class)
+    @Test
     public void shouldReturnErrorWhenClassIsNotFound() {
-        ConfigurationUnit annotation = mock(ConfigurationUnit.class);
-        when(annotation.fileName()).thenReturn("invalid-class.json");
-        when(annotation.name()).thenReturn("name-1");
-        configurationReader.read(annotation, MockConfiguration.class);
+        Assertions.assertThrows(ConfigurationException.class, () -> {
+            ConfigurationUnit annotation = mock(ConfigurationUnit.class);
+            when(annotation.fileName()).thenReturn("invalid-class.json");
+            when(annotation.name()).thenReturn("name-1");
+            configurationReader.read(annotation, MockConfiguration.class);
+        });
     }
 
-    @Test(expected = ConfigurationException.class)
+    @Test
     public void shouldReturnErrorWhenClassDoesNotMatch() {
-        ConfigurationUnit annotation = mock(ConfigurationUnit.class);
-        when(annotation.fileName()).thenReturn("invalid-class.json");
-        when(annotation.name()).thenReturn("name");
-        configurationReader.read(annotation, MockConfiguration.class);
+        Assertions.assertThrows(ConfigurationException.class, () -> {
+            ConfigurationUnit annotation = mock(ConfigurationUnit.class);
+            when(annotation.fileName()).thenReturn("invalid-class.json");
+            when(annotation.name()).thenReturn("name");
+            configurationReader.read(annotation, MockConfiguration.class);
+        });
     }
 
 
-    @Test(expected = ConfigurationException.class)
+    @Test
     public void shouldReturnErrorWhenThereIsNotDefaultConstructor() {
-        ConfigurationUnit annotation = mock(ConfigurationUnit.class);
-        when(annotation.fileName()).thenReturn("invalid-class.json");
-        when(annotation.name()).thenReturn("name-2");
-        configurationReader.read(annotation, MockConfiguration.class);
+        Assertions.assertThrows(ConfigurationException.class, () -> {
+            ConfigurationUnit annotation = mock(ConfigurationUnit.class);
+            when(annotation.fileName()).thenReturn("invalid-class.json");
+            when(annotation.name()).thenReturn("name-2");
+            configurationReader.read(annotation, MockConfiguration.class);
+        });
     }
 
-    @Test(expected = ConfigurationException.class)
+    @Test
     public void shouldReturnErrorWhenThereIsAmbiguous() {
-        ConfigurationUnit annotation = mock(ConfigurationUnit.class);
-        when(annotation.fileName()).thenReturn("jnosql.json");
-        configurationReader.read(annotation, MockConfiguration.class);
+        Assertions.assertThrows(ConfigurationException.class, () -> {
+            ConfigurationUnit annotation = mock(ConfigurationUnit.class);
+            when(annotation.fileName()).thenReturn("jnosql.json");
+            configurationReader.read(annotation, MockConfiguration.class);
+        });
     }
 
     @Test
