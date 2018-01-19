@@ -16,16 +16,16 @@ package org.jnosql.artemis.key.query;
 
 import org.hamcrest.Matchers;
 import org.jnosql.artemis.DynamicQueryException;
+import org.jnosql.artemis.MockitoExtension;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.key.KeyValueTemplate;
 import org.jnosql.artemis.model.User;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
@@ -33,11 +33,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class KeyValueRepositoryProxyTest {
 
     @Mock
@@ -45,7 +45,7 @@ public class KeyValueRepositoryProxyTest {
 
     private UserRepository userRepository;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         KeyValueRepositoryProxy handler = new KeyValueRepositoryProxy(UserRepository.class, repository);
