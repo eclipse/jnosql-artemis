@@ -31,6 +31,9 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
+import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
 
 /**
  * The class that creates {@link DocumentCollectionManagerFactory} and {@link DocumentCollectionManagerFactory}
@@ -77,7 +80,9 @@ class DocumentCollectionFactoryProducer {
     getDocumentCollectionAsync(InjectionPoint injectionPoint) {
 
         Annotated annotated = injectionPoint.getAnnotated();
-        ConfigurationUnit annotation = annotated.getAnnotation(ConfigurationUnit.class);
+        
+        ConfigurationUnit annotation = getConfigurationUnit(injectionPoint, annotated)
+                .orElseThrow(() -> new IllegalStateException("The @ConfigurationUnit does not found"));
 
         ConfigurationSettingsUnit unit = configurationReader.get().read(annotation, DocumentConfigurationAsync.class);
         Class<DocumentConfigurationAsync> configurationClass = unit.<DocumentConfigurationAsync>getProvider()
@@ -89,7 +94,9 @@ class DocumentCollectionFactoryProducer {
 
     private <T extends DocumentCollectionManager> DocumentCollectionManagerFactory<T> getDocumentCollection(InjectionPoint injectionPoint) {
         Annotated annotated = injectionPoint.getAnnotated();
-        ConfigurationUnit annotation = annotated.getAnnotation(ConfigurationUnit.class);
+
+        ConfigurationUnit annotation = getConfigurationUnit(injectionPoint, annotated)
+                .orElseThrow(() -> new IllegalStateException("The @ConfigurationUnit does not found"));
 
         ConfigurationSettingsUnit unit = configurationReader.get().read(annotation, DocumentConfiguration.class);
         Class<DocumentConfiguration> configurationClass = unit.<DocumentConfiguration>getProvider()
@@ -98,5 +105,16 @@ class DocumentCollectionFactoryProducer {
         DocumentConfiguration columnConfiguration = reflections.newInstance(configurationClass);
 
         return columnConfiguration.get(unit.getSettings());
+    }
+
+    private Optional<ConfigurationUnit> getConfigurationUnit(InjectionPoint injectionPoint, Annotated annotated) {
+
+        if (annotated == null) {
+            return injectionPoint.getQualifiers().stream()
+                    .filter(annotation -> ConfigurationUnit.class.equals(annotation.annotationType()))
+                    .map(ConfigurationUnit.class::cast)
+                    .findFirst();
+        }
+        return ofNullable(annotated.getAnnotation(ConfigurationUnit.class));
     }
 }
