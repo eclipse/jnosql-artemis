@@ -15,11 +15,11 @@
 package org.jnosql.artemis.reflection;
 
 
+import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.Column;
 import org.jnosql.artemis.Embeddable;
-import org.jnosql.artemis.CDIJUnitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -31,7 +31,7 @@ import static org.jnosql.artemis.reflection.FieldType.EMBEDDED;
 import static org.jnosql.artemis.reflection.FieldType.MAP;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(CDIExtension.class)
 public class FieldRepresentationTest {
 
 

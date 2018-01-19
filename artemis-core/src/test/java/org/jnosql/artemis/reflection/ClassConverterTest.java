@@ -22,6 +22,7 @@ import org.jnosql.artemis.model.Machine;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.model.User;
 import org.jnosql.artemis.model.Worker;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -29,11 +30,11 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.function.Predicate;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.jnosql.artemis.reflection.FieldType.DEFAULT;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(CDIExtension.class)
 public class ClassConverterTest {
@@ -75,7 +76,7 @@ public class ClassConverterTest {
     }
 
     @Test
-    public void shouldReturnFalseWhenThereIsNotKey(){
+    public void shouldReturnFalseWhenThereIsNotKey() {
         ClassRepresentation classRepresentation = classConverter.create(Worker.class);
         boolean allMatch = classRepresentation.getFields().stream().noneMatch(FieldRepresentation::isId);
         assertTrue(allMatch);
@@ -95,9 +96,11 @@ public class ClassConverterTest {
 
     }
 
-    @Test(expected = ConstructorException.class)
+    @Test
     public void shouldReturnErrorWhenThereIsNotConstructor() {
-        classConverter.create(Animal.class);
+        Assertions.assertThrows(ConstructorException.class, () -> {
+            classConverter.create(Animal.class);
+        });
     }
 
     @Test
