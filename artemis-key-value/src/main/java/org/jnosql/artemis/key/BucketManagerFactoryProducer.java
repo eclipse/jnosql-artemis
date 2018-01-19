@@ -14,9 +14,9 @@
  */
 package org.jnosql.artemis.key;
 
-import org.jnosql.artemis.ConfigurationUnit;
 import org.jnosql.artemis.ConfigurationReader;
 import org.jnosql.artemis.ConfigurationSettingsUnit;
+import org.jnosql.artemis.ConfigurationUnit;
 import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.key.BucketManager;
 import org.jnosql.diana.api.key.BucketManagerFactory;
@@ -28,6 +28,9 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
+import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
 
 /**
  * The class that creates {@link BucketManagerFactory} from the {@link ConfigurationUnit}
@@ -56,7 +59,8 @@ class BucketManagerFactoryProducer {
 
     private <T extends BucketManager> BucketManagerFactory<T> getBuckerManagerFactocy(InjectionPoint injectionPoint) {
         Annotated annotated = injectionPoint.getAnnotated();
-        ConfigurationUnit annotation = getConfigurationUnit(injectionPoint, annotated);
+        ConfigurationUnit annotation = getConfigurationUnit(injectionPoint, annotated)
+                .orElseThrow(() -> new IllegalStateException("The @ConfigurationUnit does not found"));
 
         ConfigurationSettingsUnit unit = configurationReader.get().read(annotation, KeyValueConfiguration.class);
         Class<KeyValueConfiguration> configurationClass = unit.<KeyValueConfiguration>getProvider()
@@ -67,13 +71,14 @@ class BucketManagerFactoryProducer {
         return columnConfiguration.get(unit.getSettings());
     }
 
-    private ConfigurationUnit getConfigurationUnit(InjectionPoint injectionPoint, Annotated annotated) {
-        ConfigurationUnit annotation = annotated.getAnnotation(ConfigurationUnit.class);
-        if(annotation == null) {
-            return (ConfigurationUnit) injectionPoint.getQualifiers().stream()
-                    .filter(ConfigurationUnit.class::equals)
-                    .findFirst().orElseThrow(() -> new IllegalStateException(""));
+    private Optional<ConfigurationUnit> getConfigurationUnit(InjectionPoint injectionPoint, Annotated annotated) {
+
+        if (annotated == null) {
+            return injectionPoint.getQualifiers().stream()
+                    .filter(annotation -> ConfigurationUnit.class.equals(annotation.annotationType()))
+                    .map(ConfigurationUnit.class::cast)
+                    .findFirst();
         }
-        return annotation;
+        return ofNullable(annotated.getAnnotation(ConfigurationUnit.class));
     }
 }
