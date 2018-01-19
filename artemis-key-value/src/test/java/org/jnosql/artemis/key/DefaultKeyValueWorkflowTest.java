@@ -14,7 +14,7 @@
  */
 package org.jnosql.artemis.key;
 
-import org.jnosql.artemis.CDIExtension;
+import org.jnosql.artemis.MockitoExtension;
 import org.jnosql.diana.api.key.KeyValueEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 
-@ExtendWith(CDIExtension.class)
+@ExtendWith(MockitoExtension.class)
 public class DefaultKeyValueWorkflowTest {
 
     @Mock
