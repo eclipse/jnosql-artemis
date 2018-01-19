@@ -26,7 +26,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.enterprise.event.Event;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 
 

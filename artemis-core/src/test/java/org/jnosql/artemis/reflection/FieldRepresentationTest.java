@@ -29,7 +29,7 @@ import static org.jnosql.artemis.reflection.FieldType.COLLECTION;
 import static org.jnosql.artemis.reflection.FieldType.DEFAULT;
 import static org.jnosql.artemis.reflection.FieldType.EMBEDDED;
 import static org.jnosql.artemis.reflection.FieldType.MAP;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @RunWith(CDIJUnitRunner.class)
 public class FieldRepresentationTest {

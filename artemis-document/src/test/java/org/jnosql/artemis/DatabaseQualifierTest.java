@@ -20,7 +20,7 @@ import static org.jnosql.artemis.DatabaseType.COLUMN;
 import static org.jnosql.artemis.DatabaseType.DOCUMENT;
 import static org.jnosql.artemis.DatabaseType.GRAPH;
 import static org.jnosql.artemis.DatabaseType.KEY_VALUE;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class DatabaseQualifierTest {

@@ -17,7 +17,7 @@ package org.jnosql.artemis.document;
 import org.jnosql.diana.api.document.DocumentEntity;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class DocumentEntityPrePersistTest {
