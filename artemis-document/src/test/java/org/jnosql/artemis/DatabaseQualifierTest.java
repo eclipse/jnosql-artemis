@@ -93,9 +93,11 @@ public class DatabaseQualifierTest {
     }
 
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenGraphNull() {
-        DatabaseQualifier.ofGraph(null);
+        assertThrows(NullPointerException.class, () -> {
+            DatabaseQualifier.ofGraph(null);
+        });
     }
 
     @Test
