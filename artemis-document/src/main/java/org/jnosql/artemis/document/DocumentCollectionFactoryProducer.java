@@ -80,7 +80,7 @@ class DocumentCollectionFactoryProducer {
     getDocumentCollectionAsync(InjectionPoint injectionPoint) {
 
         Annotated annotated = injectionPoint.getAnnotated();
-        
+
         ConfigurationUnit annotation = getConfigurationUnit(injectionPoint, annotated)
                 .orElseThrow(() -> new IllegalStateException("The @ConfigurationUnit does not found"));
 

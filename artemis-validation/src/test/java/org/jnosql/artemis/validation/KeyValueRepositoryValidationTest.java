@@ -15,9 +15,9 @@
 package org.jnosql.artemis.validation;
 
 import org.jnosql.artemis.key.KeyValueTemplate;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import java.util.Set;
 
 import static java.util.Collections.singletonList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(CDIExtension.class)
 public class KeyValueRepositoryValidationTest {
@@ -46,15 +47,17 @@ public class KeyValueRepositoryValidationTest {
         repository.put(person);
     }
 
-    @Test(expected = ConstraintViolationException.class)
+    @Test
     public void shouldReturnValidationException() {
-        Person person = Person.builder()
-                .withAge(10)
-                .withName("Ada")
-                .withSalary(BigDecimal.ONE)
-                .withPhones(singletonList("123131231"))
-                .build();
-        repository.put(person);
+        Assertions.assertThrows(ConstraintViolationException.class, () -> {
+            Person person = Person.builder()
+                    .withAge(10)
+                    .withName("Ada")
+                    .withSalary(BigDecimal.ONE)
+                    .withPhones(singletonList("123131231"))
+                    .build();
+            repository.put(person);
+        });
     }
 
 
@@ -71,7 +74,7 @@ public class KeyValueRepositoryValidationTest {
             repository.put(person);
         } catch (ConstraintViolationException ex) {
             Set<ConstraintViolation<?>> violations = ex.getConstraintViolations();
-            Assert.assertEquals(2, violations.size());
+            assertEquals(2, violations.size());
         }
 
     }

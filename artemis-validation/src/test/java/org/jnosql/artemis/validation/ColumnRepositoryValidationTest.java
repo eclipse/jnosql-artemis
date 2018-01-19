@@ -15,9 +15,8 @@
 package org.jnosql.artemis.validation;
 
 import org.jnosql.artemis.column.ColumnTemplate;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
@@ -26,6 +25,8 @@ import java.math.BigDecimal;
 import java.util.Set;
 
 import static java.util.Collections.singletonList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(CDIExtension.class)
 public class ColumnRepositoryValidationTest {
@@ -46,15 +47,17 @@ public class ColumnRepositoryValidationTest {
         repository.insert(person);
     }
 
-    @Test(expected = ConstraintViolationException.class)
+    @Test
     public void shouldReturnValidationExceptionOnSave() {
-        Person person = Person.builder()
-                .withAge(10)
-                .withName("Ada")
-                .withSalary(BigDecimal.ONE)
-                .withPhones(singletonList("123131231"))
-                .build();
-        repository.insert(person);
+        assertThrows(ConstraintViolationException.class, () -> {
+            Person person = Person.builder()
+                    .withAge(10)
+                    .withName("Ada")
+                    .withSalary(BigDecimal.ONE)
+                    .withPhones(singletonList("123131231"))
+                    .build();
+            repository.insert(person);
+        });
     }
 
 
@@ -71,7 +74,7 @@ public class ColumnRepositoryValidationTest {
             repository.insert(person);
         } catch (ConstraintViolationException ex) {
             Set<ConstraintViolation<?>> violations = ex.getConstraintViolations();
-            Assert.assertEquals(2, violations.size());
+            assertEquals(2, violations.size());
         }
 
     }
@@ -88,15 +91,17 @@ public class ColumnRepositoryValidationTest {
         repository.update(person);
     }
 
-    @Test(expected = ConstraintViolationException.class)
+    @Test
     public void shouldReturnValidationExceptionOnUpdate() {
-        Person person = Person.builder()
-                .withAge(10)
-                .withName("Ada")
-                .withSalary(BigDecimal.ONE)
-                .withPhones(singletonList("123131231"))
-                .build();
-        repository.update(person);
+        assertThrows(ConstraintViolationException.class, () -> {
+            Person person = Person.builder()
+                    .withAge(10)
+                    .withName("Ada")
+                    .withSalary(BigDecimal.ONE)
+                    .withPhones(singletonList("123131231"))
+                    .build();
+            repository.update(person);
+        });
     }
 
 
@@ -113,7 +118,7 @@ public class ColumnRepositoryValidationTest {
             repository.update(person);
         } catch (ConstraintViolationException ex) {
             Set<ConstraintViolation<?>> violations = ex.getConstraintViolations();
-            Assert.assertEquals(2, violations.size());
+            assertEquals(2, violations.size());
         }
 
     }
