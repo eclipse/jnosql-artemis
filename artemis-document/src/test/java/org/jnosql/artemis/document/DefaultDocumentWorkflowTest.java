@@ -15,6 +15,7 @@
 package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.MockitoExtension;
+import org.jnosql.artemis.model.Person;
 import org.jnosql.diana.api.document.DocumentEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import java.util.function.UnaryOperator;
 
@@ -50,6 +52,8 @@ public class DefaultDocumentWorkflowTest {
     public void setUp() {
         when(converter.toDocument(any(Object.class)))
                 .thenReturn(columnEntity);
+        when(converter.toEntity(Mockito.eq(Person.class), any(DocumentEntity.class)))
+                .thenReturn(Person.builder().build());
 
     }
 
@@ -71,14 +75,14 @@ public class DefaultDocumentWorkflowTest {
     @Test
     public void shouldFollowWorkflow() {
         UnaryOperator<DocumentEntity> action = t -> t;
-        subject.flow("entity", action);
+        subject.flow(Person.builder().withId(1L).withAge().withName("Ada").build(), action);
 
         verify(columnEventPersistManager).firePreDocument(any(DocumentEntity.class));
         verify(columnEventPersistManager).firePostDocument(any(DocumentEntity.class));
-        verify(columnEventPersistManager).firePreEntity(any(DocumentEntity.class));
-        verify(columnEventPersistManager).firePostEntity(any(DocumentEntity.class));
-        verify(columnEventPersistManager).firePreDocumentEntity(any(DocumentEntity.class));
-        verify(columnEventPersistManager).firePostDocumentEntity(any(DocumentEntity.class));
+        verify(columnEventPersistManager).firePreEntity(any(Person.class));
+        verify(columnEventPersistManager).firePostEntity(any(Person.class));
+        verify(columnEventPersistManager).firePreDocumentEntity(any(Person.class));
+        verify(columnEventPersistManager).firePostDocumentEntity(any(Person.class));
         verify(converter).toDocument(any(Object.class));
     }
 
