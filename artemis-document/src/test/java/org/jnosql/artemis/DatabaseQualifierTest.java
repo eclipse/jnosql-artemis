@@ -21,6 +21,7 @@ import static org.jnosql.artemis.DatabaseType.DOCUMENT;
 import static org.jnosql.artemis.DatabaseType.GRAPH;
 import static org.jnosql.artemis.DatabaseType.KEY_VALUE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 public class DatabaseQualifierTest {
@@ -40,9 +41,11 @@ public class DatabaseQualifierTest {
         assertEquals(COLUMN, qualifier.value());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenColumnNull() {
-        DatabaseQualifier.ofColumn(null);
+        assertThrows(NullPointerException.class, () -> {
+            DatabaseQualifier.ofColumn(null);
+        });
     }
 
     @Test
@@ -60,14 +63,18 @@ public class DatabaseQualifierTest {
         assertEquals(DOCUMENT, qualifier.value());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenDocumentNull() {
-        DatabaseQualifier.ofDocument(null);
+        assertThrows(NullPointerException.class, () -> {
+            DatabaseQualifier.ofDocument(null);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenKeyValueNull() {
-        DatabaseQualifier.ofKeyValue(null);
+        assertThrows(NullPointerException.class, () -> {
+            DatabaseQualifier.ofKeyValue(null);
+        });
     }
 
     @Test
