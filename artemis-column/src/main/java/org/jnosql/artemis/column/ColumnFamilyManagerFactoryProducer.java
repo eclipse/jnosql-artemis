@@ -78,7 +78,7 @@ class ColumnFamilyManagerFactoryProducer {
 
     private <T extends ColumnFamilyManagerAsync> ColumnFamilyManagerAsyncFactory<T> gettColumnFamilyManagerAsyncFactory(InjectionPoint injectionPoint) {
         Annotated annotated = injectionPoint.getAnnotated();
-        
+
         ConfigurationUnit annotation = getConfigurationUnit(injectionPoint, annotated)
                 .orElseThrow(() -> new IllegalStateException("The @ConfigurationUnit does not found"));
 
