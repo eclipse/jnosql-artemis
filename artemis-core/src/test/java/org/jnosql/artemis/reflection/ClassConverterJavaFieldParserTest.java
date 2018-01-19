@@ -36,10 +36,12 @@ public class ClassConverterJavaFieldParserTest {
     @Inject
     private ClassConverter classConverter;
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenParameterIsNull() {
-        ClassRepresentation classRepresentation = classConverter.create(Person.class);
-        classRepresentation.getColumnField(null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            ClassRepresentation classRepresentation = classConverter.create(Person.class);
+            classRepresentation.getColumnField(null);
+        });
     }
 
     @Test
