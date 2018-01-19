@@ -14,7 +14,7 @@
  */
 package org.jnosql.artemis;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.jnosql.artemis.DatabaseType.COLUMN;
 import static org.jnosql.artemis.DatabaseType.DOCUMENT;

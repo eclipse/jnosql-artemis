@@ -23,7 +23,7 @@ import org.jnosql.artemis.model.Worker;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.query.DocumentDeleteFrom;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
@@ -31,7 +31,7 @@ import java.math.BigDecimal;
 
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(CDIExtension.class)
 public class DefaultDocumentMapperDeleteBuilderTest {
 
     @Inject

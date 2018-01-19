@@ -28,7 +28,7 @@ import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentQuery;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
@@ -38,7 +38,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(CDIExtension.class)
 public class DocumentQueryParserTest {
 
     @Inject

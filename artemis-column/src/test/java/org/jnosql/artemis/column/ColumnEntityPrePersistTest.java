@@ -15,16 +15,20 @@
 package org.jnosql.artemis.column;
 
 import org.jnosql.diana.api.column.ColumnEntity;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class ColumnEntityPrePersistTest {
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnNPEWhenEntityIsNull() {
+
+        Assertions.assertThrows(NullPointerException.class, () ->{
         ColumnEntityPrePersist.of(null);
+        });
     }
 
     @Test

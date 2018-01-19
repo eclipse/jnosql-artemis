@@ -14,9 +14,9 @@
  */
 package org.jnosql.artemis.column.query;
 
+import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.DynamicQueryException;
-import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
@@ -25,9 +25,10 @@ import org.jnosql.diana.api.TypeReference;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnCondition;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
 import java.util.Arrays;
@@ -35,7 +36,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(CDIExtension.class)
 public class ColumnQueryDeleteParserTest {
 
     @Inject
@@ -49,7 +50,7 @@ public class ColumnQueryDeleteParserTest {
 
     private ClassRepresentation classRepresentation;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         parser = new ColumnQueryDeleteParser();
         classRepresentation = classRepresentations.get(Person.class);
@@ -149,7 +150,6 @@ public class ColumnQueryDeleteParserTest {
     }
 
 
-
     @Test
     public void shouldDeleteByNameAndAAgeBetween() {
         ColumnDeleteQuery query = parser.parse("deleteByNameAndAgeBetween", new Object[]{"name", 10, 11},
@@ -169,16 +169,20 @@ public class ColumnQueryDeleteParserTest {
         assertEquals(Column.of("age", Arrays.asList(10, 11)), condition2.getColumn());
     }
 
-    @Test(expected = DynamicQueryException.class)
+    @Test
     public void shouldReturnErrorWhenIsMissedArgument() {
-        parser.parse("deleteByNameAndAgeBetween", new Object[]{"name", 10},
-                classRepresentation, converters);
+        Assertions.assertThrows(DynamicQueryException.class, () -> {
+            parser.parse("deleteByNameAndAgeBetween", new Object[]{"name", 10},
+                    classRepresentation, converters);
+        });
     }
 
-    @Test(expected = DynamicQueryException.class)
+    @Test
     public void shouldReturnErrorWhenIsMissedArgument2() {
-        parser.parse("deleteByName", new Object[]{},
-                classRepresentation, converters);
+        Assertions.assertThrows(DynamicQueryException.class, () -> {
+            parser.parse("deleteByName", new Object[]{},
+                    classRepresentation, converters);
+        });
     }
 
 }

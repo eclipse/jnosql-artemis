@@ -20,7 +20,7 @@ import org.jnosql.artemis.PersonRepository;
 import org.jnosql.artemis.PersonRepositoryAsync;
 import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.artemis.model.Person;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(CDIExtension.class)
 public class DocumentRepositoryExtensionTest {
 
 

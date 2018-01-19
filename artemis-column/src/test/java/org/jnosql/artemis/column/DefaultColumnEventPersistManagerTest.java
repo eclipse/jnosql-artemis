@@ -16,15 +16,15 @@ package org.jnosql.artemis.column;
 
 import org.jnosql.artemis.EntityPostPersit;
 import org.jnosql.artemis.EntityPrePersist;
+import org.jnosql.artemis.MockitoExtension;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnQuery;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.enterprise.event.Event;
 
@@ -33,7 +33,7 @@ import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DefaultColumnEventPersistManagerTest {
 
 

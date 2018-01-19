@@ -19,14 +19,14 @@ import org.jnosql.artemis.document.DocumentQueryMapperBuilder;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.diana.api.document.query.DocumentDeleteFrom;
 import org.jnosql.diana.api.document.query.DocumentFrom;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(CDIExtension.class)
 public class DefaultDocumentQueryMapperBuilderTest {
 
 

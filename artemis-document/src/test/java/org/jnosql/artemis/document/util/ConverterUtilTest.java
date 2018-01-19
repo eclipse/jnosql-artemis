@@ -23,13 +23,13 @@ import org.jnosql.artemis.model.Worker;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(CDIExtension.class)
 public class ConverterUtilTest {
 
 

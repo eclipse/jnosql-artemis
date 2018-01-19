@@ -15,7 +15,7 @@
 package org.jnosql.artemis.document;
 
 import org.jnosql.diana.api.document.DocumentEntity;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.*;
 

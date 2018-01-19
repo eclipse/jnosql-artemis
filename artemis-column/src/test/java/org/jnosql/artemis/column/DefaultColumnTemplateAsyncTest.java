@@ -14,7 +14,7 @@
  */
 package org.jnosql.artemis.column;
 
-import org.jnosql.artemis.CDIJUnitRunner;
+import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
@@ -24,9 +24,9 @@ import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
 import org.jnosql.diana.api.column.ColumnQuery;
 import org.jnosql.diana.api.column.query.ColumnQueryBuilder;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
@@ -42,7 +42,7 @@ import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(CDIExtension.class)
 public class DefaultColumnTemplateAsyncTest {
 
     private Person person = Person.builder().
@@ -76,7 +76,7 @@ public class DefaultColumnTemplateAsyncTest {
     private ArgumentCaptor<ColumnEntity> captor;
 
     @SuppressWarnings("unchecked")
-    @Before
+    @BeforeEach
     public void setUp() {
         managerMock = Mockito.mock(ColumnFamilyManagerAsync.class);
         ColumnEventPersistManager columnEventPersistManager = Mockito.mock(ColumnEventPersistManager.class);

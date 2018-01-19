@@ -14,22 +14,22 @@
  */
 package org.jnosql.artemis.column;
 
+import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.ConfigurationUnit;
-import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.diana.api.Settings;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsyncFactory;
 import org.jnosql.diana.api.column.ColumnFamilyManagerFactory;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(CDIExtension.class)
 public class ColumnFamilyManagerFactoryProducerTest {
 
 
@@ -54,7 +54,7 @@ public class ColumnFamilyManagerFactoryProducerTest {
     @Test
     public void shouldReadInjectColumnFamily() {
         factoryA.get("database");
-        Assert.assertTrue(ColumnFamilyManagerMock.MockFamilyManager.class.isInstance(factoryA));
+        assertTrue(ColumnFamilyManagerMock.MockFamilyManager.class.isInstance(factoryA));
         ColumnFamilyManagerMock.MockFamilyManager mock = ColumnFamilyManagerMock.MockFamilyManager.class.cast(factoryA);
         Map<String, Object> settings = new HashMap<>();
         settings.put("key","value");
@@ -65,7 +65,7 @@ public class ColumnFamilyManagerFactoryProducerTest {
     @Test
     public void shouldReadInjectColumnFamilyB() {
         factoryB.get("database");
-        Assert.assertTrue(ColumnFamilyManagerMock.MockFamilyManager.class.isInstance(factoryB));
+        assertTrue(ColumnFamilyManagerMock.MockFamilyManager.class.isInstance(factoryB));
         ColumnFamilyManagerMock.MockFamilyManager mock = ColumnFamilyManagerMock.MockFamilyManager.class.cast(factoryB);
         Map<String, Object> settings = new HashMap<>();
         settings.put("key","value");
@@ -77,7 +77,7 @@ public class ColumnFamilyManagerFactoryProducerTest {
     @Test
     public void shouldReadInjectColumnFamilyAsync() {
         factoryAsyncA.getAsync("database");
-        Assert.assertTrue(ColumnFamilyManagerMock.MockFamilyManager.class.isInstance(factoryAsyncA));
+        assertTrue(ColumnFamilyManagerMock.MockFamilyManager.class.isInstance(factoryAsyncA));
         ColumnFamilyManagerMock.MockFamilyManager mock = ColumnFamilyManagerMock.MockFamilyManager.class.cast(factoryAsyncA);
         Map<String, Object> settings = new HashMap<>();
         settings.put("key","value");
@@ -88,7 +88,7 @@ public class ColumnFamilyManagerFactoryProducerTest {
     @Test
     public void shouldReadInjectColumnFamilyBAsync() {
         factoryAsyncB.getAsync("database");
-        Assert.assertTrue(ColumnFamilyManagerMock.MockFamilyManager.class.isInstance(factoryAsyncB));
+        assertTrue(ColumnFamilyManagerMock.MockFamilyManager.class.isInstance(factoryAsyncB));
         ColumnFamilyManagerMock.MockFamilyManager mock = ColumnFamilyManagerMock.MockFamilyManager.class.cast(factoryAsyncB);
         Map<String, Object> settings = new HashMap<>();
         settings.put("key","value");

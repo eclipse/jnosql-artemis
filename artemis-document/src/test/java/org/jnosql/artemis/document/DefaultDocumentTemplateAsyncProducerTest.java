@@ -16,7 +16,7 @@ package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.CDIJUnitRunner;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 
@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(CDIExtension.class)
 public class DefaultDocumentTemplateAsyncProducerTest {
 
     @Inject

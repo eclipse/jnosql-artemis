@@ -20,7 +20,7 @@ import org.jnosql.diana.api.Settings;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsyncFactory;
 import org.jnosql.diana.api.document.DocumentCollectionManagerFactory;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
@@ -29,7 +29,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(CDIExtension.class)
 public class DocumentCollectionFactoryProducerTest {
 
     @Inject

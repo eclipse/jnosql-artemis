@@ -14,13 +14,14 @@
  */
 package org.jnosql.artemis.column;
 
+import org.jnosql.artemis.MockitoExtension;
 import org.jnosql.diana.api.column.ColumnEntity;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.function.UnaryOperator;
 
@@ -29,7 +30,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DefaultColumnWorkflowTest {
 
 
@@ -45,22 +46,26 @@ public class DefaultColumnWorkflowTest {
     @Mock
     private ColumnEntity columnEntity;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         when(converter.toColumn(any(Object.class)))
                 .thenReturn(columnEntity);
 
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenEntityIsNull() {
-        UnaryOperator<ColumnEntity> action = t -> t;
-        subject.flow(null, action);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            UnaryOperator<ColumnEntity> action = t -> t;
+            subject.flow(null, action);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldReturnErrorWhenActionIsNull() {
-        subject.flow("", null);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            subject.flow("", null);
+        });
     }
 
     @Test

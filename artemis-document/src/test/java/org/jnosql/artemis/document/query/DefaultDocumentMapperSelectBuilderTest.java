@@ -23,7 +23,7 @@ import org.jnosql.artemis.model.Worker;
 import org.jnosql.diana.api.document.DocumentQuery;
 import org.jnosql.diana.api.document.query.DocumentFrom;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
@@ -31,7 +31,7 @@ import java.math.BigDecimal;
 
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(CDIExtension.class)
 public class DefaultDocumentMapperSelectBuilderTest {
 
     @Inject

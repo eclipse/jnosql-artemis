@@ -16,7 +16,7 @@ package org.jnosql.artemis.validation;
 
 import org.jnosql.artemis.document.DocumentTemplate;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
@@ -27,7 +27,7 @@ import java.util.Set;
 
 import static java.util.Collections.singletonList;
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(CDIExtension.class)
 public class DocumentRepositoryValidationTest {
 
     @Inject

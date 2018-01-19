@@ -30,7 +30,7 @@ import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentQuery;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
@@ -52,7 +52,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 
 
-@RunWith(CDIJUnitRunner.class)
+@ExtendWith(CDIExtension.class)
 public class DocumentRepositoryAsyncProxyTest {
 
     private DocumentTemplateAsync template;
