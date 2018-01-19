@@ -16,6 +16,7 @@ package org.jnosql.artemis.document;
 
 import org.jnosql.diana.api.document.DocumentEntity;
 import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -44,7 +45,7 @@ public class DefaultDocumentWorkflowTest {
     @Mock
     private DocumentEntity columnEntity;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         when(converter.toDocument(any(Object.class)))
                 .thenReturn(columnEntity);
