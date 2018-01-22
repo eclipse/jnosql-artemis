@@ -51,13 +51,11 @@ public class ColumnRepositoryExtensionTest {
     @Test
     public void shouldIniciateAsync() {
         assertNotNull(repositoryAsync);
-        repositoryAsync.save(Person.builder().build());
     }
 
     @Test
     public void shouldGetQualifierAsync() {
         assertNotNull(repositoryMockAsync);
-        repositoryMockAsync.save(Person.builder().build());
     }
 
     @Test
