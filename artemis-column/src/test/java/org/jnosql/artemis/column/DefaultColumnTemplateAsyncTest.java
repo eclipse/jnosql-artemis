@@ -39,6 +39,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Collections.singletonList;
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -88,17 +89,6 @@ public class DefaultColumnTemplateAsyncTest {
         this.subject = new DefaultColumnTemplateAsync(converter, instance, classRepresentations, converters);
     }
 
-    @Test
-    public void shouldInsert() {
-        ColumnEntity document = ColumnEntity.of("Person");
-        document.addAll(Stream.of(columns).collect(Collectors.toList()));
-
-
-        subject.insert(this.person);
-        verify(managerMock).insert(captor.capture(), Mockito.any(Consumer.class));
-        ColumnEntity value = captor.getValue();
-        assertEquals(document.getName(), value.getName());
-    }
 
     @Test
     public void shouldCheckNullValueInInsert() {
@@ -112,12 +102,44 @@ public class DefaultColumnTemplateAsyncTest {
     }
 
     @Test
+    public void shouldInsert() {
+        ColumnEntity document = ColumnEntity.of("Person");
+        document.addAll(Stream.of(columns).collect(Collectors.toList()));
+
+
+        subject.insert(this.person);
+        verify(managerMock).insert(captor.capture(), Mockito.any(Consumer.class));
+        ColumnEntity value = captor.getValue();
+        assertEquals(document.getName(), value.getName());
+    }
+
+    @Test
     public void shouldInsertTTL() {
         ColumnEntity document = ColumnEntity.of("Person");
         document.addAll(Stream.of(columns).collect(Collectors.toList()));
 
 
         subject.insert(this.person, Duration.ofSeconds(1L));
+        verify(managerMock).insert(Mockito.any(ColumnEntity.class), Mockito.eq(Duration.ofSeconds(1L)), Mockito.any(Consumer.class));
+    }
+
+    @Test
+    public void shouldInsertIterable() {
+        ColumnEntity document = ColumnEntity.of("Person");
+        document.addAll(Stream.of(columns).collect(Collectors.toList()));
+
+        subject.insert(singletonList(this.person));
+        verify(managerMock).insert(captor.capture(), Mockito.any(Consumer.class));
+        ColumnEntity value = captor.getValue();
+        assertEquals(document.getName(), value.getName());
+    }
+
+    @Test
+    public void shouldInsertIterableTTL() {
+        ColumnEntity document = ColumnEntity.of("Person");
+        document.addAll(Stream.of(columns).collect(Collectors.toList()));
+
+        subject.insert(singletonList(this.person), Duration.ofSeconds(1L));
         verify(managerMock).insert(Mockito.any(ColumnEntity.class), Mockito.eq(Duration.ofSeconds(1L)), Mockito.any(Consumer.class));
     }
 
