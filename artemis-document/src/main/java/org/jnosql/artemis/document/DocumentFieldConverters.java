@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import static org.jnosql.artemis.reflection.FieldType.COLLECTION;
@@ -71,8 +72,9 @@ class DocumentFieldConverters {
                 if (Map.class.isInstance(value)) {
                     Map map = Map.class.cast(value);
                     List<Document> embeddedDocument = new ArrayList<>();
-                    for (Object key : map.keySet()) {
-                        embeddedDocument.add(Document.of(key.toString(), map.get(key)));
+
+                    for (Map.Entry entry : (Set<Map.Entry>) map.entrySet()) {
+                        embeddedDocument.add(Document.of(entry.getKey().toString(), entry.getValue()));
                     }
                     converter.getReflections().setValue(instance, field.getNativeField(), converter.toEntity(field.getNativeField().getType(), embeddedDocument));
                 } else {

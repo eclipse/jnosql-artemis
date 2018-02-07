@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import static org.jnosql.artemis.reflection.FieldType.COLLECTION;
@@ -72,8 +73,9 @@ class ColumnFieldConverters {
                 if (Map.class.isInstance(value)) {
                     Map map = Map.class.cast(value);
                     List<Column> embeddedColumns = new ArrayList<>();
-                    for (Object key : map.keySet()) {
-                        embeddedColumns.add(Column.of(key.toString(), map.get(key)));
+
+                    for (Map.Entry entry : (Set<Map.Entry>) map.entrySet()) {
+                        embeddedColumns.add(Column.of(entry.getKey().toString(), entry.getValue()));
                     }
                     converter.getReflections().setValue(instance, field.getNativeField(), converter.toEntity(field.getNativeField().getType(), embeddedColumns));
                 } else {
