@@ -266,4 +266,15 @@ public class DefaultColumnTemplateAsyncTest {
         verify(managerMock).select(Mockito.eq(query), Mockito.any());
         await().untilTrue(condition);
     }
+
+    @Test
+    public void shouldCheckNullParameterInFindById() {
+        assertThrows(NullPointerException.class, () -> subject.find(null, null, null));
+        assertThrows(NullPointerException.class, () -> subject.find(Person.class, null, null));
+        assertThrows(NullPointerException.class, () -> subject.find(Person.class, 10L, null));
+        assertThrows(NullPointerException.class, () -> subject.find(Person.class, null, System.out::println));
+        assertThrows(NullPointerException.class, () -> subject.find(null, null, System.out::println));
+        assertThrows(NullPointerException.class, () -> subject.find(null, 10L, System.out::println));
+        assertThrows(NullPointerException.class, () -> subject.find(null, 10L, null));
+    }
 }
