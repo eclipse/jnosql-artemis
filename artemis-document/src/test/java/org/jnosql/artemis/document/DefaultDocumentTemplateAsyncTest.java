@@ -35,11 +35,14 @@ import javax.inject.Inject;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static org.awaitility.Awaitility.await;
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -53,14 +56,14 @@ public class DefaultDocumentTemplateAsyncTest {
 
     private Person person = Person.builder().
             withAge().
-            withPhones(Arrays.asList("234", "432")).
+            withPhones(asList("234", "432")).
             withName("Name")
             .withId(19)
             .withIgnore().build();
 
     private Document[] documents = new Document[]{
             Document.of("age", 10),
-            Document.of("phones", Arrays.asList("234", "432")),
+            Document.of("phones", asList("234", "432")),
             Document.of("name", "Name"),
             Document.of("id", 19L),
     };
@@ -196,7 +199,6 @@ public class DefaultDocumentTemplateAsyncTest {
     }
 
 
-
     @Test
     public void shouldDelete() {
 
@@ -254,15 +256,20 @@ public class DefaultDocumentTemplateAsyncTest {
     }
 
 
-
     @Test
     public void shouldSelect() {
 
+        ArgumentCaptor<Consumer<List<DocumentEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
         DocumentQuery query = select().from("Person").build();
+        AtomicBoolean condition = new AtomicBoolean(false);
         Consumer<List<Person>> callback = l -> {
-
+            condition.set(true);
         };
         subject.select(query, callback);
+        verify(managerMock).select(Mockito.any(DocumentQuery.class), dianaCallbackCaptor.capture());
+        Consumer<List<DocumentEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
+        dianaCallBack.accept(singletonList(DocumentEntity.of("Person", asList(documents))));
         verify(managerMock).select(Mockito.eq(query), Mockito.any());
+        await().untilTrue(condition);
     }
 }
