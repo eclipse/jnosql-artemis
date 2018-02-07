@@ -92,12 +92,6 @@ class DocumentTemplateBean implements Bean<DocumentTemplate>, PassivationCapable
         return (T) beanManager.getReference(bean, clazz, ctx);
     }
 
-    private <T> T getInstance(Class<T> clazz, String name) {
-        Bean bean = beanManager.getBeans(clazz, DatabaseQualifier.ofColumn(name)).iterator().next();
-        CreationalContext ctx = beanManager.createCreationalContext(bean);
-        return (T) beanManager.getReference(bean, clazz, ctx);
-    }
-
 
     @Override
     public void destroy(DocumentTemplate instance, CreationalContext<DocumentTemplate> creationalContext) {

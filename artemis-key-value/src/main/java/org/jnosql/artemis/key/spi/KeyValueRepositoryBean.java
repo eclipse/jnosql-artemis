@@ -92,13 +92,6 @@ class KeyValueRepositoryBean implements Bean<KeyValueTemplate>, PassivationCapab
         return (T) beanManager.getReference(bean, clazz, ctx);
     }
 
-    private <T> T getInstance(Class<T> clazz, String name) {
-        Bean bean = beanManager.getBeans(clazz, DatabaseQualifier.ofColumn(name)).iterator().next();
-        CreationalContext ctx = beanManager.createCreationalContext(bean);
-        return (T) beanManager.getReference(bean, clazz, ctx);
-    }
-
-
     @Override
     public void destroy(KeyValueTemplate instance, CreationalContext<KeyValueTemplate> creationalContext) {
 
