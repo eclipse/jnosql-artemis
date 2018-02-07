@@ -117,7 +117,7 @@ public class DefaultDocumentTemplateAsyncTest {
     }
 
     @Test
-    public void shouldSaveTTL() {
+    public void shouldInsertTTL() {
 
         Duration twoHours = Duration.ofHours(2L);
 
