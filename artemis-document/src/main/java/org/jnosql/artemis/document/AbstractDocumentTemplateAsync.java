@@ -105,7 +105,7 @@ public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateA
     public void delete(DocumentDeleteQuery query, Consumer<Void> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
         requireNonNull(query, "query is required");
         requireNonNull(callBack, "callBack is required");
-        getManager().delete(query);
+        getManager().delete(query, callBack);
     }
 
     @Override
