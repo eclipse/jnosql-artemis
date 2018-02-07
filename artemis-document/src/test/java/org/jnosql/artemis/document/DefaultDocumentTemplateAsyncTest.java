@@ -41,6 +41,7 @@ import java.util.stream.Stream;
 
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -90,7 +91,20 @@ public class DefaultDocumentTemplateAsyncTest {
     }
 
     @Test
-    public void shouldSave() {
+    public void shouldCheckNullParameterInInsert() {
+
+        assertThrows(NullPointerException.class, () -> subject.insert(null));
+        assertThrows(NullPointerException.class, () -> subject.insert((Iterable) null));
+        assertThrows(NullPointerException.class, () -> subject.insert(this.person, (Duration) null));
+        assertThrows(NullPointerException.class, () -> subject.insert(null, Duration.ofSeconds(1L)));
+        assertThrows(NullPointerException.class, () -> subject.insert(this.person, (Consumer<Person>) null));
+        assertThrows(NullPointerException.class, () -> subject.insert(null, System.out::println));
+
+    }
+
+
+    @Test
+    public void shouldInsert() {
         DocumentEntity document = DocumentEntity.of("Person");
         document.addAll(Stream.of(documents).collect(Collectors.toList()));
 
