@@ -115,20 +115,20 @@ public class DefaultColumnTemplateAsyncTest {
 
     @Test
     public void shouldInsert() {
-        ColumnEntity document = ColumnEntity.of("Person");
-        document.addAll(Stream.of(columns).collect(Collectors.toList()));
+        ColumnEntity entity = ColumnEntity.of("Person");
+        entity.addAll(Stream.of(columns).collect(Collectors.toList()));
 
 
         subject.insert(this.person);
         verify(managerMock).insert(captor.capture(), Mockito.any(Consumer.class));
         ColumnEntity value = captor.getValue();
-        assertEquals(document.getName(), value.getName());
+        assertEquals(entity.getName(), value.getName());
     }
 
     @Test
     public void shouldInsertTTL() {
-        ColumnEntity document = ColumnEntity.of("Person");
-        document.addAll(Stream.of(columns).collect(Collectors.toList()));
+        ColumnEntity entity = ColumnEntity.of("Person");
+        entity.addAll(Stream.of(columns).collect(Collectors.toList()));
 
 
         subject.insert(this.person, Duration.ofSeconds(1L));
@@ -137,19 +137,19 @@ public class DefaultColumnTemplateAsyncTest {
 
     @Test
     public void shouldInsertIterable() {
-        ColumnEntity document = ColumnEntity.of("Person");
-        document.addAll(Stream.of(columns).collect(Collectors.toList()));
+        ColumnEntity entity = ColumnEntity.of("Person");
+        entity.addAll(Stream.of(columns).collect(Collectors.toList()));
 
         subject.insert(singletonList(this.person));
         verify(managerMock).insert(captor.capture(), Mockito.any(Consumer.class));
         ColumnEntity value = captor.getValue();
-        assertEquals(document.getName(), value.getName());
+        assertEquals(entity.getName(), value.getName());
     }
 
     @Test
     public void shouldInsertIterableTTL() {
-        ColumnEntity document = ColumnEntity.of("Person");
-        document.addAll(Stream.of(columns).collect(Collectors.toList()));
+        ColumnEntity entity = ColumnEntity.of("Person");
+        entity.addAll(Stream.of(columns).collect(Collectors.toList()));
 
         subject.insert(singletonList(this.person), Duration.ofSeconds(1L));
         verify(managerMock).insert(Mockito.any(ColumnEntity.class), Mockito.eq(Duration.ofSeconds(1L)), Mockito.any(Consumer.class));
@@ -166,25 +166,25 @@ public class DefaultColumnTemplateAsyncTest {
 
     @Test
     public void shouldUpdate() {
-        ColumnEntity document = ColumnEntity.of("Person");
-        document.addAll(Stream.of(columns).collect(Collectors.toList()));
+        ColumnEntity entity = ColumnEntity.of("Person");
+        entity.addAll(Stream.of(columns).collect(Collectors.toList()));
 
 
         subject.update(this.person);
         verify(managerMock).update(captor.capture(), Mockito.any(Consumer.class));
         ColumnEntity value = captor.getValue();
-        assertEquals(document.getName(), value.getName());
+        assertEquals(entity.getName(), value.getName());
     }
 
     @Test
     public void shouldUpdateIterable() {
-        ColumnEntity document = ColumnEntity.of("Person");
-        document.addAll(Stream.of(columns).collect(Collectors.toList()));
+        ColumnEntity entity = ColumnEntity.of("Person");
+        entity.addAll(Stream.of(columns).collect(Collectors.toList()));
 
         subject.update(singletonList(this.person));
         verify(managerMock).update(captor.capture(), Mockito.any(Consumer.class));
         ColumnEntity value = captor.getValue();
-        assertEquals(document.getName(), value.getName());
+        assertEquals(entity.getName(), value.getName());
     }
 
     @Test
