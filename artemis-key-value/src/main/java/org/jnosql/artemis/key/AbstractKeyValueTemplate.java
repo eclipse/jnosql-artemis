@@ -68,6 +68,8 @@ public abstract class AbstractKeyValueTemplate implements KeyValueTemplate {
 
     @Override
     public <K, T> Iterable<T> get(Iterable<K> keys, Class<T> clazz) {
+        Objects.requireNonNull(keys, "keys is required");
+        Objects.requireNonNull(clazz, "entity class is required");
         return StreamSupport.stream(getManager()
                 .get(keys).spliterator(), false)
                 .map(v -> getConverter().toEntity(clazz, v))
