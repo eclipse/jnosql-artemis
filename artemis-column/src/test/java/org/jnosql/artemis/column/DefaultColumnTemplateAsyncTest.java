@@ -14,6 +14,7 @@
  */
 package org.jnosql.artemis.column;
 
+import org.awaitility.Awaitility;
 import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.model.Person;
@@ -36,16 +37,21 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Collections.singletonList;
+import static org.awaitility.Awaitility.await;
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
+import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(CDIExtension.class)
 public class DefaultColumnTemplateAsyncTest {
@@ -222,8 +228,7 @@ public class DefaultColumnTemplateAsyncTest {
     @Test
     public void shouldDeleteByEntityCallBack() {
 
-        Consumer<Void> callback = v ->{
-
+        Consumer<Void> callback = v -> {
         };
         subject.delete(Person.class, 10L, callback);
 
@@ -236,15 +241,29 @@ public class DefaultColumnTemplateAsyncTest {
 
     }
 
+    @Test
+    public void shouldCheckNullParameterInSelect() {
+        assertThrows(NullPointerException.class, () -> subject.select(null, null));
+        assertThrows(NullPointerException.class, () -> subject.select(null, System.out::println));
+        assertThrows(NullPointerException.class, () -> subject.select(select().from("Person").build(),
+                null));
+    }
+
 
     @Test
     public void shouldSelect() {
 
+        ArgumentCaptor<Consumer<List<ColumnEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
         ColumnQuery query = ColumnQueryBuilder.select().from("Person").build();
+        AtomicBoolean condition = new AtomicBoolean(false);
         Consumer<List<Person>> callback = l -> {
-
+            condition.set(true);
         };
         subject.select(query, callback);
+        verify(managerMock).select(Mockito.any(ColumnQuery.class), dianaCallbackCaptor.capture());
+        Consumer<List<ColumnEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
+        dianaCallBack.accept(Collections.singletonList(ColumnEntity.of("Person", Arrays.asList(columns))));
         verify(managerMock).select(Mockito.eq(query), Mockito.any());
+        await().untilTrue(condition);
     }
 }
