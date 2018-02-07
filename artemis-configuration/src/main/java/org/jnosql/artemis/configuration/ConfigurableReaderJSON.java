@@ -50,7 +50,7 @@ class ConfigurableReaderJSON implements ConfigurableReader {
 
 
     @Override
-    public List<Configurable> read(Supplier<InputStream> stream, ConfigurationUnit annotation) throws NullPointerException, ConfigurationException {
+    public List<Configurable> read(Supplier<InputStream> stream, ConfigurationUnit annotation) {
         List<Configurable> configurations = cache.get(annotation.fileName());
 
         if (nonNull(configurations)) {
