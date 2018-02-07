@@ -22,7 +22,7 @@ class NativeMapping {
 
     private final FieldRepresentation fieldRepresentation;
 
-    NativeMapping(String nativeField, FieldRepresentation fieldRepresentation) {
+    private NativeMapping(String nativeField, FieldRepresentation fieldRepresentation) {
         this.nativeField = nativeField;
         this.fieldRepresentation = fieldRepresentation;
     }
