@@ -81,8 +81,7 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
     @Override
     public <T> void update(T entity) {
         requireNonNull(entity, "entity is required");
-        update(entity, t -> {
-        });
+        update(entity, EMPTY);
     }
 
     @Override
@@ -103,7 +102,7 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
     public void delete(ColumnDeleteQuery query, Consumer<Void> callBack) {
         requireNonNull(query, "query is required");
         requireNonNull(callBack, "callBack is required");
-        getManager().delete(query);
+        getManager().delete(query, callBack);
     }
 
     @Override

@@ -18,7 +18,9 @@ import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.column.Column;
+import org.jnosql.diana.api.column.ColumnCondition;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
@@ -32,14 +34,26 @@ import org.mockito.Mockito;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+import static org.awaitility.Awaitility.await;
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
+import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(CDIExtension.class)
@@ -47,14 +61,14 @@ public class DefaultColumnTemplateAsyncTest {
 
     private Person person = Person.builder().
             withAge().
-            withPhones(Arrays.asList("234", "432")).
+            withPhones(asList("234", "432")).
             withName("Name")
             .withId(19)
             .withIgnore().build();
 
     private Column[] columns = new Column[]{
             Column.of("age", 10),
-            Column.of("phones", Arrays.asList("234", "432")),
+            Column.of("phones", asList("234", "432")),
             Column.of("name", "Name"),
             Column.of("id", 19L),
     };
@@ -86,39 +100,100 @@ public class DefaultColumnTemplateAsyncTest {
         this.subject = new DefaultColumnTemplateAsync(converter, instance, classRepresentations, converters);
     }
 
+
+    @Test
+    public void shouldCheckNullParameterInInsert() {
+
+        assertThrows(NullPointerException.class, () -> subject.insert(null));
+        assertThrows(NullPointerException.class, () -> subject.insert((Iterable) null));
+        assertThrows(NullPointerException.class, () -> subject.insert(this.person, (Duration) null));
+        assertThrows(NullPointerException.class, () -> subject.insert(null, Duration.ofSeconds(1L)));
+        assertThrows(NullPointerException.class, () -> subject.insert(this.person, (Consumer<Person>) null));
+        assertThrows(NullPointerException.class, () -> subject.insert(null, System.out::println));
+
+    }
+
     @Test
     public void shouldInsert() {
-        ColumnEntity document = ColumnEntity.of("Person");
-        document.addAll(Stream.of(columns).collect(Collectors.toList()));
+        ColumnEntity entity = ColumnEntity.of("Person");
+        entity.addAll(Stream.of(columns).collect(Collectors.toList()));
 
 
         subject.insert(this.person);
         verify(managerMock).insert(captor.capture(), Mockito.any(Consumer.class));
         ColumnEntity value = captor.getValue();
-        assertEquals(document.getName(), value.getName());
+        assertEquals(entity.getName(), value.getName());
     }
-
 
     @Test
     public void shouldInsertTTL() {
-        ColumnEntity document = ColumnEntity.of("Person");
-        document.addAll(Stream.of(columns).collect(Collectors.toList()));
+        ColumnEntity entity = ColumnEntity.of("Person");
+        entity.addAll(Stream.of(columns).collect(Collectors.toList()));
 
 
-        subject.insert(this.person);
-        verify(managerMock).insert(Mockito.any(ColumnEntity.class), Mockito.any(Consumer.class));
+        subject.insert(this.person, Duration.ofSeconds(1L));
+        verify(managerMock).insert(Mockito.any(ColumnEntity.class), Mockito.eq(Duration.ofSeconds(1L)), Mockito.any(Consumer.class));
     }
 
     @Test
+    public void shouldInsertIterable() {
+        ColumnEntity entity = ColumnEntity.of("Person");
+        entity.addAll(Stream.of(columns).collect(Collectors.toList()));
+
+        subject.insert(singletonList(this.person));
+        verify(managerMock).insert(captor.capture(), Mockito.any(Consumer.class));
+        ColumnEntity value = captor.getValue();
+        assertEquals(entity.getName(), value.getName());
+    }
+
+    @Test
+    public void shouldInsertIterableTTL() {
+        ColumnEntity entity = ColumnEntity.of("Person");
+        entity.addAll(Stream.of(columns).collect(Collectors.toList()));
+
+        subject.insert(singletonList(this.person), Duration.ofSeconds(1L));
+        verify(managerMock).insert(Mockito.any(ColumnEntity.class), Mockito.eq(Duration.ofSeconds(1L)), Mockito.any(Consumer.class));
+    }
+
+    @Test
+    public void shouldCheckNullParameterInUpdate() {
+        assertThrows(NullPointerException.class, () -> subject.update(null));
+        assertThrows(NullPointerException.class, () -> subject.update((Iterable) null));
+        assertThrows(NullPointerException.class, () -> subject.update(singletonList(person), null));
+        assertThrows(NullPointerException.class, () -> subject.update((Iterable) null, System.out::println));
+    }
+
+
+    @Test
     public void shouldUpdate() {
-        ColumnEntity document = ColumnEntity.of("Person");
-        document.addAll(Stream.of(columns).collect(Collectors.toList()));
+        ColumnEntity entity = ColumnEntity.of("Person");
+        entity.addAll(Stream.of(columns).collect(Collectors.toList()));
 
 
         subject.update(this.person);
         verify(managerMock).update(captor.capture(), Mockito.any(Consumer.class));
         ColumnEntity value = captor.getValue();
-        assertEquals(document.getName(), value.getName());
+        assertEquals(entity.getName(), value.getName());
+    }
+
+    @Test
+    public void shouldUpdateIterable() {
+        ColumnEntity entity = ColumnEntity.of("Person");
+        entity.addAll(Stream.of(columns).collect(Collectors.toList()));
+
+        subject.update(singletonList(this.person));
+        verify(managerMock).update(captor.capture(), Mockito.any(Consumer.class));
+        ColumnEntity value = captor.getValue();
+        assertEquals(entity.getName(), value.getName());
+    }
+
+    @Test
+    public void shouldCheckNullParameterInDelete() {
+        assertThrows(NullPointerException.class, () -> subject.delete(null));
+        assertThrows(NullPointerException.class, () -> subject.delete(delete().from("delete").build(), null));
+        assertThrows(NullPointerException.class, () -> subject.delete(Person.class, null));
+        assertThrows(NullPointerException.class, () -> subject.delete((Class) null, 10L));
+        assertThrows(NullPointerException.class, () -> subject.delete(Person.class, 10L, null));
     }
 
     @Test
@@ -130,13 +205,204 @@ public class DefaultColumnTemplateAsyncTest {
     }
 
     @Test
-    public void shouldSelect() {
+    public void shouldDeleteCallBack() {
 
-        ColumnQuery query = ColumnQueryBuilder.select().from("Person").build();
-        Consumer<List<Person>> callback = l -> {
+        ColumnDeleteQuery query = delete().from("delete").build();
+        Consumer<Void> callback = v -> {
 
         };
+        subject.delete(query, callback);
+        verify(managerMock).delete(query, callback);
+    }
+
+    @Test
+    public void shouldDeleteByEntity() {
+        subject.delete(Person.class, 10L);
+
+        ArgumentCaptor<ColumnDeleteQuery> queryCaptor = ArgumentCaptor.forClass(ColumnDeleteQuery.class);
+        verify(managerMock).delete(queryCaptor.capture());
+
+        ColumnDeleteQuery query = queryCaptor.getValue();
+        assertEquals("Person", query.getColumnFamily());
+        assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), query.getCondition().get());
+
+    }
+
+    @Test
+    public void shouldDeleteByEntityCallBack() {
+
+        Consumer<Void> callback = v -> {
+        };
+        subject.delete(Person.class, 10L, callback);
+
+        ArgumentCaptor<ColumnDeleteQuery> queryCaptor = ArgumentCaptor.forClass(ColumnDeleteQuery.class);
+        verify(managerMock).delete(queryCaptor.capture(), Mockito.eq(callback));
+
+        ColumnDeleteQuery query = queryCaptor.getValue();
+        assertEquals("Person", query.getColumnFamily());
+        assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), query.getCondition().get());
+
+    }
+
+    @Test
+    public void shouldCheckNullParameterInSelect() {
+        assertThrows(NullPointerException.class, () -> subject.select(null, null));
+        assertThrows(NullPointerException.class, () -> subject.select(null, System.out::println));
+        assertThrows(NullPointerException.class, () -> subject.select(select().from("Person").build(),
+                null));
+    }
+
+
+    @Test
+    public void shouldSelect() {
+
+        ArgumentCaptor<Consumer<List<ColumnEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
+        ColumnQuery query = ColumnQueryBuilder.select().from("Person").build();
+        AtomicBoolean condition = new AtomicBoolean(false);
+        Consumer<List<Person>> callback = l -> {
+            condition.set(true);
+        };
         subject.select(query, callback);
+        verify(managerMock).select(Mockito.any(ColumnQuery.class), dianaCallbackCaptor.capture());
+        Consumer<List<ColumnEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
+        dianaCallBack.accept(singletonList(ColumnEntity.of("Person", asList(columns))));
         verify(managerMock).select(Mockito.eq(query), Mockito.any());
+        await().untilTrue(condition);
+    }
+
+    @Test
+    public void shouldReturnSingleResult() {
+
+        ArgumentCaptor<Consumer<List<ColumnEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
+        ColumnQuery query = ColumnQueryBuilder.select().from("Person").build();
+        AtomicBoolean condition = new AtomicBoolean(false);
+        AtomicReference<Person> atomicReference = new AtomicReference<>();
+        Consumer<Optional<Person>> callback = p -> {
+            condition.set(true);
+            p.ifPresent(atomicReference::set);
+        };
+        subject.singleResult(query, callback);
+        verify(managerMock).select(Mockito.any(ColumnQuery.class), dianaCallbackCaptor.capture());
+        Consumer<List<ColumnEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
+        dianaCallBack.accept(singletonList(ColumnEntity.of("Person", asList(columns))));
+        verify(managerMock).select(Mockito.eq(query), Mockito.any());
+        await().untilTrue(condition);
+        assertNotNull(atomicReference.get());
+    }
+
+    @Test
+    public void shouldReturnEmptySingleResult() {
+
+        ArgumentCaptor<Consumer<List<ColumnEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
+        ColumnQuery query = ColumnQueryBuilder.select().from("Person").build();
+        AtomicBoolean condition = new AtomicBoolean(false);
+        AtomicReference<Person> atomicReference = new AtomicReference<>();
+        Consumer<Optional<Person>> callback = p -> {
+            condition.set(true);
+            p.ifPresent(atomicReference::set);
+        };
+        subject.singleResult(query, callback);
+        verify(managerMock).select(Mockito.any(ColumnQuery.class), dianaCallbackCaptor.capture());
+        Consumer<List<ColumnEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
+        dianaCallBack.accept(emptyList());
+        verify(managerMock).select(Mockito.eq(query), Mockito.any());
+        await().untilTrue(condition);
+        assertNull(atomicReference.get());
+    }
+
+    @Test
+    public void shouldReturnErrorWhenThereIsMoreThanOneResultInSingleResult() {
+
+        assertThrows(NonUniqueResultException.class, () -> {
+            ArgumentCaptor<Consumer<List<ColumnEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
+            ColumnQuery query = ColumnQueryBuilder.select().from("Person").build();
+            Consumer<Optional<Person>> callback = l -> {
+            };
+            subject.singleResult(query, callback);
+            verify(managerMock).select(Mockito.any(ColumnQuery.class), dianaCallbackCaptor.capture());
+            Consumer<List<ColumnEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
+            dianaCallBack.accept(asList(ColumnEntity.of("Person", asList(columns)),
+                    ColumnEntity.of("Person", asList(columns))));
+
+        });
+    }
+
+    @Test
+    public void shouldCheckNullParameterInFindById() {
+        assertThrows(NullPointerException.class, () -> subject.find(null, null, null));
+        assertThrows(NullPointerException.class, () -> subject.find(Person.class, null, null));
+        assertThrows(NullPointerException.class, () -> subject.find(Person.class, 10L, null));
+        assertThrows(NullPointerException.class, () -> subject.find(Person.class, null, System.out::println));
+        assertThrows(NullPointerException.class, () -> subject.find(null, null, System.out::println));
+        assertThrows(NullPointerException.class, () -> subject.find(null, 10L, System.out::println));
+        assertThrows(NullPointerException.class, () -> subject.find(null, 10L, null));
+    }
+
+    @Test
+    public void shouldFindById() {
+        ArgumentCaptor<Consumer<List<ColumnEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
+
+        ArgumentCaptor<ColumnQuery> queryCaptor = ArgumentCaptor.forClass(ColumnQuery.class);
+        AtomicBoolean condition = new AtomicBoolean(false);
+        AtomicReference<Person> atomicReference = new AtomicReference<>();
+        Consumer<Optional<Person>> callback = p -> {
+            condition.set(true);
+            p.ifPresent(atomicReference::set);
+        };
+
+        subject.find(Person.class, 10L, callback);
+        verify(managerMock).select(queryCaptor.capture(), dianaCallbackCaptor.capture());
+        Consumer<List<ColumnEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
+        dianaCallBack.accept(singletonList(ColumnEntity.of("Person", asList(columns))));
+        ColumnQuery query = queryCaptor.getValue();
+        assertEquals("Person", query.getColumnFamily());
+        assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), query.getCondition().get());
+        assertNotNull(atomicReference.get());
+
+    }
+
+    @Test
+    public void shouldFindByIdReturnEmptyWhenElementDoesNotFind() {
+        ArgumentCaptor<Consumer<List<ColumnEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
+
+        ArgumentCaptor<ColumnQuery> queryCaptor = ArgumentCaptor.forClass(ColumnQuery.class);
+        AtomicBoolean condition = new AtomicBoolean(false);
+        AtomicReference<Person> atomicReference = new AtomicReference<>();
+        Consumer<Optional<Person>> callback = p -> {
+            condition.set(true);
+            p.ifPresent(atomicReference::set);
+        };
+
+        subject.find(Person.class, 10L, callback);
+        verify(managerMock).select(queryCaptor.capture(), dianaCallbackCaptor.capture());
+        Consumer<List<ColumnEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
+        dianaCallBack.accept(emptyList());
+        ColumnQuery query = queryCaptor.getValue();
+        assertEquals("Person", query.getColumnFamily());
+        assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), query.getCondition().get());
+        assertNull(atomicReference.get());
+
+    }
+
+    @Test
+    public void shouldReturnErrorFindByIdReturnMoreThanOne() {
+
+        assertThrows(NonUniqueResultException.class, () -> {
+            ArgumentCaptor<Consumer<List<ColumnEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
+
+            ArgumentCaptor<ColumnQuery> queryCaptor = ArgumentCaptor.forClass(ColumnQuery.class);
+            AtomicBoolean condition = new AtomicBoolean(false);
+            AtomicReference<Person> atomicReference = new AtomicReference<>();
+            Consumer<Optional<Person>> callback = p -> {
+                condition.set(true);
+                p.ifPresent(atomicReference::set);
+            };
+
+            subject.find(Person.class, 10L, callback);
+            verify(managerMock).select(queryCaptor.capture(), dianaCallbackCaptor.capture());
+            Consumer<List<ColumnEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
+            dianaCallBack.accept(asList(ColumnEntity.of("Person", asList(columns)), ColumnEntity.of("Person", asList(columns))));
+        });
+
     }
 }

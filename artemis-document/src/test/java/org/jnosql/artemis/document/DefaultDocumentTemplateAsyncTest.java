@@ -18,12 +18,13 @@ import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
+import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentEntity;
 import org.jnosql.diana.api.document.DocumentQuery;
-import org.jnosql.diana.api.document.query.DocumentQueryBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,12 +36,23 @@ import javax.inject.Inject;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+import static org.awaitility.Awaitility.await;
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
+import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -50,14 +62,14 @@ public class DefaultDocumentTemplateAsyncTest {
 
     private Person person = Person.builder().
             withAge().
-            withPhones(Arrays.asList("234", "432")).
+            withPhones(asList("234", "432")).
             withName("Name")
             .withId(19)
             .withIgnore().build();
 
     private Document[] documents = new Document[]{
             Document.of("age", 10),
-            Document.of("phones", Arrays.asList("234", "432")),
+            Document.of("phones", asList("234", "432")),
             Document.of("name", "Name"),
             Document.of("id", 19L),
     };
@@ -90,9 +102,22 @@ public class DefaultDocumentTemplateAsyncTest {
     }
 
     @Test
-    public void shouldSave() {
-        DocumentEntity document = DocumentEntity.of("Person");
-        document.addAll(Stream.of(documents).collect(Collectors.toList()));
+    public void shouldCheckNullParameterInInsert() {
+
+        assertThrows(NullPointerException.class, () -> subject.insert(null));
+        assertThrows(NullPointerException.class, () -> subject.insert((Iterable) null));
+        assertThrows(NullPointerException.class, () -> subject.insert(this.person, (Duration) null));
+        assertThrows(NullPointerException.class, () -> subject.insert(null, Duration.ofSeconds(1L)));
+        assertThrows(NullPointerException.class, () -> subject.insert(this.person, (Consumer<Person>) null));
+        assertThrows(NullPointerException.class, () -> subject.insert(null, System.out::println));
+
+    }
+
+
+    @Test
+    public void shouldInsert() {
+        DocumentEntity entity = DocumentEntity.of("Person");
+        entity.addAll(Stream.of(documents).collect(Collectors.toList()));
 
 
         subject.insert(this.person);
@@ -103,12 +128,12 @@ public class DefaultDocumentTemplateAsyncTest {
     }
 
     @Test
-    public void shouldSaveTTL() {
+    public void shouldInsertTTL() {
 
         Duration twoHours = Duration.ofHours(2L);
 
-        DocumentEntity document = DocumentEntity.of("Person");
-        document.addAll(Stream.of(documents).collect(Collectors.toList()));
+        DocumentEntity entity = DocumentEntity.of("Person");
+        entity.addAll(Stream.of(documents).collect(Collectors.toList()));
 
 
         subject.insert(this.person, twoHours);
@@ -118,11 +143,38 @@ public class DefaultDocumentTemplateAsyncTest {
         assertEquals(4, value.getDocuments().size());
     }
 
+    @Test
+    public void shouldInsertIterable() {
+        DocumentEntity entity = DocumentEntity.of("Person");
+        entity.addAll(Stream.of(documents).collect(Collectors.toList()));
+
+        subject.insert(singletonList(this.person));
+        verify(managerMock).insert(captor.capture(), Mockito.any(Consumer.class));
+        DocumentEntity value = captor.getValue();
+        assertEquals(entity.getName(), value.getName());
+    }
+
+    @Test
+    public void shouldInsertIterableTTL() {
+        DocumentEntity entity = DocumentEntity.of("Person");
+        entity.addAll(Stream.of(documents).collect(Collectors.toList()));
+
+        subject.insert(singletonList(this.person), Duration.ofSeconds(1L));
+        verify(managerMock).insert(Mockito.any(DocumentEntity.class), Mockito.eq(Duration.ofSeconds(1L)), Mockito.any(Consumer.class));
+    }
+
+    @Test
+    public void shouldCheckNullParameterInUpdate() {
+        assertThrows(NullPointerException.class, () -> subject.update(null));
+        assertThrows(NullPointerException.class, () -> subject.update((Iterable) null));
+        assertThrows(NullPointerException.class, () -> subject.update(singletonList(person), null));
+        assertThrows(NullPointerException.class, () -> subject.update((Iterable) null, System.out::println));
+    }
 
     @Test
     public void shouldUpdate() {
-        DocumentEntity document = DocumentEntity.of("Person");
-        document.addAll(Stream.of(documents).collect(Collectors.toList()));
+        DocumentEntity entity = DocumentEntity.of("Person");
+        entity.addAll(Stream.of(documents).collect(Collectors.toList()));
 
 
         subject.update(this.person);
@@ -130,6 +182,26 @@ public class DefaultDocumentTemplateAsyncTest {
         DocumentEntity value = captor.getValue();
         assertEquals("Person", value.getName());
         assertEquals(4, value.getDocuments().size());
+    }
+
+    @Test
+    public void shouldUpdateIterable() {
+        DocumentEntity entity = DocumentEntity.of("Person");
+        entity.addAll(Stream.of(documents).collect(Collectors.toList()));
+
+        subject.update(singletonList(this.person));
+        verify(managerMock).update(captor.capture(), Mockito.any(Consumer.class));
+        DocumentEntity value = captor.getValue();
+        assertEquals(entity.getName(), value.getName());
+    }
+
+    @Test
+    public void shouldCheckNullParameterInDelete() {
+        assertThrows(NullPointerException.class, () -> subject.delete(null));
+        assertThrows(NullPointerException.class, () -> subject.delete(delete().from("delete").build(), null));
+        assertThrows(NullPointerException.class, () -> subject.delete(Person.class, null));
+        assertThrows(NullPointerException.class, () -> subject.delete((Class) null, 10L));
+        assertThrows(NullPointerException.class, () -> subject.delete(Person.class, 10L, null));
     }
 
 
@@ -142,13 +214,206 @@ public class DefaultDocumentTemplateAsyncTest {
     }
 
     @Test
-    public void shouldSelect() {
+    public void shouldDeleteCallBack() {
 
-        DocumentQuery query = DocumentQueryBuilder.select().from("Person").build();
-        Consumer<List<Person>> callback = l -> {
+        DocumentDeleteQuery query = delete().from("delete").build();
+        Consumer<Void> callback = v -> {
 
         };
-        subject.select(query, callback);
-        verify(managerMock).select(Mockito.eq(query), Mockito.any());
+        subject.delete(query, callback);
+        verify(managerMock).delete(query, callback);
     }
+
+    @Test
+    public void shouldDeleteByEntity() {
+        subject.delete(Person.class, 10L);
+
+        ArgumentCaptor<DocumentDeleteQuery> queryCaptor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
+        verify(managerMock).delete(queryCaptor.capture());
+
+        DocumentDeleteQuery query = queryCaptor.getValue();
+        assertEquals("Person", query.getDocumentCollection());
+        assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), query.getCondition().get());
+
+    }
+
+    @Test
+    public void shouldDeleteByEntityCallBack() {
+
+        Consumer<Void> callback = v -> {
+        };
+        subject.delete(Person.class, 10L, callback);
+
+        ArgumentCaptor<DocumentDeleteQuery> queryCaptor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
+        verify(managerMock).delete(queryCaptor.capture(), Mockito.eq(callback));
+
+        DocumentDeleteQuery query = queryCaptor.getValue();
+        assertEquals("Person", query.getDocumentCollection());
+        assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), query.getCondition().get());
+
+    }
+
+    @Test
+    public void shouldCheckNullParameterInSelect() {
+        assertThrows(NullPointerException.class, () -> subject.select(null, null));
+        assertThrows(NullPointerException.class, () -> subject.select(null, System.out::println));
+        assertThrows(NullPointerException.class, () -> subject.select(select().from("Person").build(),
+                null));
+    }
+
+
+    @Test
+    public void shouldSelect() {
+
+        ArgumentCaptor<Consumer<List<DocumentEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
+        DocumentQuery query = select().from("Person").build();
+        AtomicBoolean condition = new AtomicBoolean(false);
+        Consumer<List<Person>> callback = l -> {
+            condition.set(true);
+        };
+        subject.select(query, callback);
+        verify(managerMock).select(Mockito.any(DocumentQuery.class), dianaCallbackCaptor.capture());
+        Consumer<List<DocumentEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
+        dianaCallBack.accept(singletonList(DocumentEntity.of("Person", asList(documents))));
+        verify(managerMock).select(Mockito.eq(query), Mockito.any());
+        await().untilTrue(condition);
+    }
+
+    @Test
+    public void shouldReturnSingleResult() {
+
+        ArgumentCaptor<Consumer<List<DocumentEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
+        DocumentQuery query = select().from("Person").build();
+        AtomicBoolean condition = new AtomicBoolean(false);
+        AtomicReference<Person> atomicReference = new AtomicReference<>();
+        Consumer<Optional<Person>> callback = p -> {
+            condition.set(true);
+            p.ifPresent(atomicReference::set);
+        };
+        subject.singleResult(query, callback);
+        verify(managerMock).select(Mockito.any(DocumentQuery.class), dianaCallbackCaptor.capture());
+        Consumer<List<DocumentEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
+        dianaCallBack.accept(singletonList(DocumentEntity.of("Person", asList(documents))));
+        verify(managerMock).select(Mockito.eq(query), Mockito.any());
+        await().untilTrue(condition);
+        assertNotNull(atomicReference.get());
+    }
+
+    @Test
+    public void shouldReturnEmptySingleResult() {
+
+        ArgumentCaptor<Consumer<List<DocumentEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
+        DocumentQuery query = select().from("Person").build();
+        AtomicBoolean condition = new AtomicBoolean(false);
+        AtomicReference<Person> atomicReference = new AtomicReference<>();
+        Consumer<Optional<Person>> callback = p -> {
+            condition.set(true);
+            p.ifPresent(atomicReference::set);
+        };
+        subject.singleResult(query, callback);
+        verify(managerMock).select(Mockito.any(DocumentQuery.class), dianaCallbackCaptor.capture());
+        Consumer<List<DocumentEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
+        dianaCallBack.accept(emptyList());
+        verify(managerMock).select(Mockito.eq(query), Mockito.any());
+        await().untilTrue(condition);
+        assertNull(atomicReference.get());
+    }
+
+    @Test
+    public void shouldReturnErrorWhenThereIsMoreThanOneResultInSingleResult() {
+
+        assertThrows(NonUniqueResultException.class, () -> {
+            ArgumentCaptor<Consumer<List<DocumentEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
+            DocumentQuery query = select().from("Person").build();
+            Consumer<Optional<Person>> callback = l -> {
+            };
+            subject.singleResult(query, callback);
+            verify(managerMock).select(Mockito.any(DocumentQuery.class), dianaCallbackCaptor.capture());
+            Consumer<List<DocumentEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
+            dianaCallBack.accept(asList(DocumentEntity.of("Person", asList(documents)),
+                    DocumentEntity.of("Person", asList(documents))));
+
+        });
+    }
+
+    @Test
+    public void shouldCheckNullParameterInFindById() {
+        assertThrows(NullPointerException.class, () -> subject.find(null, null, null));
+        assertThrows(NullPointerException.class, () -> subject.find(Person.class, null, null));
+        assertThrows(NullPointerException.class, () -> subject.find(Person.class, 10L, null));
+        assertThrows(NullPointerException.class, () -> subject.find(Person.class, null, System.out::println));
+        assertThrows(NullPointerException.class, () -> subject.find(null, null, System.out::println));
+        assertThrows(NullPointerException.class, () -> subject.find(null, 10L, System.out::println));
+        assertThrows(NullPointerException.class, () -> subject.find(null, 10L, null));
+    }
+
+    @Test
+    public void shouldFindById() {
+        ArgumentCaptor<Consumer<List<DocumentEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
+
+        ArgumentCaptor<DocumentQuery> queryCaptor = ArgumentCaptor.forClass(DocumentQuery.class);
+        AtomicBoolean condition = new AtomicBoolean(false);
+        AtomicReference<Person> atomicReference = new AtomicReference<>();
+        Consumer<Optional<Person>> callback = p -> {
+            condition.set(true);
+            p.ifPresent(atomicReference::set);
+        };
+
+        subject.find(Person.class, 10L, callback);
+        verify(managerMock).select(queryCaptor.capture(), dianaCallbackCaptor.capture());
+        Consumer<List<DocumentEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
+        dianaCallBack.accept(singletonList(DocumentEntity.of("Person", asList(documents))));
+        DocumentQuery query = queryCaptor.getValue();
+        assertEquals("Person", query.getDocumentCollection());
+        assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), query.getCondition().get());
+        assertNotNull(atomicReference.get());
+
+    }
+
+    @Test
+    public void shouldFindByIdReturnEmptyWhenElementDoesNotFind() {
+        ArgumentCaptor<Consumer<List<DocumentEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
+
+        ArgumentCaptor<DocumentQuery> queryCaptor = ArgumentCaptor.forClass(DocumentQuery.class);
+        AtomicBoolean condition = new AtomicBoolean(false);
+        AtomicReference<Person> atomicReference = new AtomicReference<>();
+        Consumer<Optional<Person>> callback = p -> {
+            condition.set(true);
+            p.ifPresent(atomicReference::set);
+        };
+
+        subject.find(Person.class, 10L, callback);
+        verify(managerMock).select(queryCaptor.capture(), dianaCallbackCaptor.capture());
+        Consumer<List<DocumentEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
+        dianaCallBack.accept(emptyList());
+        DocumentQuery query = queryCaptor.getValue();
+        assertEquals("Person", query.getDocumentCollection());
+        assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), query.getCondition().get());
+        assertNull(atomicReference.get());
+
+    }
+
+    @Test
+    public void shouldReturnErrorFindByIdReturnMoreThanOne() {
+
+        assertThrows(NonUniqueResultException.class, () -> {
+            ArgumentCaptor<Consumer<List<DocumentEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
+
+            ArgumentCaptor<DocumentQuery> queryCaptor = ArgumentCaptor.forClass(DocumentQuery.class);
+            AtomicBoolean condition = new AtomicBoolean(false);
+            AtomicReference<Person> atomicReference = new AtomicReference<>();
+            Consumer<Optional<Person>> callback = p -> {
+                condition.set(true);
+                p.ifPresent(atomicReference::set);
+            };
+
+            subject.find(Person.class, 10L, callback);
+            verify(managerMock).select(queryCaptor.capture(), dianaCallbackCaptor.capture());
+            Consumer<List<DocumentEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
+            dianaCallBack.accept(asList(DocumentEntity.of("Person", asList(documents)),
+                    DocumentEntity.of("Person", asList(documents))));
+        });
+
+    }
+
 }
