@@ -39,6 +39,7 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -268,6 +269,23 @@ public class DefaultColumnTemplateAsyncTest {
     }
 
     @Test
+    public void shouldReturnSingleResult() {
+
+        ArgumentCaptor<Consumer<List<ColumnEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
+        ColumnQuery query = ColumnQueryBuilder.select().from("Person").build();
+        AtomicBoolean condition = new AtomicBoolean(false);
+        Consumer<Optional<Person>> callback = l -> {
+            condition.set(true);
+        };
+        subject.singleResult(query, callback);
+        verify(managerMock).select(Mockito.any(ColumnQuery.class), dianaCallbackCaptor.capture());
+        Consumer<List<ColumnEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
+        dianaCallBack.accept(Collections.singletonList(ColumnEntity.of("Person", Arrays.asList(columns))));
+        verify(managerMock).select(Mockito.eq(query), Mockito.any());
+        await().untilTrue(condition);
+    }
+
+    @Test
     public void shouldCheckNullParameterInFindById() {
         assertThrows(NullPointerException.class, () -> subject.find(null, null, null));
         assertThrows(NullPointerException.class, () -> subject.find(Person.class, null, null));
@@ -280,6 +298,10 @@ public class DefaultColumnTemplateAsyncTest {
 
     @Test
     public void shouldFindById() {
-
+        AtomicBoolean condition = new AtomicBoolean(false);
+        Consumer<Optional<Person>> callback = l -> {
+            condition.set(true);
+        };
+        subject.find(Person.class, 10L, callback);
     }
 }
