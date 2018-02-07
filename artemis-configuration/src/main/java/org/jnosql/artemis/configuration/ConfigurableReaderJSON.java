@@ -22,6 +22,7 @@ import javax.json.JsonException;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +45,8 @@ class ConfigurableReaderJSON implements ConfigurableReader {
 
 
     private final Map<String, List<Configurable>> cache = new ConcurrentHashMap<>();
+    
+    private static final Type TYPE = new ArrayList<ConfigurableJSON>() {}.getClass().getGenericSuperclass();
 
 
     @Override
@@ -55,8 +58,7 @@ class ConfigurableReaderJSON implements ConfigurableReader {
             return configurations;
         }
         try {
-            configurations = JSONB.fromJson(stream.get(), new ArrayList<ConfigurableJSON>() {
-            }.getClass().getGenericSuperclass());
+            configurations = JSONB.fromJson(stream.get(), TYPE);
             cache.put(annotation.fileName(), configurations);
             return configurations;
         } catch (JsonException exception) {
