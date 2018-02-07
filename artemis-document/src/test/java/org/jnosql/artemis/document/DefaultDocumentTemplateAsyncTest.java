@@ -39,6 +39,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Collections.singletonList;
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -131,6 +132,36 @@ public class DefaultDocumentTemplateAsyncTest {
         assertEquals("Person", value.getName());
         assertEquals(4, value.getDocuments().size());
     }
+
+    @Test
+    public void shouldInsertIterable() {
+        DocumentEntity entity = DocumentEntity.of("Person");
+        entity.addAll(Stream.of(documents).collect(Collectors.toList()));
+
+        subject.insert(singletonList(this.person));
+        verify(managerMock).insert(captor.capture(), Mockito.any(Consumer.class));
+        DocumentEntity value = captor.getValue();
+        assertEquals(entity.getName(), value.getName());
+    }
+
+    @Test
+    public void shouldInsertIterableTTL() {
+        DocumentEntity document = DocumentEntity.of("Person");
+        document.addAll(Stream.of(documents).collect(Collectors.toList()));
+
+        subject.insert(singletonList(this.person), Duration.ofSeconds(1L));
+        verify(managerMock).insert(Mockito.any(DocumentEntity.class), Mockito.eq(Duration.ofSeconds(1L)), Mockito.any(Consumer.class));
+    }
+
+    @Test
+    public void shouldCheckNullParameterInUpdate() {
+        assertThrows(NullPointerException.class, () -> subject.update(null));
+        assertThrows(NullPointerException.class, () -> subject.update((Iterable) null));
+        assertThrows(NullPointerException.class, () -> subject.update(singletonList(person), null));
+        assertThrows(NullPointerException.class, () -> subject.update((Iterable) null, System.out::println));
+    }
+
+
 
 
     @Test
