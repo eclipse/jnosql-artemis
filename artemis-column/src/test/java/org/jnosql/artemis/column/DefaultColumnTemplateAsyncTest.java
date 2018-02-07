@@ -36,7 +36,6 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.time.Duration;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -45,6 +44,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.awaitility.Awaitility.await;
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
@@ -303,7 +303,7 @@ public class DefaultColumnTemplateAsyncTest {
         subject.singleResult(query, callback);
         verify(managerMock).select(Mockito.any(ColumnQuery.class), dianaCallbackCaptor.capture());
         Consumer<List<ColumnEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
-        dianaCallBack.accept(Collections.emptyList());
+        dianaCallBack.accept(emptyList());
         verify(managerMock).select(Mockito.eq(query), Mockito.any());
         await().untilTrue(condition);
         assertNull(atomicReference.get());
@@ -357,6 +357,29 @@ public class DefaultColumnTemplateAsyncTest {
         assertEquals("Person", query.getColumnFamily());
         assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), query.getCondition().get());
         assertNotNull(atomicReference.get());
+
+    }
+
+    @Test
+    public void shouldFindByIdReturnEmptyWhenElementDoesNotFind() {
+        ArgumentCaptor<Consumer<List<ColumnEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
+
+        ArgumentCaptor<ColumnQuery> queryCaptor = ArgumentCaptor.forClass(ColumnQuery.class);
+        AtomicBoolean condition = new AtomicBoolean(false);
+        AtomicReference<Person> atomicReference = new AtomicReference<>();
+        Consumer<Optional<Person>> callback = p -> {
+            condition.set(true);
+            p.ifPresent(atomicReference::set);
+        };
+
+        subject.find(Person.class, 10L, callback);
+        verify(managerMock).select(queryCaptor.capture(), dianaCallbackCaptor.capture());
+        Consumer<List<ColumnEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
+        dianaCallBack.accept(emptyList());
+        ColumnQuery query = queryCaptor.getValue();
+        assertEquals("Person", query.getColumnFamily());
+        assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), query.getCondition().get());
+        assertNull(atomicReference.get());
 
     }
 }
