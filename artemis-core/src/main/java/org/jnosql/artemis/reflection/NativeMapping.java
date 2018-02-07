@@ -16,7 +16,7 @@ package org.jnosql.artemis.reflection;
 
 import java.util.Objects;
 
-class NativeMapping {
+final class NativeMapping {
 
     private final String nativeField;
 

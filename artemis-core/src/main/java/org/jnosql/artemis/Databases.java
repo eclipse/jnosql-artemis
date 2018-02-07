@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 /**
  * Class util for check some data during CDI Extensions for Artemis
  */
-public class Databases {
+public final class Databases {
 
     private static final Logger LOGGER = Logger.getLogger(Databases.class.getName());
 

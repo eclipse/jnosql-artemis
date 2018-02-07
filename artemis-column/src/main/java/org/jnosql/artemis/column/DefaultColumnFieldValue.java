@@ -32,7 +32,7 @@ import static org.jnosql.artemis.reflection.FieldType.COLLECTION;
 import static org.jnosql.artemis.reflection.FieldType.EMBEDDED;
 import static org.jnosql.artemis.reflection.FieldType.SUBENTITY;
 
-class DefaultColumnFieldValue implements ColumnFieldValue {
+final class DefaultColumnFieldValue implements ColumnFieldValue {
 
     private final FieldValue fieldValue;
 

@@ -30,7 +30,7 @@ import static java.util.Collections.singletonList;
 import static org.jnosql.artemis.reflection.FieldType.COLLECTION;
 import static org.jnosql.artemis.reflection.FieldType.SUBENTITY;
 
-class DefaultDocumentFieldValue implements DocumentFieldValue {
+final class DefaultDocumentFieldValue implements DocumentFieldValue {
 
     private final FieldValue fieldValue;
 

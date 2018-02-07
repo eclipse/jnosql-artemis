@@ -26,7 +26,7 @@ import static org.jnosql.artemis.DatabaseType.KEY_VALUE;
 /**
  * Utilitarian class to select the {@link Database}
  */
-public class DatabaseQualifier extends AnnotationLiteral<Database> implements Database {
+public final class DatabaseQualifier extends AnnotationLiteral<Database> implements Database {
 
     private static final DatabaseQualifier DEFAULT_DOCUMENT_PROVIDER = new DatabaseQualifier("", DOCUMENT);
 
