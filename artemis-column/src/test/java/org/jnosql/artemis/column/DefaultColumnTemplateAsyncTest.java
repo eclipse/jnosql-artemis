@@ -19,6 +19,7 @@ import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.column.Column;
+import org.jnosql.diana.api.column.ColumnCondition;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
@@ -29,6 +30,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+import org.w3c.dom.css.DocumentCSS;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -203,6 +205,37 @@ public class DefaultColumnTemplateAsyncTest {
         subject.delete(query, callback);
         verify(managerMock).delete(query, callback);
     }
+
+    @Test
+    public void shouldDeleteByEntity() {
+        subject.delete(Person.class, 10L);
+
+        ArgumentCaptor<ColumnDeleteQuery> queryCaptor = ArgumentCaptor.forClass(ColumnDeleteQuery.class);
+        verify(managerMock).delete(queryCaptor.capture());
+
+        ColumnDeleteQuery query = queryCaptor.getValue();
+        assertEquals("Person", query.getColumnFamily());
+        assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), query.getCondition().get());
+
+    }
+
+    @Test
+    public void shouldDeleteByEntityCallBack() {
+
+        Consumer<Void> callback = v ->{
+
+        };
+        subject.delete(Person.class, 10L, callback);
+
+        ArgumentCaptor<ColumnDeleteQuery> queryCaptor = ArgumentCaptor.forClass(ColumnDeleteQuery.class);
+        verify(managerMock).delete(queryCaptor.capture(), Mockito.eq(callback));
+
+        ColumnDeleteQuery query = queryCaptor.getValue();
+        assertEquals("Person", query.getColumnFamily());
+        assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), query.getCondition().get());
+
+    }
+
 
     @Test
     public void shouldSelect() {
