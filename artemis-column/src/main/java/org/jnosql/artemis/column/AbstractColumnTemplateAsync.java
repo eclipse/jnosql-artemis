@@ -103,7 +103,7 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
     public void delete(ColumnDeleteQuery query, Consumer<Void> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
         requireNonNull(query, "query is required");
         requireNonNull(callBack, "callBack is required");
-        getManager().delete(query);
+        getManager().delete(query, callBack);
     }
 
     @Override
