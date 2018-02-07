@@ -33,11 +33,19 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.time.Duration;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.StreamSupport.stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 
 @ExtendWith(CDIExtension.class)
@@ -63,7 +71,7 @@ public class DefaultKeyValueTemplateTest {
     @BeforeEach
     public void setUp() {
         Instance<BucketManager> instance = Mockito.mock(Instance.class);
-        Mockito.when(instance.get()).thenReturn(manager);
+        when(instance.get()).thenReturn(manager);
         this.subject = new DefaultKeyValueTemplate(converter, instance, flow);
     }
 
@@ -138,22 +146,23 @@ public class DefaultKeyValueTemplateTest {
     public void shouldGet() {
         User user = new User(KEY, "otavio", 27);
 
-        Mockito.when(manager.get(KEY)).thenReturn(Optional.of(Value.of(user)));
+        when(manager.get(KEY)).thenReturn(Optional.of(Value.of(user)));
         Optional<User> userOptional = subject.get(KEY, User.class);
 
-        Assertions.assertTrue(userOptional.isPresent());
-        Assertions.assertEquals(user, userOptional.get());
+        assertTrue(userOptional.isPresent());
+        assertEquals(user, userOptional.get());
     }
 
     @Test
     public void shouldGetIterable() {
         User user = new User(KEY, "otavio", 27);
 
-        Mockito.when(manager.get(singletonList(KEY))).thenReturn(singletonList(Value.of(user)));
-        Optional<User> userOptional = subject.get(KEY, User.class);
+        when(manager.get(singletonList(KEY))).thenReturn(singletonList(Value.of(user)));
+        List<User> userOptional = stream(subject.get(singletonList(KEY), User.class).spliterator(), false)
+                .collect(toList());
 
-        Assertions.assertTrue(userOptional.isPresent());
-        Assertions.assertEquals(user, userOptional.get());
+        assertFalse(userOptional.isEmpty());
+        assertEquals(user, userOptional.get(0));
     }
 
     @Test
@@ -167,5 +176,11 @@ public class DefaultKeyValueTemplateTest {
     public void shouldRemove() {
         subject.remove(KEY);
         Mockito.verify(manager).remove(KEY);
+    }
+
+    @Test
+    public void shouldRemoveIterable() {
+        subject.remove(singletonList(KEY));
+        Mockito.verify(manager).remove(singletonList(KEY));
     }
 }
