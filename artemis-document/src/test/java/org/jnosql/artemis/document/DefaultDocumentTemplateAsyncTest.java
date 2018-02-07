@@ -161,9 +161,6 @@ public class DefaultDocumentTemplateAsyncTest {
         assertThrows(NullPointerException.class, () -> subject.update((Iterable) null, System.out::println));
     }
 
-
-
-
     @Test
     public void shouldUpdate() {
         DocumentEntity document = DocumentEntity.of("Person");
@@ -176,6 +173,27 @@ public class DefaultDocumentTemplateAsyncTest {
         assertEquals("Person", value.getName());
         assertEquals(4, value.getDocuments().size());
     }
+
+    @Test
+    public void shouldUpdateIterable() {
+        DocumentEntity entity = DocumentEntity.of("Person");
+        entity.addAll(Stream.of(documents).collect(Collectors.toList()));
+
+        subject.update(singletonList(this.person));
+        verify(managerMock).update(captor.capture(), Mockito.any(Consumer.class));
+        DocumentEntity value = captor.getValue();
+        assertEquals(entity.getName(), value.getName());
+    }
+
+    @Test
+    public void shouldCheckNullParameterInDelete() {
+        assertThrows(NullPointerException.class, () -> subject.delete(null));
+        assertThrows(NullPointerException.class, () -> subject.delete(delete().from("delete").build(), null));
+        assertThrows(NullPointerException.class, () -> subject.delete(Person.class, null));
+        assertThrows(NullPointerException.class, () -> subject.delete((Class) null, 10L));
+        assertThrows(NullPointerException.class, () -> subject.delete(Person.class, 10L, null));
+    }
+
 
 
     @Test
