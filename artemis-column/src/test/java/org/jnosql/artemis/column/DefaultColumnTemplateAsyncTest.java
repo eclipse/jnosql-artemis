@@ -91,9 +91,10 @@ public class DefaultColumnTemplateAsyncTest {
 
 
     @Test
-    public void shouldCheckNullValueInInsert() {
+    public void shouldCheckNullParameterInInsert() {
 
         assertThrows(NullPointerException.class, () ->subject.insert(null));
+        assertThrows(NullPointerException.class, () ->subject.insert((Iterable)null));
         assertThrows(NullPointerException.class, () ->subject.insert(this.person, (Duration) null));
         assertThrows(NullPointerException.class, () ->subject.insert(null, Duration.ofSeconds(1L)));
         assertThrows(NullPointerException.class, () ->subject.insert(this.person, (Consumer<Person>) null));
@@ -144,6 +145,15 @@ public class DefaultColumnTemplateAsyncTest {
     }
 
     @Test
+    public void shouldCheckNullParameterInUpdate() {
+        assertThrows(NullPointerException.class, () ->subject.update(null));
+        assertThrows(NullPointerException.class, () ->subject.update((Iterable)null));
+        assertThrows(NullPointerException.class, () ->subject.update(singletonList(person), null));
+        assertThrows(NullPointerException.class, () ->subject.update((Iterable)null, System.out::println));
+    }
+
+
+    @Test
     public void shouldUpdate() {
         ColumnEntity document = ColumnEntity.of("Person");
         document.addAll(Stream.of(columns).collect(Collectors.toList()));
@@ -166,6 +176,10 @@ public class DefaultColumnTemplateAsyncTest {
         assertEquals(document.getName(), value.getName());
     }
 
+    @Test
+    public void shouldCheckNullParameterInUpdate() {
+        
+    }
 
     @Test
     public void shouldDelete() {
