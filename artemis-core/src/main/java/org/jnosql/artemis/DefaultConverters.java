@@ -32,7 +32,7 @@ class DefaultConverters implements Converters {
     private BeanManager beanManager;
 
     @Override
-    public AttributeConverter get(Class<? extends AttributeConverter> converterClass) throws NullPointerException {
+    public AttributeConverter get(Class<? extends AttributeConverter> converterClass) {
         Objects.requireNonNull(converterClass, "The converterClass is required");
         return getInstance(converterClass);
     }

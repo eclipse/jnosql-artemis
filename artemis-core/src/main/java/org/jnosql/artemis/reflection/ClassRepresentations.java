@@ -28,7 +28,7 @@ public interface ClassRepresentations {
      * @return the class representation
      * @throws NullPointerException whend class entity is null
      */
-    ClassRepresentation get(Class classEntity) throws NullPointerException;
+    ClassRepresentation get(Class classEntity);
 
     /**
      * Returns the {@link ClassRepresentation} instance from {@link ClassRepresentation#getName()} in ignore case
@@ -37,6 +37,6 @@ public interface ClassRepresentations {
      * @return the {@link ClassRepresentation} from name
      * @throws ClassInformationNotFoundException when the class is not loaded
      */
-    ClassRepresentation findByName(String name) throws ClassInformationNotFoundException;
+    ClassRepresentation findByName(String name);
 
 }

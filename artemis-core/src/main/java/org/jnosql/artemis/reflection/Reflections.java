@@ -106,7 +106,7 @@ public interface Reflections {
      * @param clazz the class constructor acessible
      * @throws ConstructorException when the constructor has public and default
      */
-    Constructor makeAccessible(Class clazz) throws ConstructorException;
+    Constructor makeAccessible(Class clazz);
 
     /**
      * Returns the name of the entity. So it tries to read the {@link org.jnosql.artemis.Entity} otherwise
@@ -116,7 +116,7 @@ public interface Reflections {
      * @return the {@link org.jnosql.artemis.Entity} when is not blank otherwise {@link Class#getSimpleName()}
      * @throws NullPointerException when classEntity is null
      */
-    String getEntityName(Class classEntity) throws NullPointerException;
+    String getEntityName(Class classEntity);
 
     /**
      * Returns the fields from the entity class
@@ -126,7 +126,7 @@ public interface Reflections {
      * {@link org.jnosql.artemis.Id}
      * @throws NullPointerException when class entity is null
      */
-    List<Field> getFields(Class classEntity) throws NullPointerException;
+    List<Field> getFields(Class classEntity);
 
     /**
      * Checks if the class is annotated with {@link org.jnosql.artemis.MappedSuperclass}
@@ -135,7 +135,7 @@ public interface Reflections {
      * @return if the class is annotated
      * @throws NullPointerException when classEntity is null
      */
-    boolean isMappedSuperclass(Class<?> classEntity) throws NullPointerException;
+    boolean isMappedSuperclass(Class<?> classEntity);
 
     /**
      * Checks if the field is annotated with {@link org.jnosql.artemis.Column}
@@ -144,7 +144,7 @@ public interface Reflections {
      * @return if the field is annotated with {@link org.jnosql.artemis.Column}
      * @throws NullPointerException when the field is null
      */
-    boolean isIdField(Field field) throws NullPointerException;
+    boolean isIdField(Field field);
 
     /**
      * Gets the name from the field, so it reads the {@link org.jnosql.artemis.Column#value()}
@@ -154,7 +154,7 @@ public interface Reflections {
      * @return the column name
      * @throws NullPointerException when the field is null
      */
-    String getColumnName(Field field) throws NullPointerException;
+    String getColumnName(Field field);
 
     /**
      * Gets the id name, so it reads the {@link org.jnosql.artemis.Id#value()} otherwise {@link Field#getName()}
@@ -163,7 +163,7 @@ public interface Reflections {
      * @return the column name
      * @throws NullPointerException when the field is null
      */
-    String getIdName(Field field) throws NullPointerException;
+    String getIdName(Field field);
 
     /**
      * data structured to store key and value class to map collection.

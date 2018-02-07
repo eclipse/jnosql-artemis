@@ -35,7 +35,7 @@ public interface EntityPrePersist {
      * @return the new instance of {@link EntityPrePersist}
      * @throws NullPointerException when value is null
      */
-    static EntityPrePersist of(Object value) throws NullPointerException {
+    static EntityPrePersist of(Object value) {
         Objects.requireNonNull(value, "value is required");
         return new DefaultEntityPrePersist(value);
     }

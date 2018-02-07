@@ -14,9 +14,6 @@
  */
 package org.jnosql.artemis;
 
-
-import org.jnosql.diana.api.ExecuteAsyncQueryException;
-
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -49,22 +46,22 @@ public interface RepositoryAsync<T, ID> {
      * Saves an entity asynchronously
      *
      * @param entity entity to be saved
-     * @throws ExecuteAsyncQueryException    when there is a async error
+     * @throws org.jnosql.diana.api.ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when entity are null
      */
-    <S extends T>  void save(S entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
+    <S extends T>  void save(S entity);
 
     /**
      * Saves entities asynchronously
      * each NoSQL vendor might replace to a more appropriate one.
      *
      * @param entities entities to be saved
-     * @throws ExecuteAsyncQueryException    when there is a async error
+     * @throws org.jnosql.diana.api.ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when entities is null
      */
-    <S extends T>  void save(Iterable<S> entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
+    <S extends T>  void save(Iterable<S> entities);
 
     /**
      * Deletes the entity with the given id.
@@ -72,7 +69,7 @@ public interface RepositoryAsync<T, ID> {
      * @param id the id
      * @throws NullPointerException when id is null
      */
-    void deleteById(ID id) throws NullPointerException;
+    void deleteById(ID id);
 
     /**
      * Finds an entity given the id
@@ -81,7 +78,7 @@ public interface RepositoryAsync<T, ID> {
      * @param callBack the callback
      * @throws NullPointerException when id is null
      */
-    void findById(ID id, Consumer<Optional<T>> callBack) throws NullPointerException;
+    void findById(ID id, Consumer<Optional<T>> callBack);
 
 
     /**
@@ -91,6 +88,6 @@ public interface RepositoryAsync<T, ID> {
      * @param callBack the callback
      * @throws NullPointerException when id is null
      */
-    void existsById(ID id, Consumer<Boolean> callBack) throws NullPointerException;
+    void existsById(ID id, Consumer<Boolean> callBack);
 }
 

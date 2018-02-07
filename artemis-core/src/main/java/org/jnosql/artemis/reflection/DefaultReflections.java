@@ -120,7 +120,7 @@ public class DefaultReflections implements Reflections {
     }
 
     @Override
-    public Constructor makeAccessible(Class clazz) throws ConstructorException {
+    public Constructor makeAccessible(Class clazz) {
         List<Constructor> constructors = Stream.
                 of(clazz.getDeclaredConstructors())
                 .filter(c -> c.getParameterCount() == 0)

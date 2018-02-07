@@ -74,7 +74,7 @@ public final class DatabaseQualifier extends AnnotationLiteral<Database> impleme
      * @return the qualifier filter instance
      * @throws NullPointerException when provider is null
      */
-    public static DatabaseQualifier ofDocument(String provider) throws NullPointerException {
+    public static DatabaseQualifier ofDocument(String provider) {
         Objects.requireNonNull(provider, "provider is required");
         if (provider.trim().isEmpty()) {
             return DEFAULT_DOCUMENT_PROVIDER;
@@ -100,7 +100,7 @@ public final class DatabaseQualifier extends AnnotationLiteral<Database> impleme
      * @return the qualifier filter instance
      * @throws NullPointerException when provider is null
      */
-    public static DatabaseQualifier ofColumn(String provider) throws NullPointerException {
+    public static DatabaseQualifier ofColumn(String provider) {
         Objects.requireNonNull(provider, "provider is required");
         if (provider.trim().isEmpty()) {
             return DEFAULT_COLUMN_PROVIDER;
@@ -125,7 +125,7 @@ public final class DatabaseQualifier extends AnnotationLiteral<Database> impleme
      * @return the qualifier filter instance
      * @throws NullPointerException when provider is null
      */
-    public static DatabaseQualifier ofKeyValue(String provider) throws NullPointerException {
+    public static DatabaseQualifier ofKeyValue(String provider) {
         Objects.requireNonNull(provider, "provider is required");
         if (provider.trim().isEmpty()) {
             return DEFAULT_KEY_VALUE_PROVIDER;
@@ -151,7 +151,7 @@ public final class DatabaseQualifier extends AnnotationLiteral<Database> impleme
      * @return the qualifier filter instance
      * @throws NullPointerException when provider is null
      */
-    public static DatabaseQualifier ofGraph(String provider) throws NullPointerException {
+    public static DatabaseQualifier ofGraph(String provider) {
         Objects.requireNonNull(provider, "provider is required");
         if (provider.trim().isEmpty()) {
             return DEFAULT_KEY_VALUE_PROVIDER;

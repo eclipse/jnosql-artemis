@@ -51,7 +51,7 @@ public interface Repository<T, ID> {
      * @return the entity saved
      * @throws NullPointerException when document is null
      */
-    <S extends T> S save(S entity) throws NullPointerException;
+    <S extends T> S save(S entity);
 
     /**
      * Saves entity
@@ -61,7 +61,7 @@ public interface Repository<T, ID> {
      * @return the entity saved
      * @throws NullPointerException when entities is null
      */
-    <S extends T> Iterable<S> save(Iterable<S> entities) throws NullPointerException;
+    <S extends T> Iterable<S> save(Iterable<S> entities);
 
     /**
      * Deletes the entity with the given id.
@@ -69,7 +69,7 @@ public interface Repository<T, ID> {
      * @param id the id
      * @throws NullPointerException when id is null
      */
-    void deleteById(ID id) throws NullPointerException;
+    void deleteById(ID id);
 
     /**
      * Deletes the entity with the given ids.
@@ -77,7 +77,7 @@ public interface Repository<T, ID> {
      * @param ids the ids
      * @throws NullPointerException when either ids or same element is null
      */
-    void deleteById(Iterable<ID> ids) throws NullPointerException;
+    void deleteById(Iterable<ID> ids);
 
     /**
      * Finds an entity given the id
@@ -86,7 +86,7 @@ public interface Repository<T, ID> {
      * @return the entity given the ID
      * @throws NullPointerException when id is null
      */
-    Optional<T> findById(ID id) throws NullPointerException;
+    Optional<T> findById(ID id);
 
     /**
      * Finds the entities given ids
@@ -95,7 +95,7 @@ public interface Repository<T, ID> {
      * @return the entities from ids
      * @throws NullPointerException when the id is null
      */
-    Iterable<T> findById(Iterable<ID> ids) throws NullPointerException;
+    Iterable<T> findById(Iterable<ID> ids);
 
     /**
      * Returns whether an entity with the given id exists.
@@ -104,7 +104,7 @@ public interface Repository<T, ID> {
      * @return if the entity does exist or not
      * @throws NullPointerException when id is null
      */
-    boolean existsById(ID id) throws NullPointerException;
+    boolean existsById(ID id);
 
 
 }
