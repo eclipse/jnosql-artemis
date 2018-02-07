@@ -127,10 +127,8 @@ class DefaultConfigurationReader implements ConfigurationReader {
             }
             reflections.makeAccessible(provider);
             return provider;
-        } catch (ClassNotFoundException e) {
-            throw new ConfigurationException("An error to load the provider class: " + configuration.getProvider());
-        } catch (ConstructorException exception) {
-            throw new ConfigurationException("An error to load the provider class: " + configuration.getProvider(), exception);
+        } catch (ClassNotFoundException| ConstructorException e) {
+            throw new ConfigurationException("An error to load the provider class: " + configuration.getProvider(), e);
         }
     }
 
