@@ -26,8 +26,10 @@ import org.mockito.Mockito;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 @ExtendWith(CDIExtension.class)
@@ -55,12 +57,36 @@ public class DefaultKeyValueTemplateTest {
         this.subject = new DefaultKeyValueTemplate(converter, instance, flow);
     }
 
+    @Test
+    public void shouldCheckNullParametersInPut() {
+        User user = new User("otaviojava", "otavio", 27);
+        assertThrows(NullPointerException.class, () -> subject.put(null));
+        assertThrows(NullPointerException.class, () -> subject.put(null, null));
+        assertThrows(NullPointerException.class, () -> subject.put(null, Duration.ofSeconds(2L)));
+        assertThrows(NullPointerException.class, () -> subject.put(user, null));
+        assertThrows(NullPointerException.class, () -> subject.put((Iterable<? extends Object>) null));
+        assertThrows(NullPointerException.class, () -> subject.put((Iterable<? extends Object>) null, null));
+    }
+
 
     @Test
     public void shouldPut() {
         User user = new User("otaviojava", "otavio", 27);
         subject.put(user);
         Mockito.verify(manager).put(captor.capture());
+        KeyValueEntity entity = captor.getValue();
+        assertEquals("otaviojava", entity.getKey());
+        assertEquals(user, entity.getValue().get());
+    }
+
+    @Test
+    public void shouldPutTTL() {
+
+        Duration duration = Duration.ofSeconds(2L);
+        User user = new User("otaviojava", "otavio", 27);
+        subject.put(user, duration);
+
+        Mockito.verify(manager).put(captor.capture(), Mockito.eq(duration));
         KeyValueEntity entity = captor.getValue();
         assertEquals("otaviojava", entity.getKey());
         assertEquals(user, entity.getValue().get());
