@@ -32,6 +32,7 @@ import org.mockito.Mockito;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
@@ -105,8 +106,8 @@ public class DefaultColumnTemplateAsyncTest {
         document.addAll(Stream.of(columns).collect(Collectors.toList()));
 
 
-        subject.insert(this.person);
-        verify(managerMock).insert(Mockito.any(ColumnEntity.class), Mockito.any(Consumer.class));
+        subject.insert(this.person, Duration.ofSeconds(1L));
+        verify(managerMock).insert(Mockito.any(ColumnEntity.class), Mockito.eq(Duration.ofSeconds(1L)), Mockito.any(Consumer.class));
     }
 
     @Test
