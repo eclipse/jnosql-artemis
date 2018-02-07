@@ -109,7 +109,6 @@ class ClassConverter {
                 return;
             default:
                 appendDefaultField(nativeFieldGroupByJavaField, field, javaField, nativeField);
-                return;
         }
 
     }
