@@ -23,7 +23,7 @@ import java.util.Optional;
 /**
  * This class is a representation of {@link Class} in cached way
  */
-public interface ClassRepresentation extends Serializable {
+public interface ClassRepresentation {
 
 
     /**
