@@ -64,6 +64,7 @@ class DefaultDocumentTemplateAsyncProducer implements DocumentTemplateAsyncProdu
             this.converter = converter;
             this.manager = manager;
             this.classRepresentations = classRepresentations;
+            this.converters = converters;
         }
 
         ProducerAbstractDocumentTemplateAsync() {
