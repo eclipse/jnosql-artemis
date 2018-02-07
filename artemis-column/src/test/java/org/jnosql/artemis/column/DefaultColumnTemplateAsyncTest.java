@@ -53,6 +53,7 @@ import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -289,6 +290,26 @@ public class DefaultColumnTemplateAsyncTest {
         verify(managerMock).select(Mockito.eq(query), Mockito.any());
         await().untilTrue(condition);
         assertNotNull(atomicReference.get());
+    }
+
+    @Test
+    public void shouldReturnEmptySingleResult() {
+
+        ArgumentCaptor<Consumer<List<ColumnEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
+        ColumnQuery query = ColumnQueryBuilder.select().from("Person").build();
+        AtomicBoolean condition = new AtomicBoolean(false);
+        AtomicReference<Person> atomicReference = new AtomicReference<>();
+        Consumer<Optional<Person>> callback = p -> {
+            condition.set(true);
+            p.ifPresent(atomicReference::set);
+        };
+        subject.singleResult(query, callback);
+        verify(managerMock).select(Mockito.any(ColumnQuery.class), dianaCallbackCaptor.capture());
+        Consumer<List<ColumnEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
+        dianaCallBack.accept(Collections.emptyList());
+        verify(managerMock).select(Mockito.eq(query), Mockito.any());
+        await().untilTrue(condition);
+        assertNull(atomicReference.get());
     }
 
     @Test
