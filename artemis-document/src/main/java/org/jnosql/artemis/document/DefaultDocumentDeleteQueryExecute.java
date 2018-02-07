@@ -34,8 +34,12 @@ class DefaultDocumentDeleteQueryExecute implements DocumentDeleteQueryExecute {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof DefaultDocumentDeleteQueryExecute)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof DefaultDocumentDeleteQueryExecute)) {
+            return false;
+        }
         DefaultDocumentDeleteQueryExecute that = (DefaultDocumentDeleteQueryExecute) o;
         return Objects.equals(query, that.query);
     }
