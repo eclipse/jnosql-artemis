@@ -47,7 +47,7 @@ class DefaultColumnTemplateProducer implements ColumnTemplateProducer {
     private Converters converters;
 
     @Override
-    public ColumnTemplate get(ColumnFamilyManager columnFamilyManager) throws NullPointerException {
+    public ColumnTemplate get(ColumnFamilyManager columnFamilyManager) {
         Objects.requireNonNull(columnFamilyManager, "columnFamilyManager is required");
         return new ProducerColumnTemplate(converter, columnWorkflow, columnFamilyManager,
                 eventManager, classRepresentations, converters);

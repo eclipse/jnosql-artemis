@@ -40,7 +40,7 @@ class DefaultColumnTemplateAsyncProducer implements ColumnTemplateAsyncProducer 
     private Converters converters;
 
     @Override
-    public ColumnTemplateAsync get(ColumnFamilyManagerAsync columnFamilyManager) throws NullPointerException {
+    public ColumnTemplateAsync get(ColumnFamilyManagerAsync columnFamilyManager) {
         Objects.requireNonNull(columnFamilyManager, "columnFamilyManager is required");
         return new ProducerColumnTemplateAsync(converter, columnFamilyManager, classRepresentations, converters);
     }

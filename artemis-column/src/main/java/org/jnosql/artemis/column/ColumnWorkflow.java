@@ -43,6 +43,6 @@ public interface ColumnWorkflow {
      * @see ColumnTemplate#insert(Object, java.time.Duration) ColumnTemplate#insert(Object)
      * ColumnTemplate#update(Object)
      */
-    <T> T flow(T entity, UnaryOperator<ColumnEntity> action) throws NullPointerException;
+    <T> T flow(T entity, UnaryOperator<ColumnEntity> action);
 
 }

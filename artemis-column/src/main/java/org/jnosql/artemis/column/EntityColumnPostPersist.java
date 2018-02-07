@@ -36,7 +36,7 @@ public interface EntityColumnPostPersist {
      * @return the new instance of {@link EntityColumnPostPersist}
      * @throws NullPointerException when value is null
      */
-    static EntityColumnPostPersist of(Object value) throws NullPointerException {
+    static EntityColumnPostPersist of(Object value) {
         Objects.requireNonNull(value, "value is required");
         return new DefaultEntityColumnPostPersist(value);
     }

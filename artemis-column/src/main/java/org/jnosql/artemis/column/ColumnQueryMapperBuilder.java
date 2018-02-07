@@ -31,7 +31,7 @@ public interface ColumnQueryMapperBuilder {
      * @return a {@link ColumnFrom} instance
      * @throws NullPointerException when entityClass is null
      */
-    <T> ColumnFrom selectFrom(Class<T> entityClass) throws NullPointerException;
+    <T> ColumnFrom selectFrom(Class<T> entityClass);
 
     /**
      * Returns a {@link ColumnDeleteFrom} implementation that does the object mapper API.
@@ -41,5 +41,5 @@ public interface ColumnQueryMapperBuilder {
      * @return a {@link ColumnDeleteFrom} instance
      * @throws NullPointerException when entityClass is null
      */
-    <T> ColumnDeleteFrom deleteFrom(Class<T> entityClass) throws NullPointerException;
+    <T> ColumnDeleteFrom deleteFrom(Class<T> entityClass);
 }

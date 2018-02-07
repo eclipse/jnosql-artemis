@@ -34,7 +34,7 @@ class DefaultColumnMapperDeleteBuilder extends AbstractMapperQuery implements Co
     }
 
     @Override
-    public ColumnDeleteWhereName where(String name) throws NullPointerException {
+    public ColumnDeleteWhereName where(String name) {
         requireNonNull(name, "name is required");
         this.name = name;
         return this;
@@ -42,7 +42,7 @@ class DefaultColumnMapperDeleteBuilder extends AbstractMapperQuery implements Co
 
 
     @Override
-    public ColumnDeleteNameCondition and(String name) throws NullPointerException {
+    public ColumnDeleteNameCondition and(String name) {
         requireNonNull(name, "name is required");
         this.name = name;
         this.and = true;
@@ -50,7 +50,7 @@ class DefaultColumnMapperDeleteBuilder extends AbstractMapperQuery implements Co
     }
 
     @Override
-    public ColumnDeleteNameCondition or(String name) throws NullPointerException {
+    public ColumnDeleteNameCondition or(String name) {
         requireNonNull(name, "name is required");
         this.name = name;
         this.and = false;
@@ -65,50 +65,50 @@ class DefaultColumnMapperDeleteBuilder extends AbstractMapperQuery implements Co
     }
 
     @Override
-    public <T> ColumnDeleteWhere eq(T value) throws NullPointerException {
+    public <T> ColumnDeleteWhere eq(T value) {
         eqImpl(value);
         return this;
     }
 
     @Override
-    public ColumnDeleteWhere like(String value) throws NullPointerException {
+    public ColumnDeleteWhere like(String value) {
         likeImpl(value);
         return this;
     }
 
     @Override
-    public ColumnDeleteWhere gt(Number value) throws NullPointerException {
+    public ColumnDeleteWhere gt(Number value) {
         gtImpl(value);
         return this;
     }
 
     @Override
-    public ColumnDeleteWhere gte(Number value) throws NullPointerException {
+    public ColumnDeleteWhere gte(Number value) {
         gteImpl(value);
         return this;
     }
 
     @Override
-    public ColumnDeleteWhere lt(Number value) throws NullPointerException {
+    public ColumnDeleteWhere lt(Number value) {
         ltImpl(value);
         return this;
     }
 
     @Override
-    public ColumnDeleteWhere lte(Number value) throws NullPointerException {
+    public ColumnDeleteWhere lte(Number value) {
         lteImpl(value);
         return this;
     }
 
     @Override
-    public ColumnDeleteWhere between(Number valueA, Number valueB) throws NullPointerException {
+    public ColumnDeleteWhere between(Number valueA, Number valueB) {
         betweenImpl(valueA, valueB);
         return this;
     }
 
 
     @Override
-    public <T> ColumnDeleteWhere in(Iterable<T> values) throws NullPointerException {
+    public <T> ColumnDeleteWhere in(Iterable<T> values) {
         inImpl(values);
         return this;
     }
