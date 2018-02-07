@@ -21,7 +21,6 @@ import org.jnosql.artemis.document.util.ConverterUtil;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.FieldRepresentation;
-import org.jnosql.diana.api.ExecuteAsyncQueryException;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentEntity;
@@ -55,17 +54,17 @@ public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateA
     protected abstract Converters getConverters();
 
     @Override
-    public <T> void insert(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public <T> void insert(T entity) {
         insert(entity, EMPTY);
     }
 
     @Override
-    public <T> void insert(T entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public <T> void insert(T entity, Duration ttl) {
         insert(entity, ttl, EMPTY);
     }
 
     @Override
-    public <T> void insert(T entity, Consumer<T> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public <T> void insert(T entity, Consumer<T> callBack) {
         requireNonNull(entity, "entity is required");
         requireNonNull(callBack, "callBack is required");
         Consumer<DocumentEntity> dianaCallBack = c -> callBack.accept((T) getConverter().toEntity(entity.getClass(), c));
@@ -73,7 +72,7 @@ public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateA
     }
 
     @Override
-    public <T> void insert(T entity, Duration ttl, Consumer<T> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public <T> void insert(T entity, Duration ttl, Consumer<T> callBack) {
         requireNonNull(entity, "entity is required");
         requireNonNull(ttl, "ttl is required");
         requireNonNull(callBack, "callBack is required");
@@ -82,13 +81,13 @@ public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateA
     }
 
     @Override
-    public <T> void update(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public <T> void update(T entity) {
         requireNonNull(entity, "entity is required");
         update(entity, EMPTY);
     }
 
     @Override
-    public <T> void update(T entity, Consumer<T> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public <T> void update(T entity, Consumer<T> callBack) {
         requireNonNull(entity, "entity is required");
         requireNonNull(callBack, "callBack is required");
         Consumer<DocumentEntity> dianaCallBack = c -> callBack.accept((T) getConverter().toEntity(entity.getClass(), c));
@@ -96,20 +95,20 @@ public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateA
     }
 
     @Override
-    public void delete(DocumentDeleteQuery query) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public void delete(DocumentDeleteQuery query) {
         requireNonNull(query, "query is required");
         getManager().delete(query);
     }
 
     @Override
-    public void delete(DocumentDeleteQuery query, Consumer<Void> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public void delete(DocumentDeleteQuery query, Consumer<Void> callBack) {
         requireNonNull(query, "query is required");
         requireNonNull(callBack, "callBack is required");
         getManager().delete(query);
     }
 
     @Override
-    public <T> void select(DocumentQuery query, Consumer<List<T>> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public <T> void select(DocumentQuery query, Consumer<List<T>> callBack) {
         requireNonNull(query, "query is required");
         requireNonNull(callBack, "callBack is required");
 
@@ -123,8 +122,7 @@ public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateA
 
 
     @Override
-    public <T, ID> void find(Class<T> entityClass, ID id, Consumer<Optional<T>> callBack) throws
-            NullPointerException, IdNotFoundException {
+    public <T, ID> void find(Class<T> entityClass, ID id, Consumer<Optional<T>> callBack) {
 
         requireNonNull(entityClass, "entityClass is required");
         requireNonNull(id, "id is required");
@@ -142,8 +140,7 @@ public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateA
     }
 
     @Override
-    public <T, ID> void delete(Class<T> entityClass, ID id, Consumer<Void> callBack) throws
-            NullPointerException, IdNotFoundException {
+    public <T, ID> void delete(Class<T> entityClass, ID id, Consumer<Void> callBack) {
 
         requireNonNull(entityClass, "entityClass is required");
         requireNonNull(id, "id is required");
@@ -154,8 +151,7 @@ public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateA
     }
 
     @Override
-    public <T, ID> void delete(Class<T> entityClass, ID id) throws
-            NullPointerException, IdNotFoundException {
+    public <T, ID> void delete(Class<T> entityClass, ID id) {
 
         requireNonNull(entityClass, "entityClass is required");
         requireNonNull(id, "id is required");

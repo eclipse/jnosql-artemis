@@ -37,7 +37,7 @@ public interface DocumentQueryExecute {
      * @param query the query
      * @return a DocumentQueryExecute instance
      */
-    static DocumentQueryExecute of(DocumentQuery query) throws NullPointerException {
+    static DocumentQueryExecute of(DocumentQuery query) {
         return new DefaultDocumentQueryExecute(query);
     }
 }

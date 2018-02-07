@@ -32,6 +32,6 @@ public interface DocumentTemplateAsyncProducer<T extends DocumentTemplateAsync> 
      * @return a new instance
      * @throws NullPointerException when collectionManager is null
      */
-    T get(DocumentCollectionManagerAsync collectionManager) throws NullPointerException;
+    T get(DocumentCollectionManagerAsync collectionManager);
 
 }

@@ -41,7 +41,7 @@ class DefaultDocumentTemplateAsyncProducer implements DocumentTemplateAsyncProdu
     private Converters converters;
 
     @Override
-    public DocumentTemplateAsync get(DocumentCollectionManagerAsync collectionManager) throws NullPointerException {
+    public DocumentTemplateAsync get(DocumentCollectionManagerAsync collectionManager) {
         Objects.requireNonNull(collectionManager, "collectionManager is required");
         return new ProducerAbstractDocumentTemplateAsync(converter, collectionManager, classRepresentations, converters);
     }

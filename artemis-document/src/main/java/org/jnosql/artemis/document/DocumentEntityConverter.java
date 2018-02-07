@@ -28,7 +28,7 @@ public interface DocumentEntityConverter {
      * @return a {@link DocumentEntity} instance
      * @throws NullPointerException when entityInstance is null
      */
-    DocumentEntity toDocument(Object entityInstance) throws NullPointerException;
+    DocumentEntity toDocument(Object entityInstance);
 
     /**
      * Converts a {@link DocumentEntity} to entity
@@ -39,7 +39,7 @@ public interface DocumentEntityConverter {
      * @return the instance from {@link DocumentEntity}
      * @throws NullPointerException when either entityClass or entity are null
      */
-    <T> T toEntity(Class<T> entityClass, DocumentEntity entity) throws NullPointerException;
+    <T> T toEntity(Class<T> entityClass, DocumentEntity entity);
 
     /**
      * Similar to {@link DocumentEntityConverter#toEntity(Class, DocumentEntity)}, but
@@ -50,5 +50,5 @@ public interface DocumentEntityConverter {
      * @return the instance from {@link DocumentEntity}
      * @throws NullPointerException when entity is null
      */
-    <T> T toEntity(DocumentEntity entity) throws NullPointerException;
+    <T> T toEntity(DocumentEntity entity);
 }
