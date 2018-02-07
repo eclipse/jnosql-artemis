@@ -18,6 +18,7 @@ import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
 import org.jnosql.diana.api.document.DocumentCondition;
@@ -35,17 +36,22 @@ import javax.inject.Inject;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.awaitility.Awaitility.await;
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -272,4 +278,142 @@ public class DefaultDocumentTemplateAsyncTest {
         verify(managerMock).select(Mockito.eq(query), Mockito.any());
         await().untilTrue(condition);
     }
+
+    @Test
+    public void shouldReturnSingleResult() {
+
+        ArgumentCaptor<Consumer<List<DocumentEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
+        DocumentQuery query = select().from("Person").build();
+        AtomicBoolean condition = new AtomicBoolean(false);
+        AtomicReference<Person> atomicReference = new AtomicReference<>();
+        Consumer<Optional<Person>> callback = p -> {
+            condition.set(true);
+            p.ifPresent(atomicReference::set);
+        };
+        subject.singleResult(query, callback);
+        verify(managerMock).select(Mockito.any(DocumentQuery.class), dianaCallbackCaptor.capture());
+        Consumer<List<DocumentEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
+        dianaCallBack.accept(singletonList(DocumentEntity.of("Person", asList(documents))));
+        verify(managerMock).select(Mockito.eq(query), Mockito.any());
+        await().untilTrue(condition);
+        assertNotNull(atomicReference.get());
+    }
+
+    @Test
+    public void shouldReturnEmptySingleResult() {
+
+        ArgumentCaptor<Consumer<List<DocumentEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
+        DocumentQuery query = select().from("Person").build();
+        AtomicBoolean condition = new AtomicBoolean(false);
+        AtomicReference<Person> atomicReference = new AtomicReference<>();
+        Consumer<Optional<Person>> callback = p -> {
+            condition.set(true);
+            p.ifPresent(atomicReference::set);
+        };
+        subject.singleResult(query, callback);
+        verify(managerMock).select(Mockito.any(DocumentQuery.class), dianaCallbackCaptor.capture());
+        Consumer<List<DocumentEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
+        dianaCallBack.accept(emptyList());
+        verify(managerMock).select(Mockito.eq(query), Mockito.any());
+        await().untilTrue(condition);
+        assertNull(atomicReference.get());
+    }
+
+    @Test
+    public void shouldReturnErrorWhenThereIsMoreThanOneResultInSingleResult() {
+
+        assertThrows(NonUniqueResultException.class, () -> {
+            ArgumentCaptor<Consumer<List<DocumentEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
+            DocumentQuery query = select().from("Person").build();
+            Consumer<Optional<Person>> callback = l -> {
+            };
+            subject.singleResult(query, callback);
+            verify(managerMock).select(Mockito.any(DocumentQuery.class), dianaCallbackCaptor.capture());
+            Consumer<List<DocumentEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
+            dianaCallBack.accept(asList(DocumentEntity.of("Person", asList(documents)),
+                    DocumentEntity.of("Person", asList(documents))));
+
+        });
+    }
+
+    @Test
+    public void shouldCheckNullParameterInFindById() {
+        assertThrows(NullPointerException.class, () -> subject.find(null, null, null));
+        assertThrows(NullPointerException.class, () -> subject.find(Person.class, null, null));
+        assertThrows(NullPointerException.class, () -> subject.find(Person.class, 10L, null));
+        assertThrows(NullPointerException.class, () -> subject.find(Person.class, null, System.out::println));
+        assertThrows(NullPointerException.class, () -> subject.find(null, null, System.out::println));
+        assertThrows(NullPointerException.class, () -> subject.find(null, 10L, System.out::println));
+        assertThrows(NullPointerException.class, () -> subject.find(null, 10L, null));
+    }
+
+    @Test
+    public void shouldFindById() {
+        ArgumentCaptor<Consumer<List<DocumentEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
+
+        ArgumentCaptor<DocumentQuery> queryCaptor = ArgumentCaptor.forClass(DocumentQuery.class);
+        AtomicBoolean condition = new AtomicBoolean(false);
+        AtomicReference<Person> atomicReference = new AtomicReference<>();
+        Consumer<Optional<Person>> callback = p -> {
+            condition.set(true);
+            p.ifPresent(atomicReference::set);
+        };
+
+        subject.find(Person.class, 10L, callback);
+        verify(managerMock).select(queryCaptor.capture(), dianaCallbackCaptor.capture());
+        Consumer<List<DocumentEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
+        dianaCallBack.accept(singletonList(DocumentEntity.of("Person", asList(documents))));
+        DocumentQuery query = queryCaptor.getValue();
+        assertEquals("Person", query.getDocumentCollection());
+        assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), query.getCondition().get());
+        assertNotNull(atomicReference.get());
+
+    }
+
+    @Test
+    public void shouldFindByIdReturnEmptyWhenElementDoesNotFind() {
+        ArgumentCaptor<Consumer<List<DocumentEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
+
+        ArgumentCaptor<DocumentQuery> queryCaptor = ArgumentCaptor.forClass(DocumentQuery.class);
+        AtomicBoolean condition = new AtomicBoolean(false);
+        AtomicReference<Person> atomicReference = new AtomicReference<>();
+        Consumer<Optional<Person>> callback = p -> {
+            condition.set(true);
+            p.ifPresent(atomicReference::set);
+        };
+
+        subject.find(Person.class, 10L, callback);
+        verify(managerMock).select(queryCaptor.capture(), dianaCallbackCaptor.capture());
+        Consumer<List<DocumentEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
+        dianaCallBack.accept(emptyList());
+        DocumentQuery query = queryCaptor.getValue();
+        assertEquals("Person", query.getDocumentCollection());
+        assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), query.getCondition().get());
+        assertNull(atomicReference.get());
+
+    }
+
+    @Test
+    public void shouldReturnErrorFindByIdReturnMoreThanOne() {
+
+        assertThrows(NonUniqueResultException.class, () -> {
+            ArgumentCaptor<Consumer<List<DocumentEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
+
+            ArgumentCaptor<DocumentQuery> queryCaptor = ArgumentCaptor.forClass(DocumentQuery.class);
+            AtomicBoolean condition = new AtomicBoolean(false);
+            AtomicReference<Person> atomicReference = new AtomicReference<>();
+            Consumer<Optional<Person>> callback = p -> {
+                condition.set(true);
+                p.ifPresent(atomicReference::set);
+            };
+
+            subject.find(Person.class, 10L, callback);
+            verify(managerMock).select(queryCaptor.capture(), dianaCallbackCaptor.capture());
+            Consumer<List<DocumentEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
+            dianaCallBack.accept(asList(DocumentEntity.of("Person", asList(documents)),
+                    DocumentEntity.of("Person", asList(documents))));
+        });
+
+    }
+
 }
