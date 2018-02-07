@@ -20,10 +20,10 @@ import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
+import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentEntity;
 import org.jnosql.diana.api.document.DocumentQuery;
-import org.jnosql.diana.api.document.query.DocumentQueryBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,6 +41,7 @@ import java.util.stream.Stream;
 
 import static java.util.Collections.singletonList;
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
+import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
@@ -205,9 +206,59 @@ public class DefaultDocumentTemplateAsyncTest {
     }
 
     @Test
+    public void shouldDeleteCallBack() {
+
+        DocumentDeleteQuery query = delete().from("delete").build();
+        Consumer<Void> callback = v -> {
+
+        };
+        subject.delete(query, callback);
+        verify(managerMock).delete(query, callback);
+    }
+
+    @Test
+    public void shouldDeleteByEntity() {
+        subject.delete(Person.class, 10L);
+
+        ArgumentCaptor<DocumentDeleteQuery> queryCaptor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
+        verify(managerMock).delete(queryCaptor.capture());
+
+        DocumentDeleteQuery query = queryCaptor.getValue();
+        assertEquals("Person", query.getDocumentCollection());
+        assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), query.getCondition().get());
+
+    }
+
+    @Test
+    public void shouldDeleteByEntityCallBack() {
+
+        Consumer<Void> callback = v -> {
+        };
+        subject.delete(Person.class, 10L, callback);
+
+        ArgumentCaptor<DocumentDeleteQuery> queryCaptor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
+        verify(managerMock).delete(queryCaptor.capture(), Mockito.eq(callback));
+
+        DocumentDeleteQuery query = queryCaptor.getValue();
+        assertEquals("Person", query.getDocumentCollection());
+        assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), query.getCondition().get());
+
+    }
+
+    @Test
+    public void shouldCheckNullParameterInSelect() {
+        assertThrows(NullPointerException.class, () -> subject.select(null, null));
+        assertThrows(NullPointerException.class, () -> subject.select(null, System.out::println));
+        assertThrows(NullPointerException.class, () -> subject.select(select().from("Person").build(),
+                null));
+    }
+
+
+
+    @Test
     public void shouldSelect() {
 
-        DocumentQuery query = DocumentQueryBuilder.select().from("Person").build();
+        DocumentQuery query = select().from("Person").build();
         Consumer<List<Person>> callback = l -> {
 
         };
