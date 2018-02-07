@@ -59,8 +59,7 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
 
     @Override
     public <T> void insert(T entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        insert(entity, ttl, t -> {
-        });
+        insert(entity, ttl, EMPTY);
     }
 
     @Override
