@@ -277,4 +277,9 @@ public class DefaultColumnTemplateAsyncTest {
         assertThrows(NullPointerException.class, () -> subject.find(null, 10L, System.out::println));
         assertThrows(NullPointerException.class, () -> subject.find(null, 10L, null));
     }
+
+    @Test
+    public void shouldFindById() {
+
+    }
 }
