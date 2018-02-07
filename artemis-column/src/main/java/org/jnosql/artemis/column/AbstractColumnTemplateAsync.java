@@ -82,8 +82,7 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
     @Override
     public <T> void update(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
         requireNonNull(entity, "entity is required");
-        update(entity, t -> {
-        });
+        update(entity, EMPTY);
     }
 
     @Override
