@@ -45,7 +45,7 @@ class ConfigurableReaderJSON implements ConfigurableReader {
 
 
     private final Map<String, List<Configurable>> cache = new ConcurrentHashMap<>();
-    
+
     private static final Type TYPE = new ArrayList<ConfigurableJSON>() {}.getClass().getGenericSuperclass();
 
 
