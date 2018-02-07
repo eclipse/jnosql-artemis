@@ -14,7 +14,6 @@
  */
 package org.jnosql.artemis.reflection;
 
-import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
