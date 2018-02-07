@@ -43,6 +43,9 @@ import static java.util.stream.Collectors.toList;
 public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateAsync {
 
 
+    private static final Consumer EMPTY = t -> {
+    };
+
     protected abstract DocumentEntityConverter getConverter();
 
     protected abstract DocumentCollectionManagerAsync getManager();
@@ -53,14 +56,12 @@ public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateA
 
     @Override
     public <T> void insert(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        insert(entity, t -> {
-        });
+        insert(entity, EMPTY);
     }
 
     @Override
     public <T> void insert(T entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        insert(entity, ttl, t -> {
-        });
+        insert(entity, ttl, EMPTY);
     }
 
     @Override
@@ -83,8 +84,7 @@ public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateA
     @Override
     public <T> void update(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
         requireNonNull(entity, "entity is required");
-        update(entity, t -> {
-        });
+        update(entity, EMPTY);
     }
 
     @Override

@@ -41,6 +41,9 @@ import static java.util.stream.Collectors.toList;
  */
 public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync {
 
+    private static final Consumer EMPTY = t -> {
+    };
+
     protected abstract ColumnEntityConverter getConverter();
 
     protected abstract ColumnFamilyManagerAsync getManager();
@@ -51,8 +54,7 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
 
     @Override
     public <T> void insert(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
-        insert(entity, t -> {
-        });
+        insert(entity, EMPTY);
     }
 
     @Override
