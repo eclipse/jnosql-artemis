@@ -356,7 +356,7 @@ public class DefaultColumnTemplateAsyncTest {
         ColumnQuery query = queryCaptor.getValue();
         assertEquals("Person", query.getColumnFamily());
         assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), query.getCondition().get());
-
+        assertNotNull(atomicReference.get());
 
     }
 }
