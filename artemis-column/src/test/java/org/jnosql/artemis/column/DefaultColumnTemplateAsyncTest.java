@@ -156,6 +156,18 @@ public class DefaultColumnTemplateAsyncTest {
     }
 
     @Test
+    public void shouldUpdateIterable() {
+        ColumnEntity document = ColumnEntity.of("Person");
+        document.addAll(Stream.of(columns).collect(Collectors.toList()));
+
+        subject.update(singletonList(this.person));
+        verify(managerMock).update(captor.capture(), Mockito.any(Consumer.class));
+        ColumnEntity value = captor.getValue();
+        assertEquals(document.getName(), value.getName());
+    }
+
+
+    @Test
     public void shouldDelete() {
 
         ColumnDeleteQuery query = delete().from("delete").build();
