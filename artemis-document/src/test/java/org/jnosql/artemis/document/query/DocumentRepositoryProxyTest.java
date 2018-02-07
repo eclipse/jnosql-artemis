@@ -298,7 +298,7 @@ public class DocumentRepositoryProxyTest {
     @Test
     public void shouldFindByIds() {
         when(template.find(Mockito.eq(Person.class), Mockito.any(Long.class)))
-                .thenReturn(Optional.of(Person.builder().build()));;
+                .thenReturn(Optional.of(Person.builder().build()));
 
         personRepository.findById(singletonList(10L));
         verify(template).find(Mockito.eq(Person.class), Mockito.eq(10L));

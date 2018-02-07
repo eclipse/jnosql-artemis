@@ -74,8 +74,7 @@ class ConfigurableReaderXML implements ConfigurableReader {
         try {
             Unmarshaller unmarshaller = UNMARSHALLER.get();
             ConfigurablesXML configurablesXML = (ConfigurablesXML) unmarshaller.unmarshal(stream.get());
-            List<Configurable> configurables = new ArrayList<>();
-            configurables.addAll(ofNullable(configurablesXML.getConfigurations()).orElse(emptyList()));
+            List<Configurable> configurables = new ArrayList<>(ofNullable(configurablesXML.getConfigurations()).orElse(emptyList()));
             cache.put(annotation.fileName(), configurables);
             return configurables;
         } catch (JAXBException e) {
