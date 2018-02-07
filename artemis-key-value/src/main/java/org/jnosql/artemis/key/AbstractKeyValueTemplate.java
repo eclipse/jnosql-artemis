@@ -40,7 +40,7 @@ public abstract class AbstractKeyValueTemplate implements KeyValueTemplate {
     protected abstract KeyValueWorkflow getFlow();
 
     @Override
-    public <T> T put(T entity) throws NullPointerException {
+    public <T> T put(T entity) {
         UnaryOperator<KeyValueEntity<?>> putAction = k -> {
             getManager().put(k);
             return k;
@@ -50,7 +50,7 @@ public abstract class AbstractKeyValueTemplate implements KeyValueTemplate {
     }
 
     @Override
-    public <T> T put(T entity, Duration ttl) throws NullPointerException, UnsupportedOperationException {
+    public <T> T put(T entity, Duration ttl) {
         UnaryOperator<KeyValueEntity<?>> putAction = k -> {
             getManager().put(k, ttl);
             return k;
@@ -60,14 +60,14 @@ public abstract class AbstractKeyValueTemplate implements KeyValueTemplate {
     }
 
     @Override
-    public <K, T> Optional<T> get(K key, Class<T> clazz) throws NullPointerException {
+    public <K, T> Optional<T> get(K key, Class<T> clazz) {
         Optional<Value> value = getManager().get(key);
         return value.map(v -> getConverter().toEntity(clazz, v))
                 .filter(Objects::nonNull);
     }
 
     @Override
-    public <K, T> Iterable<T> get(Iterable<K> keys, Class<T> clazz) throws NullPointerException {
+    public <K, T> Iterable<T> get(Iterable<K> keys, Class<T> clazz) {
         return StreamSupport.stream(getManager()
                 .get(keys).spliterator(), false)
                 .map(v -> getConverter().toEntity(clazz, v))
@@ -76,12 +76,12 @@ public abstract class AbstractKeyValueTemplate implements KeyValueTemplate {
     }
 
     @Override
-    public <K> void remove(K key) throws NullPointerException {
+    public <K> void remove(K key) {
         getManager().remove(key);
     }
 
     @Override
-    public <K> void remove(Iterable<K> keys) throws NullPointerException {
+    public <K> void remove(Iterable<K> keys) {
         getManager().remove(keys);
     }
 }

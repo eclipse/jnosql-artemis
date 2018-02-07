@@ -31,5 +31,5 @@ public interface KeyValueTemplateProducer<T extends KeyValueTemplate> {
      * @return a new instance
      * @throws NullPointerException when manager is null
      */
-    T get(BucketManager manager) throws NullPointerException;
+    T get(BucketManager manager);
 }

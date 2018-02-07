@@ -66,7 +66,7 @@ public abstract class AbstractKeyValueEntityConverter implements KeyValueEntityC
     }
 
     @Override
-    public <T> T toEntity(Class<T> entityClass, Value value) throws IdNotFoundException, NullPointerException {
+    public <T> T toEntity(Class<T> entityClass, Value value) {
         T t = value.get(entityClass);
         if (Objects.isNull(t)) {
             return null;

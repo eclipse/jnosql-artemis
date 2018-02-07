@@ -36,37 +36,37 @@ public abstract class AbstractKeyValueRepository<T> implements Repository {
 
 
     @Override
-    public Object save(Object entity) throws NullPointerException {
+    public Object save(Object entity) {
         return getTemplate().put(entity);
     }
 
     @Override
-    public Iterable save(Iterable entities) throws NullPointerException {
+    public Iterable save(Iterable entities) {
         return getTemplate().put(entities);
     }
 
     @Override
-    public void deleteById(Object key) throws NullPointerException {
+    public void deleteById(Object key) {
         getTemplate().remove(key);
     }
 
     @Override
-    public void deleteById(Iterable ids) throws NullPointerException {
+    public void deleteById(Iterable ids) {
         getTemplate().remove(ids);
     }
 
     @Override
-    public Optional findById(Object key) throws NullPointerException {
+    public Optional findById(Object key) {
         return getTemplate().get(key, typeClass);
     }
 
     @Override
-    public Iterable findById(Iterable keys) throws NullPointerException {
+    public Iterable findById(Iterable keys) {
         return getTemplate().get(keys, typeClass);
     }
 
     @Override
-    public boolean existsById(Object key) throws NullPointerException {
+    public boolean existsById(Object key) {
         return getTemplate().get(key, typeClass).isPresent();
     }
 }

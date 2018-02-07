@@ -43,5 +43,5 @@ public interface KeyValueWorkflow {
      * @see KeyValueTemplate#put(Object, java.time.Duration)  {@link KeyValueTemplate#put(Object)}
      * DocumentTemplate#update(Object)
      */
-    <T> T flow(T entity, UnaryOperator<KeyValueEntity<?>> action) throws NullPointerException;
+    <T> T flow(T entity, UnaryOperator<KeyValueEntity<?>> action);
 }
