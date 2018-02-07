@@ -22,7 +22,6 @@ import org.jnosql.artemis.reflection.FieldValue;
 import org.jnosql.artemis.reflection.GenericFieldRepresentation;
 import org.jnosql.diana.api.column.Column;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -95,10 +94,6 @@ final class DefaultColumnFieldValue implements ColumnFieldValue {
 
     private boolean isEmbeddableElement() {
         return GenericFieldRepresentation.class.cast(getField()).isEmbeddable();
-    }
-
-    private Field getNativeField() {
-        return getField().getNativeField();
     }
 
     @Override
