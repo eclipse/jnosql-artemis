@@ -93,12 +93,12 @@ public class DefaultColumnTemplateAsyncTest {
     @Test
     public void shouldCheckNullParameterInInsert() {
 
-        assertThrows(NullPointerException.class, () ->subject.insert(null));
-        assertThrows(NullPointerException.class, () ->subject.insert((Iterable)null));
-        assertThrows(NullPointerException.class, () ->subject.insert(this.person, (Duration) null));
-        assertThrows(NullPointerException.class, () ->subject.insert(null, Duration.ofSeconds(1L)));
-        assertThrows(NullPointerException.class, () ->subject.insert(this.person, (Consumer<Person>) null));
-        assertThrows(NullPointerException.class, () ->subject.insert(null, System.out::println));
+        assertThrows(NullPointerException.class, () -> subject.insert(null));
+        assertThrows(NullPointerException.class, () -> subject.insert((Iterable) null));
+        assertThrows(NullPointerException.class, () -> subject.insert(this.person, (Duration) null));
+        assertThrows(NullPointerException.class, () -> subject.insert(null, Duration.ofSeconds(1L)));
+        assertThrows(NullPointerException.class, () -> subject.insert(this.person, (Consumer<Person>) null));
+        assertThrows(NullPointerException.class, () -> subject.insert(null, System.out::println));
 
     }
 
@@ -146,10 +146,10 @@ public class DefaultColumnTemplateAsyncTest {
 
     @Test
     public void shouldCheckNullParameterInUpdate() {
-        assertThrows(NullPointerException.class, () ->subject.update(null));
-        assertThrows(NullPointerException.class, () ->subject.update((Iterable)null));
-        assertThrows(NullPointerException.class, () ->subject.update(singletonList(person), null));
-        assertThrows(NullPointerException.class, () ->subject.update((Iterable)null, System.out::println));
+        assertThrows(NullPointerException.class, () -> subject.update(null));
+        assertThrows(NullPointerException.class, () -> subject.update((Iterable) null));
+        assertThrows(NullPointerException.class, () -> subject.update(singletonList(person), null));
+        assertThrows(NullPointerException.class, () -> subject.update((Iterable) null, System.out::println));
     }
 
 
@@ -177,8 +177,12 @@ public class DefaultColumnTemplateAsyncTest {
     }
 
     @Test
-    public void shouldCheckNullParameterInUpdate() {
-        
+    public void shouldCheckNullParameterInDelete() {
+        assertThrows(NullPointerException.class, () -> subject.delete(null));
+        assertThrows(NullPointerException.class, () -> subject.delete(delete().from("delete").build(), null));
+        assertThrows(NullPointerException.class, () -> subject.delete(Person.class, null));
+        assertThrows(NullPointerException.class, () -> subject.delete((Class) null, 10L));
+        assertThrows(NullPointerException.class, () -> subject.delete(Person.class, 10L, null));
     }
 
     @Test
@@ -187,6 +191,17 @@ public class DefaultColumnTemplateAsyncTest {
         ColumnDeleteQuery query = delete().from("delete").build();
         subject.delete(query);
         verify(managerMock).delete(query);
+    }
+
+    @Test
+    public void shouldDeleteCallBack() {
+
+        ColumnDeleteQuery query = delete().from("delete").build();
+        Consumer<Void> callback = v -> {
+
+        };
+        subject.delete(query, callback);
+        verify(managerMock).delete(query, callback);
     }
 
     @Test
