@@ -71,8 +71,7 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
     public <T> T insert(T entity, Duration ttl) {
         Objects.requireNonNull(entity, "entity is required");
         Objects.requireNonNull(ttl, "ttl is required");
-        UnaryOperator<DocumentEntity> insert = e -> getManager().insert(e, ttl);
-        return getWorkflow().flow(entity, insert);
+        return getWorkflow().flow(entity, e -> getManager().insert(e, ttl));
     }
 
 

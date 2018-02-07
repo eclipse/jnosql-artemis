@@ -70,8 +70,7 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
     public <T> T insert(T entity, Duration ttl) {
         requireNonNull(entity, "entity is required");
         requireNonNull(ttl, "ttl is required");
-        UnaryOperator<ColumnEntity> insert = e -> getManager().insert(e, ttl);
-        return getFlow().flow(entity, insert);
+        return getFlow().flow(entity, e -> getManager().insert(e, ttl));
     }
 
 
