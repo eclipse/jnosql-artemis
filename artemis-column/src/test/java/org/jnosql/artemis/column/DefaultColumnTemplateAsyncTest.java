@@ -14,7 +14,6 @@
  */
 package org.jnosql.artemis.column;
 
-import org.awaitility.Awaitility;
 import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.model.Person;
@@ -32,7 +31,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.w3c.dom.css.DocumentCSS;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -56,7 +54,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(CDIExtension.class)
 public class DefaultColumnTemplateAsyncTest {
@@ -267,7 +264,7 @@ public class DefaultColumnTemplateAsyncTest {
         subject.select(query, callback);
         verify(managerMock).select(Mockito.any(ColumnQuery.class), dianaCallbackCaptor.capture());
         Consumer<List<ColumnEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
-        dianaCallBack.accept(Collections.singletonList(ColumnEntity.of("Person", Arrays.asList(columns))));
+        dianaCallBack.accept(singletonList(ColumnEntity.of("Person", Arrays.asList(columns))));
         verify(managerMock).select(Mockito.eq(query), Mockito.any());
         await().untilTrue(condition);
     }
@@ -286,7 +283,7 @@ public class DefaultColumnTemplateAsyncTest {
         subject.singleResult(query, callback);
         verify(managerMock).select(Mockito.any(ColumnQuery.class), dianaCallbackCaptor.capture());
         Consumer<List<ColumnEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
-        dianaCallBack.accept(Collections.singletonList(ColumnEntity.of("Person", Arrays.asList(columns))));
+        dianaCallBack.accept(singletonList(ColumnEntity.of("Person", Arrays.asList(columns))));
         verify(managerMock).select(Mockito.eq(query), Mockito.any());
         await().untilTrue(condition);
         assertNotNull(atomicReference.get());
@@ -342,10 +339,21 @@ public class DefaultColumnTemplateAsyncTest {
 
     @Test
     public void shouldFindById() {
+        ArgumentCaptor<Consumer<List<ColumnEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
         AtomicBoolean condition = new AtomicBoolean(false);
-        Consumer<Optional<Person>> callback = l -> {
+        AtomicReference<Person> atomicReference = new AtomicReference<>();
+        Consumer<Optional<Person>> callback = p -> {
             condition.set(true);
+            p.ifPresent(atomicReference::set);
         };
+
         subject.find(Person.class, 10L, callback);
+        verify(managerMock).select(Mockito.any(ColumnQuery.class), dianaCallbackCaptor.capture());
+        Consumer<List<ColumnEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
+        dianaCallBack.accept(singletonList(ColumnEntity.of("Person", Arrays.asList(columns))));
+
+
+
+
     }
 }
