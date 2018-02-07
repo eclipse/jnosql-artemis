@@ -98,9 +98,7 @@ public class ClassConverterTest {
 
     @Test
     public void shouldReturnErrorWhenThereIsNotConstructor() {
-        Assertions.assertThrows(ConstructorException.class, () -> {
-            classConverter.create(Animal.class);
-        });
+        Assertions.assertThrows(ConstructorException.class, () -> classConverter.create(Animal.class));
     }
 
     @Test

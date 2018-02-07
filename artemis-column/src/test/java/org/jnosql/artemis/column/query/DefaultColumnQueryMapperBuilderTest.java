@@ -37,9 +37,7 @@ public class DefaultColumnQueryMapperBuilderTest {
 
     @Test
     public void shouldReturnErrorWhenEntityClassIsNull() {
-        Assertions.assertThrows(NullPointerException.class, () ->{
-        mapperBuilder.selectFrom(null);
-        });
+        Assertions.assertThrows(NullPointerException.class, () -> mapperBuilder.selectFrom(null));
     }
 
     @Test
@@ -50,9 +48,7 @@ public class DefaultColumnQueryMapperBuilderTest {
 
     @Test
     public void shouldReturnErrorWhenDeleteEntityClassIsNull() {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            mapperBuilder.deleteFrom(null);
-        });
+        Assertions.assertThrows(NullPointerException.class, () -> mapperBuilder.deleteFrom(null));
     }
 
     @Test

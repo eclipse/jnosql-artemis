@@ -36,16 +36,12 @@ public class DefaultKeyValueEntityConverterTest {
 
     @Test
     public void shouldReturnNPEWhenEntityIsNull() {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            converter.toKeyValue(null);
-        });
+        Assertions.assertThrows(NullPointerException.class, () -> converter.toKeyValue(null));
     }
 
     @Test
     public void shouldReturnErrorWhenThereIsNotKeyAnnotation() {
-        Assertions.assertThrows(IdNotFoundException.class, () -> {
-            converter.toKeyValue(new Worker());
-        });
+        Assertions.assertThrows(IdNotFoundException.class, () -> converter.toKeyValue(new Worker()));
     }
 
     @Test
@@ -66,23 +62,17 @@ public class DefaultKeyValueEntityConverterTest {
 
     @Test
     public void shouldReturnNPEWhenKeyValueIsNull() {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            converter.toEntity(User.class, (KeyValueEntity<?>) null);
-        });
+        Assertions.assertThrows(NullPointerException.class, () -> converter.toEntity(User.class, (KeyValueEntity<?>) null));
     }
 
     @Test
     public void shouldReturnNPEWhenClassIsNull() {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            converter.toEntity(null, KeyValueEntity.of("user", new User("nickname", "name", 21)));
-        });
+        Assertions.assertThrows(NullPointerException.class, () -> converter.toEntity(null, KeyValueEntity.of("user", new User("nickname", "name", 21))));
     }
 
     @Test
     public void shouldReturnErrorWhenTheKeyIsMissing() {
-        Assertions.assertThrows(IdNotFoundException.class, () -> {
-            converter.toEntity(Worker.class, KeyValueEntity.of("worker", new Worker()));
-        });
+        Assertions.assertThrows(IdNotFoundException.class, () -> converter.toEntity(Worker.class, KeyValueEntity.of("worker", new Worker())));
     }
 
     @Test

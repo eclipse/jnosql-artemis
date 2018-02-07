@@ -26,9 +26,7 @@ public class ColumnEntityPrePersistTest {
     @Test
     public void shouldReturnNPEWhenEntityIsNull() {
 
-        Assertions.assertThrows(NullPointerException.class, () ->{
-        ColumnEntityPrePersist.of(null);
-        });
+        Assertions.assertThrows(NullPointerException.class, () -> ColumnEntityPrePersist.of(null));
     }
 
     @Test

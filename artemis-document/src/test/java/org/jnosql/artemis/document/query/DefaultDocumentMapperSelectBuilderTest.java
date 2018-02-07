@@ -64,9 +64,7 @@ public class DefaultDocumentMapperSelectBuilderTest {
 
     @Test
     public void shouldReturnErrorSelectWhenOrderIsNull() {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            mapperBuilder.selectFrom(Worker.class).orderBy(null);
-        });
+        Assertions.assertThrows(NullPointerException.class, () -> mapperBuilder.selectFrom(Worker.class).orderBy(null));
     }
 
     @Test

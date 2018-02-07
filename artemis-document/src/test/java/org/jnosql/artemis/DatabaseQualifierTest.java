@@ -43,9 +43,7 @@ public class DatabaseQualifierTest {
 
     @Test
     public void shouldReturnErrorWhenColumnNull() {
-        assertThrows(NullPointerException.class, () -> {
-            DatabaseQualifier.ofColumn(null);
-        });
+        assertThrows(NullPointerException.class, () -> DatabaseQualifier.ofColumn(null));
     }
 
     @Test
@@ -65,16 +63,12 @@ public class DatabaseQualifierTest {
 
     @Test
     public void shouldReturnErrorWhenDocumentNull() {
-        assertThrows(NullPointerException.class, () -> {
-            DatabaseQualifier.ofDocument(null);
-        });
+        assertThrows(NullPointerException.class, () -> DatabaseQualifier.ofDocument(null));
     }
 
     @Test
     public void shouldReturnErrorWhenKeyValueNull() {
-        assertThrows(NullPointerException.class, () -> {
-            DatabaseQualifier.ofKeyValue(null);
-        });
+        assertThrows(NullPointerException.class, () -> DatabaseQualifier.ofKeyValue(null));
     }
 
     @Test
@@ -95,9 +89,7 @@ public class DatabaseQualifierTest {
 
     @Test
     public void shouldReturnErrorWhenGraphNull() {
-        assertThrows(NullPointerException.class, () -> {
-            DatabaseQualifier.ofGraph(null);
-        });
+        assertThrows(NullPointerException.class, () -> DatabaseQualifier.ofGraph(null));
     }
 
     @Test

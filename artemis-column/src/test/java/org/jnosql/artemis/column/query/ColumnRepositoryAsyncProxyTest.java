@@ -168,9 +168,7 @@ public class ColumnRepositoryAsyncProxyTest {
 
     @Test
     public void shoudReturnErrorOnFindByName() {
-        Assertions.assertThrows(DynamicQueryException.class, () -> {
-            personRepository.findByName("name");
-        });
+        Assertions.assertThrows(DynamicQueryException.class, () -> personRepository.findByName("name"));
     }
 
     @Test

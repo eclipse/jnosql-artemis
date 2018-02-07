@@ -35,9 +35,7 @@ public class DefaultKeyValueTemplateProducerTest {
 
     @Test
     public void shouldReturnErrorWhenManagerNull() {
-        assertThrows(NullPointerException.class, () -> {
-            producer.get(null);
-        });
+        assertThrows(NullPointerException.class, () -> producer.get(null));
     }
 
     @Test

@@ -118,9 +118,7 @@ public class KeyValueRepositoryProxyTest {
 
     @Test
     public void shouldReturnErrorWhenExecuteMethodQuery() {
-        Assertions.assertThrows(DynamicQueryException.class, () -> {
-            userRepository.findByName("name");
-        });
+        Assertions.assertThrows(DynamicQueryException.class, () -> userRepository.findByName("name"));
     }
 
     @Test

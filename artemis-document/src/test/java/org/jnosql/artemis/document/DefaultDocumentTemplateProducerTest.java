@@ -35,9 +35,7 @@ public class DefaultDocumentTemplateProducerTest {
 
     @Test
     public void shouldReturnErrorWhenManagerNull() {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            producer.get(null);
-        });
+        Assertions.assertThrows(NullPointerException.class, () -> producer.get(null));
     }
 
     @Test

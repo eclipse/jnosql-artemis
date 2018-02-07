@@ -34,9 +34,7 @@ public class DefaultColumnTemplateProducerTest {
 
     @Test
     public void shouldReturnErrorWhenColumnFamilyManagerNull() {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            producer.get(null);
-        });
+        Assertions.assertThrows(NullPointerException.class, () -> producer.get(null));
     }
 
     @Test

@@ -67,9 +67,7 @@ public class DefaultColumnWorkflowTest {
 
     @Test
     public void shouldReturnErrorWhenActionIsNull() {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            subject.flow("", null);
-        });
+        Assertions.assertThrows(NullPointerException.class, () -> subject.flow("", null));
     }
 
     @Test

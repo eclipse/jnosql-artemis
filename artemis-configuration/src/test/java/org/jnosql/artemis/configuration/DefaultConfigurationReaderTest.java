@@ -42,9 +42,7 @@ public class DefaultConfigurationReaderTest {
 
     @Test
     public void shouldReturnNPEWhenAnnotationIsNull() {
-        Assertions.assertThrows(NullPointerException.class, () ->{
-        configurationReader.read(null, MockConfiguration.class);
-        });
+        Assertions.assertThrows(NullPointerException.class, () -> configurationReader.read(null, MockConfiguration.class));
     }
 
     @Test

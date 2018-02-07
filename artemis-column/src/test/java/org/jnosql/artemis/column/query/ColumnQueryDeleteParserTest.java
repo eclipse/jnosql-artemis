@@ -171,18 +171,14 @@ public class ColumnQueryDeleteParserTest {
 
     @Test
     public void shouldReturnErrorWhenIsMissedArgument() {
-        Assertions.assertThrows(DynamicQueryException.class, () -> {
-            parser.parse("deleteByNameAndAgeBetween", new Object[]{"name", 10},
-                    classRepresentation, converters);
-        });
+        Assertions.assertThrows(DynamicQueryException.class, () -> parser.parse("deleteByNameAndAgeBetween", new Object[]{"name", 10},
+                classRepresentation, converters));
     }
 
     @Test
     public void shouldReturnErrorWhenIsMissedArgument2() {
-        Assertions.assertThrows(DynamicQueryException.class, () -> {
-            parser.parse("deleteByName", new Object[]{},
-                    classRepresentation, converters);
-        });
+        Assertions.assertThrows(DynamicQueryException.class, () -> parser.parse("deleteByName", new Object[]{},
+                classRepresentation, converters));
     }
 
 }

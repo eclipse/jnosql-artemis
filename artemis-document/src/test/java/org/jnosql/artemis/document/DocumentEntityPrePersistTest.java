@@ -25,9 +25,7 @@ public class DocumentEntityPrePersistTest {
 
     @Test
     public void shouldReturnNPEWhenEntityIsNull() {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            DocumentEntityPrePersist.of(null);
-        });
+        Assertions.assertThrows(NullPointerException.class, () -> DocumentEntityPrePersist.of(null));
     }
 
     @Test

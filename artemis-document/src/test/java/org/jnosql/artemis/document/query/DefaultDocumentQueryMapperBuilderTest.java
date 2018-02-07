@@ -37,9 +37,7 @@ public class DefaultDocumentQueryMapperBuilderTest {
 
     @Test
     public void shouldReturnErrorWhenEntityClassIsNull() {
-        assertThrows(NullPointerException.class, () -> {
-            mapperBuilder.selectFrom(null);
-        });
+        assertThrows(NullPointerException.class, () -> mapperBuilder.selectFrom(null));
     }
 
     @Test
@@ -50,9 +48,7 @@ public class DefaultDocumentQueryMapperBuilderTest {
 
     @Test
     public void shouldReturnErrorWhenDeleteEntityClassIsNull() {
-        assertThrows(NullPointerException.class, () -> {
-            mapperBuilder.deleteFrom(null);
-        });
+        assertThrows(NullPointerException.class, () -> mapperBuilder.deleteFrom(null));
     }
 
     @Test

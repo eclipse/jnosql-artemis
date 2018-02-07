@@ -270,23 +270,17 @@ public class DefaultDocumentTemplateTest {
 
     @Test
     public void shouldReturnErrorWhenFindIdHasIdNull() {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            subject.find(Person.class, null);
-        });
+        Assertions.assertThrows(NullPointerException.class, () -> subject.find(Person.class, null));
     }
 
     @Test
     public void shouldReturnErrorWhenFindIdHasClassNull() {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            subject.find(null, "10");
-        });
+        Assertions.assertThrows(NullPointerException.class, () -> subject.find(null, "10"));
     }
 
     @Test
     public void shouldReturnErrorWhenThereIsNotIdInFind() {
-        Assertions.assertThrows(IdNotFoundException.class, () -> {
-            subject.find(Job.class, "10");
-        });
+        Assertions.assertThrows(IdNotFoundException.class, () -> subject.find(Job.class, "10"));
     }
 
     @Test
