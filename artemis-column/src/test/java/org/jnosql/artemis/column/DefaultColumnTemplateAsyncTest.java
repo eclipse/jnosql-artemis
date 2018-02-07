@@ -19,6 +19,7 @@ import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnCondition;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
@@ -41,6 +42,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -50,6 +52,7 @@ import static org.awaitility.Awaitility.await;
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -274,8 +277,10 @@ public class DefaultColumnTemplateAsyncTest {
         ArgumentCaptor<Consumer<List<ColumnEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
         ColumnQuery query = ColumnQueryBuilder.select().from("Person").build();
         AtomicBoolean condition = new AtomicBoolean(false);
-        Consumer<Optional<Person>> callback = l -> {
+        AtomicReference<Person> atomicReference = new AtomicReference<>();
+        Consumer<Optional<Person>> callback = p -> {
             condition.set(true);
+            p.ifPresent(atomicReference::set);
         };
         subject.singleResult(query, callback);
         verify(managerMock).select(Mockito.any(ColumnQuery.class), dianaCallbackCaptor.capture());
@@ -283,6 +288,24 @@ public class DefaultColumnTemplateAsyncTest {
         dianaCallBack.accept(Collections.singletonList(ColumnEntity.of("Person", Arrays.asList(columns))));
         verify(managerMock).select(Mockito.eq(query), Mockito.any());
         await().untilTrue(condition);
+        assertNotNull(atomicReference.get());
+    }
+
+    @Test
+    public void shouldReturnErrorWhenThereIsMoreThanOneResultInSingleResult() {
+
+        assertThrows(NonUniqueResultException.class, () -> {
+            ArgumentCaptor<Consumer<List<ColumnEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
+            ColumnQuery query = ColumnQueryBuilder.select().from("Person").build();
+            Consumer<Optional<Person>> callback = l -> {
+            };
+            subject.singleResult(query, callback);
+            verify(managerMock).select(Mockito.any(ColumnQuery.class), dianaCallbackCaptor.capture());
+            Consumer<List<ColumnEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
+            dianaCallBack.accept(Arrays.asList(ColumnEntity.of("Person", Arrays.asList(columns)),
+                    ColumnEntity.of("Person", Arrays.asList(columns))));
+
+        });
     }
 
     @Test
