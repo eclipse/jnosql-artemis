@@ -45,7 +45,7 @@ class DefaultDocumentMapperSelectBuilder  extends AbstractMapperQuery implements
 
 
     @Override
-    public DocumentNameCondition and(String name) throws NullPointerException {
+    public DocumentNameCondition and(String name) {
         requireNonNull(name, "name is required");
         this.name = name;
         this.and = true;
@@ -53,7 +53,7 @@ class DefaultDocumentMapperSelectBuilder  extends AbstractMapperQuery implements
     }
 
     @Override
-    public DocumentNameCondition or(String name) throws NullPointerException {
+    public DocumentNameCondition or(String name) {
         requireNonNull(name, "name is required");
         this.name = name;
         this.and = false;
@@ -61,7 +61,7 @@ class DefaultDocumentMapperSelectBuilder  extends AbstractMapperQuery implements
     }
 
     @Override
-    public DocumentWhereName where(String name) throws NullPointerException {
+    public DocumentWhereName where(String name) {
         requireNonNull(name, "name is required");
         this.name = name;
         return this;
@@ -80,7 +80,7 @@ class DefaultDocumentMapperSelectBuilder  extends AbstractMapperQuery implements
     }
 
     @Override
-    public DocumentOrder orderBy(String name) throws NullPointerException {
+    public DocumentOrder orderBy(String name) {
         requireNonNull(name, "name is required");
         this.name = name;
         return this;
@@ -94,7 +94,7 @@ class DefaultDocumentMapperSelectBuilder  extends AbstractMapperQuery implements
     }
 
     @Override
-    public <T> DocumentWhere eq(T value) throws NullPointerException {
+    public <T> DocumentWhere eq(T value) {
         eqImpl(value);
         return this;
     }
@@ -102,14 +102,14 @@ class DefaultDocumentMapperSelectBuilder  extends AbstractMapperQuery implements
 
 
     @Override
-    public DocumentWhere like(String value) throws NullPointerException {
+    public DocumentWhere like(String value) {
         likeImpl(value);
         return this;
     }
 
 
     @Override
-    public DocumentWhere gt(Number value) throws NullPointerException {
+    public DocumentWhere gt(Number value) {
         gtImpl(value);
         return this;
     }
@@ -117,13 +117,13 @@ class DefaultDocumentMapperSelectBuilder  extends AbstractMapperQuery implements
 
 
     @Override
-    public DocumentWhere gte(Number value) throws NullPointerException {
+    public DocumentWhere gte(Number value) {
         gteImpl(value);
         return this;
     }
 
     @Override
-    public DocumentWhere lt(Number value) throws NullPointerException {
+    public DocumentWhere lt(Number value) {
         ltImpl(value);
         return this;
     }
@@ -131,7 +131,7 @@ class DefaultDocumentMapperSelectBuilder  extends AbstractMapperQuery implements
 
 
     @Override
-    public DocumentWhere lte(Number value) throws NullPointerException {
+    public DocumentWhere lte(Number value) {
         lteImpl(value);
         return this;
     }
@@ -139,13 +139,13 @@ class DefaultDocumentMapperSelectBuilder  extends AbstractMapperQuery implements
 
 
     @Override
-    public DocumentWhere between(Number valueA, Number valueB) throws NullPointerException {
+    public DocumentWhere between(Number valueA, Number valueB) {
         betweenImpl(valueA, valueB);
         return this;
     }
 
     @Override
-    public <T> DocumentWhere in(Iterable<T> values) throws NullPointerException {
+    public <T> DocumentWhere in(Iterable<T> values) {
         inImpl(values);
         return this;
     }

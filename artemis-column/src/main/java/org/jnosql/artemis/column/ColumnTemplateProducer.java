@@ -31,6 +31,6 @@ public interface ColumnTemplateProducer<T extends ColumnTemplate> {
      * @return a new instance
      * @throws NullPointerException when columnFamilyManager is null
      */
-    T get(ColumnFamilyManager columnFamilyManager) throws NullPointerException;
+    T get(ColumnFamilyManager columnFamilyManager);
 
 }

@@ -38,7 +38,7 @@ public interface ColumnEntityPrePersist {
      * @return {@link ColumnEntityPrePersist} instance
      * @throws NullPointerException when the entity is null
      */
-    static ColumnEntityPrePersist of(ColumnEntity entity) throws NullPointerException {
+    static ColumnEntityPrePersist of(ColumnEntity entity) {
         Objects.requireNonNull(entity, "Entity is required");
         return new DefaultColumnEntityPrePersist(entity);
     }

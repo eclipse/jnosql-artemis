@@ -64,7 +64,7 @@ class DefaultClassRepresentations implements ClassRepresentations {
     }
 
     @Override
-    public ClassRepresentation findByName(String name) throws ClassInformationNotFoundException {
+    public ClassRepresentation findByName(String name) {
         return representations.keySet().stream()
                 .map(k -> representations.get(k))
                 .filter(r -> r.getName().equalsIgnoreCase(name)).findFirst()

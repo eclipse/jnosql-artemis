@@ -44,7 +44,7 @@ public abstract class AbstractColumnRepository<T, ID> implements Repository<T, I
     protected abstract Reflections getReflections();
 
     @Override
-    public <S extends T> S save(S entity) throws NullPointerException {
+    public <S extends T> S save(S entity) {
         Objects.requireNonNull(entity, "Entity is required");
         Object id = getReflections().getValue(entity, getIdField().getNativeField());
         if (nonNull(id) && existsById((ID) id)) {
@@ -56,26 +56,26 @@ public abstract class AbstractColumnRepository<T, ID> implements Repository<T, I
 
 
     @Override
-    public <S extends T> Iterable<S> save(Iterable<S> entities) throws NullPointerException {
+    public <S extends T> Iterable<S> save(Iterable<S> entities) {
         requireNonNull(entities, "entities is required");
         return StreamSupport.stream(entities.spliterator(), false).map(this::save).collect(toList());
     }
 
 
     @Override
-    public void deleteById(ID id) throws NullPointerException {
+    public void deleteById(ID id) {
         requireNonNull(id, "is is required");
         getTemplate().delete(getEntityClass(), id);
     }
 
     @Override
-    public void deleteById(Iterable<ID> ids) throws NullPointerException {
+    public void deleteById(Iterable<ID> ids) {
         requireNonNull(ids, "ids is required");
         ids.forEach(this::deleteById);
     }
 
     @Override
-    public Optional<T> findById(ID id) throws NullPointerException {
+    public Optional<T> findById(ID id) {
         requireNonNull(id, "id is required");
 
         return getTemplate().find(getEntityClass(), id);
@@ -86,7 +86,7 @@ public abstract class AbstractColumnRepository<T, ID> implements Repository<T, I
     }
 
     @Override
-    public Iterable<T> findById(Iterable<ID> ids) throws NullPointerException {
+    public Iterable<T> findById(Iterable<ID> ids) {
         requireNonNull(ids, "ids is required");
         return (Iterable) stream(ids.spliterator(), false)
                 .flatMap(optionalToStream()).collect(toList());
@@ -104,7 +104,7 @@ public abstract class AbstractColumnRepository<T, ID> implements Repository<T, I
     }
 
     @Override
-    public boolean existsById(ID id) throws NullPointerException {
+    public boolean existsById(ID id) {
         return findById(id).isPresent();
     }
 

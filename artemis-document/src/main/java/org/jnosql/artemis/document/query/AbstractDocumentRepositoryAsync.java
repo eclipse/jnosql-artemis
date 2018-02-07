@@ -20,7 +20,6 @@ import org.jnosql.artemis.document.DocumentTemplateAsync;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.FieldRepresentation;
 import org.jnosql.artemis.reflection.Reflections;
-import org.jnosql.diana.api.ExecuteAsyncQueryException;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -44,7 +43,7 @@ public abstract class AbstractDocumentRepositoryAsync<T, ID> implements Reposito
 
 
     @Override
-    public <S extends T> void save(S entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public <S extends T> void save(S entity) {
         Objects.requireNonNull(entity, "Entity is required");
         Object id = getReflections().getValue(entity, getIdField().getNativeField());
         if (isNull(id)) {
@@ -63,28 +62,28 @@ public abstract class AbstractDocumentRepositoryAsync<T, ID> implements Reposito
     }
 
     @Override
-    public <S extends T> void save(Iterable<S> entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public <S extends T> void save(Iterable<S> entities) {
         Objects.requireNonNull(entities, "entities is required");
         entities.forEach(this::save);
     }
 
 
     @Override
-    public void deleteById(ID id) throws NullPointerException {
+    public void deleteById(ID id) {
         requireNonNull(id, "is is required");
         getTemplate().delete(getEntityClass(), id);
     }
 
 
     @Override
-    public void existsById(ID id, Consumer<Boolean> callBack) throws NullPointerException {
+    public void existsById(ID id, Consumer<Boolean> callBack) {
         Consumer<Optional<T>> as = o -> callBack.accept(o.isPresent());
         findById(id, as);
     }
 
 
     @Override
-    public void findById(ID id, Consumer<Optional<T>> callBack) throws NullPointerException {
+    public void findById(ID id, Consumer<Optional<T>> callBack) {
         requireNonNull(id, "id is required");
         requireNonNull(callBack, "callBack is required");
 

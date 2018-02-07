@@ -15,7 +15,6 @@
 package org.jnosql.artemis.document;
 
 
-import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentQuery;
@@ -43,7 +42,7 @@ public interface DocumentTemplate {
      * @return the entity saved
      * @throws NullPointerException when document is null
      */
-    <T> T insert(T entity) throws NullPointerException;
+    <T> T insert(T entity);
 
     /**
      * Saves entity with time to live
@@ -54,7 +53,7 @@ public interface DocumentTemplate {
      * @return the entity saved
      * @throws NullPointerException when either entity or ttl are null
      */
-    <T> T insert(T entity, Duration ttl) throws NullPointerException;
+    <T> T insert(T entity, Duration ttl);
 
     /**
      * Saves entity, by default it's just run for each saving using
@@ -66,7 +65,7 @@ public interface DocumentTemplate {
      * @return the entity saved
      * @throws NullPointerException when entities is null
      */
-    default <T> Iterable<T> insert(Iterable<T> entities) throws NullPointerException {
+    default <T> Iterable<T> insert(Iterable<T> entities) {
         Objects.requireNonNull(entities, "entities is required");
         return StreamSupport.stream(entities.spliterator(), false).map(this::insert).collect(toList());
     }
@@ -82,7 +81,7 @@ public interface DocumentTemplate {
      * @return the entity saved
      * @throws NullPointerException when entities is null
      */
-    default <T> Iterable<T> insert(Iterable<T> entities, Duration ttl) throws NullPointerException {
+    default <T> Iterable<T> insert(Iterable<T> entities, Duration ttl) {
         Objects.requireNonNull(entities, "entities is required");
         Objects.requireNonNull(ttl, "ttl is required");
         return StreamSupport.stream(entities.spliterator(), false).map(d -> insert(d, ttl)).collect(toList());
@@ -96,7 +95,7 @@ public interface DocumentTemplate {
      * @return the entity updated
      * @throws NullPointerException when entity is null
      */
-    <T> T update(T entity) throws NullPointerException;
+    <T> T update(T entity);
 
     /**
      * Updates entity, by default it's just run for each saving using
@@ -108,7 +107,7 @@ public interface DocumentTemplate {
      * @return the entity saved
      * @throws NullPointerException when entities is null
      */
-    default <T> Iterable<T> update(Iterable<T> entities) throws NullPointerException {
+    default <T> Iterable<T> update(Iterable<T> entities) {
         Objects.requireNonNull(entities, "entities is required");
         return StreamSupport.stream(entities.spliterator(), false).map(this::update).collect(toList());
     }
@@ -119,7 +118,7 @@ public interface DocumentTemplate {
      * @param query query to delete an entity
      * @throws NullPointerException query is null
      */
-    void delete(DocumentDeleteQuery query) throws NullPointerException;
+    void delete(DocumentDeleteQuery query);
 
     /**
      * Finds entities from query
@@ -129,7 +128,7 @@ public interface DocumentTemplate {
      * @return entities found by query
      * @throws NullPointerException when query is null
      */
-    <T> List<T> select(DocumentQuery query) throws NullPointerException;
+    <T> List<T> select(DocumentQuery query);
 
     /**
      * Finds by Id.
@@ -140,9 +139,9 @@ public interface DocumentTemplate {
      * @param <ID>        the id type
      * @return the entity instance otherwise {@link Optional#empty()}
      * @throws NullPointerException when either the entityClass or id are null
-     * @throws IdNotFoundException  when the entityClass does not have the Id annotation
+     * @throws org.jnosql.artemis.IdNotFoundException  when the entityClass does not have the Id annotation
      */
-    <T, ID> Optional<T> find(Class<T> entityClass, ID id) throws NullPointerException, IdNotFoundException;
+    <T, ID> Optional<T> find(Class<T> entityClass, ID id);
 
     /**
      * Deletes by Id.
@@ -152,9 +151,9 @@ public interface DocumentTemplate {
      * @param <T>         the entity class type
      * @param <ID>        the id type
      * @throws NullPointerException when either the entityClass or id are null
-     * @throws IdNotFoundException  when the entityClass does not have the Id annotation
+     * @throws org.jnosql.artemis.IdNotFoundException  when the entityClass does not have the Id annotation
      */
-    <T, ID> void delete(Class<T> entityClass, ID id) throws NullPointerException, IdNotFoundException;
+    <T, ID> void delete(Class<T> entityClass, ID id);
 
     /**
      * Returns a single entity from query
@@ -165,7 +164,7 @@ public interface DocumentTemplate {
      * @throws NonUniqueResultException when the result has more than 1 entity
      * @throws NullPointerException     when query is null
      */
-    default <T> Optional<T> singleResult(DocumentQuery query) throws NonUniqueResultException {
+    default <T> Optional<T> singleResult(DocumentQuery query) {
         List<T> entities = select(query);
         if (entities.isEmpty()) {
             return Optional.empty();

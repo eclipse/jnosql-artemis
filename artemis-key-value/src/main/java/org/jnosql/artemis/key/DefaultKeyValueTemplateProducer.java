@@ -29,7 +29,7 @@ class DefaultKeyValueTemplateProducer implements KeyValueTemplateProducer {
     private KeyValueWorkflow flow;
 
     @Override
-    public KeyValueTemplate get(BucketManager manager) throws NullPointerException {
+    public KeyValueTemplate get(BucketManager manager) {
         Objects.requireNonNull(manager, "manager is required");
         return new ProducerKeyValueTemplate(converter, flow, manager);
     }

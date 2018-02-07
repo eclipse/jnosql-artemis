@@ -15,7 +15,6 @@
 package org.jnosql.artemis.key;
 
 
-import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.key.KeyValueEntity;
 
@@ -29,10 +28,10 @@ public interface KeyValueEntityConverter {
      *
      * @param entityInstance the instnace
      * @return a {@link KeyValueEntity} instance
-     * @throws IdNotFoundException when the entityInstance hasn't a field with {@link org.jnosql.artemis.Id}
+     * @throws org.jnosql.artemis.IdNotFoundException when the entityInstance hasn't a field with {@link org.jnosql.artemis.Id}
      * @throws NullPointerException when the entityInstance is null
      */
-    <T> KeyValueEntity<T> toKeyValue(Object entityInstance) throws IdNotFoundException, NullPointerException;
+    <T> KeyValueEntity<T> toKeyValue(Object entityInstance);
 
     /**
      * Converts a {@link KeyValueEntity} to entity
@@ -41,10 +40,10 @@ public interface KeyValueEntityConverter {
      * @param entity      the {@link KeyValueEntity} to be converted
      * @param <T>         the entity type
      * @return the instance from {@link KeyValueEntity}
-     * @throws IdNotFoundException when the entityInstance hasn't a field with {@link org.jnosql.artemis.Id}
+     * @throws org.jnosql.artemis.IdNotFoundException when the entityInstance hasn't a field with {@link org.jnosql.artemis.Id}
      * @throws NullPointerException when the entityInstance is null
      */
-    <T> T toEntity(Class<T> entityClass, KeyValueEntity<?> entity) throws IdNotFoundException, NullPointerException;
+    <T> T toEntity(Class<T> entityClass, KeyValueEntity<?> entity);
 
     /**
      * Converts a {@link Value} to entity
@@ -53,9 +52,9 @@ public interface KeyValueEntityConverter {
      * @param value      the {@link KeyValueEntity} to be converted
      * @param <T>         the entity type
      * @return the instance from {@link KeyValueEntity}
-     * @throws IdNotFoundException when the entityInstance hasn't a field with {@link org.jnosql.artemis.Id}
+     * @throws org.jnosql.artemis.IdNotFoundException when the entityInstance hasn't a field with {@link org.jnosql.artemis.Id}
      * @throws NullPointerException when the entityInstance is null
      */
-    <T> T toEntity(Class<T> entityClass, Value value) throws IdNotFoundException, NullPointerException;
+    <T> T toEntity(Class<T> entityClass, Value value);
 
 }

@@ -48,7 +48,7 @@ class DefaultDocumentTemplateProducer implements DocumentTemplateProducer {
 
 
     @Override
-    public DocumentTemplate get(DocumentCollectionManager collectionManager) throws NullPointerException {
+    public DocumentTemplate get(DocumentCollectionManager collectionManager) {
         Objects.requireNonNull(collectionManager, "collectionManager is required");
         return new ProducerDocumentTemplate(converter, collectionManager, workflow,
                 persistManager, classRepresentations, converters);

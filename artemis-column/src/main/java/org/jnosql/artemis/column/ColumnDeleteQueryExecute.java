@@ -36,7 +36,7 @@ public interface ColumnDeleteQueryExecute {
      * @param query the query
      * @return a ColumnQueryExecute instance
      */
-    static ColumnDeleteQueryExecute of(ColumnDeleteQuery query) throws NullPointerException {
+    static ColumnDeleteQueryExecute of(ColumnDeleteQuery query) {
         return new DefaultColumnDeleteQueryExecute(query);
     }
 }

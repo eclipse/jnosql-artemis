@@ -33,6 +33,5 @@ public interface ConfigurableReader {
      * @throws NullPointerException when either stream or annotation are null
      * @throws ConfigurationException when has configuration problem
      */
-    List<Configurable> read(Supplier<InputStream> stream, ConfigurationUnit annotation)throws NullPointerException,
-            ConfigurationException;
+    List<Configurable> read(Supplier<InputStream> stream, ConfigurationUnit annotation);
 }

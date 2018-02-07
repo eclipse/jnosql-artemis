@@ -37,7 +37,7 @@ public interface DocumentEntityPostPersist {
      * @return {@link DocumentEntityPostPersist} instance
      * @throws NullPointerException when the entity is null
      */
-    static DocumentEntityPostPersist of(DocumentEntity entity) throws NullPointerException {
+    static DocumentEntityPostPersist of(DocumentEntity entity) {
         Objects.requireNonNull(entity, "Entity is required");
         return new DefaultDocumentEntityPostPersist(entity);
     }

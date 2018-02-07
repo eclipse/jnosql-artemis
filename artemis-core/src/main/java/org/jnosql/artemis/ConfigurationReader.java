@@ -34,8 +34,7 @@ public interface ConfigurationReader {
      *                                is not the same type of configuratioClass, when the file does not exist, when the unit is not found in the configuration file,
      *                                when there is ambiguous configuration
      */
-    <T> ConfigurationSettingsUnit read(ConfigurationUnit annotation, Class<T> configurationClass)
-            throws NullPointerException, ConfigurationException;
+    <T> ConfigurationSettingsUnit read(ConfigurationUnit annotation, Class<T> configurationClass);
 
     /**
      * Reads the annotation and returns the ConfigurationUnit
@@ -47,5 +46,5 @@ public interface ConfigurationReader {
      * @throws ConfigurationException when the unit is not found in the configuration file,
      *                                when there is ambiguous configuration
      */
-    <T> ConfigurationSettingsUnit read(ConfigurationUnit annotation) throws NullPointerException, ConfigurationException;
+    <T> ConfigurationSettingsUnit read(ConfigurationUnit annotation);
 }

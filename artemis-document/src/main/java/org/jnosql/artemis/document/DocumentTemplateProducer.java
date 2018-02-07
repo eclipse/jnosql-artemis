@@ -32,6 +32,6 @@ public interface DocumentTemplateProducer<T extends DocumentTemplate> {
      * @return a new instance
      * @throws NullPointerException when collectionManager is null
      */
-    T get(DocumentCollectionManager collectionManager) throws NullPointerException;
+    T get(DocumentCollectionManager collectionManager);
 
 }

@@ -43,5 +43,5 @@ public interface DocumentWorkflow {
      * @see DocumentTemplate#insert(Object, java.time.Duration) DocumentTemplate#insert(Object)
      * DocumentTemplate#update(Object)
      */
-    <T> T flow(T entity, UnaryOperator<DocumentEntity> action) throws NullPointerException;
+    <T> T flow(T entity, UnaryOperator<DocumentEntity> action);
 }

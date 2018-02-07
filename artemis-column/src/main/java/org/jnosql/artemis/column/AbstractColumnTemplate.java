@@ -59,7 +59,7 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
     private final UnaryOperator<ColumnEntity> update = e -> getManager().update(e);
 
     @Override
-    public <T> T insert(T entity) throws NullPointerException {
+    public <T> T insert(T entity) {
         requireNonNull(entity, "entity is required");
 
         return getFlow().flow(entity, insert);
@@ -90,7 +90,7 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
 
 
     @Override
-    public <T> List<T> select(ColumnQuery query) throws NullPointerException {
+    public <T> List<T> select(ColumnQuery query) {
         requireNonNull(query, "query is required");
         getEventManager().firePreQuery(query);
         List<ColumnEntity> entities = getManager().select(query);
@@ -99,7 +99,7 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
     }
 
     @Override
-    public <T, ID> Optional<T> find(Class<T> entityClass, ID id) throws NullPointerException, IdNotFoundException {
+    public <T, ID> Optional<T> find(Class<T> entityClass, ID id) {
         requireNonNull(entityClass, "entityClass is required");
         requireNonNull(id, "id is required");
         ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
@@ -114,7 +114,7 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
     }
 
     @Override
-    public <T, ID> void delete(Class<T> entityClass, ID id) throws NullPointerException, IdNotFoundException {
+    public <T, ID> void delete(Class<T> entityClass, ID id) {
         requireNonNull(entityClass, "entityClass is required");
         requireNonNull(id, "id is required");
 

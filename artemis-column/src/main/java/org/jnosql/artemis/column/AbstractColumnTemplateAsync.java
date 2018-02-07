@@ -20,7 +20,6 @@ import org.jnosql.artemis.column.util.ConverterUtil;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.FieldRepresentation;
-import org.jnosql.diana.api.ExecuteAsyncQueryException;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
@@ -53,17 +52,17 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
     protected abstract Converters getConverters();
 
     @Override
-    public <T> void insert(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public <T> void insert(T entity) {
         insert(entity, EMPTY);
     }
 
     @Override
-    public <T> void insert(T entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public <T> void insert(T entity, Duration ttl) {
         insert(entity, ttl, EMPTY);
     }
 
     @Override
-    public <T> void insert(T entity, Consumer<T> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public <T> void insert(T entity, Consumer<T> callBack)  {
         requireNonNull(entity, "entity is required");
         requireNonNull(callBack, "callBack is required");
         Consumer<ColumnEntity> dianaCallBack = c -> callBack.accept((T) getConverter().toEntity(entity.getClass(), c));
@@ -71,7 +70,7 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
     }
 
     @Override
-    public <T> void insert(T entity, Duration ttl, Consumer<T> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public <T> void insert(T entity, Duration ttl, Consumer<T> callBack) {
         requireNonNull(entity, "entity is required");
         requireNonNull(ttl, "ttl is required");
         requireNonNull(callBack, "callBack is required");
@@ -80,14 +79,14 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
     }
 
     @Override
-    public <T> void update(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public <T> void update(T entity) {
         requireNonNull(entity, "entity is required");
         update(entity, t -> {
         });
     }
 
     @Override
-    public <T> void update(T entity, Consumer<T> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public <T> void update(T entity, Consumer<T> callBack) {
         requireNonNull(entity, "entity is required");
         requireNonNull(callBack, "callBack is required");
         Consumer<ColumnEntity> dianaCallBack = c -> callBack.accept((T) getConverter().toEntity(entity.getClass(), c));
@@ -95,20 +94,20 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
     }
 
     @Override
-    public void delete(ColumnDeleteQuery query) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public void delete(ColumnDeleteQuery query) {
         requireNonNull(query, "query is required");
         getManager().delete(query);
     }
 
     @Override
-    public void delete(ColumnDeleteQuery query, Consumer<Void> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public void delete(ColumnDeleteQuery query, Consumer<Void> callBack) {
         requireNonNull(query, "query is required");
         requireNonNull(callBack, "callBack is required");
         getManager().delete(query);
     }
 
     @Override
-    public <T> void select(ColumnQuery query, Consumer<List<T>> callBack) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    public <T> void select(ColumnQuery query, Consumer<List<T>> callBack) {
         requireNonNull(query, "query is required");
         requireNonNull(callBack, "callBack is required");
 
@@ -121,8 +120,7 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
     }
 
     @Override
-    public <T, ID> void find(Class<T> entityClass, ID id, Consumer<Optional<T>> callBack) throws
-            NullPointerException, IdNotFoundException {
+    public <T, ID> void find(Class<T> entityClass, ID id, Consumer<Optional<T>> callBack) {
 
         requireNonNull(entityClass, "entityClass is required");
         requireNonNull(id, "id is required");
@@ -141,8 +139,7 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
     }
 
     @Override
-    public <T, ID> void delete(Class<T> entityClass, ID id, Consumer<Void> callBack) throws
-            NullPointerException, IdNotFoundException {
+    public <T, ID> void delete(Class<T> entityClass, ID id, Consumer<Void> callBack) {
 
         requireNonNull(entityClass, "entityClass is required");
         requireNonNull(id, "id is required");
@@ -155,8 +152,7 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
 
 
     @Override
-    public <T, ID> void delete(Class<T> entityClass, ID id) throws
-            NullPointerException, IdNotFoundException {
+    public <T, ID> void delete(Class<T> entityClass, ID id)  {
         requireNonNull(entityClass, "entityClass is required");
         requireNonNull(id, "id is required");
 

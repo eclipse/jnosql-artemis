@@ -35,7 +35,7 @@ public interface KeyValueEntityPostPersist {
      * @return {@link KeyValueEntityPostPersist} instance
      * @throws NullPointerException when the entity is null
      */
-    static <T> KeyValueEntityPostPersist of(KeyValueEntity<T> entity) throws NullPointerException {
+    static <T> KeyValueEntityPostPersist of(KeyValueEntity<T> entity) {
         Objects.requireNonNull(entity, "Entity is required");
         return new DefaultKeyValueEntityPostPersist(entity);
     }

@@ -15,8 +15,6 @@
 package org.jnosql.artemis.validation;
 
 
-import javax.validation.ConstraintViolationException;
-
 /**
  * Validates bean instances. Implementations of this interface must be thread-safe.
  */
@@ -29,8 +27,8 @@ public interface ArtemisValidator {
      * @param bean the be to be validated
      * @param <T>  the type
      * @throws NullPointerException       when bean is null
-     * @throws ConstraintViolationException when {@link javax.validation.Validator#validate(Object, Class[])}
+     * @throws javax.validation.ConstraintViolationException when {@link javax.validation.Validator#validate(Object, Class[])}
      *                                    returns a non empty collection
      */
-    <T> void validate(T bean) throws NullPointerException, ConstraintViolationException;
+    <T> void validate(T bean);
 }

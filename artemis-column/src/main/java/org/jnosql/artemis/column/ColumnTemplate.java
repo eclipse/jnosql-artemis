@@ -15,7 +15,6 @@
 package org.jnosql.artemis.column;
 
 
-import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnQuery;
@@ -43,7 +42,7 @@ public interface ColumnTemplate {
      * @return the entity saved
      * @throws NullPointerException when document is null
      */
-    <T> T insert(T entity) throws NullPointerException;
+    <T> T insert(T entity);
 
 
     /**
@@ -67,7 +66,7 @@ public interface ColumnTemplate {
      * @return the entity saved
      * @throws NullPointerException when entities is null
      */
-    default <T> Iterable<T> insert(Iterable<T> entities) throws NullPointerException {
+    default <T> Iterable<T> insert(Iterable<T> entities) {
         Objects.requireNonNull(entities, "entities is required");
         return StreamSupport.stream(entities.spliterator(), false).map(this::insert).collect(Collectors.toList());
     }
@@ -83,7 +82,7 @@ public interface ColumnTemplate {
      * @return the entity saved
      * @throws NullPointerException when entities is null
      */
-    default <T> Iterable<T> insert(Iterable<T> entities, Duration ttl) throws NullPointerException {
+    default <T> Iterable<T> insert(Iterable<T> entities, Duration ttl) {
         Objects.requireNonNull(entities, "entities is required");
         Objects.requireNonNull(ttl, "ttl is required");
         return StreamSupport.stream(entities.spliterator(), false).map(d -> insert(d, ttl)).collect(Collectors.toList());
@@ -98,7 +97,7 @@ public interface ColumnTemplate {
      * @return the entity updated
      * @throws NullPointerException when entity is null
      */
-    <T> T update(T entity) throws NullPointerException;
+    <T> T update(T entity);
 
 
     /**
@@ -111,7 +110,7 @@ public interface ColumnTemplate {
      * @return the entity saved
      * @throws NullPointerException when entities is null
      */
-    default <T> Iterable<T> update(Iterable<T> entities) throws NullPointerException {
+    default <T> Iterable<T> update(Iterable<T> entities) {
         Objects.requireNonNull(entities, "entities is required");
         return StreamSupport.stream(entities.spliterator(), false).map(this::update).collect(Collectors.toList());
     }
@@ -122,7 +121,7 @@ public interface ColumnTemplate {
      * @param query query to delete an entity
      * @throws NullPointerException when query is null
      */
-    void delete(ColumnDeleteQuery query) throws NullPointerException;
+    void delete(ColumnDeleteQuery query);
 
 
     /**
@@ -133,7 +132,7 @@ public interface ColumnTemplate {
      * @return entities found by query
      * @throws NullPointerException when query is null
      */
-    <T> List<T> select(ColumnQuery query) throws NullPointerException;
+    <T> List<T> select(ColumnQuery query);
 
     /**
      * Finds by Id.
@@ -144,9 +143,9 @@ public interface ColumnTemplate {
      * @param <ID>        the id type
      * @return the entity instance otherwise {@link Optional#empty()}
      * @throws NullPointerException when either the entityClass or id are null
-     * @throws IdNotFoundException  when the entityClass does not have the Id annotation
+     * @throws org.jnosql.artemis.IdNotFoundException  when the entityClass does not have the Id annotation
      */
-    <T, ID> Optional<T> find(Class<T> entityClass, ID id) throws NullPointerException, IdNotFoundException;
+    <T, ID> Optional<T> find(Class<T> entityClass, ID id);
 
     /**
      * Deletes by Id.
@@ -156,9 +155,9 @@ public interface ColumnTemplate {
      * @param <T>         the entity class type
      * @param <ID>        the id type
      * @throws NullPointerException when either the entityClass or id are null
-     * @throws IdNotFoundException  when the entityClass does not have the Id annotation
+     * @throws org.jnosql.artemis.IdNotFoundException  when the entityClass does not have the Id annotation
      */
-    <T, ID> void delete(Class<T> entityClass, ID id) throws NullPointerException, IdNotFoundException;
+    <T, ID> void delete(Class<T> entityClass, ID id);
 
     /**
      * Returns a single entity from query
@@ -169,7 +168,7 @@ public interface ColumnTemplate {
      * @throws NonUniqueResultException when the result has more than 1 entity
      * @throws NullPointerException     when query is null
      */
-    default <T> Optional<T> singleResult(ColumnQuery query) throws NonUniqueResultException {
+    default <T> Optional<T> singleResult(ColumnQuery query) {
         List<T> entities = select(query);
         if (entities.isEmpty()) {
             return Optional.empty();

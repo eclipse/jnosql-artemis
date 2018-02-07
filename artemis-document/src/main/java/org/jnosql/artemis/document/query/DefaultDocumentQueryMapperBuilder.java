@@ -37,14 +37,14 @@ class DefaultDocumentQueryMapperBuilder implements DocumentQueryMapperBuilder {
     private Instance<Converters> converters;
 
     @Override
-    public <T> DocumentFrom selectFrom(Class<T> entityClass) throws NullPointerException {
+    public <T> DocumentFrom selectFrom(Class<T> entityClass) {
         requireNonNull(entityClass, "entity is required");
         ClassRepresentation representation = classRepresentations.get().get(entityClass);
         return new DefaultDocumentMapperSelectBuilder(representation, converters.get());
     }
 
     @Override
-    public <T> DocumentDeleteFrom deleteFrom(Class<T> entityClass) throws NullPointerException {
+    public <T> DocumentDeleteFrom deleteFrom(Class<T> entityClass) {
         requireNonNull(entityClass, "entity is required");
         ClassRepresentation representation = classRepresentations.get().get(entityClass);
         return new DefaultDocumentMapperDeleteBuilder(representation, converters.get());

@@ -29,7 +29,7 @@ public interface ColumnEntityConverter {
      * @return a {@link ColumnEntity} instance
      * @throws NullPointerException when entityInstance is null
      */
-    ColumnEntity toColumn(Object entityInstance) throws NullPointerException;
+    ColumnEntity toColumn(Object entityInstance);
 
     /**
      * Converts a {@link ColumnEntity} to entity
@@ -40,7 +40,7 @@ public interface ColumnEntityConverter {
      * @return the instance from {@link ColumnEntity}
      * @throws NullPointerException when either entityClass or entity are null
      */
-    <T> T toEntity(Class<T> entityClass, ColumnEntity entity) throws NullPointerException;
+    <T> T toEntity(Class<T> entityClass, ColumnEntity entity);
 
     /**
      * Similar to {@link ColumnEntityConverter#toEntity(Class, ColumnEntity)}, but
@@ -51,5 +51,5 @@ public interface ColumnEntityConverter {
      * @return the instance from {@link ColumnEntity}
      * @throws NullPointerException when entity is null
      */
-    <T> T toEntity(ColumnEntity entity) throws NullPointerException;
+    <T> T toEntity(ColumnEntity entity);
 }

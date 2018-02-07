@@ -26,5 +26,5 @@ public interface Converters {
      * @return a converter instance
      * @throws NullPointerException when converter is null
      */
-    AttributeConverter get(Class<? extends AttributeConverter> converterClass) throws NullPointerException;
+    AttributeConverter get(Class<? extends AttributeConverter> converterClass);
 }

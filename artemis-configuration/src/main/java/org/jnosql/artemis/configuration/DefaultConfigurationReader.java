@@ -59,8 +59,7 @@ class DefaultConfigurationReader implements ConfigurationReader {
     private Instance<ConfigurableReader> readers;
 
     @Override
-    public <T> ConfigurationSettingsUnit read(ConfigurationUnit annotation, Class<T> configurationClass)
-            throws NullPointerException, ConfigurationException {
+    public <T> ConfigurationSettingsUnit read(ConfigurationUnit annotation, Class<T> configurationClass) {
 
         requireNonNull(annotation, "annotation is required");
         requireNonNull(configurationClass, "configurationClass is required");
@@ -79,8 +78,7 @@ class DefaultConfigurationReader implements ConfigurationReader {
 
 
     @Override
-    public <T> ConfigurationSettingsUnit read(ConfigurationUnit annotation)
-            throws NullPointerException, ConfigurationException {
+    public <T> ConfigurationSettingsUnit read(ConfigurationUnit annotation) {
 
         requireNonNull(annotation, "annotation is required");
 

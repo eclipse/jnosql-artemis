@@ -31,6 +31,6 @@ public interface ColumnTemplateAsyncProducer<T extends ColumnTemplateAsync> {
      * @return a new instance
      * @throws NullPointerException when columnFamilyManager is null
      */
-    T get(ColumnFamilyManagerAsync columnFamilyManager) throws NullPointerException;
+    T get(ColumnFamilyManagerAsync columnFamilyManager);
 
 }

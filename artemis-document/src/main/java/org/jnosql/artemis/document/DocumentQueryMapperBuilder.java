@@ -31,7 +31,7 @@ public interface DocumentQueryMapperBuilder {
      * @return a {@link DocumentFrom} instance
      * @throws NullPointerException when entityClass is null
      */
-    <T> DocumentFrom selectFrom(Class<T> entityClass) throws NullPointerException;
+    <T> DocumentFrom selectFrom(Class<T> entityClass);
 
     /**
      * Returns a {@link DocumentDeleteFrom} implementation that does the object mapper API.
@@ -41,5 +41,5 @@ public interface DocumentQueryMapperBuilder {
      * @return a {@link DocumentDeleteFrom} instance
      * @throws NullPointerException when entityClass is null
      */
-    <T> DocumentDeleteFrom deleteFrom(Class<T> entityClass) throws NullPointerException;
+    <T> DocumentDeleteFrom deleteFrom(Class<T> entityClass);
 }

@@ -36,7 +36,7 @@ public interface DocumentDeleteQueryExecute {
      * @param query the query
      * @return a DocumentDeleteQuery instance
      */
-    static DocumentDeleteQueryExecute of(DocumentDeleteQuery query) throws NullPointerException {
+    static DocumentDeleteQueryExecute of(DocumentDeleteQuery query) {
         return new DefaultDocumentDeleteQueryExecute(query);
     }
 }

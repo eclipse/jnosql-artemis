@@ -61,7 +61,7 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
     private final UnaryOperator<DocumentEntity> update = e -> getManager().update(e);
 
     @Override
-    public <T> T insert(T entity) throws NullPointerException {
+    public <T> T insert(T entity) {
         Objects.requireNonNull(entity, "entity is required");
         return getWorkflow().flow(entity, insert);
     }
@@ -92,7 +92,7 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
     }
 
     @Override
-    public <T> List<T> select(DocumentQuery query) throws NullPointerException {
+    public <T> List<T> select(DocumentQuery query) {
         Objects.requireNonNull(query, "query is required");
         getPersistManager().firePreQuery(query);
         List<DocumentEntity> entities = getManager().select(query);
@@ -101,7 +101,7 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
     }
 
     @Override
-    public <T, ID> Optional<T> find(Class<T> entityClass, ID id) throws NullPointerException, IdNotFoundException {
+    public <T, ID> Optional<T> find(Class<T> entityClass, ID id) {
         requireNonNull(entityClass, "entityClass is required");
         requireNonNull(id, "id is required");
         ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
@@ -116,7 +116,7 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
     }
 
     @Override
-    public <T, ID> void delete(Class<T> entityClass, ID id) throws NullPointerException, IdNotFoundException{
+    public <T, ID> void delete(Class<T> entityClass, ID id) {
         requireNonNull(entityClass, "entityClass is required");
         requireNonNull(id, "id is required");
 

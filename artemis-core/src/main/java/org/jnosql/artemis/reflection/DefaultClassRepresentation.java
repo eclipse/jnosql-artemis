@@ -84,7 +84,7 @@ class DefaultClassRepresentation implements ClassRepresentation {
 
 
     @Override
-    public String getColumnField(String javaField) throws NullPointerException {
+    public String getColumnField(String javaField) {
         requireNonNull(javaField, "javaField is required");
         return ofNullable(javaFieldGroupedByColumn.get(javaField))
                 .map(NativeMapping::getNativeField).orElse(javaField);
@@ -92,7 +92,7 @@ class DefaultClassRepresentation implements ClassRepresentation {
     }
 
     @Override
-    public Optional<FieldRepresentation> getFieldRepresentation(String javaField) throws NullPointerException {
+    public Optional<FieldRepresentation> getFieldRepresentation(String javaField) {
         requireNonNull(javaField, "javaField is required");
         return ofNullable(javaFieldGroupedByColumn.get(javaField))
                 .map(NativeMapping::getFieldRepresentation);

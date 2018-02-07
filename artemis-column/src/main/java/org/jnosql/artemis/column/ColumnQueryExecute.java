@@ -36,7 +36,7 @@ public interface ColumnQueryExecute {
      * @param query the query
      * @return a ColumnQueryExecute instance
      */
-    static ColumnQueryExecute of(ColumnQuery query) throws NullPointerException {
+    static ColumnQueryExecute of(ColumnQuery query) {
         return new DefaultColumnQueryExecute(query);
     }
 }

@@ -35,7 +35,7 @@ public interface KeyValueTemplate {
      * @param <T>    the entity type
      * @throws NullPointerException when entity is null
      */
-    <T> T put(T entity) throws NullPointerException;
+    <T> T put(T entity);
 
     /**
      * Saves the entity with time to live
@@ -46,7 +46,7 @@ public interface KeyValueTemplate {
      * @throws NullPointerException          when entity is null
      * @throws UnsupportedOperationException when expired time is not supported
      */
-    <T> T put(T entity, Duration ttl) throws NullPointerException, UnsupportedOperationException;
+    <T> T put(T entity, Duration ttl);
 
     /**
      * Saves the {@link Iterable} of entities
@@ -55,7 +55,7 @@ public interface KeyValueTemplate {
      * @param <T>      the entity type
      * @throws NullPointerException when the iterable is null
      */
-    default <T> Iterable<T> put(Iterable<T> entities) throws NullPointerException {
+    default <T> Iterable<T> put(Iterable<T> entities) {
         Objects.requireNonNull(entities, "entities is required");
         return StreamSupport.stream(entities.spliterator(), false).map(this::put).collect(Collectors.toList());
     }
@@ -69,7 +69,7 @@ public interface KeyValueTemplate {
      * @throws NullPointerException          when the iterable is null
      * @throws UnsupportedOperationException when expired time is not supported
      */
-    default<T> Iterable<T> put(Iterable<T> entities, Duration ttl) throws NullPointerException, UnsupportedOperationException {
+    default<T> Iterable<T> put(Iterable<T> entities, Duration ttl) {
         Objects.requireNonNull(entities, "entities is required");
         Objects.requireNonNull(ttl, "ttl is required");
         return StreamSupport.stream(entities.spliterator(), false).map(d -> put(d, ttl)).collect(toList());
@@ -84,7 +84,7 @@ public interface KeyValueTemplate {
      * @return the {@link Optional} when is not found will return a {@link Optional#empty()}
      * @throws NullPointerException when the key is null
      */
-    <K, T> Optional<T> get(K key, Class<T> clazz) throws NullPointerException;
+    <K, T> Optional<T> get(K key, Class<T> clazz);
 
     /**
      * Finds a list of values from keys
@@ -95,7 +95,7 @@ public interface KeyValueTemplate {
      * @return the list of result
      * @throws NullPointerException when either the keys or the entities values are null
      */
-    <K, T> Iterable<T> get(Iterable<K> keys, Class<T> clazz) throws NullPointerException;
+    <K, T> Iterable<T> get(Iterable<K> keys, Class<T> clazz);
 
     /**
      * Removes an entity from key
@@ -104,7 +104,7 @@ public interface KeyValueTemplate {
      * @param <K> the key type
      * @throws NullPointerException when the key is null
      */
-    <K> void remove(K key) throws NullPointerException;
+    <K> void remove(K key);
 
     /**
      * Removes entities from keys
@@ -113,6 +113,6 @@ public interface KeyValueTemplate {
      * @param <K>  the key type
      * @throws NullPointerException when the key is null
      */
-    <K> void remove(Iterable<K> keys) throws NullPointerException;
+    <K> void remove(Iterable<K> keys);
 
 }

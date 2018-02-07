@@ -37,14 +37,14 @@ class DefaultColumnQueryMapperBuilder implements ColumnQueryMapperBuilder {
     private Instance<Converters> converters;
 
     @Override
-    public <T> ColumnFrom selectFrom(Class<T> entityClass) throws NullPointerException {
+    public <T> ColumnFrom selectFrom(Class<T> entityClass) {
         requireNonNull(entityClass, "entity is required");
         ClassRepresentation representation = classRepresentations.get().get(entityClass);
         return new DefaultColumnMapperSelectBuilder(representation, converters.get());
     }
 
     @Override
-    public <T> ColumnDeleteFrom deleteFrom(Class<T> entityClass) throws NullPointerException {
+    public <T> ColumnDeleteFrom deleteFrom(Class<T> entityClass) {
         requireNonNull(entityClass, "entity is required");
         ClassRepresentation representation = classRepresentations.get().get(entityClass);
         return new DefaultColumnMapperDeleteBuilder(representation, converters.get());

@@ -15,8 +15,6 @@
 package org.jnosql.artemis.column;
 
 
-import org.jnosql.artemis.IdNotFoundException;
-import org.jnosql.diana.api.ExecuteAsyncQueryException;
 import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnQuery;
@@ -43,11 +41,11 @@ public interface ColumnTemplateAsync {
      *
      * @param entity entity to be saved
      * @param <T>    the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
+     * @throws org.jnosql.diana.api.ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when entity is null
      */
-    <T> void insert(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
+    <T> void insert(T entity);
 
     /**
      * Inserts an entity asynchronously with time to live
@@ -55,11 +53,11 @@ public interface ColumnTemplateAsync {
      * @param entity entity to be saved
      * @param ttl    the time to live
      * @param <T>    the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
+     * @throws org.jnosql.diana.api.ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when either entity or ttl are null
      */
-    <T> void insert(T entity, Duration ttl) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
+    <T> void insert(T entity, Duration ttl);
 
     /**
      * Inserts entities asynchronously, by default it's just run for each saving using
@@ -68,11 +66,11 @@ public interface ColumnTemplateAsync {
      *
      * @param entities entities to be saved
      * @param <T>      the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
+     * @throws org.jnosql.diana.api.ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when entities is null
      */
-    default <T> void insert(Iterable<T> entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    default <T> void insert(Iterable<T> entities) {
         Objects.requireNonNull(entities, "entities is required");
         StreamSupport.stream(entities.spliterator(), false).forEach(this::insert);
     }
@@ -85,11 +83,11 @@ public interface ColumnTemplateAsync {
      * @param entities entities to be saved
      * @param ttl      time to live
      * @param <T>      the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
+     * @throws org.jnosql.diana.api.ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when either entities or ttl are null
      */
-    default <T> void insert(Iterable<T> entities, Duration ttl) throws NullPointerException {
+    default <T> void insert(Iterable<T> entities, Duration ttl) {
         Objects.requireNonNull(entities, "entities is required");
         Objects.requireNonNull(ttl, "ttl is required");
         StreamSupport.stream(entities.spliterator(), false).forEach(d -> insert(d, ttl));
@@ -102,12 +100,11 @@ public interface ColumnTemplateAsync {
      * @param callBack the callback, when the process is finished will call this instance returning
      *                 the saved entity within parameters
      * @param <T>      the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
+     * @throws org.jnosql.diana.api.ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when either entity or callback are null
      */
-    <T> void insert(T entity, Consumer<T> callBack) throws
-            ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
+    <T> void insert(T entity, Consumer<T> callBack);
 
 
     /**
@@ -118,23 +115,22 @@ public interface ColumnTemplateAsync {
      * @param callBack the callback, when the process is finished will call this instance returning
      *                 the saved entity within parameters
      * @param <T>      the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
+     * @throws org.jnosql.diana.api.ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when either entity or ttl or callback are null
      */
-    <T> void insert(T entity, Duration ttl, Consumer<T> callBack) throws
-            ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
+    <T> void insert(T entity, Duration ttl, Consumer<T> callBack);
 
     /**
      * Inserts an entity asynchronously
      *
      * @param entity entity to be updated
      * @param <T>    the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
+     * @throws org.jnosql.diana.api.ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when entity is null
      */
-    <T> void update(T entity) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
+    <T> void update(T entity);
 
     /**
      * Inserts entities asynchronously, by default it's just run for each saving using
@@ -143,11 +139,11 @@ public interface ColumnTemplateAsync {
      *
      * @param entities entities to be saved
      * @param <T>      the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
+     * @throws org.jnosql.diana.api.ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when entities is null
      */
-    default <T> void update(Iterable<T> entities) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException {
+    default <T> void update(Iterable<T> entities) {
         Objects.requireNonNull(entities, "entities is required");
         StreamSupport.stream(entities.spliterator(), false).forEach(this::update);
     }
@@ -159,22 +155,21 @@ public interface ColumnTemplateAsync {
      * @param callBack the callback, when the process is finished will call this instance returning
      *                 the updated entity within parametersa
      * @param <T>      the instance type
-     * @throws ExecuteAsyncQueryException    when there is a async error
+     * @throws org.jnosql.diana.api.ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when either entity or callback are null
      */
-    <T> void update(T entity, Consumer<T> callBack) throws
-            ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
+    <T> void update(T entity, Consumer<T> callBack);
 
     /**
      * Deletes an entity asynchronously
      *
      * @param query query to delete an entity
-     * @throws ExecuteAsyncQueryException    when there is a async error
+     * @throws org.jnosql.diana.api.ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when query are null
      */
-    void delete(ColumnDeleteQuery query) throws ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
+    void delete(ColumnDeleteQuery query);
 
     /**
      * Deletes an entity asynchronously
@@ -182,12 +177,11 @@ public interface ColumnTemplateAsync {
      * @param query    query to delete an entity
      * @param callBack the callback, when the process is finished will call this instance returning
      *                 the null within parameters
-     * @throws ExecuteAsyncQueryException    when there is a async error
+     * @throws org.jnosql.diana.api.ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to delete asynchronous
      * @throws NullPointerException          when either query or callback are null
      */
-    void delete(ColumnDeleteQuery query, Consumer<Void> callBack) throws ExecuteAsyncQueryException,
-            UnsupportedOperationException, NullPointerException;
+    void delete(ColumnDeleteQuery query, Consumer<Void> callBack);
 
     /**
      * Finds entities from query asynchronously
@@ -196,12 +190,11 @@ public interface ColumnTemplateAsync {
      * @param <T>      the instance type
      * @param callBack the callback, when the process is finished will call this instance returning
      *                 the result of query within parameters
-     * @throws ExecuteAsyncQueryException    when there is a async error
+     * @throws org.jnosql.diana.api.ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when either query or callback are null
      */
-    <T> void select(ColumnQuery query, Consumer<List<T>> callBack) throws
-            ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException;
+    <T> void select(ColumnQuery query, Consumer<List<T>> callBack);
 
     /**
      * Finds by Id.
@@ -212,10 +205,9 @@ public interface ColumnTemplateAsync {
      * @param <ID>        the id type
      * @param callBack    the callBack
      * @throws NullPointerException when either the entityClass or id are null
-     * @throws IdNotFoundException  when the entityClass does not have the Id annotation
+     * @throws org.jnosql.artemis.IdNotFoundException  when the entityClass does not have the Id annotation
      */
-    <T, ID> void find(Class<T> entityClass, ID id, Consumer<Optional<T>> callBack) throws
-            NullPointerException, IdNotFoundException;
+    <T, ID> void find(Class<T> entityClass, ID id, Consumer<Optional<T>> callBack);
 
     /**
      * Deletes by Id.
@@ -226,10 +218,9 @@ public interface ColumnTemplateAsync {
      * @param <ID>        the id type
      * @param callBack    the callBack
      * @throws NullPointerException when either the entityClass or id are null
-     * @throws IdNotFoundException  when the entityClass does not have the Id annotation
+     * @throws org.jnosql.artemis.IdNotFoundException  when the entityClass does not have the Id annotation
      */
-    <T, ID> void delete(Class<T> entityClass, ID id, Consumer<Void> callBack) throws
-            NullPointerException, IdNotFoundException;
+    <T, ID> void delete(Class<T> entityClass, ID id, Consumer<Void> callBack);
 
 
     /**
@@ -240,10 +231,9 @@ public interface ColumnTemplateAsync {
      * @param <T>         the entity class type
      * @param <ID>        the id type
      * @throws NullPointerException when either the entityClass or id are null
-     * @throws IdNotFoundException  when the entityClass does not have the Id annotation
+     * @throws org.jnosql.artemis.IdNotFoundException  when the entityClass does not have the Id annotation
      */
-    <T, ID> void delete(Class<T> entityClass, ID id) throws
-            NullPointerException, IdNotFoundException;
+    <T, ID> void delete(Class<T> entityClass, ID id);
 
     /**
      * Execute a query to consume an unique result
@@ -251,13 +241,12 @@ public interface ColumnTemplateAsync {
      * @param query    the query
      * @param callBack the callback
      * @param <T>      the type
-     * @throws ExecuteAsyncQueryException    when there is a async error
+     * @throws org.jnosql.diana.api.ExecuteAsyncQueryException    when there is a async error
      * @throws UnsupportedOperationException when the database does not have support to insert asynchronous
      * @throws NullPointerException          when either query or callback are null
      * @throws NonUniqueResultException      when it returns more than one result
      */
-    default <T> void singleResult(ColumnQuery query, Consumer<Optional<T>> callBack) throws
-            ExecuteAsyncQueryException, UnsupportedOperationException, NullPointerException, NonUniqueResultException {
+    default <T> void singleResult(ColumnQuery query, Consumer<Optional<T>> callBack) {
 
         requireNonNull(callBack, "callBack is required");
 

@@ -58,7 +58,7 @@ public interface ClassRepresentation {
      * @return the column name or column
      * @throws NullPointerException when javaField is null
      */
-    String getColumnField(String javaField) throws NullPointerException;
+    String getColumnField(String javaField);
 
     /**
      * Gets the {@link FieldRepresentation} from the java field name
@@ -67,7 +67,7 @@ public interface ClassRepresentation {
      * @return the field representation otherwise {@link Optional#EMPTY}
      * @throws NullPointerException when the javaField is null
      */
-    Optional<FieldRepresentation> getFieldRepresentation(String javaField) throws NullPointerException;
+    Optional<FieldRepresentation> getFieldRepresentation(String javaField);
 
     /**
      * Returns a Fields grouped by the name
