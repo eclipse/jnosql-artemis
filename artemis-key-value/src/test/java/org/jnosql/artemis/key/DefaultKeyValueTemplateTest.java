@@ -15,6 +15,7 @@
 package org.jnosql.artemis.key;
 
 import org.jnosql.artemis.CDIExtension;
+import org.jnosql.artemis.MockitoExtension;
 import org.jnosql.artemis.model.User;
 import org.jnosql.diana.api.key.BucketManager;
 import org.jnosql.diana.api.key.KeyValueEntity;
@@ -22,17 +23,22 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.time.Duration;
+import java.util.Optional;
 
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 @ExtendWith(CDIExtension.class)
+@ExtendWith(MockitoExtension.class)
 public class DefaultKeyValueTemplateTest {
 
     @Inject
@@ -41,8 +47,10 @@ public class DefaultKeyValueTemplateTest {
     @Inject
     private KeyValueWorkflow flow;
 
+    @Mock
     private BucketManager manager;
 
+    @Captor
     private ArgumentCaptor<KeyValueEntity> captor;
 
     private KeyValueTemplate subject;
@@ -50,10 +58,8 @@ public class DefaultKeyValueTemplateTest {
 
     @BeforeEach
     public void setUp() {
-        this.manager = Mockito.mock(BucketManager.class);
         Instance<BucketManager> instance = Mockito.mock(Instance.class);
         Mockito.when(instance.get()).thenReturn(manager);
-        captor = ArgumentCaptor.forClass(KeyValueEntity.class);
         this.subject = new DefaultKeyValueTemplate(converter, instance, flow);
     }
 
@@ -80,6 +86,16 @@ public class DefaultKeyValueTemplateTest {
     }
 
     @Test
+    public void shouldPutIterable() {
+        User user = new User("otaviojava", "otavio", 27);
+        subject.put(singletonList(user));
+        Mockito.verify(manager).put(captor.capture());
+        KeyValueEntity entity = captor.getValue();
+        assertEquals("otaviojava", entity.getKey());
+        assertEquals(user, entity.getValue().get());
+    }
+
+    @Test
     public void shouldPutTTL() {
 
         Duration duration = Duration.ofSeconds(2L);
@@ -90,5 +106,33 @@ public class DefaultKeyValueTemplateTest {
         KeyValueEntity entity = captor.getValue();
         assertEquals("otaviojava", entity.getKey());
         assertEquals(user, entity.getValue().get());
+    }
+
+    @Test
+    public void shouldPutTTLIterable() {
+
+        Duration duration = Duration.ofSeconds(2L);
+        User user = new User("otaviojava", "otavio", 27);
+        subject.put(singletonList(user), duration);
+
+        Mockito.verify(manager).put(captor.capture(), Mockito.eq(duration));
+        KeyValueEntity entity = captor.getValue();
+        assertEquals("otaviojava", entity.getKey());
+        assertEquals(user, entity.getValue().get());
+    }
+
+    @Test
+    public void shouldCheckNullParametersInGet() {
+        User user = new User("otaviojava", "otavio", 27);
+        assertThrows(NullPointerException.class, () -> subject.get(null, null));
+        assertThrows(NullPointerException.class, () -> subject.get(user, null));
+        assertThrows(NullPointerException.class, () -> subject.get(null, User.class));
+    }
+
+
+    @Test
+    public void shouldGet() {
+
+        Optional<User> user = subject.get("otaviojava", User.class);
     }
 }
