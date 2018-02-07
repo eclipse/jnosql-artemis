@@ -116,8 +116,8 @@ public class DefaultDocumentTemplateAsyncTest {
 
     @Test
     public void shouldInsert() {
-        DocumentEntity document = DocumentEntity.of("Person");
-        document.addAll(Stream.of(documents).collect(Collectors.toList()));
+        DocumentEntity entity = DocumentEntity.of("Person");
+        entity.addAll(Stream.of(documents).collect(Collectors.toList()));
 
 
         subject.insert(this.person);
@@ -132,8 +132,8 @@ public class DefaultDocumentTemplateAsyncTest {
 
         Duration twoHours = Duration.ofHours(2L);
 
-        DocumentEntity document = DocumentEntity.of("Person");
-        document.addAll(Stream.of(documents).collect(Collectors.toList()));
+        DocumentEntity entity = DocumentEntity.of("Person");
+        entity.addAll(Stream.of(documents).collect(Collectors.toList()));
 
 
         subject.insert(this.person, twoHours);
@@ -156,8 +156,8 @@ public class DefaultDocumentTemplateAsyncTest {
 
     @Test
     public void shouldInsertIterableTTL() {
-        DocumentEntity document = DocumentEntity.of("Person");
-        document.addAll(Stream.of(documents).collect(Collectors.toList()));
+        DocumentEntity entity = DocumentEntity.of("Person");
+        entity.addAll(Stream.of(documents).collect(Collectors.toList()));
 
         subject.insert(singletonList(this.person), Duration.ofSeconds(1L));
         verify(managerMock).insert(Mockito.any(DocumentEntity.class), Mockito.eq(Duration.ofSeconds(1L)), Mockito.any(Consumer.class));
@@ -173,8 +173,8 @@ public class DefaultDocumentTemplateAsyncTest {
 
     @Test
     public void shouldUpdate() {
-        DocumentEntity document = DocumentEntity.of("Person");
-        document.addAll(Stream.of(documents).collect(Collectors.toList()));
+        DocumentEntity entity = DocumentEntity.of("Person");
+        entity.addAll(Stream.of(documents).collect(Collectors.toList()));
 
 
         subject.update(this.person);
