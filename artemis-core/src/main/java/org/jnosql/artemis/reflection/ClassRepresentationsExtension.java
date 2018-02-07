@@ -50,7 +50,7 @@ public class ClassRepresentationsExtension implements Extension {
      * @param target the target
      * @param <T>    the type
      */
-    public <T> void initializePropertyLoading(final @Observes ProcessAnnotatedType<T> target) {
+    public <T> void initializePropertyLoading(@Observes final ProcessAnnotatedType<T> target) {
 
         AnnotatedType<T> annotatedType = target.getAnnotatedType();
         if (annotatedType.isAnnotationPresent(Entity.class)) {
