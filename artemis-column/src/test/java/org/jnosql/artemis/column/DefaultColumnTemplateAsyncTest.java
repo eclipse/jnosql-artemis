@@ -340,6 +340,8 @@ public class DefaultColumnTemplateAsyncTest {
     @Test
     public void shouldFindById() {
         ArgumentCaptor<Consumer<List<ColumnEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
+
+        ArgumentCaptor<ColumnQuery> queryCaptor = ArgumentCaptor.forClass(ColumnQuery.class);
         AtomicBoolean condition = new AtomicBoolean(false);
         AtomicReference<Person> atomicReference = new AtomicReference<>();
         Consumer<Optional<Person>> callback = p -> {
@@ -348,11 +350,12 @@ public class DefaultColumnTemplateAsyncTest {
         };
 
         subject.find(Person.class, 10L, callback);
-        verify(managerMock).select(Mockito.any(ColumnQuery.class), dianaCallbackCaptor.capture());
+        verify(managerMock).select(queryCaptor.capture(), dianaCallbackCaptor.capture());
         Consumer<List<ColumnEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
         dianaCallBack.accept(singletonList(ColumnEntity.of("Person", Arrays.asList(columns))));
-
-
+        ColumnQuery query = queryCaptor.getValue();
+        assertEquals("Person", query.getColumnFamily());
+        assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), query.getCondition().get());
 
 
     }
