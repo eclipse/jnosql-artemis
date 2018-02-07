@@ -44,6 +44,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.awaitility.Awaitility.await;
@@ -60,14 +61,14 @@ public class DefaultColumnTemplateAsyncTest {
 
     private Person person = Person.builder().
             withAge().
-            withPhones(Arrays.asList("234", "432")).
+            withPhones(asList("234", "432")).
             withName("Name")
             .withId(19)
             .withIgnore().build();
 
     private Column[] columns = new Column[]{
             Column.of("age", 10),
-            Column.of("phones", Arrays.asList("234", "432")),
+            Column.of("phones", asList("234", "432")),
             Column.of("name", "Name"),
             Column.of("id", 19L),
     };
@@ -264,7 +265,7 @@ public class DefaultColumnTemplateAsyncTest {
         subject.select(query, callback);
         verify(managerMock).select(Mockito.any(ColumnQuery.class), dianaCallbackCaptor.capture());
         Consumer<List<ColumnEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
-        dianaCallBack.accept(singletonList(ColumnEntity.of("Person", Arrays.asList(columns))));
+        dianaCallBack.accept(singletonList(ColumnEntity.of("Person", asList(columns))));
         verify(managerMock).select(Mockito.eq(query), Mockito.any());
         await().untilTrue(condition);
     }
@@ -283,7 +284,7 @@ public class DefaultColumnTemplateAsyncTest {
         subject.singleResult(query, callback);
         verify(managerMock).select(Mockito.any(ColumnQuery.class), dianaCallbackCaptor.capture());
         Consumer<List<ColumnEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
-        dianaCallBack.accept(singletonList(ColumnEntity.of("Person", Arrays.asList(columns))));
+        dianaCallBack.accept(singletonList(ColumnEntity.of("Person", asList(columns))));
         verify(managerMock).select(Mockito.eq(query), Mockito.any());
         await().untilTrue(condition);
         assertNotNull(atomicReference.get());
@@ -320,8 +321,8 @@ public class DefaultColumnTemplateAsyncTest {
             subject.singleResult(query, callback);
             verify(managerMock).select(Mockito.any(ColumnQuery.class), dianaCallbackCaptor.capture());
             Consumer<List<ColumnEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
-            dianaCallBack.accept(Arrays.asList(ColumnEntity.of("Person", Arrays.asList(columns)),
-                    ColumnEntity.of("Person", Arrays.asList(columns))));
+            dianaCallBack.accept(asList(ColumnEntity.of("Person", asList(columns)),
+                    ColumnEntity.of("Person", asList(columns))));
 
         });
     }
@@ -352,7 +353,7 @@ public class DefaultColumnTemplateAsyncTest {
         subject.find(Person.class, 10L, callback);
         verify(managerMock).select(queryCaptor.capture(), dianaCallbackCaptor.capture());
         Consumer<List<ColumnEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
-        dianaCallBack.accept(singletonList(ColumnEntity.of("Person", Arrays.asList(columns))));
+        dianaCallBack.accept(singletonList(ColumnEntity.of("Person", asList(columns))));
         ColumnQuery query = queryCaptor.getValue();
         assertEquals("Person", query.getColumnFamily());
         assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), query.getCondition().get());
@@ -380,6 +381,28 @@ public class DefaultColumnTemplateAsyncTest {
         assertEquals("Person", query.getColumnFamily());
         assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), query.getCondition().get());
         assertNull(atomicReference.get());
+
+    }
+
+    @Test
+    public void shouldReturnErrorFindByIdReturnMoreThanOne() {
+
+        assertThrows(NonUniqueResultException.class, () -> {
+            ArgumentCaptor<Consumer<List<ColumnEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
+
+            ArgumentCaptor<ColumnQuery> queryCaptor = ArgumentCaptor.forClass(ColumnQuery.class);
+            AtomicBoolean condition = new AtomicBoolean(false);
+            AtomicReference<Person> atomicReference = new AtomicReference<>();
+            Consumer<Optional<Person>> callback = p -> {
+                condition.set(true);
+                p.ifPresent(atomicReference::set);
+            };
+
+            subject.find(Person.class, 10L, callback);
+            verify(managerMock).select(queryCaptor.capture(), dianaCallbackCaptor.capture());
+            Consumer<List<ColumnEntity>> dianaCallBack = dianaCallbackCaptor.getValue();
+            dianaCallBack.accept(asList(ColumnEntity.of("Person", asList(columns)), ColumnEntity.of("Person", asList(columns))));
+        });
 
     }
 }
