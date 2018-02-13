@@ -21,12 +21,11 @@ import org.jnosql.diana.api.column.query.ColumnDeleteFrom;
 import org.jnosql.diana.api.column.query.ColumnDeleteNameCondition;
 import org.jnosql.diana.api.column.query.ColumnDeleteNotCondition;
 import org.jnosql.diana.api.column.query.ColumnDeleteWhere;
-import org.jnosql.diana.api.column.query.ColumnDeleteWhereName;
 
 import static java.util.Objects.requireNonNull;
 
 class DefaultColumnMapperDeleteBuilder extends AbstractMapperQuery implements ColumnDeleteFrom,
-        ColumnDeleteWhere, ColumnDeleteWhereName, ColumnDeleteNotCondition {
+        ColumnDeleteWhere, ColumnDeleteNameCondition, ColumnDeleteNotCondition {
 
 
     DefaultColumnMapperDeleteBuilder(ClassRepresentation representation, Converters converters) {
@@ -34,7 +33,7 @@ class DefaultColumnMapperDeleteBuilder extends AbstractMapperQuery implements Co
     }
 
     @Override
-    public ColumnDeleteWhereName where(String name) {
+    public ColumnDeleteNameCondition where(String name) {
         requireNonNull(name, "name is required");
         this.name = name;
         return this;

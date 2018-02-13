@@ -26,7 +26,6 @@ import org.jnosql.diana.api.document.query.DocumentNotCondition;
 import org.jnosql.diana.api.document.query.DocumentOrder;
 import org.jnosql.diana.api.document.query.DocumentStart;
 import org.jnosql.diana.api.document.query.DocumentWhere;
-import org.jnosql.diana.api.document.query.DocumentWhereName;
 
 import java.util.ArrayList;
 import java.util.List;
