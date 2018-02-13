@@ -21,12 +21,11 @@ import org.jnosql.diana.api.document.query.DocumentDeleteFrom;
 import org.jnosql.diana.api.document.query.DocumentDeleteNameCondition;
 import org.jnosql.diana.api.document.query.DocumentDeleteNotCondition;
 import org.jnosql.diana.api.document.query.DocumentDeleteWhere;
-import org.jnosql.diana.api.document.query.DocumentDeleteWhereName;
 
 import static java.util.Objects.requireNonNull;
 
 class DefaultDocumentMapperDeleteBuilder  extends AbstractMapperQuery implements DocumentDeleteFrom,
-        DocumentDeleteWhere, DocumentDeleteWhereName, DocumentDeleteNotCondition {
+        DocumentDeleteWhere, DocumentDeleteNameCondition, DocumentDeleteNotCondition {
 
 
     DefaultDocumentMapperDeleteBuilder(ClassRepresentation representation, Converters converters) {
@@ -34,7 +33,7 @@ class DefaultDocumentMapperDeleteBuilder  extends AbstractMapperQuery implements
     }
 
     @Override
-    public DocumentDeleteWhereName where(String name) {
+    public DocumentDeleteNameCondition where(String name) {
         requireNonNull(name, "name is required");
         this.name = name;
         return this;
