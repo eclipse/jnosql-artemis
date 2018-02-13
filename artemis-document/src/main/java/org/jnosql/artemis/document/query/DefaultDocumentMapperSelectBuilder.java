@@ -34,7 +34,7 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 class DefaultDocumentMapperSelectBuilder  extends AbstractMapperQuery implements DocumentFrom, DocumentLimit, DocumentStart,
-        DocumentOrder, DocumentWhereName, DocumentNameCondition, DocumentNotCondition, DocumentNameOrder, DocumentWhere {
+        DocumentOrder, DocumentNameCondition, DocumentNotCondition, DocumentNameOrder, DocumentWhere {
 
     private final List<Sort> sorts = new ArrayList<>();
 
@@ -61,7 +61,7 @@ class DefaultDocumentMapperSelectBuilder  extends AbstractMapperQuery implements
     }
 
     @Override
-    public DocumentWhereName where(String name) {
+    public DocumentNameCondition where(String name) {
         requireNonNull(name, "name is required");
         this.name = name;
         return this;
