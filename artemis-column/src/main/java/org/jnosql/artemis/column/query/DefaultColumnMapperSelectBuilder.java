@@ -26,7 +26,6 @@ import org.jnosql.diana.api.column.query.ColumnNotCondition;
 import org.jnosql.diana.api.column.query.ColumnOrder;
 import org.jnosql.diana.api.column.query.ColumnStart;
 import org.jnosql.diana.api.column.query.ColumnWhere;
-import org.jnosql.diana.api.column.query.ColumnWhereName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +33,7 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 class DefaultColumnMapperSelectBuilder extends AbstractMapperQuery implements ColumnFrom, ColumnLimit, ColumnStart,
-        ColumnOrder, ColumnWhereName, ColumnNameCondition, ColumnNotCondition, ColumnNameOrder, ColumnWhere {
+        ColumnOrder, ColumnNameCondition, ColumnNotCondition, ColumnNameOrder, ColumnWhere {
 
 
     private final List<Sort> sorts = new ArrayList<>();
@@ -62,7 +61,7 @@ class DefaultColumnMapperSelectBuilder extends AbstractMapperQuery implements Co
     }
 
     @Override
-    public ColumnWhereName where(String name) {
+    public ColumnNameCondition where(String name) {
         requireNonNull(name, "name is required");
         this.name = name;
         return this;
