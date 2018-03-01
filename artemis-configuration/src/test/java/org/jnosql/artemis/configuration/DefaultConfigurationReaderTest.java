@@ -11,24 +11,19 @@
  *   Contributors:
  *
  *   Otavio Santana
+ *   Daniel Cunha <dcunha@tomitribe.com>
  */
 package org.jnosql.artemis.configuration;
 
 import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.ConfigurationReader;
-import org.jnosql.artemis.ConfigurationSettingsUnit;
 import org.jnosql.artemis.ConfigurationUnit;
-import org.jnosql.diana.api.Settings;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -58,15 +53,6 @@ public class DefaultConfigurationReaderTest {
         Assertions.assertThrows(ConfigurationException.class, () -> {
             ConfigurationUnit annotation = mock(ConfigurationUnit.class);
             when(annotation.fileName()).thenReturn("unknown.json");
-            configurationReader.read(annotation, MockConfiguration.class);
-        });
-    }
-
-    @Test
-    public void shouldReturnErrorWhenFileIsInvalid() {
-        Assertions.assertThrows(ConfigurationException.class, () -> {
-            ConfigurationUnit annotation = mock(ConfigurationUnit.class);
-            when(annotation.fileName()).thenReturn("invalid.json");
             configurationReader.read(annotation, MockConfiguration.class);
         });
     }
@@ -120,7 +106,6 @@ public class DefaultConfigurationReaderTest {
         });
     }
 
-
     @Test
     public void shouldReturnErrorWhenThereIsNotDefaultConstructor() {
         Assertions.assertThrows(ConfigurationException.class, () -> {
@@ -139,94 +124,4 @@ public class DefaultConfigurationReaderTest {
             configurationReader.read(annotation, MockConfiguration.class);
         });
     }
-
-    @Test
-    public void shouldReadConfiguration() {
-        ConfigurationUnit annotation = mock(ConfigurationUnit.class);
-        when(annotation.fileName()).thenReturn("jnosql.json");
-        when(annotation.name()).thenReturn("name");
-        ConfigurationSettingsUnit unit = configurationReader.read(annotation, MockConfiguration.class);
-
-        Map<String, Object> settings = new HashMap<>();
-        settings.put("key","value");
-        settings.put("key2","value2");
-
-        assertEquals("name", unit.getName().get());
-        assertEquals("that is the description", unit.getDescription().get());
-        assertEquals(Settings.of(settings), unit.getSettings());
-        assertEquals(DefaultMockConfiguration.class, unit.getProvider().get());
-    }
-
-    @Test
-    public void shouldReadDefaultFile() {
-        ConfigurationUnit annotation = mock(ConfigurationUnit.class);
-        when(annotation.name()).thenReturn("name-2");
-        when(annotation.fileName()).thenReturn("jnosql.json");
-        ConfigurationSettingsUnit unit = configurationReader.read(annotation, MockConfiguration.class);
-
-        Map<String, Object> settings = new HashMap<>();
-        settings.put("key","value");
-        settings.put("key2","value2");
-        settings.put("key3","value3");
-
-        assertEquals("name-2", unit.getName().get());
-        assertEquals("that is the description", unit.getDescription().get());
-        assertEquals(Settings.of(settings), unit.getSettings());
-        assertEquals(DefaultMockConfiguration.class, unit.getProvider().get());
-    }
-
-
-    @Test
-    public void shouldReadDefaultNameXML() {
-        ConfigurationUnit annotation = mock(ConfigurationUnit.class);
-        when(annotation.fileName()).thenReturn("jnosql.xml");
-        when(annotation.name()).thenReturn("name");
-        ConfigurationSettingsUnit unit = configurationReader.read(annotation, MockConfiguration.class);
-
-        Map<String, Object> settings = new HashMap<>();
-        settings.put("key","value");
-        settings.put("key2","value2");
-
-        assertEquals("name", unit.getName().get());
-        assertEquals("that is the description", unit.getDescription().get());
-        assertEquals(Settings.of(settings), unit.getSettings());
-        assertEquals(DefaultMockConfiguration.class, unit.getProvider().get());
-    }
-
-    @Test
-    public void shouldReadAnnotationDefaultFile() {
-        ConfigurationUnit annotation = mock(ConfigurationUnit.class);
-        when(annotation.name()).thenReturn("name-2");
-        when(annotation.fileName()).thenReturn("jnosql.json");
-        ConfigurationSettingsUnit unit = configurationReader.read(annotation);
-
-        Map<String, Object> settings = new HashMap<>();
-        settings.put("key","value");
-        settings.put("key2","value2");
-        settings.put("key3","value3");
-
-        assertEquals("name-2", unit.getName().get());
-        assertEquals("that is the description", unit.getDescription().get());
-        assertEquals(Settings.of(settings), unit.getSettings());
-        assertFalse(unit.getProvider().isPresent());
-    }
-
-
-    @Test
-    public void shouldReadDefaultAnnotationNameXML() {
-        ConfigurationUnit annotation = mock(ConfigurationUnit.class);
-        when(annotation.fileName()).thenReturn("jnosql.xml");
-        when(annotation.name()).thenReturn("name");
-        ConfigurationSettingsUnit unit = configurationReader.read(annotation);
-
-        Map<String, Object> settings = new HashMap<>();
-        settings.put("key","value");
-        settings.put("key2","value2");
-
-        assertEquals("name", unit.getName().get());
-        assertEquals("that is the description", unit.getDescription().get());
-        assertEquals(Settings.of(settings), unit.getSettings());
-        assertFalse(unit.getProvider().isPresent());
-    }
-
 }
