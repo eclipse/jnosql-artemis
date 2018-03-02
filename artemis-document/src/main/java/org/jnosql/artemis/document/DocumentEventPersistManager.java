@@ -23,8 +23,8 @@ import org.jnosql.diana.api.document.DocumentQuery;
  * This interface represent the manager of events. When an entity be either saved or updated an event will be fired. This order gonna be:
  * 1) firePreEntity
  * 2) firePreDocumentEntity
- * 3) firePreColumn
- * 4) firePostColumn
+ * 3) firePreDocument
+ * 4) firePostDocument
  * 5) firePostEntity
  * 6) firePostDocumentEntity
  *
