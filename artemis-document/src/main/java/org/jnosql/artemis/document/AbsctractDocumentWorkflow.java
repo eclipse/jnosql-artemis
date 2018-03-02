@@ -25,7 +25,7 @@ import java.util.function.UnaryOperator;
  */
 public abstract class AbsctractDocumentWorkflow implements DocumentWorkflow {
 
-    protected abstract DocumentEventPersistManager getColumnEventPersistManager();
+    protected abstract DocumentEventPersistManager getDocumentEventPersistManager();
 
 
     protected abstract  DocumentEntityConverter getConverter();
@@ -44,37 +44,37 @@ public abstract class AbsctractDocumentWorkflow implements DocumentWorkflow {
         UnaryOperator<T> validation = t -> Objects.requireNonNull(t, "entity is required");
 
         UnaryOperator<T> firePreEntity = t -> {
-            getColumnEventPersistManager().firePreEntity(t);
+            getDocumentEventPersistManager().firePreEntity(t);
             return t;
         };
 
         UnaryOperator<T> firePreDocumentEntity = t -> {
-            getColumnEventPersistManager().firePreDocumentEntity(t);
+            getDocumentEventPersistManager().firePreDocumentEntity(t);
             return t;
         };
 
 
-        Function<T, DocumentEntity> converterColumn = t -> getConverter().toDocument(t);
+        Function<T, DocumentEntity> converterDocument = t -> getConverter().toDocument(t);
 
         UnaryOperator<DocumentEntity> firePreDocument = t -> {
-            getColumnEventPersistManager().firePreDocument(t);
+            getDocumentEventPersistManager().firePreDocument(t);
             return t;
         };
 
         UnaryOperator<DocumentEntity> firePostDocument = t -> {
-            getColumnEventPersistManager().firePostDocument(t);
+            getDocumentEventPersistManager().firePostDocument(t);
             return t;
         };
 
-        Function<DocumentEntity, T> converterEntity = t -> getConverter().toEntity((Class<T>) entity.getClass(), t);
+        Function<DocumentEntity, T> converterEntity = t -> getConverter().toEntity(entity, t);
 
         UnaryOperator<T> firePostEntity = t -> {
-            getColumnEventPersistManager().firePostEntity(t);
+            getDocumentEventPersistManager().firePostEntity(t);
             return t;
         };
 
         UnaryOperator<T> firePostDocumentEntity = t -> {
-            getColumnEventPersistManager().firePostDocumentEntity(t);
+            getDocumentEventPersistManager().firePostDocumentEntity(t);
             return t;
         };
 
@@ -82,7 +82,7 @@ public abstract class AbsctractDocumentWorkflow implements DocumentWorkflow {
         return validation
                 .andThen(firePreEntity)
                 .andThen(firePreDocumentEntity)
-                .andThen(converterColumn)
+                .andThen(converterDocument)
                 .andThen(firePreDocument)
                 .andThen(action)
                 .andThen(firePostDocument)

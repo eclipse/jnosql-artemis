@@ -28,7 +28,6 @@ import org.jnosql.artemis.model.Movie;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.model.Worker;
 import org.jnosql.artemis.model.Zipcode;
-import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.TypeReference;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.column.Column;
@@ -40,6 +39,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -54,6 +54,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(CDIExtension.class)
 public class DefaultColumnEntityConverterTest {
@@ -61,9 +63,6 @@ public class DefaultColumnEntityConverterTest {
 
     @Inject
     private DefaultColumnEntityConverter converter;
-
-    @Inject
-    private ClassRepresentations classRepresentations;
 
     private Column[] columns;
 
@@ -86,7 +85,7 @@ public class DefaultColumnEntityConverterTest {
     }
 
     @Test
-    public void shouldConvertPersonToDocument() {
+    public void shouldConvertEntityFromColumnEntity() {
 
         Person person = Person.builder().withAge()
                 .withId(12)
@@ -96,25 +95,23 @@ public class DefaultColumnEntityConverterTest {
         ColumnEntity entity = converter.toColumn(person);
         assertEquals("Person", entity.getName());
         assertEquals(4, entity.size());
-        /*Assert.assertThat(entity.getColumns(), containsInAnyOrder(Document.of("_id", 12L),
-                Document.of("age", 10), Document.of("name", "Otavio"), Document.of("phones", Arrays.asList("234", "2342"))));*/
+        assertThat(entity.getColumns(), containsInAnyOrder(Column.of("_id", 12L),
+                Column.of("age", 10), Column.of("name", "Otavio"), Column.of("phones", Arrays.asList("234", "2342"))));
 
     }
 
     @Test
-    public void shouldConvertActorToDocument() {
-
+    public void shouldConvertColumnEntityFromEntity() {
 
         ColumnEntity entity = converter.toColumn(actor);
         assertEquals("Actor", entity.getName());
         assertEquals(6, entity.size());
 
-
         assertThat(entity.getColumns(), containsInAnyOrder(columns));
     }
 
     @Test
-    public void shouldConvertDocumentToActor() {
+    public void shouldConvertColumnEntityToEntity() {
         ColumnEntity entity = ColumnEntity.of("Actor");
         Stream.of(columns).forEach(entity::add);
 
@@ -128,7 +125,7 @@ public class DefaultColumnEntityConverterTest {
     }
 
     @Test
-    public void shouldConvertDocumentToActorFromEntity() {
+    public void shouldConvertColumnEntityToEntity2() {
         ColumnEntity entity = ColumnEntity.of("Actor");
         Stream.of(columns).forEach(entity::add);
 
@@ -141,9 +138,39 @@ public class DefaultColumnEntityConverterTest {
         assertEquals(Collections.singletonMap("JavaZone", 10), actor.getMovieRating());
     }
 
+    @Test
+    public void shouldConvertColumnEntityToExistEntity() {
+        ColumnEntity entity = ColumnEntity.of("Actor");
+        Stream.of(columns).forEach(entity::add);
+        Actor actor = Actor.actorBuilder().build();
+        Actor result = converter.toEntity(actor, entity);
+
+        assertTrue(actor == result);
+        assertEquals(10, actor.getAge());
+        assertEquals(12L, actor.getId());
+        assertEquals(asList("234", "2342"), actor.getPhones());
+        assertEquals(Collections.singletonMap("JavaZone", "Jedi"), actor.getMovieCharacter());
+        assertEquals(Collections.singletonMap("JavaZone", 10), actor.getMovieRating());
+    }
 
     @Test
-    public void shouldConvertDirectorToColumn() {
+    public void shouldReturnErrorWhenToEntityIsNull() {
+        ColumnEntity entity = ColumnEntity.of("Actor");
+        Stream.of(columns).forEach(entity::add);
+        Actor actor = Actor.actorBuilder().build();
+
+        assertThrows(NullPointerException.class, () -> {
+           converter.toEntity(null, entity);
+        });
+
+        assertThrows(NullPointerException.class, () -> {
+            converter.toEntity(actor, null);
+        });
+    }
+
+
+    @Test
+    public void shouldConvertEntityToColumnEntity2() {
 
         Movie movie = new Movie("Matrix", 2012, Collections.singleton("Actor"));
         Director director = Director.builderDiretor().withAge(12)
@@ -236,7 +263,7 @@ public class DefaultColumnEntityConverterTest {
     }
 
     @Test
-    public void shouldConvertToDocumentWhenHaConverter() {
+    public void shouldConvertToColumnWhenHaConverter() {
         Worker worker = new Worker();
         Job job = new Job();
         job.setCity("Sao Paulo");
@@ -358,8 +385,8 @@ public class DefaultColumnEntityConverterTest {
         assertEquals("1234",  address.getZipcode().getPlusFour());
 
     }
-    private Object getValue(Optional<Column> document) {
-        return document.map(Column::getValue).map(Value::get).orElse(null);
+    private Object getValue(Optional<Column> column) {
+        return column.map(Column::getValue).map(Value::get).orElse(null);
     }
 
 }

@@ -72,10 +72,12 @@ public abstract class AbstractColumnEntityConverter implements ColumnEntityConve
         return toEntity(entityClass, entity.getColumns());
     }
 
-    protected <T> T toEntity(Class<T> entityClass, List<Column> columns) {
-        ClassRepresentation representation = getClassRepresentations().get(entityClass);
-        T instance = getReflections().newInstance(representation.getConstructor());
-        return convertEntity(columns, representation, instance);
+    @Override
+    public <T> T toEntity(T entityInstance, ColumnEntity entity) {
+        requireNonNull(entity, "entity is required");
+        requireNonNull(entityInstance, "entityInstance is required");
+        ClassRepresentation representation = getClassRepresentations().get(entityInstance.getClass());
+        return convertEntity(entity.getColumns(), representation, entityInstance);
     }
 
     @SuppressWarnings("unchecked")
@@ -99,6 +101,12 @@ public abstract class AbstractColumnEntityConverter implements ColumnEntityConve
             ColumnFieldConverter fieldConverter = converterFactory.get(field);
             fieldConverter.convert(instance, columns, column, field, this);
         };
+    }
+
+    protected <T> T toEntity(Class<T> entityClass, List<Column> columns) {
+        ClassRepresentation representation = getClassRepresentations().get(entityClass);
+        T instance = getReflections().newInstance(representation.getConstructor());
+        return convertEntity(columns, representation, instance);
     }
 
     private <T> T convertEntity(List<Column> columns, ClassRepresentation representation, T instance) {

@@ -22,7 +22,7 @@ import javax.inject.Inject;
  */
 class DefaultDocumentWorkflow extends AbsctractDocumentWorkflow {
 
-    private DocumentEventPersistManager columnEventPersistManager;
+    private DocumentEventPersistManager documentEventPersistManager;
 
 
     private DocumentEntityConverter converter;
@@ -31,15 +31,15 @@ class DefaultDocumentWorkflow extends AbsctractDocumentWorkflow {
     }
 
     @Inject
-    DefaultDocumentWorkflow(DocumentEventPersistManager columnEventPersistManager, DocumentEntityConverter converter) {
-        this.columnEventPersistManager = columnEventPersistManager;
+    DefaultDocumentWorkflow(DocumentEventPersistManager documentEventPersistManager, DocumentEntityConverter converter) {
+        this.documentEventPersistManager = documentEventPersistManager;
         this.converter = converter;
     }
 
 
     @Override
-    protected DocumentEventPersistManager getColumnEventPersistManager() {
-        return columnEventPersistManager;
+    protected DocumentEventPersistManager getDocumentEventPersistManager() {
+        return documentEventPersistManager;
     }
 
     @Override

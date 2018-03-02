@@ -46,13 +46,15 @@ public class DefaultDocumentWorkflowTest {
     private DocumentEntityConverter converter;
 
     @Mock
-    private DocumentEntity columnEntity;
+    private DocumentEntity documentEntity;
 
     @BeforeEach
     public void setUp() {
         when(converter.toDocument(any(Object.class)))
-                .thenReturn(columnEntity);
+                .thenReturn(documentEntity);
         when(converter.toEntity(Mockito.eq(Person.class), any(DocumentEntity.class)))
+                .thenReturn(Person.builder().build());
+        when(converter.toEntity(Mockito.any(Person.class), any(DocumentEntity.class)))
                 .thenReturn(Person.builder().build());
 
     }

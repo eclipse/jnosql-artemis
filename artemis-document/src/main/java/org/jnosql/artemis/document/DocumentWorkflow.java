@@ -34,7 +34,7 @@ import java.util.function.UnaryOperator;
 public interface DocumentWorkflow {
 
     /**
-     * Executes the workflow to do an interaction on a database column family.
+     * Executes the workflow to do an interaction on a database document collection.
      *
      * @param entity the entity to be saved
      * @param action the alteration to be executed on database

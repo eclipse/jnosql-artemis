@@ -51,13 +51,13 @@ class DocumentCollectionFactoryProducer {
 
     @ConfigurationUnit
     @Produces
-    public <T extends DocumentCollectionManager> DocumentCollectionManagerFactory<T> getColumnConfigurationGenerics(InjectionPoint injectionPoint) {
+    public <T extends DocumentCollectionManager> DocumentCollectionManagerFactory<T> getDocumentConfigurationGenerics(InjectionPoint injectionPoint) {
         return getDocumentCollection(injectionPoint);
     }
 
     @ConfigurationUnit
     @Produces
-    public DocumentCollectionManagerFactory getColumnConfiguration(InjectionPoint injectionPoint) {
+    public DocumentCollectionManagerFactory getDocumentConfiguration(InjectionPoint injectionPoint) {
         return getDocumentCollection(injectionPoint);
     }
 
@@ -102,9 +102,9 @@ class DocumentCollectionFactoryProducer {
         Class<DocumentConfiguration> configurationClass = unit.<DocumentConfiguration>getProvider()
                 .orElseThrow(() -> new IllegalStateException("The DocumentConfiguration provider is required in the configuration"));
 
-        DocumentConfiguration columnConfiguration = reflections.newInstance(configurationClass);
+        DocumentConfiguration configuration = reflections.newInstance(configurationClass);
 
-        return columnConfiguration.get(unit.getSettings());
+        return configuration.get(unit.getSettings());
     }
 
     private Optional<ConfigurationUnit> getConfigurationUnit(InjectionPoint injectionPoint, Annotated annotated) {

@@ -227,12 +227,12 @@ public class DefaultDocumentTemplateTest {
 
     @Test
     public void shouldReturnSingleResult() {
-        DocumentEntity columnEntity = DocumentEntity.of("Person");
-        columnEntity.addAll(Stream.of(documents).collect(Collectors.toList()));
+        DocumentEntity documentEntity = DocumentEntity.of("Person");
+        documentEntity.addAll(Stream.of(documents).collect(Collectors.toList()));
 
         Mockito.when(managerMock
                 .select(any(DocumentQuery.class)))
-                .thenReturn(singletonList(columnEntity));
+                .thenReturn(singletonList(documentEntity));
 
         DocumentQuery query = select().from("person").build();
 
@@ -255,12 +255,12 @@ public class DefaultDocumentTemplateTest {
     @Test
     public void shouldReturnErrorWhenThereMoreThanASingleResult() {
         Assertions.assertThrows(NonUniqueResultException.class, () -> {
-            DocumentEntity columnEntity = DocumentEntity.of("Person");
-            columnEntity.addAll(Stream.of(documents).collect(Collectors.toList()));
+            DocumentEntity documentEntity = DocumentEntity.of("Person");
+            documentEntity.addAll(Stream.of(documents).collect(Collectors.toList()));
 
             Mockito.when(managerMock
                     .select(any(DocumentQuery.class)))
-                    .thenReturn(Arrays.asList(columnEntity, columnEntity));
+                    .thenReturn(Arrays.asList(documentEntity, documentEntity));
 
             DocumentQuery query = select().from("person").build();
 

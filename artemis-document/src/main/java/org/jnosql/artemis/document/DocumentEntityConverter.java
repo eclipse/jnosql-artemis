@@ -42,6 +42,18 @@ public interface DocumentEntityConverter {
     <T> T toEntity(Class<T> entityClass, DocumentEntity entity);
 
     /**
+     * Converts a {@link DocumentEntity} to entity
+     * Instead of creating a new object is uses the instance used in this parameters
+     *
+     * @param entityInstance the entity class
+     * @param entity         the {@link DocumentEntity} to be converted
+     * @param <T>            the entity type
+     * @return the instance from {@link DocumentEntity}
+     * @throws NullPointerException when either entityInstance or entity are null
+     */
+    <T> T toEntity(T entityInstance, DocumentEntity entity);
+
+    /**
      * Similar to {@link DocumentEntityConverter#toEntity(Class, DocumentEntity)}, but
      * search the instance type from {@link DocumentEntity#getName()}
      *

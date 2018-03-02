@@ -41,10 +41,10 @@ public class DefaultColumnEventPersistManagerTest {
     private DefaultColumnEventPersistManager subject;
 
     @Mock
-    private Event<ColumnEntityPrePersist> documentEntityPrePersistEvent;
+    private Event<ColumnEntityPrePersist> columnEntityPrePersistEvent;
 
     @Mock
-    private Event<ColumnEntityPostPersist> documentEntityPostPersistEvent;
+    private Event<ColumnEntityPostPersist> columnEntityPostPersistEvent;
 
     @Mock
     private Event<EntityPrePersist> entityPrePersistEvent;
@@ -70,7 +70,7 @@ public class DefaultColumnEventPersistManagerTest {
         ColumnEntity entity = ColumnEntity.of("columnFamily");
         subject.firePreColumn(entity);
         ArgumentCaptor<ColumnEntityPrePersist> captor = ArgumentCaptor.forClass(ColumnEntityPrePersist.class);
-        verify(documentEntityPrePersistEvent).fire(captor.capture());
+        verify(columnEntityPrePersistEvent).fire(captor.capture());
 
         ColumnEntityPrePersist captorValue = captor.getValue();
         assertEquals(entity, captorValue.getEntity());
@@ -82,7 +82,7 @@ public class DefaultColumnEventPersistManagerTest {
         ColumnEntity entity = ColumnEntity.of("columnFamily");
         subject.firePostColumn(entity);
         ArgumentCaptor<ColumnEntityPostPersist> captor = ArgumentCaptor.forClass(ColumnEntityPostPersist.class);
-        verify(documentEntityPostPersistEvent).fire(captor.capture());
+        verify(columnEntityPostPersistEvent).fire(captor.capture());
 
         ColumnEntityPostPersist captorValue = captor.getValue();
         assertEquals(entity, captorValue.getEntity());
