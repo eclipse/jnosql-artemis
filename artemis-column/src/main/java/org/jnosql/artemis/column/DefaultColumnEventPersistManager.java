@@ -32,10 +32,10 @@ import javax.inject.Inject;
 class DefaultColumnEventPersistManager implements ColumnEventPersistManager {
 
     @Inject
-    private Event<ColumnEntityPrePersist> documentEntityPrePersistEvent;
+    private Event<ColumnEntityPrePersist> columnEntityPrePersistEvent;
 
     @Inject
-    private Event<ColumnEntityPostPersist> documentEntityPostPersistEvent;
+    private Event<ColumnEntityPostPersist> columnEntityPostPersistEvent;
 
     @Inject
     private Event<EntityPrePersist> entityPrePersistEvent;
@@ -57,12 +57,12 @@ class DefaultColumnEventPersistManager implements ColumnEventPersistManager {
 
     @Override
     public void firePreColumn(ColumnEntity entity) {
-        documentEntityPrePersistEvent.fire(ColumnEntityPrePersist.of(entity));
+        columnEntityPrePersistEvent.fire(ColumnEntityPrePersist.of(entity));
     }
 
     @Override
     public void firePostColumn(ColumnEntity entity) {
-        documentEntityPostPersistEvent.fire(ColumnEntityPostPersist.of(entity));
+        columnEntityPostPersistEvent.fire(ColumnEntityPostPersist.of(entity));
     }
 
     @Override
