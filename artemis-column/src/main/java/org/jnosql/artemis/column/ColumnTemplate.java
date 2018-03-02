@@ -40,7 +40,7 @@ public interface ColumnTemplate {
      * @param entity entity to be saved
      * @param <T>    the instance type
      * @return the entity saved
-     * @throws NullPointerException when document is null
+     * @throws NullPointerException when entity is null
      */
     <T> T insert(T entity);
 
@@ -72,7 +72,7 @@ public interface ColumnTemplate {
     }
 
     /**
-     * Inserts documents collection entity with time to live, by default it's just run for each saving using
+     * Inserts entities collection entity with time to live, by default it's just run for each saving using
      * {@link ColumnTemplate#insert(Object, Duration)},
      * each NoSQL vendor might replace to a more appropriate one.
      *
