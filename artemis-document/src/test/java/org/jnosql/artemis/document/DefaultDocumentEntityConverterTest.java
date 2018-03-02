@@ -28,7 +28,6 @@ import org.jnosql.artemis.model.Movie;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.model.Worker;
 import org.jnosql.artemis.model.Zipcode;
-import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.TypeReference;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.document.Document;
@@ -55,6 +54,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(CDIExtension.class)
 public class DefaultDocumentEntityConverterTest {
@@ -82,7 +83,7 @@ public class DefaultDocumentEntityConverterTest {
     }
 
     @Test
-    public void shouldConvertPersonToDocument() {
+    public void shouldConvertDocumentEntityFromEntity() {
 
         Person person = Person.builder().withAge()
                 .withId(12)
@@ -98,7 +99,7 @@ public class DefaultDocumentEntityConverterTest {
     }
 
     @Test
-    public void shouldConvertActorToDocument() {
+    public void shouldConvertEntityFromDocumentEntity() {
 
 
         DocumentEntity entity = converter.toDocument(actor);
@@ -110,7 +111,7 @@ public class DefaultDocumentEntityConverterTest {
     }
 
     @Test
-    public void shouldConvertDocumentToActor() {
+    public void shouldConvertDocumentEntityFromEntity2() {
         DocumentEntity entity = DocumentEntity.of("Actor");
         Stream.of(documents).forEach(entity::add);
 
@@ -123,8 +124,39 @@ public class DefaultDocumentEntityConverterTest {
         assertEquals(Collections.singletonMap("JavaZone", 10), actor.getMovieRating());
     }
 
+
     @Test
-    public void shouldConvertDocumentToActorFromEntity() {
+    public void shouldConvertColumnEntityToExistEntity() {
+        DocumentEntity entity = DocumentEntity.of("Actor");
+        Stream.of(documents).forEach(entity::add);
+        Actor actor = Actor.actorBuilder().build();
+        Actor result = converter.toEntity(actor, entity);
+
+        assertTrue(actor == result);
+        assertEquals(10, actor.getAge());
+        assertEquals(12L, actor.getId());
+        assertEquals(asList("234", "2342"), actor.getPhones());
+        assertEquals(Collections.singletonMap("JavaZone", "Jedi"), actor.getMovieCharacter());
+        assertEquals(Collections.singletonMap("JavaZone", 10), actor.getMovieRating());
+    }
+
+    @Test
+    public void shouldReturnErrorWhenToEntityIsNull() {
+        DocumentEntity entity = DocumentEntity.of("Actor");
+        Stream.of(documents).forEach(entity::add);
+        Actor actor = Actor.actorBuilder().build();
+
+        assertThrows(NullPointerException.class, () -> {
+            converter.toEntity(null, entity);
+        });
+
+        assertThrows(NullPointerException.class, () -> {
+            converter.toEntity(actor, null);
+        });
+    }
+
+    @Test
+    public void shouldConvertDocumentEntityFromEntity3() {
         DocumentEntity entity = DocumentEntity.of("Actor");
         Stream.of(documents).forEach(entity::add);
 
@@ -138,7 +170,7 @@ public class DefaultDocumentEntityConverterTest {
     }
 
     @Test
-    public void shouldConvertDirectorToDocument() {
+    public void shouldConvertEntityFromDocumentEntity2() {
 
         Movie movie = new Movie("Matriz", 2012, singleton("Actor"));
         Director director = Director.builderDiretor().withAge(12)
