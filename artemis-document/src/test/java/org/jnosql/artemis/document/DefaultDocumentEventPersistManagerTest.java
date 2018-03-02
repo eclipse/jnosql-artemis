@@ -65,7 +65,7 @@ public class DefaultDocumentEventPersistManagerTest {
 
 
     @Test
-    public void shouldFirePreColumn() {
+    public void shouldFirePreDocument() {
         DocumentEntity entity = DocumentEntity.of("collection");
         subject.firePreDocument(entity);
         ArgumentCaptor<DocumentEntityPrePersist> captor = ArgumentCaptor.forClass(DocumentEntityPrePersist.class);
@@ -77,7 +77,7 @@ public class DefaultDocumentEventPersistManagerTest {
 
 
     @Test
-    public void shouldFirePostColumn() {
+    public void shouldFirePostDocument() {
         DocumentEntity entity = DocumentEntity.of("collection");
         subject.firePostDocument(entity);
         ArgumentCaptor<DocumentEntityPostPersist> captor = ArgumentCaptor.forClass(DocumentEntityPostPersist.class);
