@@ -74,6 +74,14 @@ public abstract class AbstractDocumentEntityConverter implements DocumentEntityC
 
     }
 
+    @Override
+    public <T> T toEntity(T entityInstance, DocumentEntity entity) {
+        requireNonNull(entity, "entity is required");
+        requireNonNull(entityInstance, "entityInstance is required");
+        ClassRepresentation representation = getClassRepresentations().get(entityInstance.getClass());
+        return convertEntity(entity.getDocuments(), representation, entityInstance);
+    }
+
     protected <T> T toEntity(Class<T> entityClass, List<Document> documents) {
         ClassRepresentation representation = getClassRepresentations().get(entityClass);
         T instance = getReflections().newInstance(representation.getConstructor());
