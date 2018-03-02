@@ -40,6 +40,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -54,6 +55,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @ExtendWith(CDIExtension.class)
 public class DefaultColumnEntityConverterTest {
@@ -86,7 +88,7 @@ public class DefaultColumnEntityConverterTest {
     }
 
     @Test
-    public void shouldConvertPersonToDocument() {
+    public void shouldConvertPersonToColumn() {
 
         Person person = Person.builder().withAge()
                 .withId(12)
@@ -96,8 +98,8 @@ public class DefaultColumnEntityConverterTest {
         ColumnEntity entity = converter.toColumn(person);
         assertEquals("Person", entity.getName());
         assertEquals(4, entity.size());
-        /*Assert.assertThat(entity.getColumns(), containsInAnyOrder(Document.of("_id", 12L),
-                Document.of("age", 10), Document.of("name", "Otavio"), Document.of("phones", Arrays.asList("234", "2342"))));*/
+        assertThat(entity.getColumns(), containsInAnyOrder(Column.of("_id", 12L),
+                Column.of("age", 10), Column.of("name", "Otavio"), Column.of("phones", Arrays.asList("234", "2342"))));
 
     }
 
