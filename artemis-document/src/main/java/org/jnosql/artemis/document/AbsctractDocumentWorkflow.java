@@ -66,7 +66,7 @@ public abstract class AbsctractDocumentWorkflow implements DocumentWorkflow {
             return t;
         };
 
-        Function<DocumentEntity, T> converterEntity = t -> getConverter().toEntity((Class<T>) entity.getClass(), t);
+        Function<DocumentEntity, T> converterEntity = t -> getConverter().toEntity(entity, t);
 
         UnaryOperator<T> firePostEntity = t -> {
             getDocumentEventPersistManager().firePostEntity(t);
