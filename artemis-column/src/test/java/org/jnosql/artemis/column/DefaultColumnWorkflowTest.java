@@ -54,6 +54,8 @@ public class DefaultColumnWorkflowTest {
                 .thenReturn(columnEntity);
         when(converter.toEntity(Mockito.eq(Person.class), any(ColumnEntity.class)))
                 .thenReturn(Person.builder().build());
+        when(converter.toEntity(Mockito.any(Person.class), any(ColumnEntity.class)))
+                .thenReturn(Person.builder().build());
 
     }
 
