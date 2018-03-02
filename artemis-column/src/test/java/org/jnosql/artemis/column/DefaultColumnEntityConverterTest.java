@@ -28,7 +28,6 @@ import org.jnosql.artemis.model.Movie;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.model.Worker;
 import org.jnosql.artemis.model.Zipcode;
-import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.TypeReference;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.column.Column;
@@ -55,7 +54,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 @ExtendWith(CDIExtension.class)
 public class DefaultColumnEntityConverterTest {
@@ -63,9 +61,6 @@ public class DefaultColumnEntityConverterTest {
 
     @Inject
     private DefaultColumnEntityConverter converter;
-
-    @Inject
-    private ClassRepresentations classRepresentations;
 
     private Column[] columns;
 
