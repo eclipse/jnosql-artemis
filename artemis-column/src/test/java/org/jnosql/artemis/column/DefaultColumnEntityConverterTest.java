@@ -88,7 +88,7 @@ public class DefaultColumnEntityConverterTest {
     }
 
     @Test
-    public void shouldConvertPersonToColumn() {
+    public void shouldConvertEntityFromColumnEntity() {
 
         Person person = Person.builder().withAge()
                 .withId(12)
@@ -104,19 +104,17 @@ public class DefaultColumnEntityConverterTest {
     }
 
     @Test
-    public void shouldConvertActorToDocument() {
-
+    public void shouldConvertColumnEntityFromEntity() {
 
         ColumnEntity entity = converter.toColumn(actor);
         assertEquals("Actor", entity.getName());
         assertEquals(6, entity.size());
 
-
         assertThat(entity.getColumns(), containsInAnyOrder(columns));
     }
 
     @Test
-    public void shouldConvertDocumentToActor() {
+    public void shouldConvertColumnEntityToEntity() {
         ColumnEntity entity = ColumnEntity.of("Actor");
         Stream.of(columns).forEach(entity::add);
 
@@ -130,7 +128,7 @@ public class DefaultColumnEntityConverterTest {
     }
 
     @Test
-    public void shouldConvertDocumentToActorFromEntity() {
+    public void shouldConvertColumnEntityToEntity2() {
         ColumnEntity entity = ColumnEntity.of("Actor");
         Stream.of(columns).forEach(entity::add);
 
@@ -145,7 +143,7 @@ public class DefaultColumnEntityConverterTest {
 
 
     @Test
-    public void shouldConvertDirectorToColumn() {
+    public void shouldConvertEntityToColumnEntity2() {
 
         Movie movie = new Movie("Matrix", 2012, Collections.singleton("Actor"));
         Director director = Director.builderDiretor().withAge(12)
@@ -238,7 +236,7 @@ public class DefaultColumnEntityConverterTest {
     }
 
     @Test
-    public void shouldConvertToDocumentWhenHaConverter() {
+    public void shouldConvertToColumnWhenHaConverter() {
         Worker worker = new Worker();
         Job job = new Job();
         job.setCity("Sao Paulo");
@@ -360,8 +358,8 @@ public class DefaultColumnEntityConverterTest {
         assertEquals("1234",  address.getZipcode().getPlusFour());
 
     }
-    private Object getValue(Optional<Column> document) {
-        return document.map(Column::getValue).map(Value::get).orElse(null);
+    private Object getValue(Optional<Column> column) {
+        return column.map(Column::getValue).map(Value::get).orElse(null);
     }
 
 }
