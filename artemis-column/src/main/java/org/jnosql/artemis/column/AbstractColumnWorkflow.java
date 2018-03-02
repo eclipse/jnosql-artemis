@@ -63,7 +63,7 @@ public abstract class AbstractColumnWorkflow implements ColumnWorkflow {
             return t;
         };
 
-        Function<ColumnEntity, T> converterEntity = t -> getConverter().toEntity((Class<T>) entity.getClass(), t);
+        Function<ColumnEntity, T> converterEntity = t -> getConverter().toEntity(entity, t);
 
         UnaryOperator<T> firePostEntity = t -> {
             getColumnEventPersistManager().firePostEntity(t);
