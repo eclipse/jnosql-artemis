@@ -62,9 +62,6 @@ public class DefaultDocumentEntityConverterTest {
     @Inject
     private DefaultDocumentEntityConverter converter;
 
-    @Inject
-    private ClassRepresentations classRepresentations;
-
     private Document[] documents;
 
     private Actor actor = Actor.actorBuilder().withAge()
