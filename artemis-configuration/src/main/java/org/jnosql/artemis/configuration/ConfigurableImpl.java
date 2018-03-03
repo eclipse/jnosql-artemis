@@ -17,7 +17,10 @@ package org.jnosql.artemis.configuration;
 import java.util.Map;
 import java.util.Objects;
 
-public class ConfigurableXML implements Configurable {
+/**
+ * The class that represents configuration in JSON
+ */
+public class ConfigurableImpl implements Configurable {
 
     private String name;
 
@@ -69,10 +72,10 @@ public class ConfigurableXML implements Configurable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ConfigurableXML)) {
+        if (!(o instanceof ConfigurableImpl)) {
             return false;
         }
-        ConfigurableXML that = (ConfigurableXML) o;
+        ConfigurableImpl that = (ConfigurableImpl) o;
         return Objects.equals(name, that.name) &&
                 Objects.equals(description, that.description) &&
                 Objects.equals(provider, that.provider) &&
@@ -86,7 +89,7 @@ public class ConfigurableXML implements Configurable {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("ConfigurableXML{");
+        final StringBuilder sb = new StringBuilder("ConfigurableJSON{");
         sb.append("name='").append(name).append('\'');
         sb.append(", description='").append(description).append('\'');
         sb.append(", provider='").append(provider).append('\'');

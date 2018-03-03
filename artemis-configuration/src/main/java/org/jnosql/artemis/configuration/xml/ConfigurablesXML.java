@@ -12,7 +12,9 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis.configuration;
+package org.jnosql.artemis.configuration.xml;
+
+import org.jnosql.artemis.configuration.ConfigurableImpl;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -25,13 +27,13 @@ import java.util.List;
 public class ConfigurablesXML {
 
     @XmlElement(name = "configuration")
-    private List<ConfigurableXML> configurations;
+    private List<ConfigurableImpl> configurations;
 
-    public List<ConfigurableXML> getConfigurations() {
+    public List<ConfigurableImpl> getConfigurations() {
         return configurations;
     }
 
-    public void setConfigurations(List<ConfigurableXML> configurations) {
+    public void setConfigurations(List<ConfigurableImpl> configurations) {
         this.configurations = configurations;
     }
 }
