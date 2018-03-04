@@ -12,9 +12,12 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis.configuration;
+package org.jnosql.artemis.configuration.xml;
 
 import org.jnosql.artemis.ConfigurationUnit;
+import org.jnosql.artemis.configuration.Configurable;
+import org.jnosql.artemis.configuration.ConfigurableReader;
+import org.jnosql.artemis.configuration.ConfigurationException;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;

@@ -14,6 +14,7 @@
  */
 package org.jnosql.artemis.configuration;
 
+import org.jnosql.artemis.configuration.xml.ConfigurablesXML;
 import org.junit.jupiter.api.Test;
 
 import javax.json.bind.Jsonb;
@@ -34,7 +35,7 @@ public class Configurables {
 
         Jsonb jsonb = JsonbBuilder.create();
 
-        ConfigurableJSON configuration = new ConfigurableJSON();
+        ConfigurableImpl configuration = new ConfigurableImpl();
         configuration.setName("name");
         configuration.setDescription("that is the description");
         configuration.setProvider("class");
@@ -54,7 +55,7 @@ public class Configurables {
 
         ConfigurablesXML configurables = new ConfigurablesXML();
 
-        ConfigurableXML configuration = new ConfigurableXML();
+        ConfigurableImpl configuration = new ConfigurableImpl();
         configuration.setName("name");
         configuration.setDescription("that is the description");
         configuration.setProvider("class");

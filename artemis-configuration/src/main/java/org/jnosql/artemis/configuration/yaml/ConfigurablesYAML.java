@@ -10,23 +10,22 @@
  *
  *   Contributors:
  *
- *   Otavio Santana
+ *   Daniel Cunha <dcunha@tomitribe.com>
  */
-package org.jnosql.artemis.configuration;
+package org.jnosql.artemis.configuration.yaml;
 
-import org.jnosql.artemis.ArtemisException;
+import org.jnosql.artemis.configuration.ConfigurableImpl;
 
-/**
- * The exception to read Configuration
- */
-public class ConfigurationException extends ArtemisException {
+import java.util.List;
 
-    public ConfigurationException(String message) {
-        super(message);
+public class ConfigurablesYAML {
+    private List<ConfigurableImpl> configurations;
+
+    public List<ConfigurableImpl> getConfigurations() {
+        return configurations;
     }
 
-    public ConfigurationException(String message, Throwable exception) {
-        super(message, exception);
+    public void setConfigurations(List<ConfigurableImpl> configurations) {
+        this.configurations = configurations;
     }
-
 }
