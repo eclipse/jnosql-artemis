@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 public class IdNotFoundException extends ArtemisException {
 
     public static final Supplier<IdNotFoundException> KEY_NOT_FOUND_EXCEPTION_SUPPLIER = ()
-            -> new IdNotFoundException("To use this resource you must annotaded a fiel with @org.jnosql.artemisId");
+            -> new IdNotFoundException("To use this resource you must annotaded a fiel with @org.jnosql.artemis.Id");
     /**
      * New exception instance with the exception message
      *
