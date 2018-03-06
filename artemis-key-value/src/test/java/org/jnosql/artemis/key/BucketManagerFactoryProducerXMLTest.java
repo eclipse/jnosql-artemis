@@ -19,6 +19,7 @@ import org.jnosql.artemis.ConfigurationUnit;
 import org.jnosql.diana.api.Settings;
 import org.jnosql.diana.api.key.BucketManagerFactory;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -28,6 +29,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Disabled
 @ExtendWith(CDIExtension.class)
 public class BucketManagerFactoryProducerXMLTest {
 
