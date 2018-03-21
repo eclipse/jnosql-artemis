@@ -38,7 +38,7 @@ import static java.util.Optional.ofNullable;
 
 @Named("yaml")
 @ApplicationScoped
-public class ConfigurableReaderYAML implements ConfigurableReader {
+class ConfigurableReaderYAML implements ConfigurableReader {
     private static final Logger LOGGER = Logger.getLogger(ConfigurableReaderYAML.class.getName());
     private final Map<String, List<Configurable>> cache = new ConcurrentHashMap<>();
     final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());

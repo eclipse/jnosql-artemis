@@ -24,7 +24,7 @@ import java.util.List;
 
 @XmlRootElement(name = "configurations")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ConfigurablesXML {
+class ConfigurablesXML {
 
     @XmlElement(name = "configuration")
     private List<ConfigurableImpl> configurations;

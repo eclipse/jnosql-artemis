@@ -18,7 +18,7 @@ import org.jnosql.artemis.configuration.ConfigurableImpl;
 
 import java.util.List;
 
-public class ConfigurablesYAML {
+class ConfigurablesYAML {
     private List<ConfigurableImpl> configurations;
 
     public List<ConfigurableImpl> getConfigurations() {
