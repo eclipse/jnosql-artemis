@@ -21,10 +21,10 @@ import java.util.Objects;
  */
 public final class DatabaseMetadata {
 
-    public static final DatabaseMetadata DEFAULT_KEY_VALUE = new DatabaseMetadata(DatabaseType.COLUMN, "");
+    public static final DatabaseMetadata DEFAULT_KEY_VALUE = new DatabaseMetadata(DatabaseType.KEY_VALUE, "");
     public static final DatabaseMetadata DEFAULT_COLUMN = new DatabaseMetadata(DatabaseType.COLUMN, "");
-    public static final DatabaseMetadata DEFAULT_DOCUMENT = new DatabaseMetadata(DatabaseType.COLUMN, "");
-    public static final DatabaseMetadata DEFAULT_GRAPH = new DatabaseMetadata(DatabaseType.COLUMN, "");
+    public static final DatabaseMetadata DEFAULT_DOCUMENT = new DatabaseMetadata(DatabaseType.DOCUMENT, "");
+    public static final DatabaseMetadata DEFAULT_GRAPH = new DatabaseMetadata(DatabaseType.GRAPH, "");
     private final DatabaseType type;
 
     private final String provider;
