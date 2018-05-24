@@ -15,10 +15,11 @@
 package org.jnosql.artemis.column.spi;
 
 
+import org.jnosql.artemis.Database;
+import org.jnosql.artemis.DatabaseMetadata;
+import org.jnosql.artemis.Databases;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.RepositoryAsync;
-import org.jnosql.artemis.Database;
-import org.jnosql.artemis.Databases;
 import org.jnosql.artemis.column.query.RepositoryAsyncColumnBean;
 import org.jnosql.artemis.column.query.RepositoryColumnBean;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
@@ -31,10 +32,9 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessProducer;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
@@ -48,9 +48,9 @@ public class ColumnFamilyProducerExtension implements Extension {
 
     private static final Logger LOGGER = Logger.getLogger(ColumnFamilyProducerExtension.class.getName());
 
-    private final List<Database> databases = new ArrayList<>();
+    private final Set<DatabaseMetadata> databases = new HashSet<>();
 
-    private final List<Database> databasesAsync = new ArrayList<>();
+    private final Set<DatabaseMetadata> databasesAsync = new HashSet<>();
 
     private final Collection<Class<?>> crudTypes = new HashSet<>();
 
@@ -93,25 +93,30 @@ public class ColumnFamilyProducerExtension implements Extension {
         LOGGER.info(String.format("Starting to process on columns: %d databases crud %d and crudAsync %d",
                 databases.size(), crudTypes.size(), crudAsyncTypes.size()));
         databases.forEach(type -> {
-            final ColumnTemplateBean bean = new ColumnTemplateBean(beanManager, type.provider());
+            final ColumnTemplateBean bean = new ColumnTemplateBean(beanManager, type.getProvider());
             afterBeanDiscovery.addBean(bean);
         });
 
         databasesAsync.forEach(type -> {
-            final ColumnTemplateAsyncBean bean = new ColumnTemplateAsyncBean(beanManager, type.provider());
+            final ColumnTemplateAsyncBean bean = new ColumnTemplateAsyncBean(beanManager, type.getProvider());
             afterBeanDiscovery.addBean(bean);
         });
 
         crudTypes.forEach(type -> {
-            afterBeanDiscovery.addBean(new RepositoryColumnBean(type, beanManager, ""));
+            if (!databases.contains(DatabaseMetadata.DEFAULT_COLUMN)) {
+                afterBeanDiscovery.addBean(new RepositoryColumnBean(type, beanManager, ""));
+            }
             databases.forEach(database -> afterBeanDiscovery
-                    .addBean(new RepositoryColumnBean(type, beanManager, database.provider())));
+                    .addBean(new RepositoryColumnBean(type, beanManager, database.getProvider())));
         });
 
         crudAsyncTypes.forEach(type -> {
-            afterBeanDiscovery.addBean(new RepositoryAsyncColumnBean(type, beanManager, ""));
+            if (!databases.contains(DatabaseMetadata.DEFAULT_COLUMN)) {
+                afterBeanDiscovery.addBean(new RepositoryAsyncColumnBean(type, beanManager, ""));
+            }
+
             databasesAsync.forEach(database -> afterBeanDiscovery
-                    .addBean(new RepositoryAsyncColumnBean(type, beanManager, database.provider())));
+                    .addBean(new RepositoryAsyncColumnBean(type, beanManager, database.getProvider())));
         });
 
 
