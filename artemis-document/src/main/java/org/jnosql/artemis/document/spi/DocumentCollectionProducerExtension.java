@@ -15,10 +15,11 @@
 package org.jnosql.artemis.document.spi;
 
 
+import org.jnosql.artemis.Database;
+import org.jnosql.artemis.DatabaseMetadata;
+import org.jnosql.artemis.Databases;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.RepositoryAsync;
-import org.jnosql.artemis.Database;
-import org.jnosql.artemis.Databases;
 import org.jnosql.artemis.document.query.DocumentRepositoryAsyncBean;
 import org.jnosql.artemis.document.query.RepositoryDocumentBean;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
@@ -31,10 +32,9 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessProducer;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
@@ -48,9 +48,9 @@ public class DocumentCollectionProducerExtension implements Extension {
 
     private static final Logger LOGGER = Logger.getLogger(DocumentCollectionProducerExtension.class.getName());
 
-    private final List<Database> databases = new ArrayList<>();
+    private final Set<DatabaseMetadata> databases = new HashSet<>();
 
-    private final List<Database> databasesAsync = new ArrayList<>();
+    private final Set<DatabaseMetadata> databasesAsync = new HashSet<>();
 
     private final Collection<Class<?>> crudTypes = new HashSet<>();
 
@@ -98,27 +98,32 @@ public class DocumentCollectionProducerExtension implements Extension {
                 databases.size(), crudTypes.size(), crudAsyncTypes.size()));
 
         databases.forEach(type -> {
-            final DocumentTemplateBean bean = new DocumentTemplateBean(beanManager, type.provider());
+            final DocumentTemplateBean bean = new DocumentTemplateBean(beanManager, type.getProvider());
             afterBeanDiscovery.addBean(bean);
         });
 
         databasesAsync.forEach(type -> {
-            final DocumentTemplateAsyncBean bean = new DocumentTemplateAsyncBean(beanManager, type.provider());
+            final DocumentTemplateAsyncBean bean = new DocumentTemplateAsyncBean(beanManager, type.getProvider());
             afterBeanDiscovery.addBean(bean);
         });
 
         crudTypes.forEach(type -> {
-            afterBeanDiscovery.addBean(new RepositoryDocumentBean(type, beanManager, ""));
+            if (!databases.contains(DatabaseMetadata.DEFAULT_DOCUMENT)) {
+                afterBeanDiscovery.addBean(new RepositoryDocumentBean(type, beanManager, ""));
+            }
             databases.forEach(database -> {
-                final RepositoryDocumentBean bean = new RepositoryDocumentBean(type, beanManager, database.provider());
+                final RepositoryDocumentBean bean = new RepositoryDocumentBean(type, beanManager, database.getProvider());
                 afterBeanDiscovery.addBean(bean);
             });
         });
 
         crudAsyncTypes.forEach(type -> {
-            afterBeanDiscovery.addBean(new DocumentRepositoryAsyncBean(type, beanManager, ""));
+            if (!databases.contains(DatabaseMetadata.DEFAULT_DOCUMENT)) {
+                afterBeanDiscovery.addBean(new DocumentRepositoryAsyncBean(type, beanManager, ""));
+            }
             databasesAsync.forEach(database -> {
-                final DocumentRepositoryAsyncBean bean = new DocumentRepositoryAsyncBean(type, beanManager, database.provider());
+                final DocumentRepositoryAsyncBean bean = new DocumentRepositoryAsyncBean(type, beanManager,
+                        database.getProvider());
                 afterBeanDiscovery.addBean(bean);
             });
         });
