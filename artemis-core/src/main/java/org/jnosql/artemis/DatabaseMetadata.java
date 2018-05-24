@@ -58,7 +58,7 @@ public final class DatabaseMetadata {
 
     @Override
     public String toString() {
-        return type + "@" + provider;
+        return type + (provider == null ? "" : '@' + provider);
     }
 
 
