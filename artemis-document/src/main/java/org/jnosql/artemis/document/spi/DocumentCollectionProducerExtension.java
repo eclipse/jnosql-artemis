@@ -15,7 +15,6 @@
 package org.jnosql.artemis.document.spi;
 
 
-import org.jnosql.artemis.Database;
 import org.jnosql.artemis.DatabaseMetadata;
 import org.jnosql.artemis.Databases;
 import org.jnosql.artemis.Repository;
@@ -42,7 +41,7 @@ import static org.jnosql.artemis.DatabaseType.DOCUMENT;
 
 /**
  * Extension to start up the DocumentTemplate, DocumentTemplateAsync, Repository and RepositoryAsync
- * from the {@link Database} qualifier
+ * from the {@link org.jnosql.artemis.Database} qualifier
  */
 public class DocumentCollectionProducerExtension implements Extension {
 
