@@ -15,7 +15,7 @@
 package org.jnosql.artemis.graph.spi;
 
 import org.apache.tinkerpop.gremlin.structure.Graph;
-import org.jnosql.artemis.Database;
+import org.jnosql.artemis.DatabaseMetadata;
 import org.jnosql.artemis.Databases;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.graph.query.RepositoryGraphBean;
@@ -27,10 +27,9 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessProducer;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
@@ -38,13 +37,13 @@ import static org.jnosql.artemis.DatabaseType.GRAPH;
 
 /**
  * Extension to start up the GraphTemplate, Repository
- * from the {@link Database} qualifier
+ * from the {@link org.jnosql.artemis.Database} qualifier
  */
 public class GraphProducerExtension implements Extension {
 
     private static final Logger LOGGER = Logger.getLogger(GraphProducerExtension.class.getName());
 
-    private final List<Database> databases = new ArrayList<>();
+    private final Set<DatabaseMetadata> databases = new HashSet<>();
 
     private final Collection<Class<?>> crudTypes = new HashSet<>();
 
@@ -72,15 +71,17 @@ public class GraphProducerExtension implements Extension {
                 databases.size(), crudTypes.size()));
 
         databases.forEach(type -> {
-            final GraphTemplateBean bean = new GraphTemplateBean(beanManager, type.provider());
+            final GraphTemplateBean bean = new GraphTemplateBean(beanManager, type.getProvider());
             afterBeanDiscovery.addBean(bean);
         });
 
 
         crudTypes.forEach(type -> {
-            afterBeanDiscovery.addBean(new RepositoryGraphBean(type, beanManager, ""));
+            if (!databases.contains(DatabaseMetadata.DEFAULT_GRAPH)) {
+                afterBeanDiscovery.addBean(new RepositoryGraphBean(type, beanManager, ""));
+            }
             databases.forEach(database -> afterBeanDiscovery
-                    .addBean(new RepositoryGraphBean(type, beanManager, database.provider())));
+                    .addBean(new RepositoryGraphBean(type, beanManager, database.getProvider())));
         });
 
 
