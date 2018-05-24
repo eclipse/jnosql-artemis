@@ -16,6 +16,7 @@ package org.jnosql.artemis.key.spi;
 
 
 import org.jnosql.artemis.Database;
+import org.jnosql.artemis.DatabaseMetadata;
 import org.jnosql.artemis.Databases;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.key.query.KeyValueRepositoryBean;
@@ -28,10 +29,9 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessProducer;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
@@ -45,7 +45,7 @@ public class BucketManagerProducerExtension implements Extension {
 
     private static final Logger LOGGER = Logger.getLogger(BucketManagerProducerExtension.class.getName());
 
-    private final List<Database> databases = new ArrayList<>();
+    private final Set<DatabaseMetadata> databases = new HashSet<>();
 
     private final Collection<Class<?>> crudTypes = new HashSet<>();
 
@@ -72,14 +72,19 @@ public class BucketManagerProducerExtension implements Extension {
                 databases.size(), crudTypes.size()));
 
         databases.forEach(type -> {
-            final org.jnosql.artemis.key.spi.KeyValueRepositoryBean bean = new org.jnosql.artemis.key.spi.KeyValueRepositoryBean(beanManager, type.provider());
+            final org.jnosql.artemis.key.spi.KeyValueRepositoryBean bean =
+                    new org.jnosql.artemis.key.spi.KeyValueRepositoryBean(beanManager, type.getProvider());
             afterBeanDiscovery.addBean(bean);
         });
 
         crudTypes.forEach(type -> {
-            afterBeanDiscovery.addBean(new KeyValueRepositoryBean(type, beanManager, ""));
+
+            if (!databases.contains(DatabaseMetadata.DEFAULT_KEY_VALUE)) {
+                afterBeanDiscovery.addBean(new KeyValueRepositoryBean(type, beanManager, ""));
+            }
+
             databases.forEach(database -> afterBeanDiscovery
-                    .addBean(new KeyValueRepositoryBean(type, beanManager, database.provider())));
+                    .addBean(new KeyValueRepositoryBean(type, beanManager, database.getProvider())));
         });
 
     }
