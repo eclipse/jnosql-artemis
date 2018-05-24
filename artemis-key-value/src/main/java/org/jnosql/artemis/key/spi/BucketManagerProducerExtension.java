@@ -15,7 +15,6 @@
 package org.jnosql.artemis.key.spi;
 
 
-import org.jnosql.artemis.Database;
 import org.jnosql.artemis.DatabaseMetadata;
 import org.jnosql.artemis.Databases;
 import org.jnosql.artemis.Repository;
@@ -39,7 +38,7 @@ import static org.jnosql.artemis.DatabaseType.KEY_VALUE;
 
 /**
  * Extension to start up {@link org.jnosql.artemis.key.KeyValueTemplate} and {@link org.jnosql.artemis.Repository}
- * from the {@link javax.enterprise.inject.Default} and {@link Database} qualifier
+ * from the {@link javax.enterprise.inject.Default} and {@link org.jnosql.artemis.Database} qualifier
  */
 public class BucketManagerProducerExtension implements Extension {
 
