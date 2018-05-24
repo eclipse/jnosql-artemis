@@ -60,4 +60,17 @@ public final class DatabaseMetadata {
     public String toString() {
         return type + "@" + provider;
     }
+
+
+    /**
+     * creates a {@link DatabaseMetadata} instance
+     *
+     * @param database the database annotation
+     * @return a {@link DatabaseMetadata} instance
+     * @throws NullPointerException when database is null
+     */
+    public static DatabaseMetadata of(Database database) {
+        Objects.requireNonNull(database, "database is required");
+        return new DatabaseMetadata(database.value(), database.provider());
+    }
 }
