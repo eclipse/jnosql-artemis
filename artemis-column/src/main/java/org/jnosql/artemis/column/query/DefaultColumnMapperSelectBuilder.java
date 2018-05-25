@@ -24,7 +24,7 @@ import org.jnosql.diana.api.column.query.ColumnNameCondition;
 import org.jnosql.diana.api.column.query.ColumnNameOrder;
 import org.jnosql.diana.api.column.query.ColumnNotCondition;
 import org.jnosql.diana.api.column.query.ColumnOrder;
-import org.jnosql.diana.api.column.query.ColumnStart;
+import org.jnosql.diana.api.column.query.ColumnSkip;
 import org.jnosql.diana.api.column.query.ColumnWhere;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-class DefaultColumnMapperSelectBuilder extends AbstractMapperQuery implements ColumnFrom, ColumnLimit, ColumnStart,
+class DefaultColumnMapperSelectBuilder extends AbstractMapperQuery implements ColumnFrom, ColumnLimit, ColumnSkip,
         ColumnOrder, ColumnNameCondition, ColumnNotCondition, ColumnNameOrder, ColumnWhere {
 
 
@@ -68,8 +68,8 @@ class DefaultColumnMapperSelectBuilder extends AbstractMapperQuery implements Co
     }
 
     @Override
-    public ColumnStart start(long start) {
-        this.start = start;
+    public ColumnSkip skip(long skip) {
+        this.start = skip;
         return this;
     }
 

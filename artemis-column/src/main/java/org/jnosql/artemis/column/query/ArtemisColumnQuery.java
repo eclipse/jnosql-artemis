@@ -28,26 +28,26 @@ class ArtemisColumnQuery implements ColumnQuery {
 
     private final List<Sort> sorts;
     private final long limit;
-    private final long start;
+    private final long skip;
     private final ColumnCondition condition;
     private final String columnFamily;
 
-    public ArtemisColumnQuery(List<Sort> sorts, long limit, long start, ColumnCondition condition, String columnFamily) {
+    public ArtemisColumnQuery(List<Sort> sorts, long limit, long skip, ColumnCondition condition, String columnFamily) {
         this.sorts = sorts;
         this.limit = limit;
-        this.start = start;
+        this.skip = skip;
         this.condition = condition;
         this.columnFamily = columnFamily;
     }
 
     @Override
-    public long getMaxResults() {
+    public long getLimit() {
         return limit;
     }
 
     @Override
-    public long getFirstResult() {
-        return start;
+    public long getSkip() {
+        return skip;
     }
 
     @Override
@@ -80,8 +80,8 @@ class ArtemisColumnQuery implements ColumnQuery {
             return false;
         }
         ColumnQuery that = (ColumnQuery) o;
-        return limit == that.getMaxResults()
-                && start == that.getFirstResult()
+        return limit == that.getLimit()
+                && skip == that.getSkip()
                 && Objects.equals(sorts, that.getSorts())
                 && Objects.equals(condition, that.getCondition().orElse(null))
                 && Objects.equals(columnFamily, that.getColumnFamily());
@@ -89,14 +89,14 @@ class ArtemisColumnQuery implements ColumnQuery {
 
     @Override
     public int hashCode() {
-        return Objects.hash(limit, start, columnFamily, emptyList(), sorts, condition);
+        return Objects.hash(limit, skip, columnFamily, emptyList(), sorts, condition);
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("ArtemisColumnQuery{");
-        sb.append("maxResults=").append(limit);
-        sb.append(", firstResult=").append(start);
+        sb.append("limit=").append(limit);
+        sb.append(", skip=").append(skip);
         sb.append(", columnFamily='").append(columnFamily).append('\'');
         sb.append(", columns=").append(emptyList());
         sb.append(", sorts=").append(sorts);

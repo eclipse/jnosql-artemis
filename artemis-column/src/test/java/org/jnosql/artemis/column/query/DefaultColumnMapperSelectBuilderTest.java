@@ -77,8 +77,8 @@ public class DefaultColumnMapperSelectBuilderTest {
 
     @Test
     public void shouldSelectStart() {
-        ColumnQuery query = mapperBuilder.selectFrom(Worker.class).start(10).build();
-        ColumnQuery queryExpected = select().from("Worker").start(10L).build();
+        ColumnQuery query = mapperBuilder.selectFrom(Worker.class).limit(10).build();
+        ColumnQuery queryExpected = select().from("Worker").limit(10L).build();
         assertEquals(queryExpected, query);
     }
 
