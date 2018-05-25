@@ -24,14 +24,14 @@ public interface Pagination {
      *
      * @return the limit to be used in a query
      */
-    long getMaxResults();
+    long getLimit();
 
     /**
      * Gets when the result starts
      *
      * @return the start
      */
-    long getFirstResult();
+    long getSkip();
 
     /**
      * Creates a default pagination
