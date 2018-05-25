@@ -24,7 +24,7 @@ import org.jnosql.diana.api.document.query.DocumentNameCondition;
 import org.jnosql.diana.api.document.query.DocumentNameOrder;
 import org.jnosql.diana.api.document.query.DocumentNotCondition;
 import org.jnosql.diana.api.document.query.DocumentOrder;
-import org.jnosql.diana.api.document.query.DocumentStart;
+import org.jnosql.diana.api.document.query.DocumentSkip;
 import org.jnosql.diana.api.document.query.DocumentWhere;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-class DefaultDocumentMapperSelectBuilder  extends AbstractMapperQuery implements DocumentFrom, DocumentLimit, DocumentStart,
+class DefaultDocumentMapperSelectBuilder  extends AbstractMapperQuery implements DocumentFrom, DocumentLimit, DocumentSkip,
         DocumentOrder, DocumentNameCondition, DocumentNotCondition, DocumentNameOrder, DocumentWhere {
 
     private final List<Sort> sorts = new ArrayList<>();
@@ -67,7 +67,7 @@ class DefaultDocumentMapperSelectBuilder  extends AbstractMapperQuery implements
     }
 
     @Override
-    public DocumentStart start(long start) {
+    public DocumentSkip skip(long start) {
         this.start = start;
         return this;
     }

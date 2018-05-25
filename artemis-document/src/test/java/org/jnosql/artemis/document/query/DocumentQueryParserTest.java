@@ -247,8 +247,8 @@ public class DocumentQueryParserTest {
         assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
         assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
-        assertEquals(pagination.getMaxResults(), query.getMaxResults());
-        assertEquals(pagination.getFirstResult(), query.getFirstResult());
+        assertEquals(pagination.getMaxResults(), query.getLimit());
+        assertEquals(pagination.getFirstResult(), query.getSkip());
     }
 
     @Test
@@ -261,8 +261,8 @@ public class DocumentQueryParserTest {
         assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
         assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
-        assertEquals(pagination.getMaxResults(), query.getMaxResults());
-        assertEquals(pagination.getFirstResult(), query.getFirstResult());
+        assertEquals(pagination.getMaxResults(), query.getLimit());
+        assertEquals(pagination.getFirstResult(), query.getSkip());
         assertEquals(sort, query.getSorts().get(0));
     }
 
@@ -276,8 +276,8 @@ public class DocumentQueryParserTest {
         assertEquals("Person", query.getDocumentCollection());
         assertEquals(Condition.EQUALS, query.getCondition().get().getCondition());
         assertEquals(Document.of("name", "name"), query.getCondition().get().getDocument());
-        assertEquals(pagination.getMaxResults(), query.getMaxResults());
-        assertEquals(pagination.getFirstResult(), query.getFirstResult());
+        assertEquals(pagination.getMaxResults(), query.getLimit());
+        assertEquals(pagination.getFirstResult(), query.getSkip());
         assertEquals(sort, query.getSorts().get(0));
     }
 

@@ -230,8 +230,8 @@ public class DocumentRepositoryAsyncProxyTest {
         assertEquals(Document.of("name", "name"), condition.getDocument());
         assertEquals(callback, consumerCaptor.getValue());
         assertEquals(sort, query.getSorts().get(0));
-        assertEquals(pagination.getFirstResult(), query.getFirstResult());
-        assertEquals(pagination.getMaxResults(), query.getMaxResults());
+        assertEquals(pagination.getFirstResult(), query.getSkip());
+        assertEquals(pagination.getMaxResults(), query.getLimit());
     }
 
     @Test

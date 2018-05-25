@@ -76,8 +76,8 @@ public class DefaultDocumentMapperSelectBuilderTest {
 
     @Test
     public void shouldSelectStart() {
-        DocumentQuery query = mapperBuilder.selectFrom(Worker.class).start(10).build();
-        DocumentQuery queryExpected = select().from("Worker").start(10L).build();
+        DocumentQuery query = mapperBuilder.selectFrom(Worker.class).skip(10).build();
+        DocumentQuery queryExpected = select().from("Worker").skip(10L).build();
         assertEquals(queryExpected, query);
     }
 

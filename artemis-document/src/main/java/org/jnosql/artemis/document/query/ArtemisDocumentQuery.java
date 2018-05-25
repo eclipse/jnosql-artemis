@@ -26,26 +26,26 @@ import java.util.Optional;
 class ArtemisDocumentQuery implements DocumentQuery {
     private final List<Sort> sorts;
     private final long limit;
-    private final long start;
+    private final long skip;
     private final DocumentCondition condition;
     private final String documentCollection;
 
-    ArtemisDocumentQuery(List<Sort> sorts, long limit, long start, DocumentCondition condition, String documentCollection) {
+    ArtemisDocumentQuery(List<Sort> sorts, long limit, long skip, DocumentCondition condition, String documentCollection) {
         this.sorts = sorts;
         this.limit = limit;
-        this.start = start;
+        this.skip = skip;
         this.condition = condition;
         this.documentCollection = documentCollection;
     }
 
     @Override
-    public long getMaxResults() {
+    public long getLimit() {
         return limit;
     }
 
     @Override
-    public long getFirstResult() {
-        return start;
+    public long getSkip() {
+        return skip;
     }
 
     @Override
@@ -77,8 +77,8 @@ class ArtemisDocumentQuery implements DocumentQuery {
             return false;
         }
         DocumentQuery that = (DocumentQuery) o;
-        return limit == that.getMaxResults() &&
-                start == that.getFirstResult() &&
+        return limit == that.getLimit() &&
+                skip == that.getSkip() &&
                 Objects.equals(sorts, that.getSorts()) &&
                 Objects.equals(condition, that.getCondition().orElse(null)) &&
                 Objects.equals(documentCollection, that.getDocumentCollection());
@@ -86,14 +86,14 @@ class ArtemisDocumentQuery implements DocumentQuery {
 
     @Override
     public int hashCode() {
-        return Objects.hash(limit, start, documentCollection, condition, sorts, Collections.emptyList());
+        return Objects.hash(limit, skip, documentCollection, condition, sorts, Collections.emptyList());
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("ArtemisDocumentQuery{");
-        sb.append("maxResult=").append(limit);
-        sb.append(", firstResult=").append(start);
+        sb.append("limit=").append(limit);
+        sb.append(", skip=").append(skip);
         sb.append(", documentCollection='").append(documentCollection).append('\'');
         sb.append(", condition=").append(condition);
         sb.append(", sorts=").append(sorts);
