@@ -109,7 +109,7 @@ class DefaultColumnMapperSelectBuilder extends AbstractMapperQuery implements Co
 
 
     @Override
-    public ColumnWhere gt(Number value) {
+    public <T> ColumnWhere gt(T value) {
         gtImpl(value);
         return this;
     }
@@ -117,13 +117,13 @@ class DefaultColumnMapperSelectBuilder extends AbstractMapperQuery implements Co
 
 
     @Override
-    public ColumnWhere gte(Number value) {
+    public <T> ColumnWhere gte(T value) {
         gteImpl(value);
         return this;
     }
 
     @Override
-    public ColumnWhere lt(Number value) {
+    public <T> ColumnWhere lt(T value) {
         ltImpl(value);
         return this;
     }
@@ -131,7 +131,7 @@ class DefaultColumnMapperSelectBuilder extends AbstractMapperQuery implements Co
 
 
     @Override
-    public ColumnWhere lte(Number value) {
+    public <T> ColumnWhere lte(T value) {
         lteImpl(value);
         return this;
     }
@@ -139,7 +139,7 @@ class DefaultColumnMapperSelectBuilder extends AbstractMapperQuery implements Co
 
 
     @Override
-    public ColumnWhere between(Number valueA, Number valueB) {
+    public <T> ColumnWhere between(T valueA, T valueB) {
         betweenImpl(valueA, valueB);
          return this;
     }
