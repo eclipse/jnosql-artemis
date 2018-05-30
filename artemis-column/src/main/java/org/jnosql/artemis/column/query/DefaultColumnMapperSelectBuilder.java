@@ -100,7 +100,6 @@ class DefaultColumnMapperSelectBuilder extends AbstractMapperQuery implements Co
     }
 
 
-
     @Override
     public ColumnWhere like(String value) {
         likeImpl(value);
@@ -113,7 +112,6 @@ class DefaultColumnMapperSelectBuilder extends AbstractMapperQuery implements Co
         gtImpl(value);
         return this;
     }
-
 
 
     @Override
@@ -129,7 +127,6 @@ class DefaultColumnMapperSelectBuilder extends AbstractMapperQuery implements Co
     }
 
 
-
     @Override
     public <T> ColumnWhere lte(T value) {
         lteImpl(value);
@@ -137,11 +134,10 @@ class DefaultColumnMapperSelectBuilder extends AbstractMapperQuery implements Co
     }
 
 
-
     @Override
     public <T> ColumnWhere between(T valueA, T valueB) {
         betweenImpl(valueA, valueB);
-         return this;
+        return this;
     }
 
     @Override

@@ -81,7 +81,7 @@ abstract class AbstractMapperQuery {
     }
 
 
-    protected  <T> void inImpl(Iterable<T> values) {
+    protected <T> void inImpl(Iterable<T> values) {
 
         requireNonNull(values, "values is required");
         List<Object> convertedValues = StreamSupport.stream(values.spliterator(), false)
@@ -135,6 +135,6 @@ abstract class AbstractMapperQuery {
     }
 
     protected Object getValue(Object value) {
-      return ConverterUtil.getValue(value, representation, name, converters);
+        return ConverterUtil.getValue(value, representation, name, converters);
     }
 }
