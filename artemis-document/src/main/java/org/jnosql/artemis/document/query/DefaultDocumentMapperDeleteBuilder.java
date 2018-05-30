@@ -24,7 +24,7 @@ import org.jnosql.diana.api.document.query.DocumentDeleteWhere;
 
 import static java.util.Objects.requireNonNull;
 
-class DefaultDocumentMapperDeleteBuilder  extends AbstractMapperQuery implements DocumentDeleteFrom,
+class DefaultDocumentMapperDeleteBuilder extends AbstractMapperQuery implements DocumentDeleteFrom,
         DocumentDeleteWhere, DocumentDeleteNameCondition, DocumentDeleteNotCondition {
 
 
@@ -76,31 +76,31 @@ class DefaultDocumentMapperDeleteBuilder  extends AbstractMapperQuery implements
     }
 
     @Override
-    public DocumentDeleteWhere gt(Number value) {
+    public <T> DocumentDeleteWhere gt(T value) {
         gtImpl(value);
         return this;
     }
 
     @Override
-    public DocumentDeleteWhere gte(Number value) {
+    public <T> DocumentDeleteWhere gte(T value) {
         gteImpl(value);
         return this;
     }
 
     @Override
-    public DocumentDeleteWhere lt(Number value) {
+    public <T> DocumentDeleteWhere lt(T value) {
         ltImpl(value);
         return this;
     }
 
     @Override
-    public DocumentDeleteWhere lte(Number value) {
+    public <T> DocumentDeleteWhere lte(T value) {
         lteImpl(value);
         return this;
     }
 
     @Override
-    public DocumentDeleteWhere between(Number valueA, Number valueB) {
+    public <T> DocumentDeleteWhere between(T valueA, T valueB) {
         betweenImpl(valueA, valueB);
         return this;
     }
