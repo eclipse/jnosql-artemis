@@ -72,7 +72,7 @@ abstract class AbstractMapperQuery {
         this.name = null;
     }
 
-    protected void betweenImpl(Number valueA, Number valueB) {
+    protected <T> void betweenImpl(T valueA, T valueB) {
         requireNonNull(valueA, "valueA is required");
         requireNonNull(valueB, "valueB is required");
         ColumnCondition newCondition = ColumnCondition
@@ -81,7 +81,7 @@ abstract class AbstractMapperQuery {
     }
 
 
-    protected  <T> void inImpl(Iterable<T> values) {
+    protected <T> void inImpl(Iterable<T> values) {
 
         requireNonNull(values, "values is required");
         List<Object> convertedValues = StreamSupport.stream(values.spliterator(), false)
@@ -106,28 +106,28 @@ abstract class AbstractMapperQuery {
         appendCondition(newCondition);
     }
 
-    protected void gteImpl(Number value) {
+    protected <T> void gteImpl(T value) {
         requireNonNull(value, "value is required");
         ColumnCondition newCondition = ColumnCondition
                 .gte(Column.of(representation.getColumnField(name), getValue(value)));
         appendCondition(newCondition);
     }
 
-    protected void gtImpl(Number value) {
+    protected <T> void gtImpl(T value) {
         requireNonNull(value, "value is required");
         ColumnCondition newCondition = ColumnCondition
                 .gt(Column.of(representation.getColumnField(name), getValue(value)));
         appendCondition(newCondition);
     }
 
-    protected void ltImpl(Number value) {
+    protected <T> void ltImpl(T value) {
         requireNonNull(value, "value is required");
         ColumnCondition newCondition = ColumnCondition
                 .lt(Column.of(representation.getColumnField(name), getValue(value)));
         appendCondition(newCondition);
     }
 
-    protected void lteImpl(Number value) {
+    protected <T> void lteImpl(T value) {
         requireNonNull(value, "value is required");
         ColumnCondition newCondition = ColumnCondition
                 .lte(Column.of(representation.getColumnField(name), getValue(value)));
@@ -135,6 +135,6 @@ abstract class AbstractMapperQuery {
     }
 
     protected Object getValue(Object value) {
-      return ConverterUtil.getValue(value, representation, name, converters);
+        return ConverterUtil.getValue(value, representation, name, converters);
     }
 }
