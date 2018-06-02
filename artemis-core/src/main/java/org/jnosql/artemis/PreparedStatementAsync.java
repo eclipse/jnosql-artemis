@@ -37,7 +37,8 @@ public interface PreparedStatementAsync {
     /**
      * Executes a query and return the result as List
      *
-     * @param <T> the type
+     * @param callback the callback observer
+     * @param <T>      the type
      * @throws NullPointerException
      */
     <T> void getResultList(Consumer<List<T>> callback);
@@ -45,9 +46,9 @@ public interface PreparedStatementAsync {
     /**
      * Returns the result as a single element otherwise it will return an {@link Optional#empty()}
      *
-     * @param <T> the type
-     * @return the single result
+     * @param <T>      the type
+     * @param callback the callback observer
      * @throws org.jnosql.diana.api.NonUniqueResultException when the result has more than one entity
      */
-    <T> Optional<T> getSingleResult();
+    <T> void getSingleResult(Consumer<Optional<T>> callback);
 }
