@@ -29,8 +29,10 @@ import org.jnosql.diana.api.column.ColumnFamilyManager;
 import org.jnosql.diana.api.column.ColumnQuery;
 import org.jnosql.diana.api.column.query.ColumnQueryBuilder;
 
+import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
@@ -60,8 +62,15 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
 
     private final UnaryOperator<ColumnEntity> update = e -> getManager().update(e);
 
-    private final MapperColumnQueryParser columnQueryParser = new MapperColumnQueryParser(getClassRepresentations());
+    private MapperColumnQueryParser columnQueryParser;
 
+
+    private MapperColumnQueryParser getParser() {
+        if (Objects.isNull(columnQueryParser)) {
+            columnQueryParser = new MapperColumnQueryParser(getClassRepresentations());
+        }
+        return columnQueryParser;
+    }
 
     @Override
     public <T> T insert(T entity) {
@@ -137,7 +146,7 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
     @Override
     public <T> List<T> query(String query) {
         requireNonNull(query, "query is required");
-        return columnQueryParser.query(query, getManager()).stream().map(c -> (T) getConverter().toEntity(c))
+        return getParser().query(query, getManager()).stream().map(c -> (T) getConverter().toEntity(c))
                 .collect(toList());
     }
 
@@ -155,6 +164,6 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
 
     @Override
     public PreparedStatement prepare(String query) {
-        return new ColumnPreparedStatement(columnQueryParser.prepare(query, getManager()), getConverter());
+        return new ColumnPreparedStatement(getParser().prepare(query, getManager()), getConverter());
     }
 }
