@@ -15,16 +15,18 @@
 package org.jnosql.artemis.document.query;
 
 
+import org.jnosql.artemis.Query;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentQuery;
 
 import java.lang.reflect.Method;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 enum DocumentRepositoryType {
 
-    DEFAULT, FIND_BY, FIND_ALL, DELETE_BY, QUERY, QUERY_DELETE, UNKNOWN, OBJECT_METHOD;
+    DEFAULT, FIND_BY, FIND_ALL, DELETE_BY, QUERY, QUERY_DELETE, UNKNOWN, OBJECT_METHOD, JNOSQL_QUERY;
 
     private static final Method[] METHODS = Object.class.getMethods();
 
@@ -33,6 +35,9 @@ enum DocumentRepositoryType {
 
         if (Stream.of(METHODS).anyMatch(method::equals)) {
             return OBJECT_METHOD;
+        }
+        if (Objects.nonNull(method.getAnnotation(Query.class))) {
+            return JNOSQL_QUERY;
         }
 
         String methodName = method.getName();
