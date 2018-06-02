@@ -123,7 +123,6 @@ public class KeyValueRepositoryProxyTest {
     @Test
     public void shouldFindByQuery() {
         User user = new User("12", "Ada", 10);
-        List<String> keys = Arrays.asList("key", "key2");
         when(repository.query("get \"12\"", User.class)).thenReturn(Collections.singletonList(user));
 
         userRepository.findByQuery();

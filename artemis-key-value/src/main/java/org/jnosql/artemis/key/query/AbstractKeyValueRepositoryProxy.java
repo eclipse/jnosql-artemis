@@ -59,19 +59,19 @@ public abstract class AbstractKeyValueRepositoryProxy<T> implements InvocationHa
 
         Optional<String> query = getQuery(method);
         if (query.isPresent()) {
-            return executeQuery(method, args, query);
+            return executeQuery(method, args, query.get());
         } else {
             throw new DynamicQueryException("Key Value repository does not support query method");
         }
     }
 
-    private Object executeQuery(Method method, Object[] args, Optional<String> query) {
+    private Object executeQuery(Method method, Object[] args, String query) {
         Map<String, Object> params = getParams(method, args);
         List<T> entities;
         if (params.isEmpty()) {
-            entities = getTemplate().query(query.get(), getEntityClass());
+            entities = getTemplate().query(query, getEntityClass());
         } else {
-            PreparedStatement prepare = getTemplate().prepare(query.get(), getEntityClass());
+            PreparedStatement prepare = getTemplate().prepare(query, getEntityClass());
             params.entrySet().stream().forEach(e -> prepare.bind(e.getKey(), e.getValue()));
             entities = prepare.getResultList();
         }

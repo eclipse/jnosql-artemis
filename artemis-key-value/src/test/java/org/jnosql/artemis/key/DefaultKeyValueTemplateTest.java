@@ -85,8 +85,8 @@ public class DefaultKeyValueTemplateTest {
         assertThrows(NullPointerException.class, () -> subject.put(null, null));
         assertThrows(NullPointerException.class, () -> subject.put(null, Duration.ofSeconds(2L)));
         assertThrows(NullPointerException.class, () -> subject.put(user, null));
-        assertThrows(NullPointerException.class, () -> subject.put((Iterable<? extends Object>) null));
-        assertThrows(NullPointerException.class, () -> subject.put((Iterable<? extends Object>) null, null));
+        assertThrows(NullPointerException.class, () -> subject.put((Iterable<?>) null));
+        assertThrows(NullPointerException.class, () -> subject.put((Iterable<?>) null, null));
     }
 
 
@@ -171,7 +171,7 @@ public class DefaultKeyValueTemplateTest {
     @Test
     public void shouldCheckNullParametersInRemove() {
         assertThrows(NullPointerException.class, () -> subject.remove(null));
-        assertThrows(NullPointerException.class, () -> subject.remove((Iterable<? extends Object>) null));
+        assertThrows(NullPointerException.class, () -> subject.remove(null));
     }
 
 
@@ -195,9 +195,7 @@ public class DefaultKeyValueTemplateTest {
 
     @Test
     public void shouldReturnErrorWhenQueryIsNull() {
-        assertThrows(NullPointerException.class, () -> {
-            subject.query(null);
-        });
+        assertThrows(NullPointerException.class, () -> subject.query(null));
 
         assertThrows(NullPointerException.class, () -> {
             when(manager.query("get id"))
@@ -205,9 +203,7 @@ public class DefaultKeyValueTemplateTest {
             subject.query("get id", null);
         });
 
-        assertThrows(NullPointerException.class, () -> {
-            subject.query(null, String.class);
-        });
+        assertThrows(NullPointerException.class, () -> subject.query(null, String.class));
     }
 
     @Test
@@ -240,9 +236,7 @@ public class DefaultKeyValueTemplateTest {
         assertTrue(id.isPresent());
         assertFalse(subject.getSingleResult("get id2", Integer.class).isPresent());
 
-        assertThrows(NonUniqueResultException.class, () ->{
-            subject.getSingleResult("get id3", Integer.class);
-        });
+        assertThrows(NonUniqueResultException.class, () -> subject.getSingleResult("get id3", Integer.class));
     }
 
     @Test
