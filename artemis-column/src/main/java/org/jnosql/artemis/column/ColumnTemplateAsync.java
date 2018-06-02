@@ -16,6 +16,7 @@ package org.jnosql.artemis.column;
 
 
 import org.jnosql.artemis.PreparedStatement;
+import org.jnosql.artemis.PreparedStatementAsync;
 import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnQuery;
@@ -153,14 +154,14 @@ public interface ColumnTemplateAsync {
      * Inserts an entity asynchronously
      *
      * @param entity   entity to be updated
-     * @param callBack the callback, when the process is finished will call this instance returning
+     * @param callback the callback, when the process is finished will call this instance returning
      *                 the updated entity within parametersa
      * @param <T>      the instance type
      * @throws org.jnosql.diana.api.ExecuteAsyncQueryException when there is a async error
      * @throws UnsupportedOperationException                   when the database does not have support to insert asynchronous
      * @throws NullPointerException                            when either entity or callback are null
      */
-    <T> void update(T entity, Consumer<T> callBack);
+    <T> void update(T entity, Consumer<T> callback);
 
     /**
      * Deletes an entity asynchronously
@@ -176,26 +177,26 @@ public interface ColumnTemplateAsync {
      * Deletes an entity asynchronously
      *
      * @param query    query to delete an entity
-     * @param callBack the callback, when the process is finished will call this instance returning
+     * @param callback the callback, when the process is finished will call this instance returning
      *                 the null within parameters
      * @throws org.jnosql.diana.api.ExecuteAsyncQueryException when there is a async error
      * @throws UnsupportedOperationException                   when the database does not have support to delete asynchronous
      * @throws NullPointerException                            when either query or callback are null
      */
-    void delete(ColumnDeleteQuery query, Consumer<Void> callBack);
+    void delete(ColumnDeleteQuery query, Consumer<Void> callback);
 
     /**
      * Finds entities from query asynchronously
      *
      * @param query    query to select entities
      * @param <T>      the instance type
-     * @param callBack the callback, when the process is finished will call this instance returning
+     * @param callback the callback, when the process is finished will call this instance returning
      *                 the result of query within parameters
      * @throws org.jnosql.diana.api.ExecuteAsyncQueryException when there is a async error
      * @throws UnsupportedOperationException                   when the database does not have support to insert asynchronous
      * @throws NullPointerException                            when either query or callback are null
      */
-    <T> void select(ColumnQuery query, Consumer<List<T>> callBack);
+    <T> void select(ColumnQuery query, Consumer<List<T>> callback);
 
     /**
      * Executes a query then bring the result as a {@link List}
@@ -216,7 +217,7 @@ public interface ColumnTemplateAsync {
      * @throws NullPointerException     when the query is null
      * @throws NonUniqueResultException if returns more than one result
      */
-    <T> void singleResult(String query, Consumer<Optional<T>> callBack);
+    <T> void singleResult(String query, Consumer<Optional<T>> callback);
 
     /**
      * Creates a {@link PreparedStatement} from the query
@@ -225,7 +226,7 @@ public interface ColumnTemplateAsync {
      * @return a {@link PreparedStatement} instance
      * @throws NullPointerException when the query is null
      */
-    PreparedStatement prepare(String query);
+    PreparedStatementAsync prepare(String query);
 
     /**
      * Finds by Id.
@@ -234,11 +235,11 @@ public interface ColumnTemplateAsync {
      * @param id          the id value
      * @param <T>         the entity class type
      * @param <ID>        the id type
-     * @param callBack    the callBack
+     * @param callback    the callback
      * @throws NullPointerException                   when either the entityClass or id are null
      * @throws org.jnosql.artemis.IdNotFoundException when the entityClass does not have the Id annotation
      */
-    <T, ID> void find(Class<T> entityClass, ID id, Consumer<Optional<T>> callBack);
+    <T, ID> void find(Class<T> entityClass, ID id, Consumer<Optional<T>> callback);
 
     /**
      * Deletes by Id.
@@ -247,11 +248,11 @@ public interface ColumnTemplateAsync {
      * @param id          the id value
      * @param <T>         the entity class type
      * @param <ID>        the id type
-     * @param callBack    the callBack
+     * @param callback    the callback
      * @throws NullPointerException                   when either the entityClass or id are null
      * @throws org.jnosql.artemis.IdNotFoundException when the entityClass does not have the Id annotation
      */
-    <T, ID> void delete(Class<T> entityClass, ID id, Consumer<Void> callBack);
+    <T, ID> void delete(Class<T> entityClass, ID id, Consumer<Void> callback);
 
 
     /**
@@ -270,22 +271,22 @@ public interface ColumnTemplateAsync {
      * Execute a query to consume an unique result
      *
      * @param query    the query
-     * @param callBack the callback
+     * @param callback the callback
      * @param <T>      the type
      * @throws org.jnosql.diana.api.ExecuteAsyncQueryException when there is a async error
      * @throws UnsupportedOperationException                   when the database does not have support to insert asynchronous
      * @throws NullPointerException                            when either query or callback are null
      * @throws NonUniqueResultException                        when it returns more than one result
      */
-    default <T> void singleResult(ColumnQuery query, Consumer<Optional<T>> callBack) {
+    default <T> void singleResult(ColumnQuery query, Consumer<Optional<T>> callback) {
 
-        requireNonNull(callBack, "callBack is required");
+        requireNonNull(callback, "callback is required");
 
         Consumer<List<T>> singleCallBack = entities -> {
             if (entities.isEmpty()) {
-                callBack.accept(Optional.empty());
+                callback.accept(Optional.empty());
             } else if (entities.size() == 1) {
-                callBack.accept(Optional.of(entities.get(0)));
+                callback.accept(Optional.of(entities.get(0)));
             } else {
                 throw new NonUniqueResultException("The query returns more than one entity, query: " + query);
             }
