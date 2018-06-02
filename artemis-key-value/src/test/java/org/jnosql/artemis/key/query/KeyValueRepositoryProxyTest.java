@@ -17,6 +17,9 @@ package org.jnosql.artemis.key.query;
 import org.hamcrest.Matchers;
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.MockitoExtension;
+import org.jnosql.artemis.Param;
+import org.jnosql.artemis.PreparedStatement;
+import org.jnosql.artemis.Query;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.key.KeyValueTemplate;
 import org.jnosql.artemis.model.User;
@@ -37,6 +40,8 @@ import java.util.Optional;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class KeyValueRepositoryProxyTest {
@@ -98,7 +103,7 @@ public class KeyValueRepositoryProxyTest {
     @Test
     public void shouldFindById() {
         User user = new User("ada", "Ada", 10);
-        Mockito.when(repository.get("key", User.class)).thenReturn(
+        when(repository.get("key", User.class)).thenReturn(
                 Optional.of(user));
 
         assertEquals(user, userRepository.findById("key").get());
@@ -109,12 +114,34 @@ public class KeyValueRepositoryProxyTest {
         User user = new User("ada", "Ada", 10);
         User user2 = new User("ada", "Ada", 10);
         List<String> keys = Arrays.asList("key", "key2");
-        Mockito.when(repository.get(keys, User.class)).thenReturn(
+        when(repository.get(keys, User.class)).thenReturn(
                 Arrays.asList(user, user2));
 
         assertThat(userRepository.findById(keys), Matchers.containsInAnyOrder(user, user2));
     }
 
+    @Test
+    public void shouldFindByQuery() {
+        User user = new User("12", "Ada", 10);
+        List<String> keys = Arrays.asList("key", "key2");
+        when(repository.query("get \"12\"", User.class)).thenReturn(Collections.singletonList(user));
+
+        userRepository.findByQuery();
+        verify(repository).query("get \"12\"", User.class);
+
+    }
+
+    @Test
+    public void shouldFindByQueryWithParameter() {
+        User user = new User("12", "Ada", 10);
+        List<String> keys = Arrays.asList("key", "key2");
+        PreparedStatement prepare = Mockito.mock(PreparedStatement.class);
+        when(repository.prepare("get @id", User.class)).thenReturn(prepare);
+
+        userRepository.findByQuery("id");
+        verify(repository).prepare("get @id", User.class);
+
+    }
 
     @Test
     public void shouldReturnErrorWhenExecuteMethodQuery() {
@@ -140,6 +167,12 @@ public class KeyValueRepositoryProxyTest {
     interface UserRepository extends Repository<User, String> {
 
         Optional<User> findByName(String name);
+
+        @Query("get \"12\"")
+        Optional<User> findByQuery();
+
+        @Query("get @id")
+        Optional<User> findByQuery(@Param("id") String id);
     }
 
 }
