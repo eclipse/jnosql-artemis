@@ -18,6 +18,9 @@ import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.Pagination;
+import org.jnosql.artemis.Param;
+import org.jnosql.artemis.PreparedStatementAsync;
+import org.jnosql.artemis.Query;
 import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.document.DocumentTemplateAsync;
 import org.jnosql.artemis.model.Person;
@@ -51,6 +54,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 @ExtendWith(CDIExtension.class)
@@ -328,6 +332,20 @@ public class DocumentRepositoryAsyncProxyTest {
     }
 
     @Test
+    public void shouldExecuteJNoSQLQuery() {
+        personRepository.findByQuery();
+        verify(template).query(Mockito.eq("select * from Person"), Mockito.any(Consumer.class));
+    }
+
+    @Test
+    public void shouldExecuteJNoSQLPrepare() {
+        PreparedStatementAsync statement = Mockito.mock(PreparedStatementAsync.class);
+        when(template.prepare(Mockito.anyString())).thenReturn(statement);
+        personRepository.findByQuery("Ada", l ->{});
+        verify(statement).bind("id", "Ada");
+    }
+
+    @Test
     public void shouldReturnEquals() {
         assertNotNull(personRepository.equals(personRepository));
     }
@@ -352,6 +370,12 @@ public class DocumentRepositoryAsyncProxyTest {
         void query(DocumentQuery query, Consumer<List<Person>> callBack);
 
         void deleteQuery(DocumentDeleteQuery query);
+
+        @Query("select * from Person")
+        void findByQuery();
+
+        @Query("select * from Person where id = @id")
+        void findByQuery(@Param("id") String id, Consumer<List<Person>> calback);
     }
 
 }
