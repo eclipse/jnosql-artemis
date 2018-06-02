@@ -64,8 +64,8 @@ class DefaultClassRepresentations implements ClassRepresentations {
     void load(Class classEntity) {
         ClassRepresentation classRepresentation = classConverter.create(classEntity);
         representations.put(classEntity.getName(), classRepresentation);
-        findBySimpleName.put(classEntity.getSimpleName(), classRepresentation)
-        findByClassName.put(classEntity.getName(), classRepresentation)
+        findBySimpleName.put(classEntity.getSimpleName(), classRepresentation);
+        findByClassName.put(classEntity.getName(), classRepresentation);
     }
 
     @Override
