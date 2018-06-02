@@ -15,6 +15,8 @@
 package org.jnosql.artemis.document;
 
 
+import org.jnosql.artemis.PreparedStatement;
+import org.jnosql.artemis.PreparedStatementAsync;
 import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentQuery;
@@ -194,6 +196,36 @@ public interface DocumentTemplateAsync {
      * @throws NullPointerException          when either query or callback are null
      */
     <T> void select(DocumentQuery query, Consumer<List<T>> callBack);
+
+    /**
+     * Executes a query then bring the result as a {@link List}
+     *
+     * @param query the query
+     * @param <T>   the entity type
+     * @return the result as {@link List}
+     * @throws NullPointerException when the query is null
+     */
+    <T> void query(String query, Consumer<List<T>> callBack);
+
+    /**
+     * Executes a query then bring the result as a unique result
+     *
+     * @param query the query
+     * @param <T>   the entity type
+     * @return the result as {@link List}
+     * @throws NullPointerException     when the query is null
+     * @throws NonUniqueResultException if returns more than one result
+     */
+    <T> void singleResult(String query, Consumer<Optional<T>> callback);
+
+    /**
+     * Creates a {@link PreparedStatement} from the query
+     *
+     * @param query the query
+     * @return a {@link PreparedStatement} instance
+     * @throws NullPointerException when the query is null
+     */
+    PreparedStatementAsync prepare(String query);
 
     /**
      * Finds by Id.
