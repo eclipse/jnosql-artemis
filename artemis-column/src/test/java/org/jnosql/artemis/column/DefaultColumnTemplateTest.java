@@ -300,7 +300,11 @@ public class DefaultColumnTemplateTest {
 
         assertEquals("Person", query.getColumnFamily());
         assertEquals(ColumnCondition.eq(Column.of("_id", 10L)), condition);
+    }
 
 
+    @Test
+    public void shouldExecuteQuery() {
+        subject.query("")
     }
 }
