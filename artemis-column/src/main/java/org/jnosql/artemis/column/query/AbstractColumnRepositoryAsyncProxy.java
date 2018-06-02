@@ -139,6 +139,9 @@ public abstract class AbstractColumnRepositoryAsyncProxy<T> implements Invocatio
     }
 
     private Object getCallback(Object[] args) {
+        if(args == null || args.length == 0) {
+            return null;
+        }
         return args[args.length - 1];
     }
 

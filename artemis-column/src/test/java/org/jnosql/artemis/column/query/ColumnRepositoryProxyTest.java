@@ -509,7 +509,6 @@ public class ColumnRepositoryProxyTest {
         when(template.prepare(Mockito.anyString())).thenReturn(statement);
         personRepository.findByQuery("Ada");
         verify(statement).bind("id", "Ada");
-
     }
 
     interface PersonRepository extends Repository<Person, Long> {
