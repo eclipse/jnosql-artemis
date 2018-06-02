@@ -65,14 +65,14 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
 
     private final UnaryOperator<ColumnEntity> update = e -> getManager().update(e);
 
-    private ColumnObserverParser columnQueryParser;
+    private ColumnObserverParser observer;
 
 
     private ColumnObserverParser getObserver() {
-        if (Objects.isNull(columnQueryParser)) {
-            columnQueryParser = new ColumnMapperObserver(getClassRepresentations());
+        if (Objects.isNull(observer)) {
+            observer = new ColumnMapperObserver(getClassRepresentations());
         }
-        return columnQueryParser;
+        return observer;
     }
 
     @Override
