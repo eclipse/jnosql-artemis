@@ -56,14 +56,14 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
 
     protected abstract Converters getConverters();
 
-    private ColumnObserverParser columnQueryParser;
+    private ColumnObserverParser observer;
 
 
     private ColumnObserverParser getObserver() {
-        if (Objects.isNull(columnQueryParser)) {
-            columnQueryParser = new ColumnMapperObserver(getClassRepresentations());
+        if (Objects.isNull(observer)) {
+            observer = new ColumnMapperObserver(getClassRepresentations());
         }
-        return columnQueryParser;
+        return observer;
     }
 
 
