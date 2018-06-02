@@ -15,12 +15,11 @@
 package org.jnosql.artemis.key;
 
 
+import org.jnosql.artemis.PreparedStatement;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.key.BucketManager;
 import org.jnosql.diana.api.key.KeyValueEntity;
-import org.jnosql.diana.api.key.KeyValuePreparedStatement;
 
-import java.sql.PreparedStatement;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
@@ -123,7 +122,6 @@ public abstract class AbstractKeyValueTemplate implements KeyValueTemplate {
     @Override
     public <T> PreparedStatement prepare(String query, Class<T> entityClass) {
         requireNonNull(query, "query is required");
-        KeyValuePreparedStatement prepare = getManager().prepare(query);
-        return null;
+        new org.jnosql.artemis.key.KeyValuePreparedStatement(getManager().prepare(query), entityClass);
     }
 }
