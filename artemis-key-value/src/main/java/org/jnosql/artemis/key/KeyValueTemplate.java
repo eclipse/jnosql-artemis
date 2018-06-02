@@ -16,6 +16,7 @@ package org.jnosql.artemis.key;
 
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -69,7 +70,7 @@ public interface KeyValueTemplate {
      * @throws NullPointerException          when the iterable is null
      * @throws UnsupportedOperationException when expired time is not supported
      */
-    default<T> Iterable<T> put(Iterable<T> entities, Duration ttl) {
+    default <T> Iterable<T> put(Iterable<T> entities, Duration ttl) {
         Objects.requireNonNull(entities, "entities is required");
         Objects.requireNonNull(ttl, "ttl is required");
         return StreamSupport.stream(entities.spliterator(), false).map(d -> put(d, ttl)).collect(toList());
@@ -85,6 +86,17 @@ public interface KeyValueTemplate {
      * @throws NullPointerException when the key is null
      */
     <K, T> Optional<T> get(K key, Class<T> clazz);
+
+    /**
+     * Executes query in the database
+     *
+     * @param query       the query
+     * @param entityClass the entity class
+     * @param <T>         the entity type
+     * @return the result list, if either <b>put</b> or <b>remove</b> it will return empty
+     * @throws NullPointerException when query is null, if the query is <b>get</b> the entity class is required
+     */
+    <T> List<T> query(String query, Class<T> entityClass);
 
     /**
      * Finds a list of values from keys
