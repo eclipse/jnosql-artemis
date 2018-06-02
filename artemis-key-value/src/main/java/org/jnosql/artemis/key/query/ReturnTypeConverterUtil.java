@@ -35,7 +35,7 @@ public final class ReturnTypeConverterUtil {
     }
 
 
-    public static <T> Object returnObject(List<T> entities, Class<?> typeClass, Method method) {
+    static <T> Object returnObject(List<T> entities, Class<?> typeClass, Method method) {
         Class<?> returnType = method.getReturnType();
 
         if (typeClass.equals(returnType)) {
