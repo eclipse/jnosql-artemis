@@ -20,6 +20,7 @@ import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.MockitoExtension;
 import org.jnosql.artemis.PreparedStatement;
 import org.jnosql.artemis.model.User;
+import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.key.BucketManager;
 import org.jnosql.diana.api.key.KeyValueEntity;
@@ -35,6 +36,8 @@ import org.mockito.Mockito;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -220,6 +223,26 @@ public class DefaultKeyValueTemplateTest {
 
         List<Integer> ids = subject.query("get id", Integer.class);
         MatcherAssert.assertThat(ids, Matchers.contains(12));
+    }
+
+    @Test
+    public void shouldReturnSingleResult() {
+        when(manager.query("get id"))
+                .thenReturn(singletonList(Value.of("12")));
+
+        when(manager.query("get id2"))
+                .thenReturn(Collections.emptyList());
+
+        when(manager.query("get id3"))
+                .thenReturn(Arrays.asList(Value.of("12"), Value.of("15")));
+
+        Optional<Integer> id = subject.getSingleResult("get id", Integer.class);
+        assertTrue(id.isPresent());
+        assertFalse(subject.getSingleResult("get id2", Integer.class).isPresent());
+
+        assertThrows(NonUniqueResultException.class, () ->{
+            subject.getSingleResult("get id3", Integer.class);
+        });
     }
 
     @Test
