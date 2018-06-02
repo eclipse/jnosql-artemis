@@ -100,6 +100,16 @@ public interface KeyValueTemplate {
     <T> List<T> query(String query, Class<T> entityClass);
 
     /**
+     * Executes query in the database and don't return result, e.g.: when the query is either <b>remove</b> or
+     * <b>put</b>
+     *
+     * @param query the query
+     * @return the result list, if either <b>put</b> or <b>remove</b> it will return empty
+     * @throws NullPointerException when query is null
+     */
+    void query(String query);
+
+    /**
      * Executes query with {@link PreparedStatement}
      *
      * @param query       the query

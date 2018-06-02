@@ -19,14 +19,17 @@ import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.key.BucketManager;
 import org.jnosql.diana.api.key.KeyValueEntity;
 
+import java.sql.PreparedStatement;
 import java.time.Duration;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * This class provides a skeletal implementation of the {@link KeyValueTemplate} interface,
@@ -84,7 +87,7 @@ public abstract class AbstractKeyValueTemplate implements KeyValueTemplate {
                 .get(keys).spliterator(), false)
                 .map(v -> getConverter().toEntity(clazz, v))
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @Override
@@ -97,5 +100,27 @@ public abstract class AbstractKeyValueTemplate implements KeyValueTemplate {
     public <K> void remove(Iterable<K> keys) {
         requireNonNull(keys, "keys is required");
         getManager().remove(keys);
+    }
+
+    @Override
+    public <T> List<T> query(String query, Class<T> entityClass) {
+        requireNonNull(query, "query is required");
+        List<Value> values = getManager().query(query);
+        if (!values.isEmpty()) {
+            requireNonNull(entityClass, "entityClass is required");
+            return values.stream().map(v -> v.get(entityClass)).collect(toList());
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public void query(String query) {
+        requireNonNull(query, "query is required");
+        getManager().query(query);
+    }
+
+    @Override
+    public <T> PreparedStatement prepare(String query, Class<T> entityClass) {
+        return null;
     }
 }
