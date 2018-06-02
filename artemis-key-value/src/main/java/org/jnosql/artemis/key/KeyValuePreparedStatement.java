@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 final class KeyValuePreparedStatement implements PreparedStatement {
@@ -45,7 +46,7 @@ final class KeyValuePreparedStatement implements PreparedStatement {
     public <T> List<T> getResultList() {
         List<Value> values = preparedStatement.getResultList();
         if (!values.isEmpty()) {
-            Objects.requireNonNull(entityClass, "entityClass is required when the command returns value");
+            requireNonNull(entityClass, "entityClass is required when the command returns value");
             return values.stream().map(v -> v.get((Class<T>) entityClass)).collect(toList());
         }
         return Collections.emptyList();
@@ -53,6 +54,11 @@ final class KeyValuePreparedStatement implements PreparedStatement {
 
     @Override
     public <T> Optional<T> getSingleResult() {
+        Optional<Value> singleResult = preparedStatement.getSingleResult();
+        if (singleResult.isPresent()) {
+            requireNonNull(entityClass, "entityClass is required when the command returns value");
+            return singleResult.map(v -> v.get((Class<T>) entityClass));
+        }
         return Optional.empty();
     }
 }

@@ -122,6 +122,6 @@ public abstract class AbstractKeyValueTemplate implements KeyValueTemplate {
     @Override
     public <T> PreparedStatement prepare(String query, Class<T> entityClass) {
         requireNonNull(query, "query is required");
-        new org.jnosql.artemis.key.KeyValuePreparedStatement(getManager().prepare(query), entityClass);
+        return new org.jnosql.artemis.key.KeyValuePreparedStatement(getManager().prepare(query), entityClass);
     }
 }
