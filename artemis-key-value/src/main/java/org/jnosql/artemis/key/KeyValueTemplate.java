@@ -15,6 +15,7 @@
 package org.jnosql.artemis.key;
 
 
+import java.sql.PreparedStatement;
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
@@ -97,6 +98,17 @@ public interface KeyValueTemplate {
      * @throws NullPointerException when query is null, if the query is <b>get</b> the entity class is required
      */
     <T> List<T> query(String query, Class<T> entityClass);
+
+    /**
+     * Executes query with {@link PreparedStatement}
+     *
+     * @param query       the query
+     * @param entityClass the entity class
+     * @param <T>         the entity type
+     * @return a {@link PreparedStatement} instance
+     * @throws NullPointerException when query is null, if the query is <b>get</b> the entity class is required
+     */
+    <T> PreparedStatement prepare(String query, Class<T> entityClass);
 
     /**
      * Finds a list of values from keys
