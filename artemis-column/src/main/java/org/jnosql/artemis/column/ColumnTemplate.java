@@ -15,6 +15,7 @@
 package org.jnosql.artemis.column;
 
 
+import org.jnosql.artemis.PreparedStatement;
 import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnQuery;
@@ -135,6 +136,36 @@ public interface ColumnTemplate {
     <T> List<T> select(ColumnQuery query);
 
     /**
+     * Executes a query then bring the result as a {@link List}
+     *
+     * @param query the query
+     * @param <T>   the entity type
+     * @return the result as {@link List}
+     * @throws NullPointerException when the query is null
+     */
+    <T> List<T> query(String query);
+
+    /**
+     * Executes a query then bring the result as a unique result
+     *
+     * @param query the query
+     * @param <T>   the entity type
+     * @return the result as {@link List}
+     * @throws NullPointerException     when the query is null
+     * @throws NonUniqueResultException if returns more than one result
+     */
+    <T> Optional<T> singleResult(String query);
+
+    /**
+     * Creates a {@link PreparedStatement} from the query
+     *
+     * @param query the query
+     * @return a {@link PreparedStatement} instance
+     * @throws NullPointerException when the query is null
+     */
+    PreparedStatement prepare(String query);
+
+    /**
      * Finds by Id.
      *
      * @param entityClass the entity class
@@ -142,8 +173,8 @@ public interface ColumnTemplate {
      * @param <T>         the entity class type
      * @param <ID>        the id type
      * @return the entity instance otherwise {@link Optional#empty()}
-     * @throws NullPointerException when either the entityClass or id are null
-     * @throws org.jnosql.artemis.IdNotFoundException  when the entityClass does not have the Id annotation
+     * @throws NullPointerException                   when either the entityClass or id are null
+     * @throws org.jnosql.artemis.IdNotFoundException when the entityClass does not have the Id annotation
      */
     <T, ID> Optional<T> find(Class<T> entityClass, ID id);
 
@@ -154,8 +185,8 @@ public interface ColumnTemplate {
      * @param id          the id value
      * @param <T>         the entity class type
      * @param <ID>        the id type
-     * @throws NullPointerException when either the entityClass or id are null
-     * @throws org.jnosql.artemis.IdNotFoundException  when the entityClass does not have the Id annotation
+     * @throws NullPointerException                   when either the entityClass or id are null
+     * @throws org.jnosql.artemis.IdNotFoundException when the entityClass does not have the Id annotation
      */
     <T, ID> void delete(Class<T> entityClass, ID id);
 
