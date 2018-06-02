@@ -86,11 +86,11 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
     }
 
     @Override
-    public <T> void insert(T entity, Duration ttl, Consumer<T> callBack) {
+    public <T> void insert(T entity, Duration ttl, Consumer<T> callback) {
         requireNonNull(entity, "entity is required");
         requireNonNull(ttl, "ttl is required");
-        requireNonNull(callBack, "callBack is required");
-        Consumer<ColumnEntity> dianaCallBack = c -> callBack.accept((T) getConverter().toEntity(entity.getClass(), c));
+        requireNonNull(callback, "callBack is required");
+        Consumer<ColumnEntity> dianaCallBack = c -> callback.accept((T) getConverter().toEntity(entity.getClass(), c));
         getManager().insert(getConverter().toColumn(entity), ttl, dianaCallBack);
     }
 
@@ -177,11 +177,11 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
     }
 
     @Override
-    public <T> void query(String query, Consumer<List<T>> callBack) {
+    public <T> void query(String query, Consumer<List<T>> callback) {
         requireNonNull(query, "query is required");
-        requireNonNull(callBack, "callBack is required");
+        requireNonNull(callback, "callback is required");
         Consumer<List<ColumnEntity>> mapper = columnEntities -> {
-            callBack.accept(columnEntities.stream().map(c -> (T) getConverter().toEntity(c))
+            callback.accept(columnEntities.stream().map(c -> (T) getConverter().toEntity(c))
                     .collect(toList()));
         };
         PARSER.query(query, getManager(), mapper, getObserver());

@@ -16,6 +16,8 @@ package org.jnosql.artemis.column;
 
 import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.Converters;
+import org.jnosql.artemis.PreparedStatement;
+import org.jnosql.artemis.model.Movie;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.NonUniqueResultException;
@@ -404,5 +406,36 @@ public class DefaultColumnTemplateAsyncTest {
             dianaCallBack.accept(asList(ColumnEntity.of("Person", asList(columns)), ColumnEntity.of("Person", asList(columns))));
         });
 
+    }
+
+
+
+    @Test
+    public void shouldExecuteQuery() {
+        List<Person> people = subject.query("select * from Person");
+        ArgumentCaptor<ColumnQuery> queryCaptor = ArgumentCaptor.forClass(ColumnQuery.class);
+        verify(managerMock).select(queryCaptor.capture());
+        ColumnQuery query = queryCaptor.getValue();
+        assertEquals("Person", query.getColumnFamily());
+    }
+
+    @Test
+    public void shouldConvertEntity() {
+        List<Movie> movies = subject.query("select * from Movie");
+        ArgumentCaptor<ColumnQuery> queryCaptor = ArgumentCaptor.forClass(ColumnQuery.class);
+        verify(managerMock).select(queryCaptor.capture());
+        ColumnQuery query = queryCaptor.getValue();
+        assertEquals("movie", query.getColumnFamily());
+    }
+
+    @Test
+    public void shouldPreparedStatement() {
+        PreparedStatement preparedStatement = subject.prepare("select * from Person where name = @name");
+        preparedStatement.bind("name", "Ada");
+        preparedStatement.getResultList();
+        ArgumentCaptor<ColumnQuery> queryCaptor = ArgumentCaptor.forClass(ColumnQuery.class);
+        verify(managerMock).select(queryCaptor.capture());
+        ColumnQuery query = queryCaptor.getValue();
+        assertEquals("Person", query.getColumnFamily());
     }
 }

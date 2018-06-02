@@ -99,14 +99,14 @@ public interface ColumnTemplateAsync {
      * Inserts an entity asynchronously
      *
      * @param entity   entity to be saved
-     * @param callBack the callback, when the process is finished will call this instance returning
+     * @param callback the callback, when the process is finished will call this instance returning
      *                 the saved entity within parameters
      * @param <T>      the instance type
      * @throws org.jnosql.diana.api.ExecuteAsyncQueryException when there is a async error
      * @throws UnsupportedOperationException                   when the database does not have support to insert asynchronous
      * @throws NullPointerException                            when either entity or callback are null
      */
-    <T> void insert(T entity, Consumer<T> callBack);
+    <T> void insert(T entity, Consumer<T> callback);
 
 
     /**
@@ -114,14 +114,14 @@ public interface ColumnTemplateAsync {
      *
      * @param entity   entity to be saved
      * @param ttl      time to live
-     * @param callBack the callback, when the process is finished will call this instance returning
+     * @param callback the callback, when the process is finished will call this instance returning
      *                 the saved entity within parameters
      * @param <T>      the instance type
      * @throws org.jnosql.diana.api.ExecuteAsyncQueryException when there is a async error
      * @throws UnsupportedOperationException                   when the database does not have support to insert asynchronous
      * @throws NullPointerException                            when either entity or ttl or callback are null
      */
-    <T> void insert(T entity, Duration ttl, Consumer<T> callBack);
+    <T> void insert(T entity, Duration ttl, Consumer<T> callback);
 
     /**
      * Inserts an entity asynchronously
