@@ -1,6 +1,5 @@
 package org.jnosql.artemis.column;
 
-import org.jnosql.artemis.reflection.ClassInformationNotFoundException;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.column.ColumnEntity;

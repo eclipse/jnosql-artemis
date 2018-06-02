@@ -60,6 +60,9 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
 
     private final UnaryOperator<ColumnEntity> update = e -> getManager().update(e);
 
+    private final MapperColumnQueryParser columnQueryParser = new MapperColumnQueryParser(getClassRepresentations());
+
+
     @Override
     public <T> T insert(T entity) {
         requireNonNull(entity, "entity is required");
@@ -134,7 +137,7 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
     @Override
     public <T> List<T> query(String query) {
         requireNonNull(query, "query is required");
-        return getManager().query(query).stream().map(c -> (T) getConverter().toEntity(c))
+        return columnQueryParser.query(query, getManager()).stream().map(c -> (T) getConverter().toEntity(c))
                 .collect(toList());
     }
 
@@ -152,6 +155,6 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
 
     @Override
     public PreparedStatement prepare(String query) {
-        return new ColumnPreparedStatement(getManager().prepare(query), getConverter());
+        return new ColumnPreparedStatement(columnQueryParser.prepare(query, getManager()), getConverter());
     }
 }
