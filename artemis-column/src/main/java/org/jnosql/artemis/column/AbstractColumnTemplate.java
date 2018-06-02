@@ -26,7 +26,6 @@ import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
-import org.jnosql.diana.api.column.ColumnPreparedStatement;
 import org.jnosql.diana.api.column.ColumnQuery;
 import org.jnosql.diana.api.column.query.ColumnQueryBuilder;
 
@@ -153,6 +152,6 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
 
     @Override
     public PreparedStatement prepare(String query) {
-        ColumnPreparedStatement prepare = getManager().prepare(query);
+        return new ColumnPreparedStatement(getManager().prepare(query), getConverter());
     }
 }
