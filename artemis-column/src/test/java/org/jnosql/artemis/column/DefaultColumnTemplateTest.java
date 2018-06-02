@@ -333,6 +333,5 @@ public class DefaultColumnTemplateTest {
         verify(managerMock).select(queryCaptor.capture());
         ColumnQuery query = queryCaptor.getValue();
         assertEquals("Person", query.getColumnFamily());
-
     }
 }
