@@ -14,6 +14,8 @@
  */
 package org.jnosql.artemis.key;
 
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.MockitoExtension;
 import org.jnosql.artemis.model.User;
@@ -182,5 +184,44 @@ public class DefaultKeyValueTemplateTest {
     public void shouldRemoveIterable() {
         subject.remove(singletonList(KEY));
         Mockito.verify(manager).remove(singletonList(KEY));
+    }
+
+    @Test
+    public void shouldExecuteClass() {
+        subject.query("remove id");
+        Mockito.verify(manager).query("remove id");
+    }
+
+    @Test
+    public void shouldReturnErrorWhenQueryIsNull() {
+        assertThrows(NullPointerException.class, () -> {
+            subject.query(null);
+        });
+
+        assertThrows(NullPointerException.class, () -> {
+            Mockito.when(manager.query("get id"))
+                    .thenReturn(singletonList(Value.of("value")));
+            subject.query("get id", null);
+        });
+
+        assertThrows(NullPointerException.class, () -> {
+            subject.query(null, String.class);
+        });
+    }
+
+    @Test
+    public void shouldExecuteClassNotClass() {
+        subject.query("remove id", null);
+        Mockito.verify(manager).query("remove id");
+    }
+
+    @Test
+    public void shouldExecuteQuery() {
+        Mockito.when(manager.query("get id"))
+                .thenReturn(singletonList(Value.of("12")));
+
+        List<Integer> ids = subject.query("get id", Integer.class);
+        MatcherAssert.assertThat(ids, Matchers.contains(12));
+
     }
 }
