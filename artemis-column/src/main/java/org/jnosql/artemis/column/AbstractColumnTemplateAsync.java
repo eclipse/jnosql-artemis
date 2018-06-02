@@ -206,7 +206,8 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
 
     @Override
     public PreparedStatementAsync prepare(String query) {
-
+        requireNonNull(query, "query is required");
+        return new ColumnPreparedStatementAsync(PARSER.prepare(query, getManager(), getObserver()), getConverter());
     }
 
     private <T, ID> ColumnDeleteQuery getDeleteQuery(Class<T> entityClass, ID id) {

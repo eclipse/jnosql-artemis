@@ -18,10 +18,10 @@ import org.jnosql.artemis.PreparedStatementAsync;
 import org.jnosql.diana.api.column.ColumnEntity;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 final class ColumnPreparedStatementAsync implements PreparedStatementAsync {
@@ -29,7 +29,8 @@ final class ColumnPreparedStatementAsync implements PreparedStatementAsync {
     private final org.jnosql.diana.api.column.ColumnPreparedStatementAsync preparedStatementAsync;
     private final ColumnEntityConverter converter;
 
-    ColumnPreparedStatementAsync(org.jnosql.diana.api.column.ColumnPreparedStatementAsync preparedStatementAsync, ColumnEntityConverter converter) {
+    ColumnPreparedStatementAsync(org.jnosql.diana.api.column.ColumnPreparedStatementAsync preparedStatementAsync,
+                                 ColumnEntityConverter converter) {
         this.preparedStatementAsync = preparedStatementAsync;
         this.converter = converter;
     }
@@ -42,16 +43,17 @@ final class ColumnPreparedStatementAsync implements PreparedStatementAsync {
 
     @Override
     public <T> void getResultList(Consumer<List<T>> callback) {
-        Objects.requireNonNull(callback, "callback is required");
+        requireNonNull(callback, "callback is required");
 
         Consumer<List<ColumnEntity>> mapper = columnEntities -> {
             callback.accept(columnEntities.stream().map(c -> (T) converter.toEntity(c))
                     .collect(toList()));
         };
+        preparedStatementAsync.getResultList(mapper);
     }
 
     @Override
     public <T> void getSingleResult(Consumer<Optional<T>> callback) {
-        Objects.requireNonNull(callback, "callback is required");
+        requireNonNull(callback, "callback is required");
     }
 }
