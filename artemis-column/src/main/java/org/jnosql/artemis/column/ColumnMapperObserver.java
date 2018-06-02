@@ -2,24 +2,27 @@ package org.jnosql.artemis.column;
 
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.diana.api.column.query.DefaultColumnQueryParser;
+import org.jnosql.diana.api.column.ColumnObserverParser;
 
 import java.util.Optional;
 
-final class MapperColumnQueryParser extends DefaultColumnQueryParser {
+final class ColumnMapperObserver implements ColumnObserverParser {
 
 
     private final ClassRepresentations representations;
 
-    MapperColumnQueryParser(ClassRepresentations representations) {
+    ColumnMapperObserver(ClassRepresentations representations) {
         this.representations = representations;
     }
 
+
+    @Override
     public String fireEntity(String entity) {
         Optional<ClassRepresentation> classRepresentation = getClassRepresentation(entity);
         return classRepresentation.map(ClassRepresentation::getName).orElse(entity);
     }
 
+    @Override
     public String fireField(String entity, String field) {
         Optional<ClassRepresentation> classRepresentation = getClassRepresentation(entity);
         return classRepresentation.map(c -> c.getColumnField(field)).orElse(field);
@@ -36,4 +39,5 @@ final class MapperColumnQueryParser extends DefaultColumnQueryParser {
         }
         return Optional.empty();
     }
+
 }

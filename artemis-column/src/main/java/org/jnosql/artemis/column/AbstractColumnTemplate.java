@@ -26,10 +26,11 @@ import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
+import org.jnosql.diana.api.column.ColumnObserverParser;
 import org.jnosql.diana.api.column.ColumnQuery;
+import org.jnosql.diana.api.column.ColumnQueryParser;
 import org.jnosql.diana.api.column.query.ColumnQueryBuilder;
 
-import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
@@ -45,6 +46,8 @@ import static java.util.stream.Collectors.toList;
  */
 public abstract class AbstractColumnTemplate implements ColumnTemplate {
 
+
+    private static final ColumnQueryParser PARSER = ColumnQueryParser.getParser();
 
     protected abstract ColumnEntityConverter getConverter();
 
@@ -62,12 +65,12 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
 
     private final UnaryOperator<ColumnEntity> update = e -> getManager().update(e);
 
-    private MapperColumnQueryParser columnQueryParser;
+    private ColumnObserverParser columnQueryParser;
 
 
-    private MapperColumnQueryParser getParser() {
+    private ColumnObserverParser getObserver() {
         if (Objects.isNull(columnQueryParser)) {
-            columnQueryParser = new MapperColumnQueryParser(getClassRepresentations());
+            columnQueryParser = new ColumnMapperObserver(getClassRepresentations());
         }
         return columnQueryParser;
     }
@@ -146,7 +149,7 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
     @Override
     public <T> List<T> query(String query) {
         requireNonNull(query, "query is required");
-        return getParser().query(query, getManager()).stream().map(c -> (T) getConverter().toEntity(c))
+        return PARSER.query(query,getManager(), getObserver()).stream().map(c -> (T) getConverter().toEntity(c))
                 .collect(toList());
     }
 
@@ -164,6 +167,6 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
 
     @Override
     public PreparedStatement prepare(String query) {
-        return new ColumnPreparedStatement(getParser().prepare(query, getManager()), getConverter());
+        return new ColumnPreparedStatement(PARSER.prepare(query, getManager(), getObserver()), getConverter());
     }
 }
