@@ -15,6 +15,7 @@
 package org.jnosql.artemis.column;
 
 import org.jnosql.artemis.PreparedStatementAsync;
+import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.column.ColumnEntity;
 
 import java.util.List;
@@ -55,5 +56,10 @@ final class ColumnPreparedStatementAsync implements PreparedStatementAsync {
     @Override
     public <T> void getSingleResult(Consumer<Optional<T>> callback) {
         requireNonNull(callback, "callback is required");
+
+        Consumer<Optional<ColumnEntity>> mapper = columnEntity -> {
+            callback.accept(columnEntity.map(converter::toEntity));
+        };
+        preparedStatementAsync.getSingleResult(mapper);
     }
 }
