@@ -16,6 +16,7 @@ package org.jnosql.artemis.key;
 
 
 import org.jnosql.artemis.PreparedStatement;
+import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.key.BucketManager;
 import org.jnosql.diana.api.key.KeyValueEntity;
@@ -114,6 +115,18 @@ public abstract class AbstractKeyValueTemplate implements KeyValueTemplate {
     }
 
     @Override
+    public <T> Optional<T> getSingleResult(String query, Class<T> entityClass) {
+        List<T> result = query(query, entityClass);
+        if (result.isEmpty()) {
+            return Optional.empty();
+        }
+        if (result.size() == 1) {
+            return Optional.ofNullable(result.get(0));
+        }
+        throw new NonUniqueResultException("No Unique result found to the query: " + query);
+    }
+
+    @Override
     public void query(String query) {
         requireNonNull(query, "query is required");
         getManager().query(query);
@@ -124,4 +137,5 @@ public abstract class AbstractKeyValueTemplate implements KeyValueTemplate {
         requireNonNull(query, "query is required");
         return new org.jnosql.artemis.key.KeyValuePreparedStatement(getManager().prepare(query), entityClass);
     }
+
 }

@@ -18,11 +18,12 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.MockitoExtension;
+import org.jnosql.artemis.PreparedStatement;
 import org.jnosql.artemis.model.User;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.key.BucketManager;
 import org.jnosql.diana.api.key.KeyValueEntity;
-import org.junit.jupiter.api.Assertions;
+import org.jnosql.diana.api.key.KeyValuePreparedStatement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,11 +35,8 @@ import org.mockito.Mockito;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.time.Duration;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
@@ -199,7 +197,7 @@ public class DefaultKeyValueTemplateTest {
         });
 
         assertThrows(NullPointerException.class, () -> {
-            Mockito.when(manager.query("get id"))
+            when(manager.query("get id"))
                     .thenReturn(singletonList(Value.of("value")));
             subject.query("get id", null);
         });
@@ -217,11 +215,28 @@ public class DefaultKeyValueTemplateTest {
 
     @Test
     public void shouldExecuteQuery() {
-        Mockito.when(manager.query("get id"))
+        when(manager.query("get id"))
                 .thenReturn(singletonList(Value.of("12")));
 
         List<Integer> ids = subject.query("get id", Integer.class);
         MatcherAssert.assertThat(ids, Matchers.contains(12));
-
     }
+
+    @Test
+    public void shouldExecutePrepare() {
+        KeyValuePreparedStatement prepare = Mockito.mock(KeyValuePreparedStatement.class);
+        when(prepare.getResultList()).thenReturn(singletonList(Value.of("12")));
+        when(prepare.getSingleResult()).thenReturn(Optional.of(Value.of("12")));
+        when(manager.prepare("get @id")).thenReturn(prepare);
+
+        PreparedStatement statement = subject.prepare("get @id", Integer.class);
+        statement.bind("id", 12);
+        List<Integer> resultList = statement.getResultList();
+        MatcherAssert.assertThat(resultList, Matchers.contains(12));
+        Optional<Object> singleResult = statement.getSingleResult();
+        assertTrue(singleResult.isPresent());
+        assertEquals(12, singleResult.get());
+    }
+
+
 }

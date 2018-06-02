@@ -101,6 +101,17 @@ public interface KeyValueTemplate {
     <T> List<T> query(String query, Class<T> entityClass);
 
     /**
+     * Executes query in the database then returns as single result
+     *
+     * @param query       the query
+     * @param entityClass the entity class
+     * @param <T>         the entity type
+     * @return the result {@link Optional}, if either <b>put</b> or <b>remove</b> it will return {@link Optional#empty()}
+     * @throws NullPointerException when query is null, if the query is <b>get</b> the entity class is required
+     */
+    <T> Optional<T> getSingleResult(String query, Class<T> entityClass);
+
+    /**
      * Executes query in the database and don't return result, e.g.: when the query is either <b>remove</b> or
      * <b>put</b>
      *
