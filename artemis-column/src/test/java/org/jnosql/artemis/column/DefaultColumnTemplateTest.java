@@ -17,6 +17,7 @@ package org.jnosql.artemis.column;
 import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.IdNotFoundException;
+import org.jnosql.artemis.PreparedStatement;
 import org.jnosql.artemis.model.Job;
 import org.jnosql.artemis.model.Movie;
 import org.jnosql.artemis.model.Person;
@@ -321,5 +322,17 @@ public class DefaultColumnTemplateTest {
         verify(managerMock).select(queryCaptor.capture());
         ColumnQuery query = queryCaptor.getValue();
         assertEquals("movie", query.getColumnFamily());
+    }
+
+    @Test
+    public void shouldPreparedStatement() {
+        PreparedStatement preparedStatement = subject.prepare("select * from Person where name = @name");
+        preparedStatement.bind("name", "Ada");
+        preparedStatement.getResultList();
+        ArgumentCaptor<ColumnQuery> queryCaptor = ArgumentCaptor.forClass(ColumnQuery.class);
+        verify(managerMock).select(queryCaptor.capture());
+        ColumnQuery query = queryCaptor.getValue();
+        assertEquals("Person", query.getColumnFamily());
+
     }
 }
