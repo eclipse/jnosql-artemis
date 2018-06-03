@@ -121,7 +121,6 @@ public interface KeyValueTemplate {
      * <b>put</b>
      *
      * @param query the query
-     * @return the result as a list
      * @throws NullPointerException when query is null
      */
     void query(String query);
