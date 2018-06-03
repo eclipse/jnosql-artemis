@@ -187,6 +187,26 @@ public interface DocumentTemplate {
     <T, ID> void delete(Class<T> entityClass, ID id);
 
     /**
+     * Returns the number of elements form document collection
+     *
+     * @param documentCollection the document collection
+     * @return the number of elements
+     * @throws NullPointerException          when document collection is null
+     * @throws UnsupportedOperationException when the database dot not have support
+     */
+    long count(String documentCollection);
+
+    /**
+     * Returns the number of elements form document collection
+     * @param <T> entityType
+     * @param entityType the document collection
+     * @return the number of elements
+     * @throws NullPointerException          when document collection is null
+     * @throws UnsupportedOperationException when the database dot not have support
+     */
+    <T> long count(Class<T> entityType);
+
+    /**
      * Returns a single entity from query
      *
      * @param query - query to figure out entities

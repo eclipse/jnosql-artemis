@@ -341,4 +341,17 @@ public class DefaultDocumentTemplateTest {
         assertEquals("Person", query.getDocumentCollection());
     }
 
+    @Test
+    public void shouldCount() {
+        subject.count("Person");
+        verify(managerMock).count("Person");
+    }
+
+    @Test
+    public void shouldCountFromEntityClass() {
+        subject.count(Person.class);
+        verify(managerMock).count("Person");
+    }
+
+
 }

@@ -264,6 +264,27 @@ public interface DocumentTemplateAsync {
      */
     <T, ID> void delete(Class<T> entityClass, ID id);
 
+    /**
+     * Returns the number of elements form document collection
+     *
+     * @param documentCollection the document collection
+     * @param callback           the callback with the response
+     * @throws NullPointerException          when there is null parameter
+     * @throws UnsupportedOperationException when the database dot not have support
+     */
+    void count(String documentCollection, Consumer<Long> callback);
+
+    /**
+     * Returns the number of elements form document collection
+     *
+     * @param <T>         the entity type
+     * @param entityClass the document collection
+     * @param callback    the callback with the response
+     * @throws NullPointerException          when there is null parameter
+     * @throws UnsupportedOperationException when the database dot not have support
+     */
+    <T> void count(Class<T> entityClass, Consumer<Long> callback);
+
 
     /**
      * Execute a query to consume an unique result

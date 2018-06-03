@@ -211,6 +211,19 @@ public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateA
         return new DocumentPreparedStatementAsync(PARSER.prepare(query, getManager(), getObserver()), getConverter());
     }
 
+    @Override
+    public void count(String documentCollection, Consumer<Long> callback) {
+        getManager().count(documentCollection, callback);
+    }
+
+    @Override
+    public <T> void count(Class<T> entityClass, Consumer<Long> callback) {
+        Objects.requireNonNull(entityClass, "entityClass is required");
+        Objects.requireNonNull(callback, "callback is required");
+        ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
+        getManager().count(classRepresentation.getName(), callback);
+    }
+
     private <T, ID> DocumentDeleteQuery getDeleteQuery(Class<T> entityClass, ID id) {
         ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
         FieldRepresentation idField = classRepresentation.getId()

@@ -93,13 +93,11 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
     }
 
 
-
     @Override
     public <T> T update(T entity) {
         Objects.requireNonNull(entity, "entity is required");
         return getWorkflow().flow(entity, update);
     }
-
 
 
     @Override
@@ -152,7 +150,7 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
     @Override
     public <T> List<T> query(String query) {
         requireNonNull(query, "query is required");
-        return PARSER.query(query,getManager(), getObserver()).stream().map(c -> (T) getConverter().toEntity(c))
+        return PARSER.query(query, getManager(), getObserver()).stream().map(c -> (T) getConverter().toEntity(c))
                 .collect(toList());
     }
 
@@ -171,6 +169,18 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
     @Override
     public PreparedStatement prepare(String query) {
         return new DocumentPreparedStatement(PARSER.prepare(query, getManager(), getObserver()), getConverter());
+    }
+
+
+    @Override
+    public long count(String documentCollection) {
+        return getManager().count(documentCollection);
+    }
+
+    public <T> long count(Class<T> entityClass) {
+        Objects.requireNonNull(entityClass, "entityClass is required");
+        ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
+        return getManager().count(classRepresentation.getName());
     }
 
 }
