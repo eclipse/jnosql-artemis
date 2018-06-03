@@ -31,6 +31,7 @@ public interface KeyValueEntityPostPersist {
     /**
      * Creates the {@link KeyValueEntityPostPersist} instance
      *
+     * @param <T>    the entity type
      * @param entity the entity
      * @return {@link KeyValueEntityPostPersist} instance
      * @throws NullPointerException when the entity is null

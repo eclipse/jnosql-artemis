@@ -71,22 +71,22 @@ public abstract class AbstractKeyValueTemplate implements KeyValueTemplate {
     }
 
     @Override
-    public <K, T> Optional<T> get(K key, Class<T> clazz) {
+    public <K, T> Optional<T> get(K key, Class<T> entityClass) {
         requireNonNull(key, "key is required");
-        requireNonNull(clazz, "entity class is required");
+        requireNonNull(entityClass, "entity class is required");
 
         Optional<Value> value = getManager().get(key);
-        return value.map(v -> getConverter().toEntity(clazz, v))
+        return value.map(v -> getConverter().toEntity(entityClass, v))
                 .filter(Objects::nonNull);
     }
 
     @Override
-    public <K, T> Iterable<T> get(Iterable<K> keys, Class<T> clazz) {
+    public <K, T> Iterable<T> get(Iterable<K> keys, Class<T> entityClass) {
         requireNonNull(keys, "keys is required");
-        requireNonNull(clazz, "entity class is required");
+        requireNonNull(entityClass, "entity class is required");
         return StreamSupport.stream(getManager()
                 .get(keys).spliterator(), false)
-                .map(v -> getConverter().toEntity(clazz, v))
+                .map(v -> getConverter().toEntity(entityClass, v))
                 .filter(Objects::nonNull)
                 .collect(toList());
     }

@@ -31,6 +31,7 @@ public interface KeyValueEntityPrePersist {
     /**
      * Creates the {@link KeyValueEntityPrePersist} instance
      *
+     * @param <T>    the entity type
      * @param entity the entity
      * @return {@link KeyValueEntityPrePersist} instance
      * @throws NullPointerException when the entity is null

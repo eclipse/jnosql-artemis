@@ -26,6 +26,7 @@ public interface KeyValueEntityConverter {
     /**
      * Converts the instance entity to {@link KeyValueEntity}
      *
+     * @param <T> the entity type
      * @param entityInstance the instnace
      * @return a {@link KeyValueEntity} instance
      * @throws org.jnosql.artemis.IdNotFoundException when the entityInstance hasn't a field with {@link org.jnosql.artemis.Id}

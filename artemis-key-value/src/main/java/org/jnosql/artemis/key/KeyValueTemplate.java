@@ -36,6 +36,7 @@ public interface KeyValueTemplate {
      *
      * @param entity the entity to be insert
      * @param <T>    the entity type
+     * @return the entity
      * @throws NullPointerException when entity is null
      */
     <T> T put(T entity);
@@ -46,6 +47,7 @@ public interface KeyValueTemplate {
      * @param entity the entity to be insert
      * @param ttl    the defined time to live
      * @param <T>    the entity type
+     * @return the entity
      * @throws NullPointerException          when entity is null
      * @throws UnsupportedOperationException when expired time is not supported
      */
@@ -56,6 +58,7 @@ public interface KeyValueTemplate {
      *
      * @param entities keys to be insert
      * @param <T>      the entity type
+     * @return the entities
      * @throws NullPointerException when the iterable is null
      */
     default <T> Iterable<T> put(Iterable<T> entities) {
@@ -69,6 +72,7 @@ public interface KeyValueTemplate {
      * @param entities entities to be insert
      * @param ttl      the time to entity expire
      * @param <T>      the entity type
+     * @return the entities
      * @throws NullPointerException          when the iterable is null
      * @throws UnsupportedOperationException when expired time is not supported
      */
@@ -81,13 +85,14 @@ public interface KeyValueTemplate {
     /**
      * Finds the Value from a key
      *
-     * @param key the key
-     * @param <K> the key type
-     * @param <T> the entity type
+     * @param key         the key
+     * @param <K>         the key type
+     * @param <T>         the entity type
+     * @param entityClass the entity class to convert the result
      * @return the {@link Optional} when is not found will return a {@link Optional#empty()}
      * @throws NullPointerException when the key is null
      */
-    <K, T> Optional<T> get(K key, Class<T> clazz);
+    <K, T> Optional<T> get(K key, Class<T> entityClass);
 
     /**
      * Executes query in the database
@@ -135,13 +140,14 @@ public interface KeyValueTemplate {
     /**
      * Finds a list of values from keys
      *
-     * @param keys the keys to be used in this query
-     * @param <K>  the key type
-     * @param <T>  the entity type
+     * @param entityClass the entity class
+     * @param keys        the keys to be used in this query
+     * @param <K>         the key type
+     * @param <T>         the entity type
      * @return the list of result
      * @throws NullPointerException when either the keys or the entities values are null
      */
-    <K, T> Iterable<T> get(Iterable<K> keys, Class<T> clazz);
+    <K, T> Iterable<T> get(Iterable<K> keys, Class<T> entityClass);
 
     /**
      * Removes an entity from key
