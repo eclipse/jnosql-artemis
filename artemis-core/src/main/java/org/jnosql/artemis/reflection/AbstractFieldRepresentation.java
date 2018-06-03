@@ -35,14 +35,14 @@ abstract class AbstractFieldRepresentation implements FieldRepresentation {
 
     protected final String fieldName;
 
-    protected final Optional<Class<? extends AttributeConverter>> converter;
+    protected final Class<? extends AttributeConverter> converter;
 
     AbstractFieldRepresentation(FieldType type, Field field, String name, Class<? extends AttributeConverter> converter) {
         this.type = type;
         this.field = field;
         this.name = name;
         this.fieldName = field.getName();
-        this.converter = Optional.ofNullable(converter);
+        this.converter = converter;
     }
 
     @Override
@@ -68,7 +68,7 @@ abstract class AbstractFieldRepresentation implements FieldRepresentation {
 
     @Override
     public <T extends AttributeConverter> Optional<Class<? extends AttributeConverter>> getConverter() {
-        return converter;
+        return Optional.ofNullable(converter);
     }
 
 

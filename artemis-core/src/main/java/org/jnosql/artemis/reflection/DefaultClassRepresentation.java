@@ -41,7 +41,7 @@ class DefaultClassRepresentation implements ClassRepresentation {
 
     private final Map<String, FieldRepresentation> fieldsGroupedByName;
 
-    private final Optional<FieldRepresentation> id;
+    private final FieldRepresentation id;
 
     DefaultClassRepresentation(String name, List<String> fieldsName, Class<?> classInstance,
                                List<FieldRepresentation> fields, Constructor constructor,
@@ -54,7 +54,7 @@ class DefaultClassRepresentation implements ClassRepresentation {
         this.constructor = constructor;
         this.fieldsGroupedByName = fieldsGroupedByName;
         this.javaFieldGroupedByColumn = javaFieldGroupedByColumn;
-        this.id = fields.stream().filter(FieldRepresentation::isId).findFirst();
+        this.id = fields.stream().filter(FieldRepresentation::isId).findFirst().orElse(null);
     }
 
     @Override
@@ -105,7 +105,7 @@ class DefaultClassRepresentation implements ClassRepresentation {
 
     @Override
     public Optional<FieldRepresentation> getId() {
-        return id;
+        return Optional.ofNullable(id);
     }
 
     @Override
