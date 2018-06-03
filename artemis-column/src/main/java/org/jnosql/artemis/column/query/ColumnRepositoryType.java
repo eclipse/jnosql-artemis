@@ -14,15 +14,17 @@
  */
 package org.jnosql.artemis.column.query;
 
+import org.jnosql.artemis.Query;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnQuery;
 
 import java.lang.reflect.Method;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 enum ColumnRepositoryType {
-    DEFAULT, FIND_BY, DELETE_BY, QUERY, QUERY_DELETE, UNKNOWN, FIND_ALL, OBJECT_METHOD;
+    DEFAULT, FIND_BY, DELETE_BY, QUERY, QUERY_DELETE, UNKNOWN, FIND_ALL, OBJECT_METHOD, JNOSQL_QUERY;
 
 
     private static final Method[] METHODS = Object.class.getMethods();
@@ -31,6 +33,10 @@ enum ColumnRepositoryType {
 
         if (Stream.of(METHODS).anyMatch(method::equals)) {
             return OBJECT_METHOD;
+        }
+
+        if (Objects.nonNull(method.getAnnotation(Query.class))) {
+            return JNOSQL_QUERY;
         }
 
         String methodName = method.getName();

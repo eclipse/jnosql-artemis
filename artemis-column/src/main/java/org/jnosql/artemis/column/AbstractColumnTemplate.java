@@ -17,30 +17,37 @@ package org.jnosql.artemis.column;
 
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.IdNotFoundException;
+import org.jnosql.artemis.PreparedStatement;
 import org.jnosql.artemis.column.util.ConverterUtil;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
+import org.jnosql.diana.api.column.ColumnObserverParser;
 import org.jnosql.diana.api.column.ColumnQuery;
+import org.jnosql.diana.api.column.ColumnQueryParser;
 import org.jnosql.diana.api.column.query.ColumnQueryBuilder;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * The template method to {@link ColumnTemplate}
  */
 public abstract class AbstractColumnTemplate implements ColumnTemplate {
 
+
+    private static final ColumnQueryParser PARSER = ColumnQueryParser.getParser();
 
     protected abstract ColumnEntityConverter getConverter();
 
@@ -57,6 +64,16 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
     private final UnaryOperator<ColumnEntity> insert = e -> getManager().insert(e);
 
     private final UnaryOperator<ColumnEntity> update = e -> getManager().update(e);
+
+    private ColumnObserverParser observer;
+
+
+    private ColumnObserverParser getObserver() {
+        if (Objects.isNull(observer)) {
+            observer = new ColumnMapperObserver(getClassRepresentations());
+        }
+        return observer;
+    }
 
     @Override
     public <T> T insert(T entity) {
@@ -95,7 +112,7 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
         getEventManager().firePreQuery(query);
         List<ColumnEntity> entities = getManager().select(query);
         Function<ColumnEntity, T> function = e -> getConverter().toEntity(e);
-        return entities.stream().map(function).collect(Collectors.toList());
+        return entities.stream().map(function).collect(toList());
     }
 
     @Override
@@ -126,5 +143,30 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
         ColumnDeleteQuery query = ColumnQueryBuilder.delete().from(classRepresentation.getName())
                 .where(idField.getName()).eq(value).build();
         getManager().delete(query);
+    }
+
+
+    @Override
+    public <T> List<T> query(String query) {
+        requireNonNull(query, "query is required");
+        return PARSER.query(query,getManager(), getObserver()).stream().map(c -> (T) getConverter().toEntity(c))
+                .collect(toList());
+    }
+
+    @Override
+    public <T> Optional<T> singleResult(String query) {
+        List<T> entities = query(query);
+        if (entities.isEmpty()) {
+            return Optional.empty();
+        }
+        if (entities.size() == 1) {
+            return Optional.ofNullable(entities.get(0));
+        }
+        throw new NonUniqueResultException("No unique result found to the query: " + query);
+    }
+
+    @Override
+    public PreparedStatement prepare(String query) {
+        return new ColumnPreparedStatement(PARSER.prepare(query, getManager(), getObserver()), getConverter());
     }
 }

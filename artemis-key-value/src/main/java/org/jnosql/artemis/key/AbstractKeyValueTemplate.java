@@ -15,18 +15,22 @@
 package org.jnosql.artemis.key;
 
 
+import org.jnosql.artemis.PreparedStatement;
+import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.key.BucketManager;
 import org.jnosql.diana.api.key.KeyValueEntity;
 
 import java.time.Duration;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * This class provides a skeletal implementation of the {@link KeyValueTemplate} interface,
@@ -84,7 +88,7 @@ public abstract class AbstractKeyValueTemplate implements KeyValueTemplate {
                 .get(keys).spliterator(), false)
                 .map(v -> getConverter().toEntity(clazz, v))
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @Override
@@ -98,4 +102,40 @@ public abstract class AbstractKeyValueTemplate implements KeyValueTemplate {
         requireNonNull(keys, "keys is required");
         getManager().remove(keys);
     }
+
+    @Override
+    public <T> List<T> query(String query, Class<T> entityClass) {
+        requireNonNull(query, "query is required");
+        List<Value> values = getManager().query(query);
+        if (!values.isEmpty()) {
+            requireNonNull(entityClass, "entityClass is required");
+            return values.stream().map(v -> v.get(entityClass)).collect(toList());
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public <T> Optional<T> getSingleResult(String query, Class<T> entityClass) {
+        List<T> result = query(query, entityClass);
+        if (result.isEmpty()) {
+            return Optional.empty();
+        }
+        if (result.size() == 1) {
+            return Optional.ofNullable(result.get(0));
+        }
+        throw new NonUniqueResultException("No Unique result found to the query: " + query);
+    }
+
+    @Override
+    public void query(String query) {
+        requireNonNull(query, "query is required");
+        getManager().query(query);
+    }
+
+    @Override
+    public <T> PreparedStatement prepare(String query, Class<T> entityClass) {
+        requireNonNull(query, "query is required");
+        return new org.jnosql.artemis.key.KeyValuePreparedStatement(getManager().prepare(query), entityClass);
+    }
+
 }

@@ -14,28 +14,29 @@
  */
 package org.jnosql.artemis.graph;
 
-import org.apache.tinkerpop.gremlin.structure.Graph;
-import org.jnosql.artemis.graph.cdi.CDIExtension;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.jnosql.diana.api.JNoSQLException;
 
-import javax.inject.Inject;
+/**
+ * An exception that provides information when executing Gremlin in the database.
+ */
+public class GremlinQueryException extends JNoSQLException {
 
-@ExtendWith(CDIExtension.class)
-class DefaultGraphTraversalSourceTemplateTest extends AbstractGraphTemplateTest {
-
-    @Inject
-    private GraphTemplate graphTemplate;
-
-    @Inject
-    private Graph graph;
-
-    @Override
-    protected Graph getGraph() {
-        return graph;
+    /**
+     * A new instance with both the cause of the error and a message
+     *
+     * @param message the message
+     * @param cause   the cause
+     */
+    public GremlinQueryException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    @Override
-    protected GraphTemplate getGraphTemplate() {
-        return graphTemplate;
+    /**
+     * A new instance with the message
+     *
+     * @param message the message
+     */
+    public GremlinQueryException(String message) {
+        super(message);
     }
 }

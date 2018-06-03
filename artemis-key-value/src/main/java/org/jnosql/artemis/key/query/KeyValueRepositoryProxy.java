@@ -27,6 +27,8 @@ import java.util.List;
 class KeyValueRepositoryProxy<T> extends AbstractKeyValueRepositoryProxy {
 
     private final DefaultKeyValueRepository repository;
+    private final KeyValueTemplate template;
+    private final Class<T> entityClass;
 
     private static final List<Method> METHODS;
 
@@ -40,11 +42,23 @@ class KeyValueRepositoryProxy<T> extends AbstractKeyValueRepositoryProxy {
         Class<T> typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.repository = new DefaultKeyValueRepository(typeClass, template);
+        this.template = template;
+        this.entityClass = typeClass;
     }
 
     @Override
     protected Repository getRepository() {
         return repository;
+    }
+
+    @Override
+    protected KeyValueTemplate getTemplate() {
+        return template;
+    }
+
+    @Override
+    protected Class getEntityClass() {
+        return entityClass;
     }
 
 

@@ -17,6 +17,9 @@ package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.DynamicQueryException;
+import org.jnosql.artemis.Param;
+import org.jnosql.artemis.PreparedStatementAsync;
+import org.jnosql.artemis.Query;
 import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.reflection.ClassRepresentation;
@@ -25,6 +28,11 @@ import org.jnosql.diana.api.column.ColumnQuery;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
@@ -52,6 +60,7 @@ public abstract class AbstractColumnRepositoryAsyncProxy<T> implements Invocatio
     public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
 
         String methodName = method.getName();
+        Class<?> typeClass = getClassRepresentation().getClassInstance();
         ColumnRepositoryType type = ColumnRepositoryType.of(method, args);
 
         switch (type) {
@@ -59,22 +68,65 @@ public abstract class AbstractColumnRepositoryAsyncProxy<T> implements Invocatio
                 return method.invoke(getRepository(), args);
             case FIND_BY:
                 ColumnQuery query = getQueryParser().parse(methodName, args, getClassRepresentation(), getConverters());
-                return executeQuery(getCallBack(args), query);
+                return executeQuery(getCallback(args), query);
             case FIND_ALL:
-                return executeQuery(getCallBack(args), select().from(getClassRepresentation().getName()).build());
+                return executeQuery(getCallback(args), select().from(getClassRepresentation().getName()).build());
             case DELETE_BY:
                 ColumnDeleteQuery deleteQuery = getDeleteParser().parse(methodName, args, getClassRepresentation(), getConverters());
-                return executeDelete(getCallBack(args), deleteQuery);
+                return executeDelete(getCallback(args), deleteQuery);
             case QUERY:
                 ColumnQuery columnQuery = ColumnRepositoryType.getQuery(args).get();
-                return executeQuery(getCallBack(args), columnQuery);
+                return executeQuery(getCallback(args), columnQuery);
             case QUERY_DELETE:
                 return executeDelete(args, ColumnRepositoryType.getDeleteQuery(args).get());
             case OBJECT_METHOD:
                 return method.invoke(this, args);
+            case JNOSQL_QUERY:
+                return getJnosqlQuery(method, args, typeClass);
             default:
                 return Void.class;
         }
+    }
+
+    private Object getJnosqlQuery(Method method, Object[] args, Class<?> typeClass) {
+        String value = method.getAnnotation(Query.class).value();
+        Map<String, Object> params = getParams(method, args);
+        Consumer<List<T>> consumer = getConsumer(args);
+        if (params.isEmpty()) {
+            getTemplate().query(value, consumer);
+        } else {
+            PreparedStatementAsync prepare = getTemplate().prepare(value);
+            params.entrySet().stream().forEach(e -> prepare.bind(e.getKey(), e.getValue()));
+            prepare.getResultList(consumer);
+        }
+
+        return Void.class;
+    }
+
+    private Consumer<List<T>> getConsumer(Object[] args) {
+        Consumer<List<T>> consumer;
+        Object callBack = getCallback(args);
+        if (callBack instanceof Consumer) {
+            consumer = Consumer.class.cast(callBack);
+        } else {
+            consumer = l -> {
+            };
+        }
+        return consumer;
+    }
+
+    private Map<String, Object> getParams(Method method, Object[] args) {
+        Map<String, Object> params = new HashMap<>();
+
+        Parameter[] parameters = method.getParameters();
+        for (int index = 0; index < parameters.length; index++) {
+            Parameter parameter = parameters[index];
+            Param param = parameter.getAnnotation(Param.class);
+            if (Objects.nonNull(param)) {
+                params.put(param.value(), args[index]);
+            }
+        }
+        return params;
     }
 
     private Object executeDelete(Object arg, ColumnDeleteQuery deleteQuery) {
@@ -86,7 +138,10 @@ public abstract class AbstractColumnRepositoryAsyncProxy<T> implements Invocatio
         return Void.class;
     }
 
-    private Object getCallBack(Object[] args) {
+    private Object getCallback(Object[] args) {
+        if(args == null || args.length == 0) {
+            return null;
+        }
         return args[args.length - 1];
     }
 

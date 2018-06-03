@@ -15,6 +15,8 @@
 package org.jnosql.artemis.reflection;
 
 
+import java.util.Optional;
+
 /**
  * This class contains all the class in cached way to be used inside artemis.
  */
@@ -36,7 +38,26 @@ public interface ClassRepresentations {
      * @param name the name to select ah {@link ClassRepresentation} instance
      * @return the {@link ClassRepresentation} from name
      * @throws ClassInformationNotFoundException when the class is not loaded
+     * @throws NullPointerException              when the name is null
      */
     ClassRepresentation findByName(String name);
+
+    /**
+     * Returns the {@link ClassRepresentation} instance from {@link Class#getSimpleName()}
+     *
+     * @param name the name of {@link Class#getSimpleName()} instance
+     * @return the {@link ClassRepresentation} from name otherwise {@link Optional#empty()}
+     * @throws NullPointerException              when the name is null
+     */
+    Optional<ClassRepresentation> findBySimpleName(String name);
+
+    /**
+     * Returns the {@link ClassRepresentation} instance from {@link Class#getName()}
+     *
+     * @param name the name of {@link Class#getName()} instance
+     * @return the {@link ClassRepresentation} from name otherwise {@link Optional#empty()}
+     * @throws NullPointerException              when the name is null
+     */
+    Optional<ClassRepresentation> findByClassName(String name);
 
 }

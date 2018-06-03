@@ -16,6 +16,8 @@ package org.jnosql.artemis.column;
 
 import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.Converters;
+import org.jnosql.artemis.PreparedStatementAsync;
+import org.jnosql.artemis.model.Movie;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.NonUniqueResultException;
@@ -35,7 +37,6 @@ import org.mockito.Mockito;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -404,5 +405,39 @@ public class DefaultColumnTemplateAsyncTest {
             dianaCallBack.accept(asList(ColumnEntity.of("Person", asList(columns)), ColumnEntity.of("Person", asList(columns))));
         });
 
+    }
+
+
+
+    @Test
+    public void shouldExecuteQuery() {
+        Consumer<List<Person>> callback = l ->{};
+        subject.query("select * from Person", callback);
+        ArgumentCaptor<ColumnQuery> queryCaptor = ArgumentCaptor.forClass(ColumnQuery.class);
+        verify(managerMock).select(queryCaptor.capture(), Mockito.any(Consumer.class));
+        ColumnQuery query = queryCaptor.getValue();
+        assertEquals("Person", query.getColumnFamily());
+    }
+
+    @Test
+    public void shouldConvertEntity() {
+        Consumer<List<Movie>> callback = l ->{};
+        subject.query("select * from Movie", callback);
+        ArgumentCaptor<ColumnQuery> queryCaptor = ArgumentCaptor.forClass(ColumnQuery.class);
+        verify(managerMock).select(queryCaptor.capture(), Mockito.any(Consumer.class));
+        ColumnQuery query = queryCaptor.getValue();
+        assertEquals("movie", query.getColumnFamily());
+    }
+
+    @Test
+    public void shouldPreparedStatement() {
+        Consumer<List<Person>> callback = l ->{};
+        PreparedStatementAsync preparedStatement = subject.prepare("select * from Person where name = @name");
+        preparedStatement.bind("name", "Ada");
+        preparedStatement.getResultList(callback);
+        ArgumentCaptor<ColumnQuery> queryCaptor = ArgumentCaptor.forClass(ColumnQuery.class);
+        verify(managerMock).select(queryCaptor.capture(), Mockito.any(Consumer.class));
+        ColumnQuery query = queryCaptor.getValue();
+        assertEquals("Person", query.getColumnFamily());
     }
 }

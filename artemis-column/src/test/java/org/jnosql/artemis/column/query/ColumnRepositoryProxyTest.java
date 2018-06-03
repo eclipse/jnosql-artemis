@@ -17,6 +17,9 @@ package org.jnosql.artemis.column.query;
 import org.hamcrest.Matchers;
 import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.Converters;
+import org.jnosql.artemis.Param;
+import org.jnosql.artemis.PreparedStatement;
+import org.jnosql.artemis.Query;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.model.Person;
@@ -494,6 +497,20 @@ public class ColumnRepositoryProxyTest {
     }
 
 
+    @Test
+    public void shouldExecuteJNoSQLQuery() {
+        personRepository.findByQuery();
+        verify(template).query("select * from Person");
+    }
+
+    @Test
+    public void shouldExecuteJNoSQLPrepare() {
+        PreparedStatement statement = Mockito.mock(PreparedStatement.class);
+        when(template.prepare(Mockito.anyString())).thenReturn(statement);
+        personRepository.findByQuery("Ada");
+        verify(statement).bind("id", "Ada");
+    }
+
     interface PersonRepository extends Repository<Person, Long> {
 
         List<Person> findAll();
@@ -528,5 +545,11 @@ public class ColumnRepositoryProxyTest {
         Set<Person> findByAgeBetween(Integer ageA, Integer ageB);
 
         Set<Person> findByNameLike(String name);
+
+        @Query("select * from Person")
+        Optional<Person> findByQuery();
+
+        @Query("select * from Person where id = @id")
+        Optional<Person> findByQuery(@Param("id") String id);
     }
 }

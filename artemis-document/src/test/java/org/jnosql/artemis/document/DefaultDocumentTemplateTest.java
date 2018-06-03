@@ -17,7 +17,9 @@ package org.jnosql.artemis.document;
 import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.IdNotFoundException;
+import org.jnosql.artemis.PreparedStatement;
 import org.jnosql.artemis.model.Job;
+import org.jnosql.artemis.model.Movie;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.NonUniqueResultException;
@@ -38,6 +40,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -307,6 +310,35 @@ public class DefaultDocumentTemplateTest {
         assertEquals("Person", query.getDocumentCollection());
         assertEquals(DocumentCondition.eq(Document.of("_id", 10L)), condition);
 
+    }
+
+    @Test
+    public void shouldExecuteQuery() {
+        List<Person> people = subject.query("select * from Person");
+        ArgumentCaptor<DocumentQuery> queryCaptor = ArgumentCaptor.forClass(DocumentQuery.class);
+        verify(managerMock).select(queryCaptor.capture());
+        DocumentQuery query = queryCaptor.getValue();
+        assertEquals("Person", query.getDocumentCollection());
+    }
+
+    @Test
+    public void shouldConvertEntity() {
+        List<Movie> movies = subject.query("select * from Movie");
+        ArgumentCaptor<DocumentQuery> queryCaptor = ArgumentCaptor.forClass(DocumentQuery.class);
+        verify(managerMock).select(queryCaptor.capture());
+        DocumentQuery query = queryCaptor.getValue();
+        assertEquals("movie", query.getDocumentCollection());
+    }
+
+    @Test
+    public void shouldPreparedStatement() {
+        PreparedStatement preparedStatement = subject.prepare("select * from Person where name = @name");
+        preparedStatement.bind("name", "Ada");
+        preparedStatement.getResultList();
+        ArgumentCaptor<DocumentQuery> queryCaptor = ArgumentCaptor.forClass(DocumentQuery.class);
+        verify(managerMock).select(queryCaptor.capture());
+        DocumentQuery query = queryCaptor.getValue();
+        assertEquals("Person", query.getDocumentCollection());
     }
 
 }

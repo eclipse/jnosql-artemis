@@ -14,13 +14,17 @@
  */
 package org.jnosql.artemis.key;
 
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.MockitoExtension;
+import org.jnosql.artemis.PreparedStatement;
 import org.jnosql.artemis.model.User;
+import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.key.BucketManager;
 import org.jnosql.diana.api.key.KeyValueEntity;
-import org.junit.jupiter.api.Assertions;
+import org.jnosql.diana.api.key.KeyValuePreparedStatement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,11 +36,10 @@ import org.mockito.Mockito;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
@@ -82,8 +85,8 @@ public class DefaultKeyValueTemplateTest {
         assertThrows(NullPointerException.class, () -> subject.put(null, null));
         assertThrows(NullPointerException.class, () -> subject.put(null, Duration.ofSeconds(2L)));
         assertThrows(NullPointerException.class, () -> subject.put(user, null));
-        assertThrows(NullPointerException.class, () -> subject.put((Iterable<? extends Object>) null));
-        assertThrows(NullPointerException.class, () -> subject.put((Iterable<? extends Object>) null, null));
+        assertThrows(NullPointerException.class, () -> subject.put((Iterable<?>) null));
+        assertThrows(NullPointerException.class, () -> subject.put((Iterable<?>) null, null));
     }
 
 
@@ -168,7 +171,7 @@ public class DefaultKeyValueTemplateTest {
     @Test
     public void shouldCheckNullParametersInRemove() {
         assertThrows(NullPointerException.class, () -> subject.remove(null));
-        assertThrows(NullPointerException.class, () -> subject.remove((Iterable<? extends Object>) null));
+        assertThrows(NullPointerException.class, () -> subject.remove(null));
     }
 
 
@@ -183,4 +186,74 @@ public class DefaultKeyValueTemplateTest {
         subject.remove(singletonList(KEY));
         Mockito.verify(manager).remove(singletonList(KEY));
     }
+
+    @Test
+    public void shouldExecuteClass() {
+        subject.query("remove id");
+        Mockito.verify(manager).query("remove id");
+    }
+
+    @Test
+    public void shouldReturnErrorWhenQueryIsNull() {
+        assertThrows(NullPointerException.class, () -> subject.query(null));
+
+        assertThrows(NullPointerException.class, () -> {
+            when(manager.query("get id"))
+                    .thenReturn(singletonList(Value.of("value")));
+            subject.query("get id", null);
+        });
+
+        assertThrows(NullPointerException.class, () -> subject.query(null, String.class));
+    }
+
+    @Test
+    public void shouldExecuteClassNotClass() {
+        subject.query("remove id", null);
+        Mockito.verify(manager).query("remove id");
+    }
+
+    @Test
+    public void shouldExecuteQuery() {
+        when(manager.query("get id"))
+                .thenReturn(singletonList(Value.of("12")));
+
+        List<Integer> ids = subject.query("get id", Integer.class);
+        MatcherAssert.assertThat(ids, Matchers.contains(12));
+    }
+
+    @Test
+    public void shouldReturnSingleResult() {
+        when(manager.query("get id"))
+                .thenReturn(singletonList(Value.of("12")));
+
+        when(manager.query("get id2"))
+                .thenReturn(Collections.emptyList());
+
+        when(manager.query("get id3"))
+                .thenReturn(Arrays.asList(Value.of("12"), Value.of("15")));
+
+        Optional<Integer> id = subject.getSingleResult("get id", Integer.class);
+        assertTrue(id.isPresent());
+        assertFalse(subject.getSingleResult("get id2", Integer.class).isPresent());
+
+        assertThrows(NonUniqueResultException.class, () -> subject.getSingleResult("get id3", Integer.class));
+    }
+
+    @Test
+    public void shouldExecutePrepare() {
+        KeyValuePreparedStatement prepare = Mockito.mock(KeyValuePreparedStatement.class);
+        when(prepare.getResultList()).thenReturn(singletonList(Value.of("12")));
+        when(prepare.getSingleResult()).thenReturn(Optional.of(Value.of("12")));
+        when(manager.prepare("get @id")).thenReturn(prepare);
+
+        PreparedStatement statement = subject.prepare("get @id", Integer.class);
+        statement.bind("id", 12);
+        List<Integer> resultList = statement.getResultList();
+        MatcherAssert.assertThat(resultList, Matchers.contains(12));
+        Optional<Object> singleResult = statement.getSingleResult();
+        assertTrue(singleResult.isPresent());
+        assertEquals(12, singleResult.get());
+    }
+
+
 }

@@ -16,6 +16,7 @@ package org.jnosql.artemis.column;
 
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.IdNotFoundException;
+import org.jnosql.artemis.PreparedStatementAsync;
 import org.jnosql.artemis.column.util.ConverterUtil;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
@@ -23,11 +24,14 @@ import org.jnosql.artemis.reflection.FieldRepresentation;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
+import org.jnosql.diana.api.column.ColumnObserverParser;
 import org.jnosql.diana.api.column.ColumnQuery;
+import org.jnosql.diana.api.column.ColumnQueryParserAsync;
 import org.jnosql.diana.api.column.query.ColumnQueryBuilder;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -42,6 +46,7 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
 
     private static final Consumer EMPTY = t -> {
     };
+    private static final ColumnQueryParserAsync PARSER = ColumnQueryParserAsync.getParser();
 
     protected abstract ColumnEntityConverter getConverter();
 
@@ -50,6 +55,17 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
     protected abstract ClassRepresentations getClassRepresentations();
 
     protected abstract Converters getConverters();
+
+    private ColumnObserverParser observer;
+
+
+    private ColumnObserverParser getObserver() {
+        if (Objects.isNull(observer)) {
+            observer = new ColumnMapperObserver(getClassRepresentations());
+        }
+        return observer;
+    }
+
 
     @Override
     public <T> void insert(T entity) {
@@ -62,7 +78,7 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
     }
 
     @Override
-    public <T> void insert(T entity, Consumer<T> callBack)  {
+    public <T> void insert(T entity, Consumer<T> callBack) {
         requireNonNull(entity, "entity is required");
         requireNonNull(callBack, "callBack is required");
         Consumer<ColumnEntity> dianaCallBack = c -> callBack.accept((T) getConverter().toEntity(entity.getClass(), c));
@@ -70,11 +86,11 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
     }
 
     @Override
-    public <T> void insert(T entity, Duration ttl, Consumer<T> callBack) {
+    public <T> void insert(T entity, Duration ttl, Consumer<T> callback) {
         requireNonNull(entity, "entity is required");
         requireNonNull(ttl, "ttl is required");
-        requireNonNull(callBack, "callBack is required");
-        Consumer<ColumnEntity> dianaCallBack = c -> callBack.accept((T) getConverter().toEntity(entity.getClass(), c));
+        requireNonNull(callback, "callBack is required");
+        Consumer<ColumnEntity> dianaCallBack = c -> callback.accept((T) getConverter().toEntity(entity.getClass(), c));
         getManager().insert(getConverter().toColumn(entity), ttl, dianaCallBack);
     }
 
@@ -85,10 +101,10 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
     }
 
     @Override
-    public <T> void update(T entity, Consumer<T> callBack) {
+    public <T> void update(T entity, Consumer<T> callback) {
         requireNonNull(entity, "entity is required");
-        requireNonNull(callBack, "callBack is required");
-        Consumer<ColumnEntity> dianaCallBack = c -> callBack.accept((T) getConverter().toEntity(entity.getClass(), c));
+        requireNonNull(callback, "callBack is required");
+        Consumer<ColumnEntity> dianaCallBack = c -> callback.accept((T) getConverter().toEntity(entity.getClass(), c));
         getManager().update(getConverter().toColumn(entity), dianaCallBack);
     }
 
@@ -99,18 +115,18 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
     }
 
     @Override
-    public void delete(ColumnDeleteQuery query, Consumer<Void> callBack) {
+    public void delete(ColumnDeleteQuery query, Consumer<Void> callback) {
         requireNonNull(query, "query is required");
-        requireNonNull(callBack, "callBack is required");
-        getManager().delete(query, callBack);
+        requireNonNull(callback, "callback is required");
+        getManager().delete(query, callback);
     }
 
     @Override
-    public <T> void select(ColumnQuery query, Consumer<List<T>> callBack) {
+    public <T> void select(ColumnQuery query, Consumer<List<T>> callback) {
         requireNonNull(query, "query is required");
-        requireNonNull(callBack, "callBack is required");
+        requireNonNull(callback, "callBack is required");
 
-        Consumer<List<ColumnEntity>> dianaCallBack = d -> callBack.accept(
+        Consumer<List<ColumnEntity>> dianaCallBack = d -> callback.accept(
                 d.stream()
                         .map(getConverter()::toEntity)
                         .map(o -> (T) o)
@@ -119,11 +135,11 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
     }
 
     @Override
-    public <T, ID> void find(Class<T> entityClass, ID id, Consumer<Optional<T>> callBack) {
+    public <T, ID> void find(Class<T> entityClass, ID id, Consumer<Optional<T>> callback) {
 
         requireNonNull(entityClass, "entityClass is required");
         requireNonNull(id, "id is required");
-        requireNonNull(callBack, "callBack is required");
+        requireNonNull(callback, "callBack is required");
 
         ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
         FieldRepresentation idField = classRepresentation.getId()
@@ -134,30 +150,64 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
         ColumnQuery query = ColumnQueryBuilder.select().from(classRepresentation.getName())
                 .where(idField.getName()).eq(value).build();
 
-        singleResult(query, callBack);
+        singleResult(query, callback);
     }
 
     @Override
-    public <T, ID> void delete(Class<T> entityClass, ID id, Consumer<Void> callBack) {
+    public <T, ID> void delete(Class<T> entityClass, ID id, Consumer<Void> callback) {
 
         requireNonNull(entityClass, "entityClass is required");
         requireNonNull(id, "id is required");
-        requireNonNull(callBack, "callBack is required");
+        requireNonNull(callback, "callBack is required");
 
         ColumnDeleteQuery query = getDeleteQuery(entityClass, id);
 
-        delete(query, callBack);
+        delete(query, callback);
     }
 
 
     @Override
-    public <T, ID> void delete(Class<T> entityClass, ID id)  {
+    public <T, ID> void delete(Class<T> entityClass, ID id) {
         requireNonNull(entityClass, "entityClass is required");
         requireNonNull(id, "id is required");
 
         ColumnDeleteQuery query = getDeleteQuery(entityClass, id);
 
         delete(query);
+    }
+
+    @Override
+    public <T> void query(String query, Consumer<List<T>> callback) {
+        requireNonNull(query, "query is required");
+        requireNonNull(callback, "callback is required");
+        Consumer<List<ColumnEntity>> mapper = columnEntities -> {
+            callback.accept(columnEntities.stream().map(c -> (T) getConverter().toEntity(c))
+                    .collect(toList()));
+        };
+        PARSER.query(query, getManager(), mapper, getObserver());
+    }
+
+    @Override
+    public <T> void singleResult(String query, Consumer<Optional<T>> callback) {
+        requireNonNull(query, "query is required");
+        requireNonNull(callback, "callBack is required");
+        Consumer<List<ColumnEntity>> mapper = columnEntities -> {
+            List<T> entities = columnEntities.stream().map(c -> (T) getConverter().toEntity(c)).collect(toList());
+            if (entities.isEmpty()) {
+                callback.accept(Optional.empty());
+            }
+            if (entities.size() == 1) {
+                callback.accept(Optional.ofNullable(getConverter().toEntity(columnEntities.get(0))));
+            }
+            throw new UnsupportedOperationException("This query does not return a unique result: " + query);
+        };
+        PARSER.query(query, getManager(), mapper, getObserver());
+    }
+
+    @Override
+    public PreparedStatementAsync prepare(String query) {
+        requireNonNull(query, "query is required");
+        return new ColumnPreparedStatementAsync(PARSER.prepare(query, getManager(), getObserver()), getConverter());
     }
 
     private <T, ID> ColumnDeleteQuery getDeleteQuery(Class<T> entityClass, ID id) {

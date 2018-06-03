@@ -16,8 +16,10 @@ package org.jnosql.artemis.graph;
 
 import org.apache.tinkerpop.gremlin.structure.Direction;
 import org.apache.tinkerpop.gremlin.structure.Transaction;
+import org.jnosql.artemis.PreparedStatement;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -228,4 +230,35 @@ public interface GraphTemplate {
      * @return the current {@link Transaction}
      */
     Transaction getTransaction();
+
+
+    /**
+     * Executes a Gremlin gremlin then bring the result as a {@link List}
+     *
+     * @param gremlin the query gremlin
+     * @param <T>   the entity type
+     * @return the result as {@link List}
+     * @throws NullPointerException when the gremlin is null
+     */
+    <T> List<T> query(String gremlin);
+
+    /**
+     * Executes a Gremlin query then bring the result as a unique result
+     *
+     * @param gremlin the gremlin query
+     * @param <T>   the entity type
+     * @return the result as {@link List}
+     * @throws NullPointerException     when the query is null
+     * @throws org.jnosql.diana.api.NonUniqueResultException if returns more than one result
+     */
+    <T> Optional<T> singleResult(String gremlin);
+
+    /**
+     * Creates a {@link PreparedStatement} from the query
+     *
+     * @param gremlin the gremlin query
+     * @return a {@link PreparedStatement} instance
+     * @throws NullPointerException when the query is null
+     */
+    PreparedStatement prepare(String gremlin);
 }

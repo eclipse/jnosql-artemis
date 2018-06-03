@@ -16,6 +16,9 @@ package org.jnosql.artemis.column.query;
 
 
 import org.jnosql.artemis.Converters;
+import org.jnosql.artemis.Param;
+import org.jnosql.artemis.PreparedStatement;
+import org.jnosql.artemis.Query;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentation;
@@ -24,6 +27,11 @@ import org.jnosql.diana.api.column.ColumnQuery;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import static org.jnosql.artemis.column.query.ColumnRepositoryType.getDeleteQuery;
 import static org.jnosql.artemis.column.query.ColumnRepositoryType.getQuery;
@@ -80,10 +88,40 @@ public abstract class AbstractColumnRepositoryProxy<T, ID> implements Invocation
                 return Void.class;
             case OBJECT_METHOD:
                 return method.invoke(this, args);
+            case JNOSQL_QUERY:
+                return getJnosqlQuery(method, args, typeClass);
             default:
                 return Void.class;
 
         }
+    }
+
+    private Object getJnosqlQuery(Method method, Object[] args, Class<?> typeClass) {
+        String value = method.getAnnotation(Query.class).value();
+        Map<String, Object> params = getParams(method, args);
+        List<T> entities;
+        if (params.isEmpty()) {
+            entities = getTemplate().query(value);
+        } else {
+            PreparedStatement prepare = getTemplate().prepare(value);
+            params.entrySet().stream().forEach(e -> prepare.bind(e.getKey(), e.getValue()));
+            entities = prepare.getResultList();
+        }
+        return ReturnTypeConverterUtil.returnObject(entities, typeClass, method);
+    }
+
+    private Map<String, Object> getParams(Method method, Object[] args) {
+        Map<String, Object> params = new HashMap<>();
+
+        Parameter[] parameters = method.getParameters();
+        for (int index = 0; index < parameters.length; index++) {
+            Parameter parameter = parameters[index];
+            Param param = parameter.getAnnotation(Param.class);
+            if (Objects.nonNull(param)) {
+                params.put(param.value(), args[index]);
+            }
+        }
+        return params;
     }
 
 }

@@ -12,11 +12,9 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis.document.query;
+package org.jnosql.artemis.key.query;
 
-import org.jnosql.artemis.document.DocumentTemplate;
 import org.jnosql.diana.api.NonUniqueResultException;
-import org.jnosql.diana.api.document.DocumentQuery;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -31,35 +29,11 @@ import java.util.stream.Stream;
 /**
  * Utilitarian class to return on dynamic query
  */
-final class ReturnTypeConverterUtil {
+public final class ReturnTypeConverterUtil {
 
     private ReturnTypeConverterUtil() {
     }
 
-
-    static Object returnObject(DocumentQuery query, DocumentTemplate repository, Class typeClass, Method method) {
-        Class<?> returnType = method.getReturnType();
-
-        if (typeClass.equals(returnType)) {
-            Optional<Object> optional = repository.singleResult(query);
-            return optional.orElse(null);
-
-        } else if (Optional.class.equals(returnType)) {
-            return repository.singleResult(query);
-        } else if (List.class.equals(returnType)
-                || Iterable.class.equals(returnType)
-                || Collection.class.equals(returnType)) {
-            return repository.select(query);
-        } else if (Set.class.equals(returnType)) {
-            return new HashSet<>(repository.select(query));
-        } else if (Queue.class.equals(returnType)) {
-            return new PriorityQueue<>(repository.select(query));
-        } else if (Stream.class.equals(returnType)) {
-            return repository.select(query).stream();
-        }
-
-        return repository.select(query);
-    }
 
     static <T> Object returnObject(List<T> entities, Class<?> typeClass, Method method) {
         Class<?> returnType = method.getReturnType();

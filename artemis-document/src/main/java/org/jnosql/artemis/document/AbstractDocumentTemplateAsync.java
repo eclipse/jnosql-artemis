@@ -17,6 +17,7 @@ package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.IdNotFoundException;
+import org.jnosql.artemis.PreparedStatementAsync;
 import org.jnosql.artemis.document.util.ConverterUtil;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
@@ -24,11 +25,14 @@ import org.jnosql.artemis.reflection.FieldRepresentation;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentEntity;
+import org.jnosql.diana.api.document.DocumentObserverParser;
 import org.jnosql.diana.api.document.DocumentQuery;
+import org.jnosql.diana.api.document.DocumentQueryParserAsync;
 import org.jnosql.diana.api.document.query.DocumentQueryBuilder;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -45,6 +49,8 @@ public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateA
     private static final Consumer EMPTY = t -> {
     };
 
+    private static final DocumentQueryParserAsync PARSER = DocumentQueryParserAsync.getParser();
+
     protected abstract DocumentEntityConverter getConverter();
 
     protected abstract DocumentCollectionManagerAsync getManager();
@@ -52,6 +58,17 @@ public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateA
     protected abstract ClassRepresentations getClassRepresentations();
 
     protected abstract Converters getConverters();
+
+    private DocumentObserverParser observer;
+
+
+    private DocumentObserverParser getObserver() {
+        if (Objects.isNull(observer)) {
+            observer = new DocumentMapperObserver(getClassRepresentations());
+        }
+        return observer;
+    }
+
 
     @Override
     public <T> void insert(T entity) {
@@ -159,6 +176,41 @@ public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateA
         DocumentDeleteQuery query = getDeleteQuery(entityClass, id);
 
         delete(query);
+    }
+
+
+    @Override
+    public <T> void query(String query, Consumer<List<T>> callback) {
+        requireNonNull(query, "query is required");
+        requireNonNull(callback, "callback is required");
+        Consumer<List<DocumentEntity>> mapper = columnEntities -> {
+            callback.accept(columnEntities.stream().map(c -> (T) getConverter().toEntity(c))
+                    .collect(toList()));
+        };
+        PARSER.query(query, getManager(), mapper, getObserver());
+    }
+
+    @Override
+    public <T> void singleResult(String query, Consumer<Optional<T>> callback) {
+        requireNonNull(query, "query is required");
+        requireNonNull(callback, "callBack is required");
+        Consumer<List<DocumentEntity>> mapper = columnEntities -> {
+            List<T> entities = columnEntities.stream().map(c -> (T) getConverter().toEntity(c)).collect(toList());
+            if (entities.isEmpty()) {
+                callback.accept(Optional.empty());
+            }
+            if (entities.size() == 1) {
+                callback.accept(Optional.ofNullable(getConverter().toEntity(columnEntities.get(0))));
+            }
+            throw new UnsupportedOperationException("This query does not return a unique result: " + query);
+        };
+        PARSER.query(query, getManager(), mapper, getObserver());
+    }
+
+    @Override
+    public PreparedStatementAsync prepare(String query) {
+        requireNonNull(query, "query is required");
+        return new DocumentPreparedStatementAsync(PARSER.prepare(query, getManager(), getObserver()), getConverter());
     }
 
     private <T, ID> DocumentDeleteQuery getDeleteQuery(Class<T> entityClass, ID id) {

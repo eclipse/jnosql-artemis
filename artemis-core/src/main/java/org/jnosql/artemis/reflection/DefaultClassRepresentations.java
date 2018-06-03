@@ -19,6 +19,8 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -32,6 +34,10 @@ class DefaultClassRepresentations implements ClassRepresentations {
 
     private Map<Class<?>, ClassRepresentation> classes;
 
+    private Map<String, ClassRepresentation> findBySimpleName;
+
+    private Map<String, ClassRepresentation> findByClassName;
+
 
     @Inject
     private ClassConverter classConverter;
@@ -43,13 +49,23 @@ class DefaultClassRepresentations implements ClassRepresentations {
     public void init() {
         representations = new ConcurrentHashMap<>();
         classes = new ConcurrentHashMap<>();
+        findBySimpleName = new ConcurrentHashMap<>();
+        findByClassName = new ConcurrentHashMap<>();
+
         classes.putAll(extension.getClasses());
         representations.putAll(extension.getRepresentations());
+        representations.values().stream().forEach(r -> {
+            Class<?> entityClass = r.getClassInstance();
+            findBySimpleName.put(entityClass.getSimpleName(), r);
+            findByClassName.put(entityClass.getName(), r);
+        });
     }
 
     void load(Class classEntity) {
         ClassRepresentation classRepresentation = classConverter.create(classEntity);
         representations.put(classEntity.getName(), classRepresentation);
+        findBySimpleName.put(classEntity.getSimpleName(), classRepresentation);
+        findByClassName.put(classEntity.getName(), classRepresentation);
     }
 
     @Override
@@ -69,6 +85,18 @@ class DefaultClassRepresentations implements ClassRepresentations {
                 .map(k -> representations.get(k))
                 .filter(r -> r.getName().equalsIgnoreCase(name)).findFirst()
                 .orElseThrow(() -> new ClassInformationNotFoundException("There is not entity found with the name: " + name));
+    }
+
+    @Override
+    public Optional<ClassRepresentation> findBySimpleName(String name) {
+        Objects.requireNonNull(name, "name is required");
+        return Optional.ofNullable(findBySimpleName.get(name));
+    }
+
+    @Override
+    public Optional<ClassRepresentation> findByClassName(String name) {
+        Objects.requireNonNull(name, "name is required");
+        return Optional.ofNullable(findByClassName.get(name));
     }
 
     @Override
