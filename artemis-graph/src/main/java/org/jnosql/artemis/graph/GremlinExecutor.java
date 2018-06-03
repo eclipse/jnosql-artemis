@@ -50,10 +50,7 @@ final class GremlinExecutor {
             bindings.put("g", traversalSource);
             params.entrySet().forEach(e -> bindings.put(e.getKey(), e.getValue()));
 
-            long start = System.currentTimeMillis();
             Object eval = ENGINE.eval(gremlin, bindings);
-            long end = System.currentTimeMillis() - start;
-            System.out.println("execution time: " + end+ " query: " + gremlin);
             if (eval instanceof GraphTraversal) {
                 return convertToList(GraphTraversal.class.cast(eval).toList());
             }

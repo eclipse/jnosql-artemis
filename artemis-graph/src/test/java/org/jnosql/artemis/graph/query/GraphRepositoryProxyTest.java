@@ -18,6 +18,9 @@ import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.apache.tinkerpop.gremlin.structure.T;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
+import org.jnosql.artemis.Param;
+import org.jnosql.artemis.PreparedStatement;
+import org.jnosql.artemis.Query;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.graph.GraphConverter;
 import org.jnosql.artemis.graph.GraphTemplate;
@@ -34,6 +37,7 @@ import org.mockito.Mockito;
 
 import javax.inject.Inject;
 import java.lang.reflect.Proxy;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -256,7 +260,7 @@ public class GraphRepositoryProxyTest {
         when(template.find(any(Long.class))).thenReturn(Optional.of(Person.builder().build()));
 
         assertTrue(personRepository.existsById(10L));
-        Mockito.verify(template).find(any(Long.class));
+        verify(template).find(any(Long.class));
 
         when(template.find(any(Long.class))).thenReturn(Optional.empty());
         assertFalse(personRepository.existsById(10L));
@@ -282,6 +286,34 @@ public class GraphRepositoryProxyTest {
         assertEquals(personRepository.hashCode(), personRepository.hashCode());
     }
 
+    @Test
+    public void shouldExecuteQuery() {
+        graph.addVertex(T.label, "Person", "name", "name", "age", 20);
+        graph.addVertex(T.label, "Person", "name", "name", "age", 20);
+        personRepository.findByQuery();
+        when(template.query("g.V().hasLabel('Person').toList()"))
+                .thenReturn(Collections.singletonList(Person.builder().build()));
+
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+
+        verify(template).query(captor.capture());
+        assertEquals("g.V().hasLabel('Person').toList()", captor.getValue());
+    }
+
+    @Test
+    public void shouldExecuteQuery2() {
+
+        PreparedStatement preparedStatement = Mockito.mock(PreparedStatement.class);
+        when(template.prepare(Mockito.anyString()))
+                .thenReturn(preparedStatement);
+
+        personRepository.findByQuery("Ada");
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+
+        verify(template).prepare(captor.capture());
+        assertEquals("g.V().hasLabel('Person').has('name', name).toList()", captor.getValue());
+        verify(preparedStatement).bind("name", "Ada");
+    }
 
 
     interface PersonRepository extends Repository<Person, Long> {
@@ -299,6 +331,12 @@ public class GraphRepositoryProxyTest {
         Set<Person> findByAgeAndName(Integer age, String name);
 
         Set<Person> findByNameAndAgeGreaterThanEqual(String name, Integer age);
+
+        @Query("g.V().hasLabel('Person').toList()")
+        List<Person> findByQuery();
+
+        @Query("g.V().hasLabel('Person').has('name', name).toList()")
+        List<Person> findByQuery(@Param("name") String name);
 
 
     }
