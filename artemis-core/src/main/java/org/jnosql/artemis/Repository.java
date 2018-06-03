@@ -47,6 +47,7 @@ public interface Repository<T, ID> {
     /**
      * Saves entity
      *
+     * @param <S>    the entity type
      * @param entity entity to be saved
      * @return the entity saved
      * @throws NullPointerException when document is null
@@ -57,6 +58,7 @@ public interface Repository<T, ID> {
      * Saves entity
      * each NoSQL vendor might replace to a more appropriate one.
      *
+     * @param <S>      the entity type
      * @param entities entities to be saved
      * @return the entity saved
      * @throws NullPointerException when entities is null
@@ -108,6 +110,7 @@ public interface Repository<T, ID> {
 
     /**
      * Returns the number of entities available.
+     *
      * @return the number of entities
      */
     long count();

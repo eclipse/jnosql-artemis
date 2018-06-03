@@ -45,6 +45,7 @@ public interface RepositoryAsync<T, ID> {
     /**
      * Saves an entity asynchronously
      *
+     * @param <S>    the entity type
      * @param entity entity to be saved
      * @throws org.jnosql.diana.api.ExecuteAsyncQueryException when there is a async error
      * @throws UnsupportedOperationException                   when the database does not have support to insert asynchronous
@@ -56,6 +57,7 @@ public interface RepositoryAsync<T, ID> {
      * Saves entities asynchronously
      * each NoSQL vendor might replace to a more appropriate one.
      *
+     * @param <S>      the entity type
      * @param entities entities to be saved
      * @throws org.jnosql.diana.api.ExecuteAsyncQueryException when there is a async error
      * @throws UnsupportedOperationException                   when the database does not have support to insert asynchronous

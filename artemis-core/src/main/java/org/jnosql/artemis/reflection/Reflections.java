@@ -104,6 +104,7 @@ public interface Reflections {
      * conflicts with a JVM SecurityManager (if active).
      *
      * @param clazz the class constructor acessible
+     * @return the constructor class
      * @throws ConstructorException when the constructor has public and default
      */
     Constructor makeAccessible(Class clazz);

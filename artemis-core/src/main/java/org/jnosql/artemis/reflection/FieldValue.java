@@ -26,6 +26,7 @@ public interface FieldValue {
      *
      * @param value the value
      * @param field the field
+     * @return the {@link FieldValue} instance
      */
     static FieldValue of(Object value, FieldRepresentation field) {
         return new DefaultFieldValue(value, field);
