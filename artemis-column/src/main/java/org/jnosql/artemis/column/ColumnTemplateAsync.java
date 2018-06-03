@@ -267,6 +267,26 @@ public interface ColumnTemplateAsync {
     <T, ID> void delete(Class<T> entityClass, ID id);
 
     /**
+     * Returns the number of elements form column family
+     *
+     * @param columnFamily the column family
+     * @param callback     the callback with the response
+     * @throws NullPointerException          when there is null parameter
+     * @throws UnsupportedOperationException when the database dot not have support
+     */
+    void count(String columnFamily, Consumer<Long> callback);
+
+    /**
+     * Returns the number of elements form column family
+     *
+     * @param entityClass the entity class
+     * @param callback     the callback with the response
+     * @throws NullPointerException          when there is null parameter
+     * @throws UnsupportedOperationException when the database dot not have support
+     */
+    <T> void count(Class<T> entityClass, Consumer<Long> callback);
+
+    /**
      * Execute a query to consume an unique result
      *
      * @param query    the query

@@ -169,4 +169,18 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
     public PreparedStatement prepare(String query) {
         return new ColumnPreparedStatement(PARSER.prepare(query, getManager(), getObserver()), getConverter());
     }
+
+
+    @Override
+    public long count(String columnFamily) {
+        return getManager().count(columnFamily);
+    }
+
+
+    @Override
+    public <T> long count(Class<T> entityClass){
+        requireNonNull(entityClass, "entity class is required");
+        ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
+        return getManager().count(classRepresentation.getName());
+    }
 }

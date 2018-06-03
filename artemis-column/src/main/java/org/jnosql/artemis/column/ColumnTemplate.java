@@ -191,6 +191,27 @@ public interface ColumnTemplate {
     <T, ID> void delete(Class<T> entityClass, ID id);
 
     /**
+     * Returns the number of elements form column family
+     *
+     * @param columnFamily the column family
+     * @return the number of elements
+     * @throws NullPointerException          when column family is null
+     * @throws UnsupportedOperationException when the database dot not have support
+     */
+    long count(String columnFamily);
+
+    /**
+     * Returns the number of elements form column family
+     *
+     * @param <T>         the entity type
+     * @param entityClass the column family
+     * @return the number of elements
+     * @throws NullPointerException          when column family is null
+     * @throws UnsupportedOperationException when the database dot not have support
+     */
+    <T> long count(Class<T> entityClass);
+
+    /**
      * Returns a single entity from query
      *
      * @param query - query to figure out entities
