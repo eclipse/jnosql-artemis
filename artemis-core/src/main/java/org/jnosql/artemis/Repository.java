@@ -106,5 +106,11 @@ public interface Repository<T, ID> {
      */
     boolean existsById(ID id);
 
+    /**
+     * Returns the number of entities available.
+     * @return the number of entities
+     */
+    long count();
+
 
 }
