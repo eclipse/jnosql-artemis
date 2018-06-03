@@ -187,7 +187,7 @@ public interface DocumentTemplate {
     <T, ID> void delete(Class<T> entityClass, ID id);
 
     /**
-     * Returns the number of elements form document collection
+     * Returns the number of elements from document collection
      *
      * @param documentCollection the document collection
      * @return the number of elements
@@ -197,7 +197,7 @@ public interface DocumentTemplate {
     long count(String documentCollection);
 
     /**
-     * Returns the number of elements form document collection
+     * Returns the number of elements from document collection
      * @param <T> entityType
      * @param entityType the document collection
      * @return the number of elements

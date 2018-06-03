@@ -261,4 +261,25 @@ public interface GraphTemplate {
      * @throws NullPointerException when the query is null
      */
     PreparedStatement prepare(String gremlin);
+
+    /**
+     * Returns the number of elements from label
+     *
+     * @param label the label
+     * @return the number of elements
+     * @throws NullPointerException          when column family is null
+     * @throws UnsupportedOperationException when the database dot not have support
+     */
+    long count(String label);
+
+    /**
+     * Returns the number of elements from label
+     *
+     * @param <T>         the entity type
+     * @param entityClass the label
+     * @return the number of elements
+     * @throws NullPointerException          when column family is null
+     * @throws UnsupportedOperationException when the database dot not have support
+     */
+    <T> long count(Class<T> entityClass);
 }

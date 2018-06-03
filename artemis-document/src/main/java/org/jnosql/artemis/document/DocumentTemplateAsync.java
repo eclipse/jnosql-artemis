@@ -265,7 +265,7 @@ public interface DocumentTemplateAsync {
     <T, ID> void delete(Class<T> entityClass, ID id);
 
     /**
-     * Returns the number of elements form document collection
+     * Returns the number of elements from document collection
      *
      * @param documentCollection the document collection
      * @param callback           the callback with the response
@@ -275,7 +275,7 @@ public interface DocumentTemplateAsync {
     void count(String documentCollection, Consumer<Long> callback);
 
     /**
-     * Returns the number of elements form document collection
+     * Returns the number of elements from document collection
      *
      * @param <T>         the entity type
      * @param entityClass the document collection

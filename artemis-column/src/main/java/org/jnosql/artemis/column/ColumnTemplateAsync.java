@@ -267,7 +267,7 @@ public interface ColumnTemplateAsync {
     <T, ID> void delete(Class<T> entityClass, ID id);
 
     /**
-     * Returns the number of elements form column family
+     * Returns the number of elements from column family
      *
      * @param columnFamily the column family
      * @param callback     the callback with the response
@@ -277,7 +277,7 @@ public interface ColumnTemplateAsync {
     void count(String columnFamily, Consumer<Long> callback);
 
     /**
-     * Returns the number of elements form column family
+     * Returns the number of elements from column family
      *
      * @param entityClass the entity class
      * @param callback     the callback with the response

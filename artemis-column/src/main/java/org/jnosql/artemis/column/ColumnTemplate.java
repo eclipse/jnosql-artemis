@@ -191,7 +191,7 @@ public interface ColumnTemplate {
     <T, ID> void delete(Class<T> entityClass, ID id);
 
     /**
-     * Returns the number of elements form column family
+     * Returns the number of elements from column family
      *
      * @param columnFamily the column family
      * @return the number of elements
@@ -201,7 +201,7 @@ public interface ColumnTemplate {
     long count(String columnFamily);
 
     /**
-     * Returns the number of elements form column family
+     * Returns the number of elements from column family
      *
      * @param <T>         the entity type
      * @param entityClass the column family
