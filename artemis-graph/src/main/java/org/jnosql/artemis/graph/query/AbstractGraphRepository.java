@@ -88,6 +88,11 @@ abstract class AbstractGraphRepository<T, ID> implements Repository<T, ID> {
         return findById(id).isPresent();
     }
 
+    @Override
+    public long count() {
+        return getTemplate().count(getClassRepresentation().getName());
+    }
+
     private FieldRepresentation getIdField() {
         return getClassRepresentation().getId().orElseThrow(KEY_NOT_FOUND_EXCEPTION_SUPPLIER);
     }
