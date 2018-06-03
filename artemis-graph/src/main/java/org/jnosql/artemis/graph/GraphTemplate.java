@@ -36,8 +36,8 @@ public interface GraphTemplate {
      * @param entity entity to be saved
      * @param <T>    the instance type
      * @return the entity saved
-     * @throws NullPointerException when document is null
-     * @throws org.jnosql.artemis.IdNotFoundException  when entity has not {@link org.jnosql.artemis.Id}
+     * @throws NullPointerException                   when document is null
+     * @throws org.jnosql.artemis.IdNotFoundException when entity has not {@link org.jnosql.artemis.Id}
      */
     <T> T insert(T entity);
 
@@ -47,8 +47,8 @@ public interface GraphTemplate {
      * @param entity entity to be updated
      * @param <T>    the instance type
      * @return the entity saved
-     * @throws NullPointerException when document is null
-     * @throws org.jnosql.artemis.IdNotFoundException  when an entity is null
+     * @throws NullPointerException                   when document is null
+     * @throws org.jnosql.artemis.IdNotFoundException when an entity is null
      */
     <T> T update(T entity);
 
@@ -95,7 +95,7 @@ public interface GraphTemplate {
      * @param <IN>     the incoming type
      * @param <OUT>    the outgoing type
      * @return the {@link EdgeEntity} of these two entities
-     * @throws NullPointerException    Either when any elements are null or the entity is null
+     * @throws NullPointerException                       Either when any elements are null or the entity is null
      * @throws org.jnosql.artemis.IdNotFoundException     when {@link org.jnosql.artemis.Id} annotation is missing in the entities
      * @throws org.jnosql.artemis.EntityNotFoundException when neither outgoing or incoming is found
      */
@@ -112,12 +112,12 @@ public interface GraphTemplate {
      * @param <IN>     the incoming type
      * @param <OUT>    the outgoing type
      * @return the {@link EdgeEntity} of these two entities
-     * @throws NullPointerException    Either when any elements are null or the entity is null
+     * @throws NullPointerException                       Either when any elements are null or the entity is null
      * @throws org.jnosql.artemis.IdNotFoundException     when {@link org.jnosql.artemis.Id} annotation is missing in the entities
      * @throws org.jnosql.artemis.EntityNotFoundException when neither outgoing or incoming is found
      */
     default <OUT, IN> EdgeEntity edge(OUT outgoing, Supplier<String> label, IN incoming) {
-        Objects.requireNonNull(label,"supplier is required");
+        Objects.requireNonNull(label, "supplier is required");
         return edge(outgoing, label.get(), incoming);
     }
 
@@ -227,6 +227,7 @@ public interface GraphTemplate {
 
     /**
      * Gets the current transaction
+     *
      * @return the current {@link Transaction}
      */
     Transaction getTransaction();
@@ -236,7 +237,7 @@ public interface GraphTemplate {
      * Executes a Gremlin gremlin then bring the result as a {@link List}
      *
      * @param gremlin the query gremlin
-     * @param <T>   the entity type
+     * @param <T>     the entity type
      * @return the result as {@link List}
      * @throws NullPointerException when the gremlin is null
      */
@@ -246,9 +247,9 @@ public interface GraphTemplate {
      * Executes a Gremlin query then bring the result as a unique result
      *
      * @param gremlin the gremlin query
-     * @param <T>   the entity type
+     * @param <T>     the entity type
      * @return the result as {@link List}
-     * @throws NullPointerException     when the query is null
+     * @throws NullPointerException                          when the query is null
      * @throws org.jnosql.diana.api.NonUniqueResultException if returns more than one result
      */
     <T> Optional<T> singleResult(String gremlin);
@@ -267,7 +268,7 @@ public interface GraphTemplate {
      *
      * @param label the label
      * @return the number of elements
-     * @throws NullPointerException          when column family is null
+     * @throws NullPointerException          when label is null
      * @throws UnsupportedOperationException when the database dot not have support
      */
     long count(String label);
@@ -278,7 +279,7 @@ public interface GraphTemplate {
      * @param <T>         the entity type
      * @param entityClass the label
      * @return the number of elements
-     * @throws NullPointerException          when column family is null
+     * @throws NullPointerException          when label is null
      * @throws UnsupportedOperationException when the database dot not have support
      */
     <T> long count(Class<T> entityClass);
