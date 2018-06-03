@@ -438,4 +438,18 @@ public class DefaultColumnTemplateAsyncTest {
         ColumnQuery query = queryCaptor.getValue();
         assertEquals("Person", query.getColumnFamily());
     }
+
+    @Test
+    public void shouldCount() {
+        Consumer<Long> callback = l ->{};
+        subject.count("Person", callback);
+        verify(managerMock).count("Person", callback);
+    }
+
+    @Test
+    public void shouldCountFromEntityClass() {
+        Consumer<Long> callback = l ->{};
+        subject.count(Person.class, callback);
+        verify(managerMock).count("Person", callback);
+    }
 }
