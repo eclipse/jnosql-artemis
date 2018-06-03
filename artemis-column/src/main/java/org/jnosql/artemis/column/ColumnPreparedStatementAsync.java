@@ -15,7 +15,6 @@
 package org.jnosql.artemis.column;
 
 import org.jnosql.artemis.PreparedStatementAsync;
-import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.column.ColumnEntity;
 
 import java.util.List;
