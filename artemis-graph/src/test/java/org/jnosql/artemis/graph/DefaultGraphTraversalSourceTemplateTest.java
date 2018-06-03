@@ -21,7 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import javax.inject.Inject;
 
 @ExtendWith(CDIExtension.class)
-class DefaultGraphTraversalSourceTemplateTest extends AbstractGraphTemplateTest{
+class DefaultGraphTraversalSourceTemplateTest extends AbstractGraphTemplateTest {
 
     @Inject
     private GraphTemplate graphTemplate;
