@@ -264,6 +264,21 @@ public abstract class AbstractGraphTemplate implements GraphTemplate {
         return getGraph().vertices(id);
     }
 
+
+    @Override
+    public long count(String label) {
+        Objects.requireNonNull(label, "label is required");
+        return getTraversal().V().hasLabel(label).count().tryNext().orElse(0L);
+    }
+
+
+    @Override
+    public <T> long count(Class<T> entityClass) {
+        Objects.requireNonNull(entityClass, "entity class is required");
+        return count(getClassRepresentations().get(entityClass).getName());
+    }
+
+
     private <ID> Collection<EdgeEntity> getEdgesByIdImpl(ID id, Direction direction, String... labels) {
 
         requireNonNull(id, "id is required");
