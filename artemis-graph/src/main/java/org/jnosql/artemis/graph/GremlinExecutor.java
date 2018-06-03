@@ -14,8 +14,5 @@
  */
 package org.jnosql.artemis.graph;
 
-import javax.script.ScriptEngine;
-
 final class GremlinExecutor {
-    private static final ScriptEngine engine = new GremlinGroovyScriptEngineFactory().getScriptEngine();
 }

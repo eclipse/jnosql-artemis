@@ -24,6 +24,7 @@ import org.apache.tinkerpop.gremlin.structure.Transaction;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.jnosql.artemis.EntityNotFoundException;
 import org.jnosql.artemis.IdNotFoundException;
+import org.jnosql.artemis.PreparedStatement;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.FieldRepresentation;
@@ -219,6 +220,23 @@ public abstract class AbstractGraphTemplate implements GraphTemplate {
         return getGraph().tx();
     }
 
+
+    public <T> List<T> query(String query) {
+        requireNonNull(query, "query is required");
+        return Collections.emptyList();
+    }
+
+    public <T> Optional<T> singleResult(String query) {
+        requireNonNull(query, "query is required");
+        return Optional.empty();
+
+    }
+
+    public PreparedStatement prepare(String query) {
+        requireNonNull(query, "query is required");
+        return null;
+    }
+
     protected GraphTraversalSource getTraversal() {
         return getGraph().traversal();
     }
@@ -241,7 +259,7 @@ public abstract class AbstractGraphTemplate implements GraphTemplate {
         return Collections.emptyList();
     }
 
-    private  <T> Optional<Vertex> getVertex(T entity) {
+    private <T> Optional<Vertex> getVertex(T entity) {
         ClassRepresentation classRepresentation = getClassRepresentations().get(entity.getClass());
         FieldRepresentation field = classRepresentation.getId().get();
         Object id = getReflections().getValue(entity, field.getNativeField());
