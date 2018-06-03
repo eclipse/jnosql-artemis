@@ -106,7 +106,7 @@ public class DefaultColumnTemplateAsyncTest {
     public void shouldCheckNullParameterInInsert() {
 
         assertThrows(NullPointerException.class, () -> subject.insert(null));
-        assertThrows(NullPointerException.class, () -> subject.insert((Iterable) null));
+        assertThrows(NullPointerException.class, () -> subject.insert(null));
         assertThrows(NullPointerException.class, () -> subject.insert(this.person, (Duration) null));
         assertThrows(NullPointerException.class, () -> subject.insert(null, Duration.ofSeconds(1L)));
         assertThrows(NullPointerException.class, () -> subject.insert(this.person, (Consumer<Person>) null));
