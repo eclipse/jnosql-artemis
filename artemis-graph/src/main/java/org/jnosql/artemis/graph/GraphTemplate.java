@@ -264,7 +264,7 @@ public interface GraphTemplate {
     PreparedStatement prepare(String gremlin);
 
     /**
-     * Returns the number of elements from label
+     * Returns the number of vertices from label
      *
      * @param label the label
      * @return the number of elements
@@ -274,7 +274,7 @@ public interface GraphTemplate {
     long count(String label);
 
     /**
-     * Returns the number of elements from label
+     * Returns the number of vertices from label
      *
      * @param <T>         the entity type
      * @param entityClass the label
