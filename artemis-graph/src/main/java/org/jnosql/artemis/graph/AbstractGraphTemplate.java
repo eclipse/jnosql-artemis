@@ -226,14 +226,14 @@ public abstract class AbstractGraphTemplate implements GraphTemplate {
         return Collections.emptyList();
     }
 
-    public <T> Optional<T> singleResult(String query) {
-        requireNonNull(query, "query is required");
+    public <T> Optional<T> singleResult(String gremlin) {
+        requireNonNull(gremlin, "query is required");
         return Optional.empty();
 
     }
 
-    public PreparedStatement prepare(String query) {
-        requireNonNull(query, "query is required");
+    public PreparedStatement prepare(String gremlin) {
+        requireNonNull(gremlin, "query is required");
         return null;
     }
 
