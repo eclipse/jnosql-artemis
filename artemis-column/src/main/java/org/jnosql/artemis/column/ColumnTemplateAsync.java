@@ -203,7 +203,6 @@ public interface ColumnTemplateAsync {
      * @param callback the callback, when the process is finished will call this instance returning
      * @param query    the query
      * @param <T>      the entity type
-     * @return the result as {@link List}
      * @throws NullPointerException when the query is null
      */
     <T> void query(String query, Consumer<List<T>> callback);
@@ -211,9 +210,9 @@ public interface ColumnTemplateAsync {
     /**
      * Executes a query then bring the result as a unique result
      *
-     * @param query the query
-     * @param <T>   the entity type
-     * @return the result as {@link List}
+     * @param callback the callback, when the process is finished will call this instance returning
+     * @param query    the query
+     * @param <T>      the entity type
      * @throws NullPointerException     when the query is null
      * @throws NonUniqueResultException if returns more than one result
      */
