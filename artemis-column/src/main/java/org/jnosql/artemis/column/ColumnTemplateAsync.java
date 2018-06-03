@@ -15,7 +15,6 @@
 package org.jnosql.artemis.column;
 
 
-import org.jnosql.artemis.PreparedStatement;
 import org.jnosql.artemis.PreparedStatementAsync;
 import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
@@ -220,10 +219,10 @@ public interface ColumnTemplateAsync {
     <T> void singleResult(String query, Consumer<Optional<T>> callback);
 
     /**
-     * Creates a {@link PreparedStatement} from the query
+     * Creates a {@link PreparedStatementAsync} from the query
      *
      * @param query the query
-     * @return a {@link PreparedStatement} instance
+     * @return a {@link PreparedStatementAsync} instance
      * @throws NullPointerException when the query is null
      */
     PreparedStatementAsync prepare(String query);
