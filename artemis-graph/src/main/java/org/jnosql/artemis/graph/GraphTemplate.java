@@ -235,7 +235,7 @@ public interface GraphTemplate {
     /**
      * Executes a Gremlin query then bring the result as a {@link List}
      *
-     * @param query the query
+     * @param query the gremlin query
      * @param <T>   the entity type
      * @return the result as {@link List}
      * @throws NullPointerException when the query is null
@@ -245,20 +245,20 @@ public interface GraphTemplate {
     /**
      * Executes a Gremlin query then bring the result as a unique result
      *
-     * @param query the query
+     * @param gremlin the gremlin query
      * @param <T>   the entity type
      * @return the result as {@link List}
      * @throws NullPointerException     when the query is null
      * @throws org.jnosql.diana.api.NonUniqueResultException if returns more than one result
      */
-    <T> Optional<T> singleResult(String query);
+    <T> Optional<T> singleResult(String gremlin);
 
     /**
      * Creates a {@link PreparedStatement} from the query
      *
-     * @param query the query
+     * @param gremlin the gremlin query
      * @return a {@link PreparedStatement} instance
      * @throws NullPointerException when the query is null
      */
-    PreparedStatement prepare(String query);
+    PreparedStatement prepare(String gremlin);
 }

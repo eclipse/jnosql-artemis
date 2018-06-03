@@ -14,5 +14,77 @@
  */
 package org.jnosql.artemis.graph;
 
+import org.apache.tinkerpop.gremlin.groovy.jsr223.GremlinGroovyScriptEngine;
+import org.apache.tinkerpop.gremlin.groovy.jsr223.GremlinGroovyScriptEngineFactory;
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
+import org.apache.tinkerpop.gremlin.structure.Edge;
+import org.apache.tinkerpop.gremlin.structure.Vertex;
+
+import javax.script.Bindings;
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 final class GremlinExecutor {
+
+
+    private final GraphConverter converter;
+
+    private static final ScriptEngine ENGINE = new GremlinGroovyScriptEngine();
+
+    GremlinExecutor(GraphConverter converter) {
+        this.converter = converter;
+    }
+
+    <T> List<T> executeGremlin(GraphTraversalSource traversalSource, String gremlin) {
+        return executeGremlin(traversalSource, gremlin, Collections.emptyMap());
+    }
+
+    <T> List<T> executeGremlin(GraphTraversalSource traversalSource, String gremlin, Map<String, Object> params) {
+        try {
+            Bindings bindings = ENGINE.createBindings();
+            bindings.put("g", traversalSource);
+            params.entrySet().forEach(e -> bindings.put(e.getKey(), e.getValue()));
+
+            long start = System.currentTimeMillis();
+            Object eval = ENGINE.eval(gremlin, bindings);
+            long end = System.currentTimeMillis() - start;
+            System.out.println("execution time: " + end+ " query: " + gremlin);
+            if (eval instanceof GraphTraversal) {
+                return convertToList(GraphTraversal.class.cast(eval).toList());
+            }
+            if (eval instanceof Iterable) {
+                return convertToList(Iterable.class.cast(eval));
+            }
+            return Collections.singletonList((T) eval);
+        } catch (ScriptException e) {
+            throw new GremlinQueryException("There is an error when executed the gremlin query: " + gremlin, e);
+        }
+    }
+
+    private <T> List<T> convertToList(Iterable<?> iterable) {
+        List<T> entities = new ArrayList<>();
+
+        for (Object entity : iterable) {
+            entities.add((T) getElement(entity));
+        }
+        return entities;
+    }
+
+    private Object getElement(Object entity) {
+        if (entity instanceof Vertex) {
+            return converter.toEntity(Vertex.class.cast(entity));
+        }
+
+        if (entity instanceof Edge) {
+            return converter.toEdgeEntity(Edge.class.cast(entity));
+        }
+        return entity;
+    }
+
+
 }
