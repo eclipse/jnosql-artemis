@@ -118,18 +118,18 @@ public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateA
     }
 
     @Override
-    public void delete(DocumentDeleteQuery query, Consumer<Void> callBack) {
+    public void delete(DocumentDeleteQuery query, Consumer<Void> callback) {
         requireNonNull(query, "query is required");
-        requireNonNull(callBack, "callBack is required");
-        getManager().delete(query, callBack);
+        requireNonNull(callback, "callBack is required");
+        getManager().delete(query, callback);
     }
 
     @Override
-    public <T> void select(DocumentQuery query, Consumer<List<T>> callBack) {
+    public <T> void select(DocumentQuery query, Consumer<List<T>> callback) {
         requireNonNull(query, "query is required");
-        requireNonNull(callBack, "callBack is required");
+        requireNonNull(callback, "callBack is required");
 
-        Consumer<List<DocumentEntity>> dianaCallBack = d -> callBack.accept(
+        Consumer<List<DocumentEntity>> dianaCallBack = d -> callback.accept(
                 d.stream()
                         .map(getConverter()::toEntity)
                         .map(o -> (T) o)

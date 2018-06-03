@@ -200,12 +200,13 @@ public interface ColumnTemplateAsync {
     /**
      * Executes a query then bring the result as a {@link List}
      *
-     * @param query the query
-     * @param <T>   the entity type
+     * @param callback the callback, when the process is finished will call this instance returning
+     * @param query    the query
+     * @param <T>      the entity type
      * @return the result as {@link List}
      * @throws NullPointerException when the query is null
      */
-    <T> void query(String query, Consumer<List<T>> callBack);
+    <T> void query(String query, Consumer<List<T>> callback);
 
     /**
      * Executes a query then bring the result as a unique result
@@ -234,7 +235,7 @@ public interface ColumnTemplateAsync {
      * @param id          the id value
      * @param <T>         the entity class type
      * @param <ID>        the id type
-     * @param callback    the callback
+     * @param callback    the callback observer
      * @throws NullPointerException                   when either the entityClass or id are null
      * @throws org.jnosql.artemis.IdNotFoundException when the entityClass does not have the Id annotation
      */
