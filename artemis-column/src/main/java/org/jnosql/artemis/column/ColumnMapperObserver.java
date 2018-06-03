@@ -48,10 +48,7 @@ final class ColumnMapperObserver implements ColumnObserverParser {
             return bySimpleName;
         }
         Optional<ClassRepresentation> byClassName = representations.findByClassName(entity);
-        if (byClassName.isPresent()) {
-            return byClassName;
-        }
-        return Optional.empty();
+        return byClassName;
     }
 
 }

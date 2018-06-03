@@ -54,9 +54,7 @@ final class ColumnPreparedStatementAsync implements PreparedStatementAsync {
     public <T> void getSingleResult(Consumer<Optional<T>> callback) {
         requireNonNull(callback, "callback is required");
 
-        Consumer<Optional<ColumnEntity>> mapper = columnEntity -> {
-            callback.accept(columnEntity.map(converter::toEntity));
-        };
+        Consumer<Optional<ColumnEntity>> mapper = columnEntity -> callback.accept(columnEntity.map(converter::toEntity));
         preparedStatementAsync.getSingleResult(mapper);
     }
 }

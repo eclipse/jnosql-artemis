@@ -148,9 +148,7 @@ public class DefaultDocumentEntityConverterTest {
 
         assertThrows(NullPointerException.class, () -> converter.toEntity(null, entity));
 
-        assertThrows(NullPointerException.class, () -> {
-            converter.toEntity(actor, null);
-        });
+        assertThrows(NullPointerException.class, () -> converter.toEntity(actor, null));
     }
 
     @Test

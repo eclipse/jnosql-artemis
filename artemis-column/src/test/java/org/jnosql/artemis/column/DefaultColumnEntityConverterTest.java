@@ -161,9 +161,7 @@ public class DefaultColumnEntityConverterTest {
 
         assertThrows(NullPointerException.class, () -> converter.toEntity(null, entity));
 
-        assertThrows(NullPointerException.class, () -> {
-            converter.toEntity(actor, null);
-        });
+        assertThrows(NullPointerException.class, () -> converter.toEntity(actor, null));
     }
 
 
