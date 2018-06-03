@@ -88,6 +88,13 @@ public abstract class AbstractDocumentRepository<T, ID> implements Repository<T,
                 .flatMap(optionalToStream()).collect(Collectors.toList());
     }
 
+
+    @Override
+    public long count() {
+        return getTemplate().count(getEntityClass());
+    }
+
+
     private FieldRepresentation getIdField() {
         return getClassRepresentation().getId().orElseThrow(KEY_NOT_FOUND_EXCEPTION_SUPPLIER);
     }

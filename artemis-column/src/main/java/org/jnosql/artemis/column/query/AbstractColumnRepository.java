@@ -81,6 +81,11 @@ public abstract class AbstractColumnRepository<T, ID> implements Repository<T, I
         return getTemplate().find(getEntityClass(), id);
     }
 
+    @Override
+    public long count() {
+        return getTemplate().count(getEntityClass());
+    }
+
     private Class<T> getEntityClass() {
         return (Class<T>) getClassRepresentation().getClassInstance();
     }
