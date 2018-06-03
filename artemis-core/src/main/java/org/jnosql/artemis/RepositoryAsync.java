@@ -96,7 +96,6 @@ public interface RepositoryAsync<T, ID> {
      * Returns the number of entities available.
      *
      * @param callback the callback
-     * @return the number of entities
      */
     void count(Consumer<Long> callback);
 }

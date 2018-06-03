@@ -39,7 +39,7 @@ public interface PreparedStatementAsync {
      *
      * @param callback the callback observer
      * @param <T>      the type
-     * @throws NullPointerException
+     * @throws NullPointerException when the callback is null
      */
     <T> void getResultList(Consumer<List<T>> callback);
 
