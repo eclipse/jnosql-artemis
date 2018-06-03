@@ -121,7 +121,7 @@ public interface KeyValueTemplate {
      * <b>put</b>
      *
      * @param query the query
-     * @return the result list, if either <b>put</b> or <b>remove</b> it will return empty
+     * @return the result as a list
      * @throws NullPointerException when query is null
      */
     void query(String query);
