@@ -231,11 +231,13 @@ public abstract class AbstractGraphTemplate implements GraphTemplate {
     }
 
 
+    @Override
     public <T> List<T> query(String gremlin) {
         requireNonNull(gremlin, "query is required");
         return getExecutor().executeGremlin(getTraversal(), gremlin);
     }
 
+    @Override
     public <T> Optional<T> singleResult(String gremlin) {
         List<T> entities = query(gremlin);
         if (entities.isEmpty()) {
@@ -248,9 +250,10 @@ public abstract class AbstractGraphTemplate implements GraphTemplate {
 
     }
 
+    @Override
     public PreparedStatement prepare(String gremlin) {
         requireNonNull(gremlin, "query is required");
-        return null;
+        return new DefaultPreparedStatement(getExecutor(), gremlin, getTraversal());
     }
 
     protected GraphTraversalSource getTraversal() {
