@@ -263,7 +263,7 @@ public abstract class AbstractGraphTemplateTest {
     public void shouldExecuteQuery() {
         Person person = builder().withAge()
                 .withName("Otavio").build();
-        Person updated = getGraphTemplate().insert(person);
+        getGraphTemplate().insert(person);
         List<Person> people = getGraphTemplate().query("g.V().hasLabel('Person')");
         MatcherAssert.assertThat(people.stream().map(Person::getName).collect(toList()), Matchers.contains("Otavio"));
     }
