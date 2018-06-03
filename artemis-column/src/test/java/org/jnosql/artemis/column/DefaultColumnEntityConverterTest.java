@@ -159,9 +159,7 @@ public class DefaultColumnEntityConverterTest {
         Stream.of(columns).forEach(entity::add);
         Actor actor = Actor.actorBuilder().build();
 
-        assertThrows(NullPointerException.class, () -> {
-           converter.toEntity(null, entity);
-        });
+        assertThrows(NullPointerException.class, () -> converter.toEntity(null, entity));
 
         assertThrows(NullPointerException.class, () -> {
             converter.toEntity(actor, null);

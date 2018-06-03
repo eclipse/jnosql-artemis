@@ -180,10 +180,10 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
     public <T> void query(String query, Consumer<List<T>> callback) {
         requireNonNull(query, "query is required");
         requireNonNull(callback, "callback is required");
-        Consumer<List<ColumnEntity>> mapper = columnEntities -> {
-            callback.accept(columnEntities.stream().map(c -> (T) getConverter().toEntity(c))
-                    .collect(toList()));
-        };
+        Consumer<List<ColumnEntity>> mapper = columnEntities ->
+                callback.accept(columnEntities
+                        .stream().map(c -> (T) getConverter().toEntity(c))
+                .collect(toList()));
         PARSER.query(query, getManager(), mapper, getObserver());
     }
 

@@ -289,9 +289,7 @@ public abstract class AbstractGraphTemplateTest {
 
         getGraphTemplate().insert(builder().withAge().withName("Otavio").build());
         getGraphTemplate().insert(builder().withAge().withName("Poliana").build());
-        assertThrows(NonUniqueResultException.class, () -> {
-            getGraphTemplate().singleResult("g.V().hasLabel('Person')");
-        });
+        assertThrows(NonUniqueResultException.class, () -> getGraphTemplate().singleResult("g.V().hasLabel('Person')"));
     }
 
     @Test
@@ -326,8 +324,6 @@ public abstract class AbstractGraphTemplateTest {
         getGraphTemplate().insert(builder().withAge().withName("Poliana").build());
         PreparedStatement prepare = getGraphTemplate().prepare("g.V().hasLabel(param)");
         prepare.bind("param", "Person");
-        assertThrows(NonUniqueResultException.class, () -> {
-            prepare.getSingleResult();
-        });
+        assertThrows(NonUniqueResultException.class, prepare::getSingleResult);
     }
 }

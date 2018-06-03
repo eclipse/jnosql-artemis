@@ -45,10 +45,8 @@ final class ColumnPreparedStatementAsync implements PreparedStatementAsync {
     public <T> void getResultList(Consumer<List<T>> callback) {
         requireNonNull(callback, "callback is required");
 
-        Consumer<List<ColumnEntity>> mapper = columnEntities -> {
-            callback.accept(columnEntities.stream().map(c -> (T) converter.toEntity(c))
-                    .collect(toList()));
-        };
+        Consumer<List<ColumnEntity>> mapper = columnEntities -> callback.accept(columnEntities.stream().map(c -> (T) converter.toEntity(c))
+                .collect(toList()));
         preparedStatementAsync.getResultList(mapper);
     }
 

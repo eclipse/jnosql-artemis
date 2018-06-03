@@ -260,9 +260,7 @@ public class DefaultColumnTemplateAsyncTest {
         ArgumentCaptor<Consumer<List<ColumnEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
         ColumnQuery query = ColumnQueryBuilder.select().from("Person").build();
         AtomicBoolean condition = new AtomicBoolean(false);
-        Consumer<List<Person>> callback = l -> {
-            condition.set(true);
-        };
+        Consumer<List<Person>> callback = l -> condition.set(true);
         subject.select(query, callback);
         verify(managerMock).select(Mockito.any(ColumnQuery.class), dianaCallbackCaptor.capture());
         Consumer<List<ColumnEntity>> dianaCallBack = dianaCallbackCaptor.getValue();

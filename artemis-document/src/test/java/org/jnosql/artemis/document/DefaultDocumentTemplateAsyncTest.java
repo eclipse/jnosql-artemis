@@ -269,9 +269,7 @@ public class DefaultDocumentTemplateAsyncTest {
         ArgumentCaptor<Consumer<List<DocumentEntity>>> dianaCallbackCaptor = ArgumentCaptor.forClass(Consumer.class);
         DocumentQuery query = select().from("Person").build();
         AtomicBoolean condition = new AtomicBoolean(false);
-        Consumer<List<Person>> callback = l -> {
-            condition.set(true);
-        };
+        Consumer<List<Person>> callback = l -> condition.set(true);
         subject.select(query, callback);
         verify(managerMock).select(Mockito.any(DocumentQuery.class), dianaCallbackCaptor.capture());
         Consumer<List<DocumentEntity>> dianaCallBack = dianaCallbackCaptor.getValue();

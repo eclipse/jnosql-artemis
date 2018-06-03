@@ -23,9 +23,7 @@ class DatabaseMetadataTest {
 
     @Test
     public void shouldReturnErrorWhenDatabaseIsNull() {
-        assertThrows(NullPointerException.class, () -> {
-            DatabaseMetadata.of(null);
-        });
+        assertThrows(NullPointerException.class, () -> DatabaseMetadata.of(null));
     }
 
     @Test

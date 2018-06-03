@@ -47,7 +47,7 @@ final class GremlinExecutor {
         try {
             Bindings bindings = ENGINE.createBindings();
             bindings.put("g", traversalSource);
-            params.entrySet().forEach(e -> bindings.put(e.getKey(), e.getValue()));
+            params.forEach((key, value) -> bindings.put(key, value));
 
             Object eval = ENGINE.eval(gremlin, bindings);
             if (eval instanceof GraphTraversal) {
