@@ -326,4 +326,18 @@ public abstract class AbstractGraphTemplateTest {
         prepare.bind("param", "Person");
         assertThrows(NonUniqueResultException.class, prepare::getSingleResult);
     }
+
+    @Test
+    public void shouldCount() {
+        getGraphTemplate().insert(builder().withAge().withName("Otavio").build());
+        getGraphTemplate().insert(builder().withAge().withName("Poliana").build());
+        assertEquals(2L, getGraphTemplate().count("Person"));
+    }
+
+    @Test
+    public void shouldCountFromEntity() {
+        getGraphTemplate().insert(builder().withAge().withName("Otavio").build());
+        getGraphTemplate().insert(builder().withAge().withName("Poliana").build());
+        assertEquals(2L, getGraphTemplate().count(Person.class));
+    }
 }
