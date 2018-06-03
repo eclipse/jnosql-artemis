@@ -90,6 +90,11 @@ public abstract class AbstractColumnRepositoryAsync<T, ID> implements Repository
         getTemplate().find(getEntityClass(), id, callBack);
     }
 
+    @Override
+    public void count(Consumer<Long> callback) {
+        getTemplate().count(getEntityClass(), callback);
+    }
+
     private Class<T> getEntityClass() {
         return (Class<T>) getClassRepresentation().getClassInstance();
     }

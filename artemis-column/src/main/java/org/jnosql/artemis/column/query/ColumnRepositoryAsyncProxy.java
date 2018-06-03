@@ -23,6 +23,7 @@ import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.Reflections;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.function.Consumer;
 
 /**
  * Proxy handle to generate {@link RepositoryAsync}
@@ -117,7 +118,6 @@ class ColumnRepositoryAsyncProxy<T> extends AbstractColumnRepositoryAsyncProxy<T
         protected ClassRepresentation getClassRepresentation() {
             return classRepresentation;
         }
-
 
     }
 }

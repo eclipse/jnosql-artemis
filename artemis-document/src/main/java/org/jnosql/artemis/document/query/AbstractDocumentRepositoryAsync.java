@@ -90,6 +90,12 @@ public abstract class AbstractDocumentRepositoryAsync<T, ID> implements Reposito
         getTemplate().find(getEntityClass(), id, callBack);
     }
 
+    @Override
+    public void count(Consumer<Long> callback) {
+        getTemplate().count(getEntityClass(), callback);
+    }
+
+
     private Class<T> getEntityClass() {
         return (Class<T>) getClassRepresentation().getClassInstance();
     }
