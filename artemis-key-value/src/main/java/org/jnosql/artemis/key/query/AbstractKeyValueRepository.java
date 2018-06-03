@@ -69,4 +69,8 @@ public abstract class AbstractKeyValueRepository<T> implements Repository {
     public boolean existsById(Object key) {
         return getTemplate().get(key, typeClass).isPresent();
     }
+
+    public long count() {
+        throw new UnsupportedOperationException("The key-value type does not support count method");
+    }
 }
