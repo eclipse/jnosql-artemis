@@ -23,6 +23,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.jnosql.artemis.EntityNotFoundException;
 import org.jnosql.artemis.IdNotFoundException;
+import org.jnosql.artemis.PreparedStatement;
 import org.jnosql.artemis.graph.model.Animal;
 import org.jnosql.artemis.graph.model.Book;
 import org.jnosql.artemis.graph.model.Person;
@@ -290,6 +291,43 @@ public abstract class AbstractGraphTemplateTest {
         getGraphTemplate().insert(builder().withAge().withName("Poliana").build());
         assertThrows(NonUniqueResultException.class, () -> {
             getGraphTemplate().singleResult("g.V().hasLabel('Person')");
+        });
+    }
+
+    @Test
+    public void shouldExecutePrepareStatement() {
+        getGraphTemplate().insert(builder().withAge().withName("Otavio").build());
+        PreparedStatement prepare = getGraphTemplate().prepare("g.V().hasLabel(param)");
+        prepare.bind("param", "Person");
+        List<Person> people = prepare.getResultList();
+        MatcherAssert.assertThat(people.stream().map(Person::getName).collect(toList()), Matchers.contains("Otavio"));
+    }
+
+    @Test
+    public void shouldExecutePrepareStatementSingleton() {
+        getGraphTemplate().insert(builder().withAge().withName("Otavio").build());
+        PreparedStatement prepare = getGraphTemplate().prepare("g.V().hasLabel(param)");
+        prepare.bind("param", "Person");
+        Optional<Person> otavio = prepare.getSingleResult();
+        assertTrue(otavio.isPresent());
+    }
+
+    @Test
+    public void shouldExecutePrepareStatementSingletonEmpty() {
+        PreparedStatement prepare = getGraphTemplate().prepare("g.V().hasLabel(param)");
+        prepare.bind("param", "Person");
+        Optional<Person> otavio = prepare.getSingleResult();
+        assertFalse(otavio.isPresent());
+    }
+
+    @Test
+    public void shouldExecutePrepareStatementWithErrorWhenThereIsMoreThanOneResult() {
+        getGraphTemplate().insert(builder().withAge().withName("Otavio").build());
+        getGraphTemplate().insert(builder().withAge().withName("Poliana").build());
+        PreparedStatement prepare = getGraphTemplate().prepare("g.V().hasLabel(param)");
+        prepare.bind("param", "Person");
+        assertThrows(NonUniqueResultException.class, () -> {
+            prepare.getSingleResult();
         });
     }
 }
