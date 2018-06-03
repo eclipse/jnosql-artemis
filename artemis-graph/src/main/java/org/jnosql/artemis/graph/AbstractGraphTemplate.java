@@ -29,6 +29,7 @@ import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.FieldRepresentation;
 import org.jnosql.artemis.reflection.Reflections;
+import org.jnosql.diana.api.NonUniqueResultException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -65,6 +66,15 @@ public abstract class AbstractGraphTemplate implements GraphTemplate {
     protected abstract GraphWorkflow getFlow();
 
     protected abstract Reflections getReflections();
+
+    private GremlinExecutor gremlinExecutor;
+
+    private GremlinExecutor getExecutor() {
+        if (Objects.isNull(gremlinExecutor)) {
+            this.gremlinExecutor = new GremlinExecutor(getConverter());
+        }
+        return gremlinExecutor;
+    }
 
     @Override
     public <T> T insert(T entity) {
@@ -221,14 +231,20 @@ public abstract class AbstractGraphTemplate implements GraphTemplate {
     }
 
 
-    public <T> List<T> query(String query) {
-        requireNonNull(query, "query is required");
-        return Collections.emptyList();
+    public <T> List<T> query(String gremlin) {
+        requireNonNull(gremlin, "query is required");
+        return getExecutor().executeGremlin(getTraversal(), gremlin);
     }
 
     public <T> Optional<T> singleResult(String gremlin) {
-        requireNonNull(gremlin, "query is required");
-        return Optional.empty();
+        List<T> entities = query(gremlin);
+        if (entities.isEmpty()) {
+            return Optional.empty();
+        }
+        if (entities.size() == 1) {
+            return Optional.ofNullable(entities.get(0));
+        }
+        throw new NonUniqueResultException("The gremlin query returns more than one result: " + gremlin);
 
     }
 

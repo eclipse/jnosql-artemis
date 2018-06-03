@@ -233,14 +233,14 @@ public interface GraphTemplate {
 
 
     /**
-     * Executes a Gremlin query then bring the result as a {@link List}
+     * Executes a Gremlin gremlin then bring the result as a {@link List}
      *
-     * @param query the gremlin query
+     * @param gremlin the query gremlin
      * @param <T>   the entity type
      * @return the result as {@link List}
-     * @throws NullPointerException when the query is null
+     * @throws NullPointerException when the gremlin is null
      */
-    <T> List<T> query(String query);
+    <T> List<T> query(String gremlin);
 
     /**
      * Executes a Gremlin query then bring the result as a unique result
