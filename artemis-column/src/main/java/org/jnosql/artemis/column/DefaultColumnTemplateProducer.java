@@ -28,7 +28,7 @@ import java.util.Objects;
  * The default implementation of {@link ColumnTemplateProducer}
  */
 @ApplicationScoped
-class DefaultColumnTemplateProducer implements ColumnTemplateProducer {
+class DefaultColumnTemplateProducer implements ColumnTemplateProducer<ColumnTemplate> {
 
 
     @Inject

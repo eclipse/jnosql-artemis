@@ -28,7 +28,7 @@ import java.util.Objects;
  * The default implementation of {@link ColumnTemplateAsyncProducer}
  */
 @ApplicationScoped
-class DefaultColumnTemplateAsyncProducer implements ColumnTemplateAsyncProducer {
+class DefaultColumnTemplateAsyncProducer implements ColumnTemplateAsyncProducer<ColumnTemplateAsync> {
 
     @Inject
     private ColumnEntityConverter converter;

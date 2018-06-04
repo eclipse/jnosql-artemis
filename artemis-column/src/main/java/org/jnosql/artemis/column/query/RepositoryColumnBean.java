@@ -88,12 +88,12 @@ public class RepositoryColumnBean implements Bean<Repository>, PassivationCapabl
     @Override
     public Repository create(CreationalContext<Repository> creationalContext) {
         ClassRepresentations classRepresentations = getInstance(ClassRepresentations.class);
-        ColumnTemplate repository = provider.isEmpty() ? getInstance(ColumnTemplate.class) :
+        ColumnTemplate template = provider.isEmpty() ? getInstance(ColumnTemplate.class) :
                 getInstance(ColumnTemplate.class, provider);
         Reflections reflections = getInstance(Reflections.class);
         Converters converters = getInstance(Converters.class);
 
-        ColumnRepositoryProxy handler = new ColumnRepositoryProxy(repository,
+        ColumnRepositoryProxy handler = new ColumnRepositoryProxy(template,
                 classRepresentations, type, reflections, converters);
         return (Repository) Proxy.newProxyInstance(type.getClassLoader(),
                 new Class[]{type},
