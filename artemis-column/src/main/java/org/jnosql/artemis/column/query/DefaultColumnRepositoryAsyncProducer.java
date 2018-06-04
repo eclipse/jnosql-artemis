@@ -53,7 +53,7 @@ class DefaultColumnRepositoryAsyncProducer implements ColumnRepositoryAsyncProdu
         Objects.requireNonNull(repositoryClass, "repository class is required");
         Objects.requireNonNull(template, "template class is required");
 
-        ColumnRepositoryAsyncProxy handler = new ColumnRepositoryAsyncProxy<>(template,
+        ColumnRepositoryAsyncProxy<T> handler = new ColumnRepositoryAsyncProxy<>(template,
                 classRepresentations, repositoryClass, reflections, converters);
         return (T) Proxy.newProxyInstance(repositoryClass.getClassLoader(),
                 new Class[]{repositoryClass},

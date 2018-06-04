@@ -53,7 +53,7 @@ class DefaultColumnRepositoryProducer implements ColumnRepositoryProducer {
         Objects.requireNonNull(repositoryClass, "repository class is required");
         Objects.requireNonNull(template, "template class is required");
 
-        ColumnRepositoryProxy handler = new ColumnRepositoryProxy<>(template,
+        ColumnRepositoryProxy<E,ID> handler = new ColumnRepositoryProxy<>(template,
                 classRepresentations, repositoryClass, reflections, converters);
         return (T) Proxy.newProxyInstance(repositoryClass.getClassLoader(),
                 new Class[]{repositoryClass},
