@@ -19,18 +19,17 @@ import org.jnosql.diana.api.column.ColumnFamilyManager;
 
 /**
  * The producer of {@link ColumnTemplate}
- *
- * @param <T> the ColumnTemplate instance
  */
-public interface ColumnTemplateProducer<T extends ColumnTemplate> {
+public interface ColumnTemplateProducer {
 
     /**
      * creates a {@link ColumnFamilyManager}
      *
+     * @param <T>                 the ColumnTemplate instance
      * @param columnFamilyManager the columnFamilyManager
      * @return a new instance
      * @throws NullPointerException when columnFamilyManager is null
      */
-    T get(ColumnFamilyManager columnFamilyManager);
+    <T extends ColumnTemplate> T get(ColumnFamilyManager columnFamilyManager);
 
 }

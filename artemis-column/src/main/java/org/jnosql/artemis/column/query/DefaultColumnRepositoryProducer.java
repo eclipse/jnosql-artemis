@@ -38,7 +38,7 @@ class DefaultColumnRepositoryProducer implements ColumnRepositoryProducer {
     @Inject
     private Converters converters;
     @Inject
-    private ColumnTemplateProducer<ColumnTemplate> producer;
+    private ColumnTemplateProducer producer;
 
     @Override
     public <E, ID, T extends Repository<E, ID>> T get(Class<T> repositoryClass, ColumnFamilyManager manager) {

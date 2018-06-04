@@ -38,7 +38,7 @@ class DefaultColumnRepositoryAsyncProducer implements ColumnRepositoryAsyncProdu
     @Inject
     private Converters converters;
     @Inject
-    private ColumnTemplateAsyncProducer<ColumnTemplateAsync> producer;
+    private ColumnTemplateAsyncProducer producer;
 
     @Override
     public <E, ID, T extends RepositoryAsync<E, ID>> T get(Class<T> repositoryClass, ColumnFamilyManagerAsync manager) {
