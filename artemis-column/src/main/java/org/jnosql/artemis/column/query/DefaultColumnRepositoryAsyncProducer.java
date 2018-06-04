@@ -15,17 +15,12 @@
 package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.Converters;
-import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.column.ColumnRepositoryAsyncProducer;
-import org.jnosql.artemis.column.ColumnRepositoryProducer;
-import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.column.ColumnTemplateAsyncProducer;
-import org.jnosql.artemis.column.ColumnTemplateProducer;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.Reflections;
-import org.jnosql.diana.api.column.ColumnFamilyManager;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
 
 import javax.enterprise.context.ApplicationScoped;
