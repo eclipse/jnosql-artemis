@@ -14,7 +14,6 @@
  */
 package org.jnosql.artemis.document;
 
-import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
 
@@ -32,7 +31,7 @@ public interface DocumentRepositoryAsyncProducer {
      * @param <E> the entity of repository
      * @param <ID> the ID of the entity
      * @param <T> the repository type
-     * @return a {@link Repository} interface
+     * @return a {@link RepositoryAsync} interface
      * @throws NullPointerException when there is null parameter
      */
     <E,ID, T extends RepositoryAsync<E,ID>> T get(Class<T> repositoryClass, DocumentCollectionManagerAsync manager);
@@ -44,7 +43,7 @@ public interface DocumentRepositoryAsyncProducer {
      * @param <E> the entity of repository
      * @param <ID> the ID of the entity
      * @param <T> the repository type
-     * @return a {@link Repository} interface
+     * @return a {@link RepositoryAsync} interface
      * @throws NullPointerException when there is null parameter
      */
     <E,ID, T extends RepositoryAsync<E,ID>> T get(Class<T> repositoryClass, DocumentTemplateAsync template);
