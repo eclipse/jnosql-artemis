@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-class KeyValueRepositoryProxy<T> extends AbstractKeyValueRepositoryProxy {
+class KeyValueRepositoryProxy<T> extends AbstractKeyValueRepositoryProxy<T> {
 
     private final DefaultKeyValueRepository repository;
     private final KeyValueTemplate template;

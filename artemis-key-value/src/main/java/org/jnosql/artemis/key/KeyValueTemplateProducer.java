@@ -19,17 +19,16 @@ import org.jnosql.diana.api.key.BucketManager;
 
 /**
  * The producer of {@link KeyValueTemplate}
- *
- * @param <T> the KeyValueTemplate instance
  */
-public interface KeyValueTemplateProducer<T extends KeyValueTemplate> {
+public interface KeyValueTemplateProducer {
 
     /**
      * creates a {@link KeyValueTemplate}
      *
+     * @param <T>     the KeyValueTemplate instance
      * @param manager the manager
      * @return a new instance
      * @throws NullPointerException when manager is null
      */
-    T get(BucketManager manager);
+    <T extends KeyValueTemplate> T get(BucketManager manager);
 }
