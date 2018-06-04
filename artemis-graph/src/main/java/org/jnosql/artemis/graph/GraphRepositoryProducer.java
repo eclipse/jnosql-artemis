@@ -15,30 +15,25 @@
 package org.jnosql.artemis.graph;
 
 import org.apache.tinkerpop.gremlin.structure.Graph;
+import org.jnosql.artemis.Repository;
+
 
 /**
- * The producer of {@link GraphTemplate}
+ * The producer of {@link Repository}
+ *
  */
-public interface GraphTemplateProducer {
+public interface GraphRepositoryProducer {
 
     /**
-     * creates a {@link GraphTemplate}
-     *
-     * @param <T>   the GraphTemplate instance
+     * Produces a Repository class from repository class and {@link Graph}
+     * @param repositoryClass the repository class
      * @param graph the graph
-     * @return a new instance
-     * @throws NullPointerException when collectionManager is null
+     * @param <E> the entity of repository
+     * @param <ID> the ID of the entity
+     * @param <T> the repository type
+     * @return a {@link Repository} interface
+     * @throws NullPointerException when there is null parameter
      */
-    <T extends GraphTemplate> T get(Graph graph);
+    <E,ID, T extends Repository<E,ID>> T get(Class<T> repositoryClass, Graph graph);
 
-
-    /**
-     * creates a {@link GraphTemplate}
-     *
-     * @param <T>      the GraphTemplate instance
-     * @param supplier the supplier
-     * @return a new instance
-     * @throws NullPointerException when supplier is null
-     */
-    <T extends GraphTemplate> T get(GraphTraversalSourceSupplier supplier);
 }
