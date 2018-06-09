@@ -17,6 +17,7 @@ package org.jnosql.artemis.reflection;
 
 import org.jnosql.artemis.AttributeConverter;
 import org.jnosql.artemis.Embeddable;
+import org.jnosql.artemis.Entity;
 import org.jnosql.diana.api.TypeSupplier;
 import org.jnosql.diana.api.Value;
 
@@ -78,7 +79,11 @@ public class GenericFieldRepresentation extends AbstractFieldRepresentation {
         return Class.class.cast(ParameterizedType.class.cast(getNativeField()
                 .getGenericType())
                 .getActualTypeArguments()[0])
-                .getAnnotation(Embeddable.class) != null;
+                .getAnnotation(Embeddable.class) != null ||
+                Class.class.cast(ParameterizedType.class.cast(getNativeField()
+                        .getGenericType())
+                        .getActualTypeArguments()[0])
+                        .getAnnotation(Entity.class) != null;
     }
 
     public Class getElementType() {
