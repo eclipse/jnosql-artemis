@@ -61,7 +61,7 @@ class ColumnFieldConverters {
     }
 
 
-    private static class EmbeddedFieldConverter implements ColumnFieldConverter {
+    private static class SubEntityConverter implements ColumnFieldConverter {
 
         @Override
         public <T> void convert(T instance, List<Column> columns, Optional<Column> column, FieldRepresentation field,
@@ -90,6 +90,22 @@ class ColumnFieldConverters {
         }
     }
 
+    private static class EmbeddedFieldConverter implements ColumnFieldConverter {
+
+
+        @Override
+        public <T> void convert(T instance, List<Column> columns, Optional<Column> column,
+                                FieldRepresentation field, AbstractColumnEntityConverter converter) {
+
+
+            Field nativeField = field.getNativeField();
+            Object subEntity = converter.toEntity(nativeField.getType(), columns);
+            converter.getReflections().setValue(instance, nativeField, subEntity);
+
+        }
+    }
+
+
     private static class DefaultConverter implements ColumnFieldConverter {
 
 
@@ -109,20 +125,6 @@ class ColumnFieldConverters {
         }
     }
 
-    private static class SubEntityConverter implements ColumnFieldConverter {
-
-
-        @Override
-        public <T> void convert(T instance, List<Column> columns, Optional<Column> column,
-                                FieldRepresentation field, AbstractColumnEntityConverter converter) {
-
-
-            Field nativeField = field.getNativeField();
-            Object subEntity = converter.toEntity(nativeField.getType(), columns);
-            converter.getReflections().setValue(instance, nativeField, subEntity);
-
-        }
-    }
 
     private static class CollectionEmbeddableConverter implements ColumnFieldConverter {
 

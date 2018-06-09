@@ -57,9 +57,9 @@ final class DefaultColumnFieldValue implements ColumnFieldValue {
     public List<Column> toColumn(ColumnEntityConverter converter, Converters converters) {
 
         if (EMBEDDED.equals(getType())) {
-            return singletonList(Column.of(getName(), converter.toColumn(getValue()).getColumns()));
-        } else if (SUBENTITY.equals(getType())) {
             return converter.toColumn(getValue()).getColumns();
+        } else if (SUBENTITY.equals(getType())) {
+            return singletonList(Column.of(getName(), converter.toColumn(getValue()).getColumns()));
         } else if (isEmbeddableCollection()) {
             return singletonList(Column.of(getName(), getColumns(converter)));
         }

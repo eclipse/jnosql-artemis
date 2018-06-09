@@ -14,7 +14,6 @@
  */
 package org.jnosql.artemis.document;
 
-import org.hamcrest.Matchers;
 import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.model.Actor;
 import org.jnosql.artemis.model.Address;
@@ -273,10 +272,8 @@ public class DefaultDocumentEntityConverterTest {
         DocumentEntity entity = converter.toDocument(worker);
         assertEquals("Worker", entity.getName());
         assertEquals("Bob", entity.find("name").get().get());
-        Document subDocument = entity.find("job").get();
-        List<Document> documents = subDocument.get(new TypeReference<List<Document>>() {
-        });
-        assertThat(documents, Matchers.containsInAnyOrder(Document.of("city", "Sao Paulo"), Document.of("description", "Java Developer")));
+        assertEquals("Sao Paulo", entity.find("city").get().get());
+        assertEquals("Java Developer", entity.find("description").get().get());
         assertEquals("BRL 10", entity.find("money").get().get());
     }
 
@@ -354,13 +351,14 @@ public class DefaultDocumentEntityConverterTest {
         DocumentEntity documentEntity = converter.toDocument(address);
         List<Document> documents = documentEntity.getDocuments();
         assertEquals("Address", documentEntity.getName());
-        assertEquals(5, documents.size());
-
+        assertEquals(4, documents.size());
+        List<Document> zip = documentEntity.find("zipcode").map(d -> d.get(new TypeReference<List<Document>>() {
+        })).orElse(Collections.emptyList());
         assertEquals("Rua Engenheiro Jose Anasoh", getValue(documentEntity.find("street")));
         assertEquals("Salvador", getValue(documentEntity.find("city")));
         assertEquals("Bahia", getValue(documentEntity.find("state")));
-        assertEquals("12321", getValue(documentEntity.find("zip")));
-        assertEquals("1234", getValue(documentEntity.find("plusFour")));
+        assertEquals("12321", getValue(zip.stream().filter(d -> d.getName().equals("zip")).findFirst()));
+        assertEquals("1234", getValue(zip.stream().filter(d -> d.getName().equals("plusFour")).findFirst()));
     }
 
     @Test

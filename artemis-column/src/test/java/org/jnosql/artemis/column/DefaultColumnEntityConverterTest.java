@@ -14,7 +14,6 @@
  */
 package org.jnosql.artemis.column;
 
-import org.hamcrest.Matchers;
 import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.model.Actor;
 import org.jnosql.artemis.model.Address;
@@ -270,10 +269,8 @@ public class DefaultColumnEntityConverterTest {
         ColumnEntity entity = converter.toColumn(worker);
         assertEquals("Worker", entity.getName());
         assertEquals("Bob", entity.find("name").get().get());
-        Column subColumn = entity.find("job").get();
-        List<Column> columns = subColumn.get(new TypeReference<List<Column>>() {
-        });
-        assertThat(columns, Matchers.containsInAnyOrder(Column.of("city", "Sao Paulo"), Column.of("description", "Java Developer")));
+        assertEquals("Sao Paulo", entity.find("city").get().get());
+        assertEquals("Java Developer", entity.find("description").get().get());
         assertEquals("BRL 10", entity.find("money").get().get());
     }
 
@@ -352,13 +349,15 @@ public class DefaultColumnEntityConverterTest {
         ColumnEntity columnEntity = converter.toColumn(address);
         List<Column> columns = columnEntity.getColumns();
         assertEquals("Address", columnEntity.getName());
-        assertEquals(5, columns.size());
+        assertEquals(4, columns.size());
+        List<Column> zip = columnEntity.find("zipcode").map(d -> d.get(new TypeReference<List<Column>>() {
+        })).orElse(Collections.emptyList());
 
         assertEquals("Rua Engenheiro Jose Anasoh", getValue(columnEntity.find("street")));
         assertEquals("Salvador", getValue(columnEntity.find("city")));
         assertEquals("Bahia", getValue(columnEntity.find("state")));
-        assertEquals("12321", getValue(columnEntity.find("zip")));
-        assertEquals("1234", getValue(columnEntity.find("plusFour")));
+        assertEquals("12321", getValue(zip.stream().filter(d -> d.getName().equals("zip")).findFirst()));
+        assertEquals("1234", getValue(zip.stream().filter(d -> d.getName().equals("plusFour")).findFirst()));
     }
 
     @Test
@@ -378,9 +377,10 @@ public class DefaultColumnEntityConverterTest {
         assertEquals("Salvador", address.getCity());
         assertEquals("Bahia", address.getState());
         assertEquals("12321", address.getZipcode().getZip());
-        assertEquals("1234",  address.getZipcode().getPlusFour());
+        assertEquals("1234", address.getZipcode().getPlusFour());
 
     }
+
     private Object getValue(Optional<Column> column) {
         return column.map(Column::getValue).map(Value::get).orElse(null);
     }

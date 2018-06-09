@@ -15,9 +15,9 @@
 package org.jnosql.artemis.model;
 
 import org.jnosql.artemis.Column;
-import org.jnosql.artemis.Subentity;
+import org.jnosql.artemis.Entity;
 
-@Subentity
+@Entity
 public class Zipcode {
 
     @Column
