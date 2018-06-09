@@ -17,7 +17,6 @@ package org.jnosql.artemis.reflection;
 
 import org.jnosql.artemis.Embeddable;
 import org.jnosql.artemis.Entity;
-import org.jnosql.artemis.Subentity;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
@@ -69,8 +68,7 @@ public class ClassRepresentationsExtension implements Extension {
     }
 
     private <T> boolean isSubElement(AnnotatedType<T> annotatedType) {
-        return annotatedType.isAnnotationPresent(Embeddable.class) ||
-                annotatedType.isAnnotationPresent(Subentity.class);
+        return annotatedType.isAnnotationPresent(Embeddable.class);
     }
 
 
