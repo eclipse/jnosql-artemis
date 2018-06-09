@@ -14,7 +14,6 @@
  */
 package org.jnosql.artemis.document;
 
-import org.hamcrest.Matchers;
 import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.model.Actor;
 import org.jnosql.artemis.model.Address;
@@ -273,10 +272,8 @@ public class DefaultDocumentEntityConverterTest {
         DocumentEntity entity = converter.toDocument(worker);
         assertEquals("Worker", entity.getName());
         assertEquals("Bob", entity.find("name").get().get());
-        Document subDocument = entity.find("job").get();
-        List<Document> documents = subDocument.get(new TypeReference<List<Document>>() {
-        });
-        assertThat(documents, Matchers.containsInAnyOrder(Document.of("city", "Sao Paulo"), Document.of("description", "Java Developer")));
+        assertEquals("Sao Paulo", entity.find("city").get().get());
+        assertEquals("Java Developer", entity.find("description").get().get());
         assertEquals("BRL 10", entity.find("money").get().get());
     }
 
