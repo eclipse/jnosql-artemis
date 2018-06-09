@@ -187,7 +187,7 @@ public class DefaultColumnMapperSelectBuilderTest {
     public void shouldQueryByEmbeddable() {
         ColumnQuery query = mapperBuilder.selectFrom(Worker.class).where("job.city").eq("Salvador")
                 .build();
-        ColumnQuery queryExpected = select().from("Worker").where("job.city").eq("Salvador")
+        ColumnQuery queryExpected = select().from("Worker").where("city").eq("Salvador")
                 .build();
 
         assertEquals(queryExpected, query);
@@ -197,7 +197,7 @@ public class DefaultColumnMapperSelectBuilderTest {
     public void shouldQueryBySubEntity() {
         ColumnQuery query = mapperBuilder.selectFrom(Address.class).where("zipcode.zip").eq("01312321")
                 .build();
-        ColumnQuery queryExpected = select().from("Address").where("zip").eq("01312321")
+        ColumnQuery queryExpected = select().from("Address").where("zipcode.zip").eq("01312321")
                 .build();
 
         assertEquals(queryExpected, query);
