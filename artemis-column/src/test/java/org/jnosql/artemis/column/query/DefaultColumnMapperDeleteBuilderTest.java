@@ -152,7 +152,7 @@ public class DefaultColumnMapperDeleteBuilderTest {
     public void shouldQueryByEmbeddable() {
         ColumnDeleteQuery query = mapperBuilder.deleteFrom(Worker.class).where("job.city").eq("Salvador")
                 .build();
-        ColumnDeleteQuery queryExpected = delete().from("Worker").where("job.city").eq("Salvador")
+        ColumnDeleteQuery queryExpected = delete().from("Worker").where("city").eq("Salvador")
                 .build();
 
         assertEquals(queryExpected, query);
@@ -162,7 +162,7 @@ public class DefaultColumnMapperDeleteBuilderTest {
     public void shouldQueryBySubEntity() {
         ColumnDeleteQuery query = mapperBuilder.deleteFrom(Address.class).where("zipcode.zip").eq("01312321")
                 .build();
-        ColumnDeleteQuery queryExpected = delete().from("Address").where("zip").eq("01312321")
+        ColumnDeleteQuery queryExpected = delete().from("Address").where("zipcode.zip").eq("01312321")
                 .build();
 
         assertEquals(queryExpected, query);

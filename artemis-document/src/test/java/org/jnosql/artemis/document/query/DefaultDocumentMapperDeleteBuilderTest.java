@@ -151,7 +151,7 @@ public class DefaultDocumentMapperDeleteBuilderTest {
     public void shouldQueryByEmbeddable() {
         DocumentDeleteQuery query = mapperBuilder.deleteFrom(Worker.class).where("job.city").eq("Salvador")
                 .build();
-        DocumentDeleteQuery queryExpected = delete().from("Worker").where("job.city").eq("Salvador")
+        DocumentDeleteQuery queryExpected = delete().from("Worker").where("city").eq("Salvador")
                 .build();
 
         assertEquals(queryExpected, query);
@@ -161,7 +161,7 @@ public class DefaultDocumentMapperDeleteBuilderTest {
     public void shouldQueryBySubEntity() {
         DocumentDeleteQuery query = mapperBuilder.deleteFrom(Address.class).where("zipcode.zip").eq("01312321")
                 .build();
-        DocumentDeleteQuery queryExpected = delete().from("Address").where("zip").eq("01312321")
+        DocumentDeleteQuery queryExpected = delete().from("Address").where("zipcode.zip").eq("01312321")
                 .build();
 
         assertEquals(queryExpected, query);
