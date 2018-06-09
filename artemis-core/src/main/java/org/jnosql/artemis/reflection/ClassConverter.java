@@ -93,10 +93,10 @@ class ClassConverter {
 
         switch (field.getType()) {
             case SUBENTITY:
-                appendFields(nativeFieldGroupByJavaField, field, javaField, nativeField);
+                appendFields(nativeFieldGroupByJavaField, field, javaField, appendPreparePrefix(nativeField, field.getName()));
                 return;
             case EMBEDDED:
-                appendFields(nativeFieldGroupByJavaField, field, javaField, appendPreparePrefix(nativeField, field.getName()));
+                appendFields(nativeFieldGroupByJavaField, field, javaField, nativeField);
                 return;
             case COLLECTION:
                 if(GenericFieldRepresentation.class.cast(field).isEmbeddable()) {

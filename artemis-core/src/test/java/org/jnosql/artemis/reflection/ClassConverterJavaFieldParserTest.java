@@ -63,7 +63,7 @@ public class ClassConverterJavaFieldParserTest {
     public void shouldReadFieldWhenFieldIsSubEntity() {
         ClassRepresentation classRepresentation = classConverter.create(Address.class);
         String result = classRepresentation.getColumnField("zipcode.plusFour");
-        assertEquals("plusFour", result);
+        assertEquals("zipcode.plusFour", result);
     }
 
     @Test
@@ -71,7 +71,7 @@ public class ClassConverterJavaFieldParserTest {
         ClassRepresentation classRepresentation = classConverter.create(Address.class);
         String result = classRepresentation.getColumnField("zipcode");
         List<String> resultList = Stream.of(result.split(",")).sorted().collect(toList());
-        List<String> expected = Stream.of("plusFour", "zip").sorted().collect(toList());
+        List<String> expected = Stream.of("zipcode.plusFour", "zipcode.zip").sorted().collect(toList());
         assertEquals(expected, resultList);
     }
 
@@ -79,7 +79,7 @@ public class ClassConverterJavaFieldParserTest {
     public void shouldReadFieldWhenFieldIsEmbedded() {
         ClassRepresentation classRepresentation = classConverter.create(Worker.class);
         String result = classRepresentation.getColumnField("job.city");
-        assertEquals("job.city", result);
+        assertEquals("city", result);
     }
 
     @Test
@@ -87,7 +87,7 @@ public class ClassConverterJavaFieldParserTest {
         ClassRepresentation classRepresentation = classConverter.create(Worker.class);
         String result = classRepresentation.getColumnField("job");
         List<String> resultList = Stream.of(result.split(",")).sorted().collect(toList());
-        List<String> expected = Stream.of("job.description", "job.city").sorted().collect(toList());
+        List<String> expected = Stream.of("description", "city").sorted().collect(toList());
         assertEquals(expected, resultList);
     }
 
