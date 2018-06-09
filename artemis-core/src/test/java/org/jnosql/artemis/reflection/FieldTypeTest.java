@@ -56,13 +56,6 @@ public class FieldTypeTest {
 
 
     @Test
-    public void shouldReturnEmbeddedAsEntity() throws NoSuchFieldException{
-        Field field = Director.class.getDeclaredField("movie");
-        assertEquals(FieldType.EMBEDDED, FieldType.of(field));
-    }
-
-
-    @Test
     public void shouldReturnEmbedded() throws NoSuchFieldException{
         Field field = Worker.class.getDeclaredField("job");
         assertEquals(FieldType.EMBEDDED, FieldType.of(field));
