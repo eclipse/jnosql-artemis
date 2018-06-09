@@ -28,6 +28,7 @@ import java.util.Optional;
 
 import static java.util.Collections.singletonList;
 import static org.jnosql.artemis.reflection.FieldType.COLLECTION;
+import static org.jnosql.artemis.reflection.FieldType.EMBEDDED;
 import static org.jnosql.artemis.reflection.FieldType.SUBENTITY;
 
 final class DefaultDocumentFieldValue implements DocumentFieldValue {
@@ -50,10 +51,10 @@ final class DefaultDocumentFieldValue implements DocumentFieldValue {
 
 
     public List<Document> toDocument(DocumentEntityConverter converter, Converters converters) {
-        if (FieldType.EMBEDDED.equals(getType())) {
-            return singletonList(Document.of(getName(), converter.toDocument(getValue()).getDocuments()));
-        }  else if (SUBENTITY.equals(getType())) {
+        if (EMBEDDED.equals(getType())) {
             return converter.toDocument(getValue()).getDocuments();
+        }  else if (SUBENTITY.equals(getType())) {
+            return singletonList(Document.of(getName(), converter.toDocument(getValue()).getDocuments()));
         } else if (isEmbeddableCollection()) {
             return singletonList(Document.of(getName(), getDocuments(converter)));
         }
