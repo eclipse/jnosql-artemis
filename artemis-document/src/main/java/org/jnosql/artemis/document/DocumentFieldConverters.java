@@ -60,7 +60,7 @@ class DocumentFieldConverters {
         }
     }
 
-    private static class EmbeddedFieldConverter implements DocumentFieldConverter {
+    private static class SubEntityConverter implements DocumentFieldConverter {
 
         @Override
         public <T> void convert(T instance, List<Document> documents, Optional<Document> document,
@@ -86,6 +86,20 @@ class DocumentFieldConverters {
             } else {
                 converter.getReflections().setValue(instance, field.getNativeField(), converter.toEntity(field.getNativeField().getType(), documents));
             }
+        }
+    }
+
+    private static class EmbeddedFieldConverter implements DocumentFieldConverter {
+
+
+        @Override
+        public <T> void convert(T instance, List<Document> documents, Optional<Document> document,
+                                FieldRepresentation field, AbstractDocumentEntityConverter converter) {
+
+            Field nativeField = field.getNativeField();
+            Object subEntity = converter.toEntity(nativeField.getType(), documents);
+            converter.getReflections().setValue(instance, nativeField, subEntity);
+
         }
     }
 
@@ -129,17 +143,5 @@ class DocumentFieldConverters {
         }
     }
 
-    private static class SubEntityConverter implements DocumentFieldConverter {
 
-
-        @Override
-        public <T> void convert(T instance, List<Document> documents, Optional<Document> document,
-                                FieldRepresentation field, AbstractDocumentEntityConverter converter) {
-
-            Field nativeField = field.getNativeField();
-            Object subEntity = converter.toEntity(nativeField.getType(), documents);
-            converter.getReflections().setValue(instance, nativeField, subEntity);
-
-        }
-    }
 }
