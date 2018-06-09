@@ -76,14 +76,22 @@ public class GenericFieldRepresentation extends AbstractFieldRepresentation {
     }
 
     public boolean isEmbeddable() {
+        return isEmbeddableField() || isEntityField();
+    }
+
+    private boolean isEntityField() {
+        return hasFieldAnnotation(Entity.class);
+    }
+
+    private boolean isEmbeddableField() {
+        return hasFieldAnnotation(Embeddable.class);
+    }
+
+    private boolean hasFieldAnnotation(Class<?> annotation) {
         return Class.class.cast(ParameterizedType.class.cast(getNativeField()
                 .getGenericType())
                 .getActualTypeArguments()[0])
-                .getAnnotation(Embeddable.class) != null ||
-                Class.class.cast(ParameterizedType.class.cast(getNativeField()
-                        .getGenericType())
-                        .getActualTypeArguments()[0])
-                        .getAnnotation(Entity.class) != null;
+                .getAnnotation(annotation) != null;
     }
 
     public Class getElementType() {
