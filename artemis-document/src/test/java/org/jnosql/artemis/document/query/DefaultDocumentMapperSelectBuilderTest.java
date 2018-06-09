@@ -186,7 +186,7 @@ public class DefaultDocumentMapperSelectBuilderTest {
     public void shouldQueryByEmbeddable() {
         DocumentQuery query = mapperBuilder.selectFrom(Worker.class).where("job.city").eq("Salvador")
                 .build();
-        DocumentQuery queryExpected = select().from("Worker").where("job.city").eq("Salvador")
+        DocumentQuery queryExpected = select().from("Worker").where("city").eq("Salvador")
                 .build();
 
         assertEquals(queryExpected, query);
@@ -196,7 +196,7 @@ public class DefaultDocumentMapperSelectBuilderTest {
     public void shouldQueryBySubEntity() {
         DocumentQuery query = mapperBuilder.selectFrom(Address.class).where("zipcode.zip").eq("01312321")
                 .build();
-        DocumentQuery queryExpected = select().from("Address").where("zip").eq("01312321")
+        DocumentQuery queryExpected = select().from("Address").where("zipcode.zip").eq("01312321")
                 .build();
 
         assertEquals(queryExpected, query);
