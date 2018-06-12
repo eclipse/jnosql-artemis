@@ -24,7 +24,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * The Graph Traversal that maps {@link org.apache.tinkerpop.gremlin.structure.Vertex}.
- * This Traversal is lazy, in other words, that just run after the
+ * This Traversal is lazy, in other words, that just run after any finalizing method.
  */
 public interface VertexTraversal extends VertexConditionTraversal {
 
