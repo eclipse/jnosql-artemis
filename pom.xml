@@ -71,7 +71,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compile.targetLevel>1.8</maven.compile.targetLevel>
         <maven.compile.sourceLevel>1.8</maven.compile.sourceLevel>
-        <owb.version>2.0.3</owb.version>
         <sonar.jacoco.reportPath>../target/jacoco.exec</sonar.jacoco.reportPath>
     </properties>
 
@@ -184,7 +183,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.9</version>
+                <version>${jacoco.maven.version}</version>
                 <executions>
                     <execution>
                         <id>pre-test</id>
@@ -220,7 +219,7 @@
                 <dependency>
                     <groupId>javax.enterprise</groupId>
                     <artifactId>cdi-api</artifactId>
-                    <version>2.0</version>
+                    <version>${javax.enterprise.version}</version>
                     <scope>provided</scope>
                 </dependency>
 
