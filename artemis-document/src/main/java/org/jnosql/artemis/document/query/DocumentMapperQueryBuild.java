@@ -41,6 +41,7 @@ public interface DocumentMapperQueryBuild {
     /**
      * Executes {@link DocumentTemplate#select(DocumentQuery)}
      *
+     * @param <T>      the entity type
      * @param template the template to document
      * @return the result of {@link DocumentTemplate#select(DocumentQuery)}
      * @throws NullPointerException when manager is null
@@ -50,6 +51,7 @@ public interface DocumentMapperQueryBuild {
     /**
      * Executes {@link DocumentTemplate#singleResult(DocumentQuery)}
      *
+     * @param <T>      the entity type
      * @param template the template to document
      * @return the result of {@link DocumentTemplate#singleResult(DocumentQuery)}
      * @throws NullPointerException when manager is null
@@ -59,8 +61,9 @@ public interface DocumentMapperQueryBuild {
     /**
      * Executes {@link DocumentTemplateAsync#select(DocumentQuery, Consumer)}
      *
-     * @param templateAsync  the templateAsync
-     * @param callback the callback
+     * @param <T>           the entity type
+     * @param templateAsync the templateAsync
+     * @param callback      the callback
      * @throws NullPointerException when there is null parameter
      */
     <T> void execute(DocumentTemplateAsync templateAsync, Consumer<List<T>> callback);
@@ -68,8 +71,9 @@ public interface DocumentMapperQueryBuild {
     /**
      * Executes {@link DocumentTemplateAsync#singleResult(DocumentQuery, Consumer)}
      *
-     * @param templateAsync  the templateAsync
-     * @param callback the callback
+     * @param <T>           the entity type
+     * @param templateAsync the templateAsync
+     * @param callback      the callback
      * @throws NullPointerException when there is null parameter
      */
     <T> void executeSingle(DocumentTemplateAsync templateAsync, Consumer<Optional<T>> callback);
