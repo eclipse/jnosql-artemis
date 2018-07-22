@@ -15,25 +15,21 @@
 package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.Converters;
+import org.jnosql.artemis.column.ColumnTemplate;
+import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.Sort;
 import org.jnosql.diana.api.column.ColumnQuery;
-import org.jnosql.diana.api.column.query.ColumnFrom;
-import org.jnosql.diana.api.column.query.ColumnLimit;
-import org.jnosql.diana.api.column.query.ColumnNameCondition;
-import org.jnosql.diana.api.column.query.ColumnNameOrder;
-import org.jnosql.diana.api.column.query.ColumnNotCondition;
-import org.jnosql.diana.api.column.query.ColumnOrder;
-import org.jnosql.diana.api.column.query.ColumnSkip;
-import org.jnosql.diana.api.column.query.ColumnWhere;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
-class DefaultColumnMapperSelectBuilder extends AbstractMapperQuery implements ColumnFrom, ColumnLimit, ColumnSkip,
-        ColumnOrder, ColumnNameCondition, ColumnNotCondition, ColumnNameOrder, ColumnWhere {
+class DefaultColumnMapperSelectBuilder extends AbstractMapperQuery implements ColumnMapperFrom, ColumnMapperLimit, ColumnMapperSkip,
+        ColumnMapperOrder, ColumnMapperNameCondition, ColumnMapperNotCondition, ColumnMapperNameOrder, ColumnMapperWhere {
 
 
     private final List<Sort> sorts = new ArrayList<>();
@@ -45,7 +41,7 @@ class DefaultColumnMapperSelectBuilder extends AbstractMapperQuery implements Co
 
 
     @Override
-    public ColumnNameCondition and(String name) {
+    public ColumnMapperNameCondition and(String name) {
         requireNonNull(name, "name is required");
         this.name = name;
         this.and = true;
@@ -53,7 +49,7 @@ class DefaultColumnMapperSelectBuilder extends AbstractMapperQuery implements Co
     }
 
     @Override
-    public ColumnNameCondition or(String name) {
+    public ColumnMapperNameCondition or(String name) {
         requireNonNull(name, "name is required");
         this.name = name;
         this.and = false;
@@ -61,26 +57,26 @@ class DefaultColumnMapperSelectBuilder extends AbstractMapperQuery implements Co
     }
 
     @Override
-    public ColumnNameCondition where(String name) {
+    public ColumnMapperNameCondition where(String name) {
         requireNonNull(name, "name is required");
         this.name = name;
         return this;
     }
 
     @Override
-    public ColumnSkip skip(long skip) {
+    public ColumnMapperSkip skip(long skip) {
         this.start = skip;
         return this;
     }
 
     @Override
-    public ColumnLimit limit(long limit) {
+    public ColumnMapperLimit limit(long limit) {
         this.limit = limit;
         return this;
     }
 
     @Override
-    public ColumnOrder orderBy(String name) {
+    public ColumnMapperOrder orderBy(String name) {
         requireNonNull(name, "name is required");
         this.name = name;
         return this;
@@ -88,72 +84,72 @@ class DefaultColumnMapperSelectBuilder extends AbstractMapperQuery implements Co
 
 
     @Override
-    public ColumnNotCondition not() {
+    public ColumnMapperNotCondition not() {
         this.negate = true;
         return this;
     }
 
     @Override
-    public <T> ColumnWhere eq(T value) {
+    public <T> ColumnMapperWhere eq(T value) {
         eqImpl(value);
         return this;
     }
 
 
     @Override
-    public ColumnWhere like(String value) {
+    public ColumnMapperWhere like(String value) {
         likeImpl(value);
         return this;
     }
 
 
     @Override
-    public <T> ColumnWhere gt(T value) {
+    public <T> ColumnMapperWhere gt(T value) {
         gtImpl(value);
         return this;
     }
 
 
     @Override
-    public <T> ColumnWhere gte(T value) {
+    public <T> ColumnMapperWhere gte(T value) {
         gteImpl(value);
         return this;
     }
 
     @Override
-    public <T> ColumnWhere lt(T value) {
+    public <T> ColumnMapperWhere lt(T value) {
         ltImpl(value);
         return this;
     }
 
 
     @Override
-    public <T> ColumnWhere lte(T value) {
+    public <T> ColumnMapperWhere lte(T value) {
         lteImpl(value);
         return this;
     }
 
 
     @Override
-    public <T> ColumnWhere between(T valueA, T valueB) {
+    public <T> ColumnMapperWhere between(T valueA, T valueB) {
         betweenImpl(valueA, valueB);
         return this;
     }
 
     @Override
-    public <T> ColumnWhere in(Iterable<T> values) {
+    public <T> ColumnMapperWhere in(Iterable<T> values) {
         inImpl(values);
         return this;
     }
 
     @Override
-    public ColumnNameOrder asc() {
+    public ColumnMapperNameOrder asc() {
         this.sorts.add(Sort.of(representation.getColumnField(name), Sort.SortType.ASC));
         return this;
     }
 
     @Override
-    public ColumnNameOrder desc() {
+    public ColumnMapperNameOrder desc() {
         this.sorts.add(Sort.of(representation.getColumnField(name), Sort.SortType.DESC));
         return this;
     }
@@ -162,6 +158,32 @@ class DefaultColumnMapperSelectBuilder extends AbstractMapperQuery implements Co
     @Override
     public ColumnQuery build() {
         return new ArtemisColumnQuery(sorts, limit, start, condition, columnFamily);
+    }
+
+    @Override
+    public <T> List<T> execute(ColumnTemplate template) {
+        requireNonNull(template, "template is required");
+        return template.select(this.build());
+    }
+
+    @Override
+    public <T> Optional<T> executeSingle(ColumnTemplate template) {
+        requireNonNull(template, "template is required");
+        return template.singleResult(this.build());
+    }
+
+    @Override
+    public <T> void execute(ColumnTemplateAsync template, Consumer<List<T>> callback) {
+        requireNonNull(template, "template is required");
+        requireNonNull(callback, "callback is required");
+        template.select(this.build(), callback);
+    }
+
+    @Override
+    public <T> void executeSingle(ColumnTemplateAsync template, Consumer<Optional<T>> callback) {
+        requireNonNull(template, "template is required");
+        requireNonNull(callback, "callback is required");
+        template.singleResult(this.build(), callback);
     }
 
 }

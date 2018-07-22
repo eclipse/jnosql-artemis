@@ -15,17 +15,14 @@
 package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.CDIExtension;
-import org.jnosql.artemis.column.ColumnQueryMapperBuilder;
 import org.jnosql.artemis.model.Person;
-import org.jnosql.diana.api.column.query.ColumnDeleteFrom;
-import org.jnosql.diana.api.column.query.ColumnFrom;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(CDIExtension.class)
 public class DefaultColumnQueryMapperBuilderTest {
@@ -37,23 +34,23 @@ public class DefaultColumnQueryMapperBuilderTest {
 
     @Test
     public void shouldReturnErrorWhenEntityClassIsNull() {
-        Assertions.assertThrows(NullPointerException.class, () -> mapperBuilder.selectFrom(null));
+        assertThrows(NullPointerException.class, () -> mapperBuilder.selectFrom(null));
     }
 
     @Test
     public void shouldReturnSelectFrom() {
-        ColumnFrom columnFrom = mapperBuilder.selectFrom(Person.class);
+        ColumnMapperFrom columnFrom = mapperBuilder.selectFrom(Person.class);
         assertNotNull(columnFrom);
     }
 
     @Test
     public void shouldReturnErrorWhenDeleteEntityClassIsNull() {
-        Assertions.assertThrows(NullPointerException.class, () -> mapperBuilder.deleteFrom(null));
+        assertThrows(NullPointerException.class, () -> mapperBuilder.deleteFrom(null));
     }
 
     @Test
     public void shouldReturnDeleteFrom() {
-        ColumnDeleteFrom columnDeleteFrom = mapperBuilder.deleteFrom(Person.class);
+        ColumnMapperDeleteFrom columnDeleteFrom = mapperBuilder.deleteFrom(Person.class);
         assertNotNull(columnDeleteFrom);
     }
 }

@@ -12,10 +12,8 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis.column;
+package org.jnosql.artemis.column.query;
 
-import org.jnosql.diana.api.column.query.ColumnDeleteFrom;
-import org.jnosql.diana.api.column.query.ColumnFrom;
 
 /**
  * The builder to either select and delete query using an object mapper API.
@@ -24,22 +22,22 @@ public interface ColumnQueryMapperBuilder {
 
 
     /**
-     * Returns a {@link ColumnFrom} implementation that does the object mapper API.
+     * Returns a {@link ColumnMapperFrom} implementation that does the object mapper API.
      *
      * @param entityClass the entity class
      * @param <T>         the entity type
-     * @return a {@link ColumnFrom} instance
+     * @return a {@link ColumnMapperFrom} instance
      * @throws NullPointerException when entityClass is null
      */
-    <T> ColumnFrom selectFrom(Class<T> entityClass);
+    <T> ColumnMapperFrom selectFrom(Class<T> entityClass);
 
     /**
-     * Returns a {@link ColumnDeleteFrom} implementation that does the object mapper API.
+     * Returns a {@link ColumnMapperDeleteFrom} implementation that does the object mapper API.
      *
      * @param entityClass the entity class
      * @param <T>         the entity type
-     * @return a {@link ColumnDeleteFrom} instance
+     * @return a {@link ColumnMapperDeleteFrom} instance
      * @throws NullPointerException when entityClass is null
      */
-    <T> ColumnDeleteFrom deleteFrom(Class<T> entityClass);
+    <T> ColumnMapperDeleteFrom deleteFrom(Class<T> entityClass);
 }

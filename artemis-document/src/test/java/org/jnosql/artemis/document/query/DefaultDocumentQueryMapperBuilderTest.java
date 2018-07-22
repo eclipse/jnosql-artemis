@@ -15,7 +15,6 @@
 package org.jnosql.artemis.document.query;
 
 import org.jnosql.artemis.CDIExtension;
-import org.jnosql.artemis.document.DocumentQueryMapperBuilder;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.diana.api.document.query.DocumentDeleteFrom;
 import org.jnosql.diana.api.document.query.DocumentFrom;
@@ -42,7 +41,7 @@ public class DefaultDocumentQueryMapperBuilderTest {
 
     @Test
     public void shouldReturnSelectFrom() {
-        DocumentFrom documentFrom = mapperBuilder.selectFrom(Person.class);
+        DocumentMapperFrom documentFrom = mapperBuilder.selectFrom(Person.class);
         assertNotNull(documentFrom);
     }
 
@@ -53,7 +52,7 @@ public class DefaultDocumentQueryMapperBuilderTest {
 
     @Test
     public void shouldReturnDeleteFrom() {
-        DocumentDeleteFrom deleteFrom = mapperBuilder.deleteFrom(Person.class);
+        DocumentMapperDeleteFrom deleteFrom = mapperBuilder.deleteFrom(Person.class);
         assertNotNull(deleteFrom);
     }
 }

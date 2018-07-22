@@ -15,17 +15,17 @@
 package org.jnosql.artemis.document.query;
 
 import org.jnosql.artemis.Converters;
+import org.jnosql.artemis.document.DocumentTemplate;
+import org.jnosql.artemis.document.DocumentTemplateAsync;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
-import org.jnosql.diana.api.document.query.DocumentDeleteFrom;
-import org.jnosql.diana.api.document.query.DocumentDeleteNameCondition;
-import org.jnosql.diana.api.document.query.DocumentDeleteNotCondition;
-import org.jnosql.diana.api.document.query.DocumentDeleteWhere;
+
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
-class DefaultDocumentMapperDeleteBuilder extends AbstractMapperQuery implements DocumentDeleteFrom,
-        DocumentDeleteWhere, DocumentDeleteNameCondition, DocumentDeleteNotCondition {
+class DefaultDocumentMapperDeleteBuilder extends AbstractMapperQuery implements DocumentMapperDeleteFrom,
+        DocumentMapperDeleteWhere, DocumentMapperDeleteNameCondition, DocumentMapperDeleteNotCondition {
 
 
     DefaultDocumentMapperDeleteBuilder(ClassRepresentation representation, Converters converters) {
@@ -33,7 +33,7 @@ class DefaultDocumentMapperDeleteBuilder extends AbstractMapperQuery implements 
     }
 
     @Override
-    public DocumentDeleteNameCondition where(String name) {
+    public DocumentMapperDeleteNameCondition where(String name) {
         requireNonNull(name, "name is required");
         this.name = name;
         return this;
@@ -41,7 +41,7 @@ class DefaultDocumentMapperDeleteBuilder extends AbstractMapperQuery implements 
 
 
     @Override
-    public DocumentDeleteNameCondition and(String name) {
+    public DocumentMapperDeleteNameCondition and(String name) {
         requireNonNull(name, "name is required");
         this.name = name;
         this.and = true;
@@ -49,7 +49,7 @@ class DefaultDocumentMapperDeleteBuilder extends AbstractMapperQuery implements 
     }
 
     @Override
-    public DocumentDeleteNameCondition or(String name) {
+    public DocumentMapperDeleteNameCondition or(String name) {
         requireNonNull(name, "name is required");
         this.name = name;
         this.and = false;
@@ -58,56 +58,56 @@ class DefaultDocumentMapperDeleteBuilder extends AbstractMapperQuery implements 
 
 
     @Override
-    public DocumentDeleteNotCondition not() {
+    public DocumentMapperDeleteNotCondition not() {
         this.negate = true;
         return this;
     }
 
     @Override
-    public <T> DocumentDeleteWhere eq(T value) {
+    public <T> DocumentMapperDeleteWhere eq(T value) {
         eqImpl(value);
         return this;
     }
 
     @Override
-    public DocumentDeleteWhere like(String value) {
+    public DocumentMapperDeleteWhere like(String value) {
         likeImpl(value);
         return this;
     }
 
     @Override
-    public <T> DocumentDeleteWhere gt(T value) {
+    public <T> DocumentMapperDeleteWhere gt(T value) {
         gtImpl(value);
         return this;
     }
 
     @Override
-    public <T> DocumentDeleteWhere gte(T value) {
+    public <T> DocumentMapperDeleteWhere gte(T value) {
         gteImpl(value);
         return this;
     }
 
     @Override
-    public <T> DocumentDeleteWhere lt(T value) {
+    public <T> DocumentMapperDeleteWhere lt(T value) {
         ltImpl(value);
         return this;
     }
 
     @Override
-    public <T> DocumentDeleteWhere lte(T value) {
+    public <T> DocumentMapperDeleteWhere lte(T value) {
         lteImpl(value);
         return this;
     }
 
     @Override
-    public <T> DocumentDeleteWhere between(T valueA, T valueB) {
+    public <T> DocumentMapperDeleteWhere between(T valueA, T valueB) {
         betweenImpl(valueA, valueB);
         return this;
     }
 
 
     @Override
-    public <T> DocumentDeleteWhere in(Iterable<T> values) {
+    public <T> DocumentMapperDeleteWhere in(Iterable<T> values) {
         inImpl(values);
         return this;
     }
@@ -117,5 +117,25 @@ class DefaultDocumentMapperDeleteBuilder extends AbstractMapperQuery implements 
     public DocumentDeleteQuery build() {
         return new ArtemisDocumentDeleteQuery(documentCollection, condition);
     }
+
+    @Override
+    public void execute(DocumentTemplate template) {
+        requireNonNull(template, "template is required");
+        template.delete(this.build());
+    }
+
+    @Override
+    public void execute(DocumentTemplateAsync template) {
+        requireNonNull(template, "template is required");
+        template.delete(this.build());
+    }
+
+    @Override
+    public void execute(DocumentTemplateAsync template, Consumer<Void> callback) {
+        requireNonNull(template, "template is required");
+        requireNonNull(callback, "callback is required");
+        template.delete(this.build(), callback);
+    }
+
 
 }

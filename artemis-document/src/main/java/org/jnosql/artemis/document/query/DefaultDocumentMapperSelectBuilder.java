@@ -15,25 +15,23 @@
 package org.jnosql.artemis.document.query;
 
 import org.jnosql.artemis.Converters;
+import org.jnosql.artemis.document.DocumentTemplate;
+import org.jnosql.artemis.document.DocumentTemplateAsync;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.Sort;
 import org.jnosql.diana.api.document.DocumentQuery;
-import org.jnosql.diana.api.document.query.DocumentFrom;
-import org.jnosql.diana.api.document.query.DocumentLimit;
-import org.jnosql.diana.api.document.query.DocumentNameCondition;
-import org.jnosql.diana.api.document.query.DocumentNameOrder;
-import org.jnosql.diana.api.document.query.DocumentNotCondition;
-import org.jnosql.diana.api.document.query.DocumentOrder;
-import org.jnosql.diana.api.document.query.DocumentSkip;
-import org.jnosql.diana.api.document.query.DocumentWhere;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
-class DefaultDocumentMapperSelectBuilder extends AbstractMapperQuery implements DocumentFrom, DocumentLimit, DocumentSkip,
-        DocumentOrder, DocumentNameCondition, DocumentNotCondition, DocumentNameOrder, DocumentWhere {
+class DefaultDocumentMapperSelectBuilder extends AbstractMapperQuery implements DocumentMapperFrom, DocumentMapperLimit,
+        DocumentMapperSkip, DocumentMapperOrder, DocumentMapperNameCondition,
+        DocumentMapperNotCondition, DocumentMapperNameOrder, DocumentMapperWhere {
 
     private final List<Sort> sorts = new ArrayList<>();
 
@@ -44,7 +42,7 @@ class DefaultDocumentMapperSelectBuilder extends AbstractMapperQuery implements 
 
 
     @Override
-    public DocumentNameCondition and(String name) {
+    public DocumentMapperNameCondition and(String name) {
         requireNonNull(name, "name is required");
         this.name = name;
         this.and = true;
@@ -52,7 +50,7 @@ class DefaultDocumentMapperSelectBuilder extends AbstractMapperQuery implements 
     }
 
     @Override
-    public DocumentNameCondition or(String name) {
+    public DocumentMapperNameCondition or(String name) {
         requireNonNull(name, "name is required");
         this.name = name;
         this.and = false;
@@ -60,26 +58,26 @@ class DefaultDocumentMapperSelectBuilder extends AbstractMapperQuery implements 
     }
 
     @Override
-    public DocumentNameCondition where(String name) {
+    public DocumentMapperNameCondition where(String name) {
         requireNonNull(name, "name is required");
         this.name = name;
         return this;
     }
 
     @Override
-    public DocumentSkip skip(long start) {
+    public DocumentMapperSkip skip(long start) {
         this.start = start;
         return this;
     }
 
     @Override
-    public DocumentLimit limit(long limit) {
+    public DocumentMapperLimit limit(long limit) {
         this.limit = limit;
         return this;
     }
 
     @Override
-    public DocumentOrder orderBy(String name) {
+    public DocumentMapperOrder orderBy(String name) {
         requireNonNull(name, "name is required");
         this.name = name;
         return this;
@@ -87,72 +85,72 @@ class DefaultDocumentMapperSelectBuilder extends AbstractMapperQuery implements 
 
 
     @Override
-    public DocumentNotCondition not() {
+    public DocumentMapperNotCondition not() {
         this.negate = true;
         return this;
     }
 
     @Override
-    public <T> DocumentWhere eq(T value) {
+    public <T> DocumentMapperWhere eq(T value) {
         eqImpl(value);
         return this;
     }
 
 
     @Override
-    public DocumentWhere like(String value) {
+    public DocumentMapperWhere like(String value) {
         likeImpl(value);
         return this;
     }
 
 
     @Override
-    public <T> DocumentWhere gt(T value) {
+    public <T> DocumentMapperWhere gt(T value) {
         gtImpl(value);
         return this;
     }
 
 
     @Override
-    public <T> DocumentWhere gte(T value) {
+    public <T> DocumentMapperWhere gte(T value) {
         gteImpl(value);
         return this;
     }
 
     @Override
-    public <T> DocumentWhere lt(T value) {
+    public <T> DocumentMapperWhere lt(T value) {
         ltImpl(value);
         return this;
     }
 
 
     @Override
-    public <T> DocumentWhere lte(T value) {
+    public <T> DocumentMapperWhere lte(T value) {
         lteImpl(value);
         return this;
     }
 
 
     @Override
-    public <T> DocumentWhere between(T valueA, T valueB) {
+    public <T> DocumentMapperWhere between(T valueA, T valueB) {
         betweenImpl(valueA, valueB);
         return this;
     }
 
     @Override
-    public <T> DocumentWhere in(Iterable<T> values) {
+    public <T> DocumentMapperWhere in(Iterable<T> values) {
         inImpl(values);
         return this;
     }
 
     @Override
-    public DocumentNameOrder asc() {
+    public DocumentMapperNameOrder asc() {
         this.sorts.add(Sort.of(representation.getColumnField(name), Sort.SortType.ASC));
         return this;
     }
 
     @Override
-    public DocumentNameOrder desc() {
+    public DocumentMapperNameOrder desc() {
         this.sorts.add(Sort.of(representation.getColumnField(name), Sort.SortType.DESC));
         return this;
     }
@@ -162,4 +160,31 @@ class DefaultDocumentMapperSelectBuilder extends AbstractMapperQuery implements 
     public DocumentQuery build() {
         return new ArtemisDocumentQuery(sorts, limit, start, condition, documentCollection);
     }
+
+    @Override
+    public <T> List<T> execute(DocumentTemplate template) {
+        Objects.requireNonNull(template, "template is required");
+        return template.select(this.build());
+    }
+
+    @Override
+    public <T> Optional<T> executeSingle(DocumentTemplate template) {
+        Objects.requireNonNull(template, "template is required");
+        return template.singleResult(this.build());
+    }
+
+    @Override
+    public <T> void execute(DocumentTemplateAsync template, Consumer<List<T>> callback) {
+        Objects.requireNonNull(template, "template is required");
+        Objects.requireNonNull(callback, "callback is required");
+        template.select(this.build(), callback);
+    }
+
+    @Override
+    public <T> void executeSingle(DocumentTemplateAsync template, Consumer<Optional<T>> callback) {
+        Objects.requireNonNull(template, "template is required");
+        Objects.requireNonNull(callback, "callback is required");
+        template.singleResult(this.build(), callback);
+    }
+
 }

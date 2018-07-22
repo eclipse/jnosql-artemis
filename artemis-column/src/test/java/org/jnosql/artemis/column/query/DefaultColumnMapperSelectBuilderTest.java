@@ -15,23 +15,29 @@
 package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.CDIExtension;
-import org.jnosql.artemis.column.ColumnQueryMapperBuilder;
+import org.jnosql.artemis.column.ColumnTemplate;
+import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.model.Address;
 import org.jnosql.artemis.model.Money;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.model.Worker;
 import org.jnosql.diana.api.column.ColumnQuery;
-import org.jnosql.diana.api.column.query.ColumnFrom;
 import org.jnosql.diana.api.column.query.ColumnQueryBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
 
 @ExtendWith(CDIExtension.class)
 public class DefaultColumnMapperSelectBuilderTest {
@@ -42,7 +48,7 @@ public class DefaultColumnMapperSelectBuilderTest {
 
     @Test
     public void shouldReturnSelectStarFrom() {
-        ColumnFrom columnFrom = mapperBuilder.selectFrom(Person.class);
+        ColumnMapperFrom columnFrom = mapperBuilder.selectFrom(Person.class);
         ColumnQuery query = columnFrom.build();
         ColumnQuery queryExpected = ColumnQueryBuilder.select().from("Person").build();
         assertEquals(queryExpected, query);
@@ -200,6 +206,53 @@ public class DefaultColumnMapperSelectBuilderTest {
         ColumnQuery queryExpected = select().from("Address").where("zipcode.zip").eq("01312321")
                 .build();
 
+        assertEquals(queryExpected, query);
+    }
+
+
+    @Test
+    public void shouldExecuteQuery() {
+        ColumnTemplate template = Mockito.mock(ColumnTemplate.class);
+        ArgumentCaptor<ColumnQuery> queryCaptor = ArgumentCaptor.forClass(ColumnQuery.class);
+        mapperBuilder.selectFrom(Person.class).execute(template);
+        Mockito.verify(template).select(queryCaptor.capture());
+        ColumnQuery query = queryCaptor.getValue();
+        ColumnQuery queryExpected = ColumnQueryBuilder.select().from("Person").build();
+        assertEquals(queryExpected, query);
+    }
+
+    @Test
+    public void shouldExecuteSingleQuery() {
+        ColumnTemplate template = Mockito.mock(ColumnTemplate.class);
+        ArgumentCaptor<ColumnQuery> queryCaptor = ArgumentCaptor.forClass(ColumnQuery.class);
+        mapperBuilder.selectFrom(Person.class).executeSingle(template);
+        Mockito.verify(template).singleResult(queryCaptor.capture());
+        ColumnQuery query = queryCaptor.getValue();
+        ColumnQuery queryExpected = ColumnQueryBuilder.select().from("Person").build();
+        assertEquals(queryExpected, query);
+    }
+
+    @Test
+    public void shouldExecuteAsyncQuery() {
+        ColumnTemplateAsync template = Mockito.mock(ColumnTemplateAsync.class);
+        ArgumentCaptor<ColumnQuery> queryCaptor = ArgumentCaptor.forClass(ColumnQuery.class);
+        Consumer<List<Person>> consumer = System.out::println;
+        mapperBuilder.selectFrom(Person.class).execute(template, consumer);
+        Mockito.verify(template).select(queryCaptor.capture(), eq(consumer));
+        ColumnQuery query = queryCaptor.getValue();
+        ColumnQuery queryExpected = ColumnQueryBuilder.select().from("Person").build();
+        assertEquals(queryExpected, query);
+    }
+
+    @Test
+    public void shouldExecuteSingleAsyncQuery() {
+        ColumnTemplateAsync template = Mockito.mock(ColumnTemplateAsync.class);
+        ArgumentCaptor<ColumnQuery> queryCaptor = ArgumentCaptor.forClass(ColumnQuery.class);
+        Consumer<Optional<Person>> consumer = System.out::println;
+        mapperBuilder.selectFrom(Person.class).executeSingle(template, consumer);
+        Mockito.verify(template).singleResult(queryCaptor.capture(), eq(consumer));
+        ColumnQuery query = queryCaptor.getValue();
+        ColumnQuery queryExpected = ColumnQueryBuilder.select().from("Person").build();
         assertEquals(queryExpected, query);
     }
 
