@@ -15,17 +15,21 @@
 package org.jnosql.artemis.document.query;
 
 import org.jnosql.artemis.CDIExtension;
+import org.jnosql.artemis.document.DocumentTemplate;
+import org.jnosql.artemis.document.DocumentTemplateAsync;
 import org.jnosql.artemis.model.Address;
 import org.jnosql.artemis.model.Money;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.model.Worker;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
-import org.jnosql.diana.api.document.query.DocumentDeleteFrom;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
+import java.util.function.Consumer;
 
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,8 +43,8 @@ public class DefaultDocumentMapperDeleteBuilderTest {
 
     @Test
     public void shouldReturnDeleteFrom() {
-        DocumentDeleteFrom DocumentFrom = mapperBuilder.deleteFrom(Person.class);
-        DocumentDeleteQuery query = DocumentFrom.build();
+        DocumentMapperDeleteFrom documentFrom = mapperBuilder.deleteFrom(Person.class);
+        DocumentDeleteQuery query = documentFrom.build();
         DocumentDeleteQuery queryExpected = delete().from("Person").build();
         assertEquals(queryExpected, query);
     }
@@ -163,6 +167,44 @@ public class DefaultDocumentMapperDeleteBuilderTest {
         DocumentDeleteQuery queryExpected = delete().from("Address").where("zipcode.zip").eq("01312321")
                 .build();
 
+        assertEquals(queryExpected, query);
+    }
+
+    @Test
+    public void shouldExecuteDelete() {
+        DocumentTemplate template = Mockito.mock(DocumentTemplate.class);
+        ArgumentCaptor<DocumentDeleteQuery> queryCaptor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
+
+        mapperBuilder.deleteFrom(Person.class).execute(template);
+        Mockito.verify(template).delete(queryCaptor.capture());
+        DocumentDeleteQuery query = queryCaptor.getValue();
+        DocumentDeleteQuery queryExpected = delete().from("Person").build();
+        assertEquals(queryExpected, query);
+    }
+
+
+    @Test
+    public void shouldExecuteAsyncDelete() {
+        DocumentTemplateAsync template = Mockito.mock(DocumentTemplateAsync.class);
+        ArgumentCaptor<DocumentDeleteQuery> queryCaptor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
+
+        mapperBuilder.deleteFrom(Person.class).execute(template);
+        Mockito.verify(template).delete(queryCaptor.capture());
+        DocumentDeleteQuery query = queryCaptor.getValue();
+        DocumentDeleteQuery queryExpected = delete().from("Person").build();
+        assertEquals(queryExpected, query);
+    }
+
+    @Test
+    public void shouldExecuteAsyncDeleteCallback() {
+        DocumentTemplateAsync template = Mockito.mock(DocumentTemplateAsync.class);
+        ArgumentCaptor<DocumentDeleteQuery> queryCaptor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
+
+        Consumer<Void> callback = System.out::println;
+        mapperBuilder.deleteFrom(Person.class).execute(template, callback);
+        Mockito.verify(template).delete(queryCaptor.capture(), Mockito.eq(callback));
+        DocumentDeleteQuery query = queryCaptor.getValue();
+        DocumentDeleteQuery queryExpected = delete().from("Person").build();
         assertEquals(queryExpected, query);
     }
 

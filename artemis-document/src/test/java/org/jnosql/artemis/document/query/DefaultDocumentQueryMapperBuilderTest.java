@@ -52,7 +52,7 @@ public class DefaultDocumentQueryMapperBuilderTest {
 
     @Test
     public void shouldReturnDeleteFrom() {
-        DocumentDeleteFrom deleteFrom = mapperBuilder.deleteFrom(Person.class);
+        DocumentMapperDeleteFrom deleteFrom = mapperBuilder.deleteFrom(Person.class);
         assertNotNull(deleteFrom);
     }
 }

@@ -19,7 +19,7 @@ import org.jnosql.diana.api.document.query.DocumentDeleteNameCondition;
 /**
  * The Document Where whose define the condition in the delete query.
  */
-public interface DocumentMapperDeleteWhere {
+public interface DocumentMapperDeleteWhere extends DocumentMapperDeleteQueryBuild {
 
     /**
      * Starts a new condition in the select using {@link org.jnosql.diana.api.document.DocumentCondition#and(org.jnosql.diana.api.document.DocumentCondition)}

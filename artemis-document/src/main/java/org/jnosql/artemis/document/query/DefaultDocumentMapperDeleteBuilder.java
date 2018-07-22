@@ -15,8 +15,13 @@
 package org.jnosql.artemis.document.query;
 
 import org.jnosql.artemis.Converters;
+import org.jnosql.artemis.document.DocumentTemplate;
+import org.jnosql.artemis.document.DocumentTemplateAsync;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
+
+import java.util.Objects;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -112,6 +117,25 @@ class DefaultDocumentMapperDeleteBuilder extends AbstractMapperQuery implements 
     @Override
     public DocumentDeleteQuery build() {
         return new ArtemisDocumentDeleteQuery(documentCollection, condition);
+    }
+
+    @Override
+    public void execute(DocumentTemplate template) {
+        requireNonNull(template, "template is required");
+        template.delete(this.build());
+    }
+
+    @Override
+    public void execute(DocumentTemplateAsync template) {
+        requireNonNull(template, "template is required");
+        template.delete(this.build());
+    }
+
+    @Override
+    public void execute(DocumentTemplateAsync template, Consumer<Void> callback) {
+        requireNonNull(template, "template is required");
+        requireNonNull(callback, "callback is required");
+        template.delete(this.build(), callback);
     }
 
 
