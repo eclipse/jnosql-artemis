@@ -66,6 +66,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <hibernate.validator.version>5.4.0.Final</hibernate.validator.version>
+        <el.impl.version>2.2.1-b05</el.impl.version>
     </properties>
 
     <dependencies>
@@ -73,7 +75,7 @@
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
-            <version>1.1.0.Final</version>
+            <version>${javax.validation.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -105,13 +107,13 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>5.4.0.Final</version>
+            <version>${hibernate.validator.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.glassfish.web</groupId>
             <artifactId>el-impl</artifactId>
-            <version>2.2.1-b05</version>
+            <version>${el.impl.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

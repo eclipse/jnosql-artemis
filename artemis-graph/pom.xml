@@ -67,6 +67,7 @@
         <maven.compile.targetLevel>1.8</maven.compile.targetLevel>
         <maven.compile.sourceLevel>1.8</maven.compile.sourceLevel>
         <tinkerpop.version>3.3.3</tinkerpop.version>
+        <neo4j.connector.version>0.7-3.2.3</neo4j.connector.version>
     </properties>
     <dependencies>
         <dependency>
@@ -96,7 +97,7 @@
         <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j-tinkerpop-api-impl</artifactId>
-            <version>0.7-3.2.3</version>
+            <version>${neo4j.connector.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
