@@ -31,7 +31,7 @@ public interface ColumnQueryMapperBuilder {
      * @return a {@link ColumnFrom} instance
      * @throws NullPointerException when entityClass is null
      */
-    <T> ColumnFrom selectFrom(Class<T> entityClass);
+    <T> ColumnMapperFrom selectFrom(Class<T> entityClass);
 
     /**
      * Returns a {@link ColumnDeleteFrom} implementation that does the object mapper API.
