@@ -15,12 +15,16 @@
 package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.Converters;
+import org.jnosql.artemis.column.ColumnTemplate;
+import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.Sort;
 import org.jnosql.diana.api.column.ColumnQuery;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -154,6 +158,32 @@ class DefaultColumnMapperSelectBuilder extends AbstractMapperQuery implements Co
     @Override
     public ColumnQuery build() {
         return new ArtemisColumnQuery(sorts, limit, start, condition, columnFamily);
+    }
+
+    @Override
+    public <T> List<T> execute(ColumnTemplate template) {
+        requireNonNull(template, "template is required");
+        return template.select(this.build());
+    }
+
+    @Override
+    public <T> Optional<T> executeSingle(ColumnTemplate template) {
+        requireNonNull(template, "template is required");
+        return template.singleResult(this.build());
+    }
+
+    @Override
+    public <T> void execute(ColumnTemplateAsync template, Consumer<List<T>> callback) {
+        requireNonNull(template, "template is required");
+        requireNonNull(callback, "callback is required");
+        template.select(this.build(), callback);
+    }
+
+    @Override
+    public <T> void executeSingle(ColumnTemplateAsync template, Consumer<Optional<T>> callback) {
+        requireNonNull(template, "template is required");
+        requireNonNull(callback, "callback is required");
+        template.singleResult(this.build(), callback);
     }
 
 }
