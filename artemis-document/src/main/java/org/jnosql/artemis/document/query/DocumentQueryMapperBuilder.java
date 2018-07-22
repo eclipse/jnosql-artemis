@@ -12,10 +12,9 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis.document;
+package org.jnosql.artemis.document.query;
 
 import org.jnosql.diana.api.document.query.DocumentDeleteFrom;
-import org.jnosql.diana.api.document.query.DocumentFrom;
 
 /**
  * The builder to either select and delete query using an object mapper API.
@@ -24,14 +23,14 @@ public interface DocumentQueryMapperBuilder {
 
 
     /**
-     * Returns a {@link DocumentFrom} implementation that does the object mapper API.
+     * Returns a {@link DocumentMapperFrom} implementation that does the object mapper API.
      *
      * @param entityClass the entity class
      * @param <T>         the entity type
-     * @return a {@link DocumentFrom} instance
+     * @return a {@link DocumentMapperFrom} instance
      * @throws NullPointerException when entityClass is null
      */
-    <T> DocumentFrom selectFrom(Class<T> entityClass);
+    <T> DocumentMapperFrom selectFrom(Class<T> entityClass);
 
     /**
      * Returns a {@link DocumentDeleteFrom} implementation that does the object mapper API.

@@ -15,7 +15,6 @@
 package org.jnosql.artemis.document.query;
 
 import org.jnosql.artemis.Converters;
-import org.jnosql.artemis.document.DocumentQueryMapperBuilder;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.document.query.DocumentDeleteFrom;
@@ -37,7 +36,7 @@ class DefaultDocumentQueryMapperBuilder implements DocumentQueryMapperBuilder {
     private Instance<Converters> converters;
 
     @Override
-    public <T> DocumentFrom selectFrom(Class<T> entityClass) {
+    public <T> DocumentMapperFrom selectFrom(Class<T> entityClass) {
         requireNonNull(entityClass, "entity is required");
         ClassRepresentation representation = classRepresentations.get().get(entityClass);
         return new DefaultDocumentMapperSelectBuilder(representation, converters.get());
