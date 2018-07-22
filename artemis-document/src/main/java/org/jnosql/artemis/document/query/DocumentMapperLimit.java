@@ -19,7 +19,7 @@ package org.jnosql.artemis.document.query;
 /**
  * The Document Order whose define the the maximum number of results to retrieve.
  */
-public interface DocumentMapperLimit extends DocumentQueryMapperBuild {
+public interface DocumentMapperLimit extends DocumentMapperQueryBuild {
 
     /**
      * Defines the position of the first result to retrieve.

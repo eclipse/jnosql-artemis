@@ -18,7 +18,7 @@ package org.jnosql.artemis.document.query;
 /**
  * The DocumentFrom Query
  */
-public interface DocumentMapperFrom extends DocumentQueryMapperBuild {
+public interface DocumentMapperFrom extends DocumentMapperQueryBuild {
 
     /**
      * Starts a new condition defining the  column name

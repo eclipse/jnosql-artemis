@@ -20,7 +20,7 @@ package org.jnosql.artemis.document.query;
 /**
  * The Column name order to the builder
  */
-public interface DocumentMapperNameOrder extends DocumentQueryMapperBuild {
+public interface DocumentMapperNameOrder extends DocumentMapperQueryBuild {
 
     /**
      * Add the order how the result will returned
