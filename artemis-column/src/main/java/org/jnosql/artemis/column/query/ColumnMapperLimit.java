@@ -19,7 +19,7 @@ package org.jnosql.artemis.column.query;
 /**
  * The Column Order whose define the the maximum number of results to retrieve.
  */
-public interface ColumnMapperLimit {
+public interface ColumnMapperLimit extends ColumnMapperQueryBuild {
 
     /**
      * Defines the position of the first result to retrieve.
