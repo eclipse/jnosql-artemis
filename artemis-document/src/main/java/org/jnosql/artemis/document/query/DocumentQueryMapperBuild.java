@@ -26,8 +26,8 @@ import java.util.function.Consumer;
 /**
  * The last step to the build of {@link org.jnosql.diana.api.document.DocumentQuery}.
  * It either can return a new {@link org.jnosql.diana.api.document.DocumentQuery} instance or execute a query with
- * {@link org.jnosql.diana.api.document.DocumentCollectionManager}
- * and {@link org.jnosql.diana.api.document.DocumentCollectionManagerAsync}
+ * {@link DocumentTemplate}
+ * and {@link DocumentTemplateAsync}
  */
 public interface DocumentQueryMapperBuild {
 
