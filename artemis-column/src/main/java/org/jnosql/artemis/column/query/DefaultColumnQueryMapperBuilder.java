@@ -42,7 +42,7 @@ class DefaultColumnQueryMapperBuilder implements ColumnQueryMapperBuilder {
     }
 
     @Override
-    public <T> ColumnDeleteFrom deleteFrom(Class<T> entityClass) {
+    public <T> ColumnMapperDeleteFrom deleteFrom(Class<T> entityClass) {
         requireNonNull(entityClass, "entity is required");
         ClassRepresentation representation = classRepresentations.get().get(entityClass);
         return new DefaultColumnMapperDeleteBuilder(representation, converters.get());
