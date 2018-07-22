@@ -16,7 +16,13 @@
  */
 package org.jnosql.artemis.column.query;
 
+import org.jnosql.artemis.column.ColumnTemplate;
+import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.diana.api.column.ColumnQuery;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * The last step to the build of {@link ColumnQuery}.
@@ -32,4 +38,44 @@ public interface ColumnMapperQueryBuild {
      */
     ColumnQuery build();
 
+
+    /**
+     * Executes {@link ColumnTemplate#select(ColumnQuery)}
+     *
+     * @param <T>      the entity type
+     * @param template the column template
+     * @return the result of {@link ColumnTemplate#select(ColumnQuery)}
+     * @throws NullPointerException when manager is null
+     */
+    <T> List<T> execute(ColumnTemplate template);
+
+    /**
+     * Executes {@link ColumnTemplate#singleResult(ColumnQuery)}
+     *
+     * @param <T>      the entity type
+     * @param template the column template
+     * @return the result of {@link ColumnTemplate#singleResult(ColumnQuery)}
+     * @throws NullPointerException when manager is null
+     */
+    <T> Optional<T> executeSingle(ColumnTemplate template);
+
+    /**
+     * Executes {@link ColumnTemplateAsync#select(ColumnQuery, Consumer)}
+     *
+     * @param <T>      the entity type
+     * @param template the column template
+     * @param callback the callback
+     * @throws NullPointerException when there is null parameter
+     */
+    <T> void execute(ColumnTemplateAsync template, Consumer<List<T>> callback);
+
+    /**
+     * Executes {@link ColumnTemplateAsync#singleResult(ColumnQuery, Consumer)}
+     *
+     * @param <T>      the entity type
+     * @param template the column template
+     * @param callback the callback
+     * @throws NullPointerException when there is null parameter
+     */
+    <T> void executeSingle(ColumnTemplateAsync template, Consumer<Optional<T>> callback);
 }
