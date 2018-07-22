@@ -16,11 +16,15 @@ package org.jnosql.artemis.document.query;
 
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.diana.api.document.DocumentCollectionManager;
+import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.query.DocumentDeleteFrom;
 import org.jnosql.diana.api.document.query.DocumentDeleteNameCondition;
 import org.jnosql.diana.api.document.query.DocumentDeleteNotCondition;
 import org.jnosql.diana.api.document.query.DocumentDeleteWhere;
+
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -116,6 +120,21 @@ class DefaultDocumentMapperDeleteBuilder extends AbstractMapperQuery implements 
     @Override
     public DocumentDeleteQuery build() {
         return new ArtemisDocumentDeleteQuery(documentCollection, condition);
+    }
+
+    @Override
+    public void execute(DocumentCollectionManager manager) {
+
+    }
+
+    @Override
+    public void execute(DocumentCollectionManagerAsync manager) {
+
+    }
+
+    @Override
+    public void execute(DocumentCollectionManagerAsync manager, Consumer<Void> callback) {
+
     }
 
 }

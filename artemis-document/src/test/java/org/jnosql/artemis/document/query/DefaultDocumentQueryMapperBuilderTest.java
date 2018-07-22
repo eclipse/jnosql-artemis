@@ -41,7 +41,7 @@ public class DefaultDocumentQueryMapperBuilderTest {
 
     @Test
     public void shouldReturnSelectFrom() {
-        DocumentFrom documentFrom = mapperBuilder.selectFrom(Person.class);
+        DocumentMapperFrom documentFrom = mapperBuilder.selectFrom(Person.class);
         assertNotNull(documentFrom);
     }
 

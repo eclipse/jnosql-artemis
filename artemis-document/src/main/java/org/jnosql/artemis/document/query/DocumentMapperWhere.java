@@ -20,7 +20,7 @@ package org.jnosql.artemis.document.query;
 /**
  * The Document Where whose define the condition in the query.
  */
-public interface DocumentMapperWhere {
+public interface DocumentMapperWhere extends DocumentQueryMapperBuild {
 
 
     /**

@@ -40,7 +40,7 @@ public class DefaultDocumentMapperSelectBuilderTest {
 
     @Test
     public void shouldReturnSelectStarFrom() {
-        DocumentFrom DocumentFrom = mapperBuilder.selectFrom(Person.class);
+        DocumentMapperFrom DocumentFrom = mapperBuilder.selectFrom(Person.class);
         DocumentQuery query = DocumentFrom.build();
         DocumentQuery queryExpected = select().from("Person").build();
         assertEquals(queryExpected, query);
