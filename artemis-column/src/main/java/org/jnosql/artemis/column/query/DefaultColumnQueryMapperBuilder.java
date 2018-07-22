@@ -17,7 +17,6 @@ package org.jnosql.artemis.column.query;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.diana.api.column.query.ColumnDeleteFrom;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
