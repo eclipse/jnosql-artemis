@@ -15,21 +15,26 @@
 package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.CDIExtension;
+import org.jnosql.artemis.column.ColumnTemplate;
+import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.model.Address;
 import org.jnosql.artemis.model.Money;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.model.Worker;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
-import org.jnosql.diana.api.column.query.ColumnDeleteFrom;
 import org.jnosql.diana.api.column.query.ColumnQueryBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
+import java.util.function.Consumer;
 
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
 
 @ExtendWith(CDIExtension.class)
 public class DefaultColumnMapperDeleteBuilderTest {
@@ -40,7 +45,7 @@ public class DefaultColumnMapperDeleteBuilderTest {
 
     @Test
     public void shouldReturnDeleteFrom() {
-        ColumnDeleteFrom columnFrom = mapperBuilder.deleteFrom(Person.class);
+        ColumnMapperDeleteFrom columnFrom = mapperBuilder.deleteFrom(Person.class);
         ColumnDeleteQuery query = columnFrom.build();
         ColumnDeleteQuery queryExpected = ColumnQueryBuilder.delete().from("Person").build();
         assertEquals(queryExpected, query);
@@ -166,5 +171,40 @@ public class DefaultColumnMapperDeleteBuilderTest {
 
         assertEquals(queryExpected, query);
     }
+
+    @Test
+    public void shouldExecuteDeleteFrom() {
+        ColumnTemplate template = Mockito.mock(ColumnTemplate.class);
+        ArgumentCaptor<ColumnDeleteQuery> queryCaptor = ArgumentCaptor.forClass(ColumnDeleteQuery.class);
+        mapperBuilder.deleteFrom(Person.class).execute(template);
+        Mockito.verify(template).delete(queryCaptor.capture());
+        ColumnDeleteQuery query = queryCaptor.getValue();
+        ColumnDeleteQuery queryExpected = ColumnQueryBuilder.delete().from("Person").build();
+        assertEquals(queryExpected, query);
+    }
+
+    @Test
+    public void shouldExecuteDeleteAsyncFrom() {
+        ColumnTemplateAsync template = Mockito.mock(ColumnTemplateAsync.class);
+        ArgumentCaptor<ColumnDeleteQuery> queryCaptor = ArgumentCaptor.forClass(ColumnDeleteQuery.class);
+        mapperBuilder.deleteFrom(Person.class).execute(template);
+        Mockito.verify(template).delete(queryCaptor.capture());
+        ColumnDeleteQuery query = queryCaptor.getValue();
+        ColumnDeleteQuery queryExpected = ColumnQueryBuilder.delete().from("Person").build();
+        assertEquals(queryExpected, query);
+    }
+
+    @Test
+    public void shouldExecuteDeleteAsyncCallbackFrom() {
+        ColumnTemplateAsync template = Mockito.mock(ColumnTemplateAsync.class);
+        ArgumentCaptor<ColumnDeleteQuery> queryCaptor = ArgumentCaptor.forClass(ColumnDeleteQuery.class);
+        Consumer<Void> consumer = System.out::println;
+        mapperBuilder.deleteFrom(Person.class).execute(template, consumer);
+        Mockito.verify(template).delete(queryCaptor.capture(), eq(consumer));
+        ColumnDeleteQuery query = queryCaptor.getValue();
+        ColumnDeleteQuery queryExpected = ColumnQueryBuilder.delete().from("Person").build();
+        assertEquals(queryExpected, query);
+    }
+
 
 }
