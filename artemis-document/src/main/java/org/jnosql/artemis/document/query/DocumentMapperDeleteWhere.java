@@ -14,7 +14,6 @@
  */
 package org.jnosql.artemis.document.query;
 
-import org.jnosql.diana.api.document.query.DocumentDeleteNameCondition;
 
 /**
  * The Document Where whose define the condition in the delete query.
@@ -25,7 +24,7 @@ public interface DocumentMapperDeleteWhere extends DocumentMapperDeleteQueryBuil
      * Starts a new condition in the select using {@link org.jnosql.diana.api.document.DocumentCondition#and(org.jnosql.diana.api.document.DocumentCondition)}
      *
      * @param name a condition to be added
-     * @return the same {@link DocumentDeleteNameCondition} with the condition appended
+     * @return the same {@link DocumentMapperDeleteNameCondition} with the condition appended
      * @throws NullPointerException when condition is null
      */
     DocumentMapperDeleteNameCondition and(String name);
@@ -34,7 +33,7 @@ public interface DocumentMapperDeleteWhere extends DocumentMapperDeleteQueryBuil
      * Starts a new condition in the select using {@link org.jnosql.diana.api.document.DocumentCondition#or(org.jnosql.diana.api.document.DocumentCondition)}
      *
      * @param name a condition to be added
-     * @return the same {@link DocumentDeleteNameCondition} with the condition appended
+     * @return the same {@link DocumentMapperDeleteNameCondition} with the condition appended
      * @throws NullPointerException when condition is null
      */
     DocumentMapperDeleteNameCondition or(String name);
