@@ -1,7 +1,11 @@
 package org.jnosql.artemis.document.query;
 
 
+import org.jnosql.artemis.document.DocumentTemplate;
+import org.jnosql.artemis.document.DocumentTemplateAsync;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
+
+import java.util.function.Consumer;
 
 /**
  * The last step to the build of {@link DocumentDeleteQuery}.
@@ -15,4 +19,29 @@ public interface DocumentMapperDeleteQueryBuild {
      * @return a new {@link DocumentDeleteQuery} instance
      */
     DocumentDeleteQuery build();
+
+    /**
+     * executes the {@link DocumentTemplate#delete(DocumentDeleteQuery)}
+     *
+     * @param template the document template
+     * @throws NullPointerException when manager is null
+     */
+    void execute(DocumentTemplate template);
+
+    /**
+     * executes the {@link DocumentTemplateAsync#delete(DocumentDeleteQuery)}
+     *
+     * @param template the document template
+     * @throws NullPointerException when manager is null
+     */
+    void execute(DocumentTemplateAsync template);
+
+    /**
+     * executes the {@link DocumentTemplateAsync#delete(DocumentDeleteQuery, Consumer)}
+     *
+     * @param template the document template
+     * @param callback the callback
+     * @throws NullPointerException when there is null parameter
+     */
+    void execute(DocumentTemplateAsync template, Consumer<Void> callback);
 }
