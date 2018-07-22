@@ -15,7 +15,6 @@
 package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.CDIExtension;
-import org.jnosql.artemis.column.ColumnQueryMapperBuilder;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.diana.api.column.query.ColumnDeleteFrom;
 import org.jnosql.diana.api.column.query.ColumnFrom;

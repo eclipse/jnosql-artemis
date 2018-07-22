@@ -15,7 +15,6 @@
 package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.CDIExtension;
-import org.jnosql.artemis.column.ColumnQueryMapperBuilder;
 import org.jnosql.artemis.model.Address;
 import org.jnosql.artemis.model.Money;
 import org.jnosql.artemis.model.Person;
