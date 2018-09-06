@@ -15,28 +15,20 @@
 package org.jnosql.artemis.document.query;
 
 
-import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.DynamicQueryException;
-import org.jnosql.artemis.Param;
 import org.jnosql.artemis.PreparedStatementAsync;
 import org.jnosql.artemis.Query;
 import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.document.DocumentTemplateAsync;
-import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentQuery;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Consumer;
 
-import static org.jnosql.artemis.document.query.DocumentRepositoryType.getDeleteQuery;
-import static org.jnosql.artemis.document.query.DocumentRepositoryType.getQuery;
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
 
 /**
@@ -44,20 +36,12 @@ import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
  *
  * @param <T> the class type
  */
-public abstract class AbstractDocumentRepositoryAsyncProxy<T> implements InvocationHandler {
+public abstract class AbstractDocumentRepositoryAsyncProxy<T> extends BaseDocumentRepository implements InvocationHandler {
 
 
     protected abstract RepositoryAsync getRepository();
 
-    protected abstract DocumentQueryParser getQueryParser();
-
     protected abstract DocumentTemplateAsync getTemplate();
-
-    protected abstract DocumentQueryDeleteParser getDeleteParser();
-
-    protected abstract ClassRepresentation getClassRepresentation();
-
-    protected abstract Converters getConverters();
 
     @Override
     public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
@@ -71,20 +55,18 @@ public abstract class AbstractDocumentRepositoryAsyncProxy<T> implements Invocat
             case DEFAULT:
                 return method.invoke(getRepository(), args);
             case FIND_BY:
-                DocumentQuery query = getQueryParser().parse(methodName, args, getClassRepresentation(),
-                        getConverters());
+                DocumentQuery query = getQuery(method, args);
                 return executeQuery(getCallBack(args), query);
             case FIND_ALL:
                 return executeQuery(getCallBack(args), select().from(getClassRepresentation().getName()).build());
             case DELETE_BY:
-                DocumentDeleteQuery deleteQuery = getDeleteParser().parse(methodName, args, getClassRepresentation(),
-                        getConverters());
+                DocumentDeleteQuery deleteQuery = getDeleteQuery(method, args);
                 return executeDelete(args, deleteQuery);
             case QUERY:
-                DocumentQuery documentQuery = getQuery(args).get();
+                DocumentQuery documentQuery = DocumentRepositoryType.getQuery(args).get();
                 return executeQuery(getCallBack(args), documentQuery);
             case QUERY_DELETE:
-                return executeDelete(args, getDeleteQuery(args).get());
+                return executeDelete(args, DocumentRepositoryType.getDeleteQuery(args).get());
             case OBJECT_METHOD:
                 return method.invoke(this, args);
             case JNOSQL_QUERY:
@@ -145,20 +127,6 @@ public abstract class AbstractDocumentRepositoryAsyncProxy<T> implements Invocat
             };
         }
         return consumer;
-    }
-
-    private Map<String, Object> getParams(Method method, Object[] args) {
-        Map<String, Object> params = new HashMap<>();
-
-        Parameter[] parameters = method.getParameters();
-        for (int index = 0; index < parameters.length; index++) {
-            Parameter parameter = parameters[index];
-            Param param = parameter.getAnnotation(Param.class);
-            if (Objects.nonNull(param)) {
-                params.put(param.value(), args[index]);
-            }
-        }
-        return params;
     }
 
     private Object getCallback(Object[] args) {
