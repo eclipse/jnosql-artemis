@@ -15,11 +15,13 @@
 package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.Converters;
+import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.column.util.ConverterUtil;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.FieldRepresentation;
 import org.jnosql.query.Params;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,9 +37,12 @@ class ParamsBinder {
         this.converters = converters;
     }
 
-    public void bind(Params params, Object[] args) {
+    public void bind(Params params, Object[] args, Method method) {
 
         List<String> names = params.getNames();
+        if (names.size() < args.length) {
+            throw new DynamicQueryException("The number of parameters does not match to the method: " + method);
+        }
         for (int index = 0; index < names.size(); index++) {
             String name = names.get(index);
             String fieldName = name.substring(0, name.lastIndexOf("_"));

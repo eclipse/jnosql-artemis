@@ -36,6 +36,7 @@ import javax.inject.Inject;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -54,7 +55,8 @@ class ParamsBinderTest {
     @Test
     public void shouldConvert() {
 
-        Method method = PersonRepository.class.getMethods()[0];
+        Method method = Stream.of(PersonRepository.class.getMethods())
+                .filter(m -> m.getName().equals("findByAge")).findFirst().get();
         ClassRepresentation classRepresentation = representations.get(Person.class);
         RepositoryColumnObserverParser parser = new RepositoryColumnObserverParser(classRepresentation);
         paramsBinder = new ParamsBinder(classRepresentation, converters);
@@ -64,7 +66,8 @@ class ParamsBinderTest {
         SelectQueryConverter converter = SelectQueryConverter.get();
         ColumnQueryParams columnQueryParams = converter.apply(selectQuery, parser);
         Params params = columnQueryParams.getParams();
-        paramsBinder.bind(params, new Object[]{10});
+        Object[] args = {10};
+        paramsBinder.bind(params, args, method);
         ColumnQuery query = columnQueryParams.getQuery();
         ColumnCondition columnCondition = query.getCondition().get();
         Value value = columnCondition.getColumn().getValue();
@@ -75,7 +78,8 @@ class ParamsBinderTest {
     @Test
     public void shouldConvert2() {
 
-        Method method = PersonRepository.class.getMethods()[1];
+        Method method = Stream.of(PersonRepository.class.getMethods())
+                .filter(m -> m.getName().equals("findByAgeAndName")).findFirst().get();
         ClassRepresentation classRepresentation = representations.get(Person.class);
         RepositoryColumnObserverParser parser = new RepositoryColumnObserverParser(classRepresentation);
         paramsBinder = new ParamsBinder(classRepresentation, converters);
@@ -85,7 +89,7 @@ class ParamsBinderTest {
         SelectQueryConverter converter = SelectQueryConverter.get();
         ColumnQueryParams queryParams = converter.apply(selectQuery, parser);
         Params params = queryParams.getParams();
-        paramsBinder.bind(params, new Object[]{10L, "Ada"});
+        paramsBinder.bind(params, new Object[]{10L, "Ada"}, method);
         ColumnQuery query = queryParams.getQuery();
         ColumnCondition columnCondition = query.getCondition().get();
         List<ColumnCondition> conditions = columnCondition.getColumn().get(new TypeReference<List<ColumnCondition>>() {
