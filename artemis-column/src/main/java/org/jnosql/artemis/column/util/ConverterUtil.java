@@ -22,6 +22,9 @@ import org.jnosql.diana.api.Value;
 import java.lang.reflect.Field;
 import java.util.Optional;
 
+/**
+ * A Converter class utils
+ */
 public final class ConverterUtil {
 
     private ConverterUtil() {

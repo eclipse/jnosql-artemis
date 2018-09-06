@@ -42,7 +42,7 @@ abstract class BaseColumnRepository {
 
     protected abstract ClassRepresentation getClassRepresentation();
 
-    private ColumnObserverParser columnObserverParser;
+    private ColumnObserverParser parser;
 
     private ParamsBinder paramsBinder;
 
@@ -73,10 +73,10 @@ abstract class BaseColumnRepository {
 
 
     protected ColumnObserverParser getParser() {
-        if (columnObserverParser == null) {
-            this.columnObserverParser = new RepositoryColumnObserverParser(getClassRepresentation());
+        if (parser == null) {
+            this.parser = new RepositoryColumnObserverParser(getClassRepresentation());
         }
-        return columnObserverParser;
+        return parser;
     }
 
     protected ParamsBinder getParamsBinder() {
