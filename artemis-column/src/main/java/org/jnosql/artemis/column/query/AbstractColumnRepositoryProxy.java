@@ -26,7 +26,7 @@ import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnObserverParser;
 import org.jnosql.diana.api.column.ColumnQuery;
-import org.jnosql.diana.api.column.query.ColumnSelectQuery;
+import org.jnosql.diana.api.column.query.ColumnQueryParams;
 import org.jnosql.diana.api.column.query.SelectQueryConverter;
 import org.jnosql.query.Params;
 import org.jnosql.query.SelectQuery;
@@ -40,7 +40,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import static org.jnosql.artemis.column.query.ColumnRepositoryType.getDeleteQuery;
-import static org.jnosql.artemis.column.query.ColumnRepositoryType.getQuery;
 import static org.jnosql.artemis.column.query.ReturnTypeConverterUtil.returnObject;
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
 
@@ -109,7 +108,7 @@ public abstract class AbstractColumnRepositoryProxy<T, ID> implements Invocation
         SelectMethodFactory selectMethodFactory = SelectMethodFactory.get();
         SelectQuery selectQuery = selectMethodFactory.apply(method, getClassRepresentation().getName());
         SelectQueryConverter converter = SelectQueryConverter.get();
-        ColumnSelectQuery columnSelectQuery = converter.apply(selectQuery, getParser());
+        ColumnQueryParams columnSelectQuery = converter.apply(selectQuery, getParser());
         ColumnQuery query = columnSelectQuery.getQuery();
         Params params = columnSelectQuery.getParams();
         ParamsBinder paramsBinder = getParamsBinder();
