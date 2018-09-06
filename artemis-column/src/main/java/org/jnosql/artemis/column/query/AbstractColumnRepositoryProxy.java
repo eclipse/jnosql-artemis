@@ -89,7 +89,7 @@ public abstract class AbstractColumnRepositoryProxy<T, ID> implements Invocation
                 getTemplate().delete(deleteQuery);
                 return Void.class;
             case QUERY:
-                ColumnQuery columnQuery = getQuery(args).get();
+                ColumnQuery columnQuery = ColumnRepositoryType.getQuery(args).get();
                 return returnObject(columnQuery, getTemplate(), typeClass, method);
             case QUERY_DELETE:
                 ColumnDeleteQuery columnDeleteQuery = getDeleteQuery(args).get();
