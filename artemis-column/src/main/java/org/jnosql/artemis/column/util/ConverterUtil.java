@@ -28,6 +28,15 @@ public final class ConverterUtil {
 
     }
 
+    /**
+     * Converts
+     *
+     * @param value          the value
+     * @param representation the class representation
+     * @param name           the java fieldName
+     * @param converters     the collection of converter
+     * @return the value converted
+     */
     public static Object getValue(Object value, ClassRepresentation representation, String name, Converters converters) {
         Optional<FieldRepresentation> fieldOptional = representation.getFieldRepresentation(name);
         if (fieldOptional.isPresent()) {
