@@ -20,8 +20,15 @@ import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.diana.api.TypeReference;
+import org.jnosql.diana.api.TypeSupplier;
+import org.jnosql.diana.api.Value;
+import org.jnosql.diana.api.column.Column;
+import org.jnosql.diana.api.column.ColumnCondition;
+import org.jnosql.diana.api.column.ColumnQuery;
 import org.jnosql.diana.api.column.query.ColumnSelectQuery;
 import org.jnosql.diana.api.column.query.SelectQueryConverter;
+import org.jnosql.query.Params;
 import org.jnosql.query.SelectQuery;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,6 +38,7 @@ import javax.inject.Inject;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -52,9 +60,9 @@ class ParamsBinderTest {
     }
 
     @Test
-    public void shouldConvert() throws NoSuchMethodException {
+    public void shouldConvert() {
 
-        Method method = PersonRepository.class.getMethod("findByAge");
+        Method method = PersonRepository.class.getMethods()[0];
         ClassRepresentation classRepresentation = representations.get(Person.class);
         RepositoryColumnObserverParser parser = new RepositoryColumnObserverParser(classRepresentation);
         paramsBinder = new ParamsBinder(classRepresentation, converters);
@@ -63,6 +71,38 @@ class ParamsBinderTest {
         SelectQuery selectQuery = selectMethodFactory.apply(method, classRepresentation.getName());
         SelectQueryConverter converter = SelectQueryConverter.get();
         ColumnSelectQuery columnSelectQuery = converter.apply(selectQuery, parser);
+        Params params = columnSelectQuery.getParams();
+        paramsBinder.bind(params, new Object[]{10});
+        ColumnQuery query = columnSelectQuery.getQuery();
+        ColumnCondition columnCondition = query.getCondition().get();
+        Value value = columnCondition.getColumn().getValue();
+        assertEquals(10, value.get());
+
+    }
+
+    @Test
+    public void shouldConvert2() {
+
+        Method method = PersonRepository.class.getMethods()[1];
+        ClassRepresentation classRepresentation = representations.get(Person.class);
+        RepositoryColumnObserverParser parser = new RepositoryColumnObserverParser(classRepresentation);
+        paramsBinder = new ParamsBinder(classRepresentation, converters);
+
+        SelectMethodFactory selectMethodFactory = SelectMethodFactory.get();
+        SelectQuery selectQuery = selectMethodFactory.apply(method, classRepresentation.getName());
+        SelectQueryConverter converter = SelectQueryConverter.get();
+        ColumnSelectQuery columnSelectQuery = converter.apply(selectQuery, parser);
+        Params params = columnSelectQuery.getParams();
+        paramsBinder.bind(params, new Object[]{10L, "Ada"});
+        ColumnQuery query = columnSelectQuery.getQuery();
+        ColumnCondition columnCondition = query.getCondition().get();
+        List<ColumnCondition> conditions = columnCondition.getColumn().get(new TypeReference<List<ColumnCondition>>() {
+        });
+        List<Object> values = conditions.stream().map(ColumnCondition::getColumn)
+                .map(Column::getValue)
+                .map(Value::get).collect(Collectors.toList());
+        assertEquals(10, values.get(0));
+        assertEquals("Ada", values.get(1));
 
     }
 
@@ -70,6 +110,8 @@ class ParamsBinderTest {
     interface PersonRepository {
 
         List<Person> findByAge(Integer age);
+
+        List<Person> findByAgeAndName(Long age, String name);
     }
 
 

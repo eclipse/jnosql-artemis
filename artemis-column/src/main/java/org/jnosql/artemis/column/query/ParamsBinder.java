@@ -39,7 +39,7 @@ class ParamsBinder {
 
         List<String> names = params.getNames();
         for (int index = 0; index < names.size(); index++) {
-            String name = names.get(0);
+            String name = names.get(index);
             String fieldName = name.substring(0, name.lastIndexOf("_"));
             Optional<FieldRepresentation> field = this.representation.getFields().stream()
                     .filter(f -> f.getName().equals(fieldName)).findFirst();
