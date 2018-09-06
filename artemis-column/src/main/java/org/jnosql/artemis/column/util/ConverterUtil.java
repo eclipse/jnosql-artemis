@@ -41,19 +41,30 @@ public final class ConverterUtil {
         Optional<FieldRepresentation> fieldOptional = representation.getFieldRepresentation(name);
         if (fieldOptional.isPresent()) {
             FieldRepresentation field = fieldOptional.get();
-            Field nativeField = field.getNativeField();
-            if (!nativeField.getType().equals(value.getClass())) {
-                return field.getConverter()
-                        .map(converters::get)
-                        .map(a -> a.convertToDatabaseColumn(value))
-                        .orElseGet(() -> Value.of(value).get(nativeField.getType()));
-            }
+            return getValue(value, converters, field);
+        }
+        return value;
+    }
 
+    /**
+     * Converts the value from the field with {@link FieldRepresentation}
+     * @param value the value to be converted
+     * @param converters the converter
+     * @param field the field
+     * @return tje value converted
+     */
+    public static Object getValue(Object value, Converters converters, FieldRepresentation field) {
+        Field nativeField = field.getNativeField();
+        if (!nativeField.getType().equals(value.getClass())) {
             return field.getConverter()
                     .map(converters::get)
                     .map(a -> a.convertToDatabaseColumn(value))
-                    .orElse(value);
+                    .orElseGet(() -> Value.of(value).get(nativeField.getType()));
         }
-        return value;
+
+        return field.getConverter()
+                .map(converters::get)
+                .map(a -> a.convertToDatabaseColumn(value))
+                .orElse(value);
     }
 }
