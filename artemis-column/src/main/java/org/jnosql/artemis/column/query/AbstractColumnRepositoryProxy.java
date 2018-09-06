@@ -15,6 +15,7 @@
 package org.jnosql.artemis.column.query;
 
 
+import org.jnosql.aphrodite.antlr.method.SelectMethodFactory;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.Param;
 import org.jnosql.artemis.PreparedStatement;
@@ -23,7 +24,13 @@ import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
+import org.jnosql.diana.api.column.ColumnObserverParser;
 import org.jnosql.diana.api.column.ColumnQuery;
+import org.jnosql.diana.api.column.query.ColumnSelectQuery;
+import org.jnosql.diana.api.column.query.SelectQueryConverter;
+import org.jnosql.diana.api.column.query.SelectQueryParser;
+import org.jnosql.query.Params;
+import org.jnosql.query.SelectQuery;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -46,6 +53,8 @@ import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
  */
 public abstract class AbstractColumnRepositoryProxy<T, ID> implements InvocationHandler {
 
+    private static final org.jnosql.diana.api.column.ColumnQueryParser PARSER = org.jnosql.diana.api.column.ColumnQueryParser.getParser();
+
     protected abstract Repository getRepository();
 
     protected abstract ClassRepresentation getClassRepresentation();
@@ -58,6 +67,8 @@ public abstract class AbstractColumnRepositoryProxy<T, ID> implements Invocation
 
     protected abstract Converters getConverters();
 
+    private ColumnObserverParser columnObserverParser;
+
     @Override
     public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
         String methodName = method.getName();
@@ -68,8 +79,14 @@ public abstract class AbstractColumnRepositoryProxy<T, ID> implements Invocation
             case DEFAULT:
                 return method.invoke(getRepository(), args);
             case FIND_BY:
-                ColumnQuery query = getQueryParser().parse(methodName, args, getClassRepresentation(),
-                        getConverters());
+                SelectMethodFactory selectMethodFactory = SelectMethodFactory.get();
+                SelectQuery selectQuery = selectMethodFactory.apply(method, getClassRepresentation().getName());
+                SelectQueryConverter converter = SelectQueryConverter.get();
+                ColumnSelectQuery columnSelectQuery = converter.apply(selectQuery, getParser());
+                ColumnQuery query = columnSelectQuery.getQuery();
+                Params params = columnSelectQuery.getParams();
+
+
                 return returnObject(query, getTemplate(), typeClass, method);
             case FIND_ALL:
                 return returnObject(select().from(getClassRepresentation().getName()).build(),
@@ -94,6 +111,13 @@ public abstract class AbstractColumnRepositoryProxy<T, ID> implements Invocation
                 return Void.class;
 
         }
+    }
+
+    private ColumnObserverParser getParser() {
+        if(columnObserverParser == null) {
+            this.columnObserverParser = new RepositoryColumnObserverParser(getClassRepresentation());
+        }
+        return columnObserverParser;
     }
 
     private Object getJnosqlQuery(Method method, Object[] args, Class<?> typeClass) {
