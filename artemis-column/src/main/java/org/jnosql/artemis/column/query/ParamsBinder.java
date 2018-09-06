@@ -40,7 +40,7 @@ class ParamsBinder {
     public void bind(Params params, Object[] args, Method method) {
 
         List<String> names = params.getNames();
-        if (names.size() < args.length) {
+        if (names.size() > args.length) {
             throw new DynamicQueryException("The number of parameters in a query is bigger than the number of " +
                     "parameters in the method: " + method);
         }
