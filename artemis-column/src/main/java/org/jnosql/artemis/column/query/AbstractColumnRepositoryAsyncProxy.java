@@ -16,7 +16,6 @@ package org.jnosql.artemis.column.query;
 
 
 import org.jnosql.artemis.DynamicQueryException;
-import org.jnosql.artemis.Param;
 import org.jnosql.artemis.PreparedStatementAsync;
 import org.jnosql.artemis.Query;
 import org.jnosql.artemis.RepositoryAsync;
@@ -26,11 +25,8 @@ import org.jnosql.diana.api.column.ColumnQuery;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
@@ -45,8 +41,6 @@ public abstract class AbstractColumnRepositoryAsyncProxy<T> extends BaseColumnRe
     protected abstract RepositoryAsync getRepository();
 
     protected abstract ColumnTemplateAsync getTemplate();
-
-    protected abstract ColumnQueryDeleteParser getDeleteParser();
 
     @Override
     public Object invoke(Object instance, Method method, Object[] args) throws Throwable {

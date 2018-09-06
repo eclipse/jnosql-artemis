@@ -41,8 +41,6 @@ public abstract class AbstractColumnRepositoryProxy<T, ID> extends  BaseColumnRe
 
     protected abstract Repository getRepository();
 
-    protected abstract ColumnQueryDeleteParser getDeleteParser();
-
     protected abstract ColumnTemplate getTemplate();
 
     protected abstract Converters getConverters();
