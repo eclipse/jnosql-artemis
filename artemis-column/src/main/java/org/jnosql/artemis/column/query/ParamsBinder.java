@@ -41,7 +41,8 @@ class ParamsBinder {
 
         List<String> names = params.getNames();
         if (names.size() < args.length) {
-            throw new DynamicQueryException("The number of parameters does not match to the method: " + method);
+            throw new DynamicQueryException("The number of parameters in a query is bigger than the number of " +
+                    "parameters in the method: " + method);
         }
         for (int index = 0; index < names.size(); index++) {
             String name = names.get(index);
