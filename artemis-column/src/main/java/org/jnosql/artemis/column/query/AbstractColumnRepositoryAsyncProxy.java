@@ -15,6 +15,7 @@
 package org.jnosql.artemis.column.query;
 
 
+import org.jnosql.aphrodite.antlr.method.SelectMethodFactory;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.Param;
@@ -24,7 +25,12 @@ import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
+import org.jnosql.diana.api.column.ColumnObserverParser;
 import org.jnosql.diana.api.column.ColumnQuery;
+import org.jnosql.diana.api.column.query.ColumnSelectQuery;
+import org.jnosql.diana.api.column.query.SelectQueryConverter;
+import org.jnosql.query.Params;
+import org.jnosql.query.SelectQuery;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -48,13 +54,16 @@ public abstract class AbstractColumnRepositoryAsyncProxy<T> implements Invocatio
 
     protected abstract ClassRepresentation getClassRepresentation();
 
-    protected abstract ColumnQueryParser getQueryParser();
 
     protected abstract ColumnQueryDeleteParser getDeleteParser();
 
     protected abstract ColumnTemplateAsync getTemplate();
 
     protected abstract Converters getConverters();
+
+    private ColumnObserverParser columnObserverParser;
+
+    private ParamsBinder paramsBinder;
 
     @Override
     public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
@@ -67,7 +76,7 @@ public abstract class AbstractColumnRepositoryAsyncProxy<T> implements Invocatio
             case DEFAULT:
                 return method.invoke(getRepository(), args);
             case FIND_BY:
-                ColumnQuery query = getQueryParser().parse(methodName, args, getClassRepresentation(), getConverters());
+                ColumnQuery query = getQuery(method, args);
                 return executeQuery(getCallback(args), query);
             case FIND_ALL:
                 return executeQuery(getCallback(args), select().from(getClassRepresentation().getName()).build());
@@ -101,6 +110,32 @@ public abstract class AbstractColumnRepositoryAsyncProxy<T> implements Invocatio
         }
 
         return Void.class;
+    }
+
+    private ColumnQuery getQuery(Method method, Object[] args) {
+        SelectMethodFactory selectMethodFactory = SelectMethodFactory.get();
+        SelectQuery selectQuery = selectMethodFactory.apply(method, getClassRepresentation().getName());
+        SelectQueryConverter converter = SelectQueryConverter.get();
+        ColumnSelectQuery columnSelectQuery = converter.apply(selectQuery, getParser());
+        ColumnQuery query = columnSelectQuery.getQuery();
+        Params params = columnSelectQuery.getParams();
+        ParamsBinder paramsBinder = getParamsBinder();
+        paramsBinder.bind(params, args);
+        return query;
+    }
+
+    private ColumnObserverParser getParser() {
+        if (columnObserverParser == null) {
+            this.columnObserverParser = new RepositoryColumnObserverParser(getClassRepresentation());
+        }
+        return columnObserverParser;
+    }
+
+    private ParamsBinder getParamsBinder() {
+        if (Objects.isNull(paramsBinder)) {
+            this.paramsBinder = new ParamsBinder(getClassRepresentation(), getConverters());
+        }
+        return paramsBinder;
     }
 
     private Consumer<List<T>> getConsumer(Object[] args) {
