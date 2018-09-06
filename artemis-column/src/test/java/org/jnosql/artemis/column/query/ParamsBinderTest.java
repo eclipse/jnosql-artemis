@@ -21,7 +21,6 @@ import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.diana.api.TypeReference;
-import org.jnosql.diana.api.TypeSupplier;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnCondition;
@@ -35,12 +34,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
-
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(CDIExtension.class)
 class ParamsBinderTest {
