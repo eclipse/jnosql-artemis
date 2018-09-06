@@ -15,24 +15,18 @@
 package org.jnosql.artemis.column.query;
 
 
-import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.DynamicQueryException;
-import org.jnosql.artemis.Param;
 import org.jnosql.artemis.PreparedStatementAsync;
 import org.jnosql.artemis.Query;
 import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.column.ColumnTemplateAsync;
-import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnQuery;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
@@ -42,24 +36,15 @@ import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
  *
  * @param <T> the type
  */
-public abstract class AbstractColumnRepositoryAsyncProxy<T> implements InvocationHandler {
+public abstract class AbstractColumnRepositoryAsyncProxy<T> extends BaseColumnRepository implements InvocationHandler {
 
     protected abstract RepositoryAsync getRepository();
 
-    protected abstract ClassRepresentation getClassRepresentation();
-
-    protected abstract ColumnQueryParser getQueryParser();
-
-    protected abstract ColumnQueryDeleteParser getDeleteParser();
-
     protected abstract ColumnTemplateAsync getTemplate();
-
-    protected abstract Converters getConverters();
 
     @Override
     public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
 
-        String methodName = method.getName();
         Class<?> typeClass = getClassRepresentation().getClassInstance();
         ColumnRepositoryType type = ColumnRepositoryType.of(method, args);
 
@@ -67,12 +52,12 @@ public abstract class AbstractColumnRepositoryAsyncProxy<T> implements Invocatio
             case DEFAULT:
                 return method.invoke(getRepository(), args);
             case FIND_BY:
-                ColumnQuery query = getQueryParser().parse(methodName, args, getClassRepresentation(), getConverters());
+                ColumnQuery query = getQuery(method, args);
                 return executeQuery(getCallback(args), query);
             case FIND_ALL:
                 return executeQuery(getCallback(args), select().from(getClassRepresentation().getName()).build());
             case DELETE_BY:
-                ColumnDeleteQuery deleteQuery = getDeleteParser().parse(methodName, args, getClassRepresentation(), getConverters());
+                ColumnDeleteQuery deleteQuery = getDeleteQuery(method, args);
                 return executeDelete(getCallback(args), deleteQuery);
             case QUERY:
                 ColumnQuery columnQuery = ColumnRepositoryType.getQuery(args).get();
@@ -115,19 +100,6 @@ public abstract class AbstractColumnRepositoryAsyncProxy<T> implements Invocatio
         return consumer;
     }
 
-    private Map<String, Object> getParams(Method method, Object[] args) {
-        Map<String, Object> params = new HashMap<>();
-
-        Parameter[] parameters = method.getParameters();
-        for (int index = 0; index < parameters.length; index++) {
-            Parameter parameter = parameters[index];
-            Param param = parameter.getAnnotation(Param.class);
-            if (Objects.nonNull(param)) {
-                params.put(param.value(), args[index]);
-            }
-        }
-        return params;
-    }
 
     private Object executeDelete(Object arg, ColumnDeleteQuery deleteQuery) {
         if (Consumer.class.isInstance(arg)) {

@@ -42,10 +42,6 @@ class ColumnRepositoryProxy<T, ID> extends AbstractColumnRepositoryProxy {
 
     private final ClassRepresentation classRepresentation;
 
-    private final ColumnQueryParser queryParser;
-
-    private final ColumnQueryDeleteParser deleteParser;
-
     private final Converters converters;
 
 
@@ -58,8 +54,6 @@ class ColumnRepositoryProxy<T, ID> extends AbstractColumnRepositoryProxy {
         this.repository = new ColumnRepository(template, classRepresentation);
         this.reflections = reflections;
         this.converters = converters;
-        this.queryParser = new ColumnQueryParser();
-        this.deleteParser = new ColumnQueryDeleteParser();
     }
 
     @Override
@@ -70,16 +64,6 @@ class ColumnRepositoryProxy<T, ID> extends AbstractColumnRepositoryProxy {
     @Override
     protected ClassRepresentation getClassRepresentation() {
         return classRepresentation;
-    }
-
-    @Override
-    protected ColumnQueryParser getQueryParser() {
-        return queryParser;
-    }
-
-    @Override
-    protected ColumnQueryDeleteParser getDeleteParser() {
-        return deleteParser;
     }
 
     @Override

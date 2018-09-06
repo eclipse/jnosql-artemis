@@ -15,26 +15,18 @@
 package org.jnosql.artemis.document.query;
 
 
-import org.jnosql.artemis.Converters;
-import org.jnosql.artemis.Param;
 import org.jnosql.artemis.PreparedStatement;
 import org.jnosql.artemis.Query;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.document.DocumentTemplate;
-import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentQuery;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
-import static org.jnosql.artemis.document.query.DocumentRepositoryType.getDeleteQuery;
-import static org.jnosql.artemis.document.query.DocumentRepositoryType.getQuery;
 import static org.jnosql.artemis.document.query.ReturnTypeConverterUtil.returnObject;
 import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
 
@@ -43,26 +35,17 @@ import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
  *
  * @param <T> the class type
  */
-public abstract class AbstractDocumentRepositoryProxy<T> implements InvocationHandler {
+public abstract class AbstractDocumentRepositoryProxy<T> extends BaseDocumentRepository implements InvocationHandler {
 
 
     protected abstract Repository getRepository();
 
-    protected abstract DocumentQueryParser getQueryParser();
-
     protected abstract DocumentTemplate getTemplate();
-
-    protected abstract DocumentQueryDeleteParser getDeleteParser();
-
-    protected abstract ClassRepresentation getClassRepresentation();
-
-    protected abstract Converters getConverters();
 
 
     @Override
     public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
 
-        String methodName = method.getName();
         DocumentRepositoryType type = DocumentRepositoryType.of(method, args);
         Class<?> typeClass = getClassRepresentation().getClassInstance();
 
@@ -70,19 +53,20 @@ public abstract class AbstractDocumentRepositoryProxy<T> implements InvocationHa
             case DEFAULT:
                 return method.invoke(getRepository(), args);
             case FIND_BY:
-                DocumentQuery query = getQueryParser().parse(methodName, args, getClassRepresentation(), getConverters());
+                DocumentQuery query = getQuery(method, args);
                 return returnObject(query, getTemplate(), typeClass, method);
             case FIND_ALL:
                 return returnObject(select().from(getClassRepresentation().getName()).build(), getTemplate(),
                         typeClass, method);
             case DELETE_BY:
-                getTemplate().delete(getDeleteParser().parse(methodName, args, getClassRepresentation(), getConverters()));
+                DocumentDeleteQuery documentDeleteQuery = getDeleteQuery(method, args);
+                getTemplate().delete(documentDeleteQuery);
                 return null;
             case QUERY:
-                DocumentQuery documentQuery = getQuery(args).get();
+                DocumentQuery documentQuery = DocumentRepositoryType.getQuery(args).get();
                 return returnObject(documentQuery, getTemplate(), typeClass, method);
             case QUERY_DELETE:
-                DocumentDeleteQuery deleteQuery = getDeleteQuery(args).get();
+                DocumentDeleteQuery deleteQuery = DocumentRepositoryType.getDeleteQuery(args).get();
                 getTemplate().delete(deleteQuery);
                 return Void.class;
             case OBJECT_METHOD:
@@ -108,17 +92,4 @@ public abstract class AbstractDocumentRepositoryProxy<T> implements InvocationHa
         return ReturnTypeConverterUtil.returnObject(entities, typeClass, method);
     }
 
-    private Map<String, Object> getParams(Method method, Object[] args) {
-        Map<String, Object> params = new HashMap<>();
-
-        Parameter[] parameters = method.getParameters();
-        for (int index = 0; index < parameters.length; index++) {
-            Parameter parameter = parameters[index];
-            Param param = parameter.getAnnotation(Param.class);
-            if (Objects.nonNull(param)) {
-                params.put(param.value(), args[index]);
-            }
-        }
-        return params;
-    }
 }

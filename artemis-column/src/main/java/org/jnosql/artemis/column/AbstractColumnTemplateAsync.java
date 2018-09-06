@@ -210,19 +210,13 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
         return new ColumnPreparedStatementAsync(PARSER.prepare(query, getManager(), getObserver()), getConverter());
     }
 
-    /**
-     * Returns the number of elements form column family
-     *
-     * @param columnFamily the column family
-     * @param callback     the callback with the response
-     * @throws NullPointerException          when there is null parameter
-     * @throws UnsupportedOperationException when the database dot not have support
-     */
+    @Override
     public void count(String columnFamily, Consumer<Long> callback){
         getManager().count(columnFamily, callback);
     }
 
 
+    @Override
     public <T> void count(Class<T> entityClass, Consumer<Long> callback){
         requireNonNull(entityClass, "entity class is required");
         requireNonNull(callback, "callback is required");

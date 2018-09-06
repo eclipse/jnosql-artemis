@@ -37,10 +37,6 @@ class ColumnRepositoryAsyncProxy<T> extends AbstractColumnRepositoryAsyncProxy<T
 
     private final ClassRepresentation classRepresentation;
 
-    private final ColumnQueryParser queryParser;
-
-    private final ColumnQueryDeleteParser deleteParser;
-
     private final Converters converters;
 
 
@@ -53,8 +49,6 @@ class ColumnRepositoryAsyncProxy<T> extends AbstractColumnRepositoryAsyncProxy<T
         this.classRepresentation = classRepresentations.get(typeClass);
         this.repository = new ColumnRepositoryAsync(template, reflections, classRepresentation);
         this.converters = converters;
-        this.queryParser = new ColumnQueryParser();
-        this.deleteParser = new ColumnQueryDeleteParser();
     }
 
     @Override
@@ -65,16 +59,6 @@ class ColumnRepositoryAsyncProxy<T> extends AbstractColumnRepositoryAsyncProxy<T
     @Override
     protected ClassRepresentation getClassRepresentation() {
         return classRepresentation;
-    }
-
-    @Override
-    protected ColumnQueryParser getQueryParser() {
-        return queryParser;
-    }
-
-    @Override
-    protected ColumnQueryDeleteParser getDeleteParser() {
-        return deleteParser;
     }
 
     @Override

@@ -17,7 +17,6 @@ package org.jnosql.artemis.document.query;
 import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.DynamicQueryException;
-import org.jnosql.artemis.Pagination;
 import org.jnosql.artemis.Param;
 import org.jnosql.artemis.PreparedStatementAsync;
 import org.jnosql.artemis.Query;
@@ -194,49 +193,6 @@ public class DocumentRepositoryAsyncProxyTest {
         assertEquals(callback, consumerCaptor.getValue());
     }
 
-    @Test
-    public void shoudFindByNameSort() {
-        Consumer<List<Person>> callback = v -> {
-        };
-
-        Sort sort = Sort.of("age", Sort.SortType.ASC);
-
-        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
-        ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
-
-        personRepository.findByName("name", sort, callback);
-        verify(template).select(captor.capture(), consumerCaptor.capture());
-        DocumentQuery query = captor.getValue();
-        DocumentCondition condition = query.getCondition().get();
-        assertEquals("Person", query.getDocumentCollection());
-        assertEquals(Condition.EQUALS, condition.getCondition());
-        assertEquals(Document.of("name", "name"), condition.getDocument());
-        assertEquals(callback, consumerCaptor.getValue());
-        assertEquals(sort, query.getSorts().get(0));
-    }
-
-    @Test
-    public void shoudFindByNameSortPagination() {
-        Consumer<List<Person>> callback = v -> {
-        };
-
-        Sort sort = Sort.of("age", Sort.SortType.ASC);
-        Pagination pagination = Pagination.of(10, 20);
-        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
-        ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
-
-        personRepository.findByName("name", sort, pagination, callback);
-        verify(template).select(captor.capture(), consumerCaptor.capture());
-        DocumentQuery query = captor.getValue();
-        DocumentCondition condition = query.getCondition().get();
-        assertEquals("Person", query.getDocumentCollection());
-        assertEquals(Condition.EQUALS, condition.getCondition());
-        assertEquals(Document.of("name", "name"), condition.getDocument());
-        assertEquals(callback, consumerCaptor.getValue());
-        assertEquals(sort, query.getSorts().get(0));
-        assertEquals(pagination.getSkip(), query.getSkip());
-        assertEquals(pagination.getLimit(), query.getLimit());
-    }
 
     @Test
     public void shouldFindByNameOrderByAgeDesc() {
@@ -362,10 +318,6 @@ public class DocumentRepositoryAsyncProxyTest {
         void findByName(String name, Consumer<List<Person>> callBack);
 
         void findByNameOrderByAgeDesc(String name, Consumer<List<Person>> callBack);
-
-        void findByName(String name, Sort sort, Consumer<List<Person>> callBack);
-
-        void findByName(String name, Sort sort, Pagination pagination, Consumer<List<Person>> callBack);
 
         void query(DocumentQuery query, Consumer<List<Person>> callBack);
 

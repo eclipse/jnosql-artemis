@@ -22,29 +22,52 @@ import org.jnosql.diana.api.Value;
 import java.lang.reflect.Field;
 import java.util.Optional;
 
+/**
+ * A Converter class utils
+ */
 public final class ConverterUtil {
 
     private ConverterUtil() {
 
     }
 
+    /**
+     * Converts
+     *
+     * @param value          the value
+     * @param representation the class representation
+     * @param name           the java fieldName
+     * @param converters     the collection of converter
+     * @return the value converted
+     */
     public static Object getValue(Object value, ClassRepresentation representation, String name, Converters converters) {
         Optional<FieldRepresentation> fieldOptional = representation.getFieldRepresentation(name);
         if (fieldOptional.isPresent()) {
             FieldRepresentation field = fieldOptional.get();
-            Field nativeField = field.getNativeField();
-            if (!nativeField.getType().equals(value.getClass())) {
-                return field.getConverter()
-                        .map(converters::get)
-                        .map(a -> a.convertToDatabaseColumn(value))
-                        .orElseGet(() -> Value.of(value).get(nativeField.getType()));
-            }
+            return getValue(value, converters, field);
+        }
+        return value;
+    }
 
+    /**
+     * Converts the value from the field with {@link FieldRepresentation}
+     * @param value the value to be converted
+     * @param converters the converter
+     * @param field the field
+     * @return tje value converted
+     */
+    public static Object getValue(Object value, Converters converters, FieldRepresentation field) {
+        Field nativeField = field.getNativeField();
+        if (!nativeField.getType().equals(value.getClass())) {
             return field.getConverter()
                     .map(converters::get)
                     .map(a -> a.convertToDatabaseColumn(value))
-                    .orElse(value);
+                    .orElseGet(() -> Value.of(value).get(nativeField.getType()));
         }
-        return value;
+
+        return field.getConverter()
+                .map(converters::get)
+                .map(a -> a.convertToDatabaseColumn(value))
+                .orElse(value);
     }
 }

@@ -17,7 +17,6 @@ package org.jnosql.artemis.column.query;
 import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.DynamicQueryException;
-import org.jnosql.artemis.Pagination;
 import org.jnosql.artemis.Param;
 import org.jnosql.artemis.PreparedStatementAsync;
 import org.jnosql.artemis.Query;
@@ -193,50 +192,6 @@ public class ColumnRepositoryAsyncProxyTest {
     }
 
     @Test
-    public void shoudFindByNameSort() {
-        Consumer<List<Person>> callback = v -> {
-        };
-
-        Sort sort = Sort.of("age", Sort.SortType.ASC);
-
-        ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
-        ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
-
-        personRepository.findByName("name", sort, callback);
-        verify(template).select(captor.capture(), consumerCaptor.capture());
-        ColumnQuery query = captor.getValue();
-        ColumnCondition condition = query.getCondition().get();
-        assertEquals("Person", query.getColumnFamily());
-        assertEquals(Condition.EQUALS, condition.getCondition());
-        assertEquals(Column.of("name", "name"), condition.getColumn());
-        assertEquals(callback, consumerCaptor.getValue());
-        assertEquals(sort, query.getSorts().get(0));
-    }
-
-    @Test
-    public void shoudFindByNameSortPagination() {
-        Consumer<List<Person>> callback = v -> {
-        };
-
-        Sort sort = Sort.of("age", Sort.SortType.ASC);
-        Pagination pagination = Pagination.of(10, 20);
-        ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
-        ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
-
-        personRepository.findByName("name", sort, pagination, callback);
-        verify(template).select(captor.capture(), consumerCaptor.capture());
-        ColumnQuery query = captor.getValue();
-        ColumnCondition condition = query.getCondition().get();
-        assertEquals("Person", query.getColumnFamily());
-        assertEquals(Condition.EQUALS, condition.getCondition());
-        assertEquals(Column.of("name", "name"), condition.getColumn());
-        assertEquals(callback, consumerCaptor.getValue());
-        assertEquals(sort, query.getSorts().get(0));
-        assertEquals(pagination.getSkip(), query.getSkip());
-        assertEquals(pagination.getLimit(), query.getLimit());
-    }
-
-    @Test
     public void shouldFindByNameOrderByAgeDesc() {
         Consumer<List<Person>> callback = v -> {
         };
@@ -356,10 +311,6 @@ public class ColumnRepositoryAsyncProxyTest {
         void findByName(String name, Consumer<List<Person>> callBack);
 
         void findByNameOrderByAgeDesc(String name, Consumer<List<Person>> callBack);
-
-        void findByName(String name, Sort sort, Consumer<List<Person>> callBack);
-
-        void findByName(String name, Sort sort, Pagination pagination, Consumer<List<Person>> callBack);
 
         void query(ColumnQuery query, Consumer<List<Person>> callBack);
 
