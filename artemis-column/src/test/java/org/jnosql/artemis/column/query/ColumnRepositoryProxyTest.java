@@ -27,6 +27,7 @@ import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.Condition;
 import org.jnosql.diana.api.TypeReference;
+import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnCondition;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
@@ -51,7 +52,6 @@ import java.util.stream.Stream;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.jnosql.diana.api.Condition.AND;
 import static org.jnosql.diana.api.Condition.BETWEEN;
 import static org.jnosql.diana.api.Condition.EQUALS;
@@ -59,8 +59,6 @@ import static org.jnosql.diana.api.Condition.GREATER_THAN;
 import static org.jnosql.diana.api.Condition.LESSER_EQUALS_THAN;
 import static org.jnosql.diana.api.Condition.LESSER_THAN;
 import static org.jnosql.diana.api.Condition.LIKE;
-import static org.jnosql.diana.api.column.ColumnCondition.eq;
-import static org.jnosql.diana.api.column.ColumnCondition.gte;
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -377,9 +375,16 @@ public class ColumnRepositoryProxyTest {
         assertEquals(AND, condition.getCondition());
         List<ColumnCondition> conditions = condition.getColumn().get(new TypeReference<List<ColumnCondition>>() {
         });
-        assertThat(conditions, containsInAnyOrder(eq(Column.of("name", "Ada")),
-                gte(Column.of("age", 33))));
+        ColumnCondition columnCondition = conditions.get(0);
+        ColumnCondition columnCondition2 = conditions.get(1);
 
+        assertEquals(Condition.EQUALS, columnCondition.getCondition());
+        assertEquals("Ada", columnCondition.getColumn().get());
+        assertTrue(columnCondition.getColumn().getName().contains("name"));
+
+        assertEquals(Condition.GREATER_EQUALS_THAN, columnCondition2.getCondition());
+        assertEquals(33, columnCondition2.getColumn().get());
+        assertTrue(columnCondition2.getColumn().getName().contains("age"));
     }
 
     @Test
@@ -454,8 +459,10 @@ public class ColumnRepositoryProxyTest {
         ColumnCondition condition = query.getCondition().get();
         assertEquals("Person", query.getColumnFamily());
         assertEquals(BETWEEN, condition.getCondition());
-        assertEquals(Column.of("age", Arrays.asList(10, 15)), condition.getColumn());
-
+        List<Value> values = condition.getColumn().get(new TypeReference<List<Value>>() {
+        });
+        assertEquals(Arrays.asList(10, 15), values.stream().map(Value::get).collect(Collectors.toList()));
+        assertTrue(condition.getColumn().getName().contains("age"));
     }
 
 
