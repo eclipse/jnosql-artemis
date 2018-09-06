@@ -38,10 +38,6 @@ class DocumentRepositoryProxy<T> extends AbstractDocumentRepositoryProxy<T> {
 
     private final ClassRepresentation classRepresentation;
 
-    private final DocumentQueryParser queryParser;
-
-    private final DocumentQueryDeleteParser deleteQueryParser;
-
     private final Converters converters;
 
 
@@ -52,8 +48,6 @@ class DocumentRepositoryProxy<T> extends AbstractDocumentRepositoryProxy<T> {
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
         this.repository = new DocumentRepository(template, classRepresentation, reflections);
-        this.queryParser = new DocumentQueryParser();
-        this.deleteQueryParser = new DocumentQueryDeleteParser();
         this.converters = converters;
     }
 
@@ -64,18 +58,8 @@ class DocumentRepositoryProxy<T> extends AbstractDocumentRepositoryProxy<T> {
     }
 
     @Override
-    protected DocumentQueryParser getQueryParser() {
-        return queryParser;
-    }
-
-    @Override
     protected DocumentTemplate getTemplate() {
         return template;
-    }
-
-    @Override
-    protected DocumentQueryDeleteParser getDeleteParser() {
-        return deleteQueryParser;
     }
 
     @Override
