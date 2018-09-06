@@ -27,6 +27,7 @@ import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.Condition;
 import org.jnosql.diana.api.TypeReference;
+import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCondition;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
@@ -390,8 +391,16 @@ public class DocumentRepositoryProxyTest {
         assertEquals(AND, condition.getCondition());
         List<DocumentCondition> conditions = condition.getDocument().get(new TypeReference<List<DocumentCondition>>() {
         });
-        assertThat(conditions, containsInAnyOrder(eq(Document.of("name", "Ada")),
-                gte(Document.of("age", 33))));
+        DocumentCondition columnCondition = conditions.get(0);
+        DocumentCondition columnCondition2 = conditions.get(1);
+
+        assertEquals(Condition.EQUALS, columnCondition.getCondition());
+        assertEquals("Ada", columnCondition.getDocument().get());
+        assertTrue(columnCondition.getDocument().getName().contains("name"));
+
+        assertEquals(Condition.GREATER_EQUALS_THAN, columnCondition2.getCondition());
+        assertEquals(33, columnCondition2.getDocument().get());
+        assertTrue(columnCondition2.getDocument().getName().contains("age"));
 
     }
 
@@ -468,7 +477,10 @@ public class DocumentRepositoryProxyTest {
         DocumentCondition condition = query.getCondition().get();
         assertEquals("Person", query.getDocumentCollection());
         assertEquals(BETWEEN, condition.getCondition());
-        assertEquals(Document.of("age", Arrays.asList(10, 15)), condition.getDocument());
+        List<Value> values = condition.getDocument().get(new TypeReference<List<Value>>() {
+        });
+        assertEquals(Arrays.asList(10, 15), values.stream().map(Value::get).collect(Collectors.toList()));
+        assertTrue(condition.getDocument().getName().contains("age"));
 
     }
 
