@@ -46,7 +46,6 @@ public abstract class AbstractDocumentRepositoryProxy<T> extends BaseDocumentRep
     @Override
     public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
 
-        String methodName = method.getName();
         DocumentRepositoryType type = DocumentRepositoryType.of(method, args);
         Class<?> typeClass = getClassRepresentation().getClassInstance();
 
