@@ -29,7 +29,6 @@ import org.jnosql.diana.api.column.query.ColumnQueryParams;
 import org.jnosql.diana.api.column.query.SelectQueryConverter;
 import org.jnosql.query.Params;
 import org.jnosql.query.SelectQuery;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -51,11 +50,6 @@ class ParamsBinderTest {
     private Converters converters;
 
     private ParamsBinder paramsBinder;
-
-    @BeforeEach
-    public void setUp() {
-
-    }
 
     @Test
     public void shouldConvert() {
