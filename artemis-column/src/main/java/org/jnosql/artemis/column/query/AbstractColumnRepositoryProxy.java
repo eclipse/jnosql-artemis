@@ -28,7 +28,6 @@ import org.jnosql.diana.api.column.ColumnObserverParser;
 import org.jnosql.diana.api.column.ColumnQuery;
 import org.jnosql.diana.api.column.query.ColumnSelectQuery;
 import org.jnosql.diana.api.column.query.SelectQueryConverter;
-import org.jnosql.diana.api.column.query.SelectQueryParser;
 import org.jnosql.query.Params;
 import org.jnosql.query.SelectQuery;
 
@@ -59,8 +58,6 @@ public abstract class AbstractColumnRepositoryProxy<T, ID> implements Invocation
 
     protected abstract ClassRepresentation getClassRepresentation();
 
-    protected abstract ColumnQueryParser getQueryParser();
-
     protected abstract ColumnQueryDeleteParser getDeleteParser();
 
     protected abstract ColumnTemplate getTemplate();
@@ -68,6 +65,8 @@ public abstract class AbstractColumnRepositoryProxy<T, ID> implements Invocation
     protected abstract Converters getConverters();
 
     private ColumnObserverParser columnObserverParser;
+
+    private ParamsBinder paramsBinder;
 
     @Override
     public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
@@ -79,14 +78,7 @@ public abstract class AbstractColumnRepositoryProxy<T, ID> implements Invocation
             case DEFAULT:
                 return method.invoke(getRepository(), args);
             case FIND_BY:
-                SelectMethodFactory selectMethodFactory = SelectMethodFactory.get();
-                SelectQuery selectQuery = selectMethodFactory.apply(method, getClassRepresentation().getName());
-                SelectQueryConverter converter = SelectQueryConverter.get();
-                ColumnSelectQuery columnSelectQuery = converter.apply(selectQuery, getParser());
-                ColumnQuery query = columnSelectQuery.getQuery();
-                Params params = columnSelectQuery.getParams();
-
-
+                ColumnQuery query = getQuery(method, args);
                 return returnObject(query, getTemplate(), typeClass, method);
             case FIND_ALL:
                 return returnObject(select().from(getClassRepresentation().getName()).build(),
@@ -113,11 +105,30 @@ public abstract class AbstractColumnRepositoryProxy<T, ID> implements Invocation
         }
     }
 
+    private ColumnQuery getQuery(Method method, Object[] args) {
+        SelectMethodFactory selectMethodFactory = SelectMethodFactory.get();
+        SelectQuery selectQuery = selectMethodFactory.apply(method, getClassRepresentation().getName());
+        SelectQueryConverter converter = SelectQueryConverter.get();
+        ColumnSelectQuery columnSelectQuery = converter.apply(selectQuery, getParser());
+        ColumnQuery query = columnSelectQuery.getQuery();
+        Params params = columnSelectQuery.getParams();
+        ParamsBinder paramsBinder = getParamsBinder();
+        paramsBinder.bind(params, args);
+        return query;
+    }
+
     private ColumnObserverParser getParser() {
-        if(columnObserverParser == null) {
+        if (columnObserverParser == null) {
             this.columnObserverParser = new RepositoryColumnObserverParser(getClassRepresentation());
         }
         return columnObserverParser;
+    }
+
+    private ParamsBinder getParamsBinder() {
+        if (Objects.isNull(paramsBinder)) {
+            this.paramsBinder = new ParamsBinder(getClassRepresentation(), getConverters());
+        }
+        return paramsBinder;
     }
 
     private Object getJnosqlQuery(Method method, Object[] args, Class<?> typeClass) {
