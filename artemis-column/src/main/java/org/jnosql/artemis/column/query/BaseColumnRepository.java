@@ -14,14 +14,19 @@
  */
 package org.jnosql.artemis.column.query;
 
+import org.jnosql.aphrodite.antlr.method.DeleteMethodFactory;
 import org.jnosql.aphrodite.antlr.method.SelectMethodFactory;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.Param;
 import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnObserverParser;
 import org.jnosql.diana.api.column.ColumnQuery;
+import org.jnosql.diana.api.column.query.ColumnDeleteQueryParams;
 import org.jnosql.diana.api.column.query.ColumnQueryParams;
+import org.jnosql.diana.api.column.query.DeleteQueryConverter;
 import org.jnosql.diana.api.column.query.SelectQueryConverter;
+import org.jnosql.query.DeleteQuery;
 import org.jnosql.query.Params;
 import org.jnosql.query.SelectQuery;
 
@@ -53,6 +58,19 @@ abstract class BaseColumnRepository {
         paramsBinder.bind(params, args);
         return query;
     }
+
+    protected ColumnDeleteQuery getDeleteQuery(Method method, Object[] args) {
+        DeleteMethodFactory deleteMethodFactory = DeleteMethodFactory.get();
+        DeleteQuery deleteQuery = deleteMethodFactory.apply(method, getClassRepresentation().getName());
+        DeleteQueryConverter converter = DeleteQueryConverter.get();
+        ColumnDeleteQueryParams queryParams = converter.apply(deleteQuery, getParser());
+        ColumnDeleteQuery query = queryParams.getQuery();
+        Params params = queryParams.getParams();
+        ParamsBinder paramsBinder = getParamsBinder();
+        paramsBinder.bind(params, args);
+        return query;
+    }
+
 
     protected ColumnObserverParser getParser() {
         if (columnObserverParser == null) {

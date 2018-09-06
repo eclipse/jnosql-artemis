@@ -64,7 +64,7 @@ public abstract class AbstractColumnRepositoryAsyncProxy<T> extends BaseColumnRe
             case FIND_ALL:
                 return executeQuery(getCallback(args), select().from(getClassRepresentation().getName()).build());
             case DELETE_BY:
-                ColumnDeleteQuery deleteQuery = getDeleteParser().parse(methodName, args, getClassRepresentation(), getConverters());
+                ColumnDeleteQuery deleteQuery = getDeleteQuery(method, args);
                 return executeDelete(getCallback(args), deleteQuery);
             case QUERY:
                 ColumnQuery columnQuery = ColumnRepositoryType.getQuery(args).get();

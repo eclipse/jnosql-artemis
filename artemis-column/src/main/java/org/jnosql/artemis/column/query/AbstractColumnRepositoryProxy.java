@@ -28,7 +28,6 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
-import static org.jnosql.artemis.column.query.ColumnRepositoryType.getDeleteQuery;
 import static org.jnosql.artemis.column.query.ReturnTypeConverterUtil.returnObject;
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
 
@@ -64,15 +63,14 @@ public abstract class AbstractColumnRepositoryProxy<T, ID> extends  BaseColumnRe
                 return returnObject(select().from(getClassRepresentation().getName()).build(),
                         getTemplate(), typeClass, method);
             case DELETE_BY:
-                ColumnDeleteQuery deleteQuery = getDeleteParser().parse(methodName, args, getClassRepresentation(),
-                        getConverters());
+                ColumnDeleteQuery deleteQuery = getDeleteQuery(method, args);
                 getTemplate().delete(deleteQuery);
                 return Void.class;
             case QUERY:
                 ColumnQuery columnQuery = ColumnRepositoryType.getQuery(args).get();
                 return returnObject(columnQuery, getTemplate(), typeClass, method);
             case QUERY_DELETE:
-                ColumnDeleteQuery columnDeleteQuery = getDeleteQuery(args).get();
+                ColumnDeleteQuery columnDeleteQuery = ColumnRepositoryType.getDeleteQuery(args).get();
                 getTemplate().delete(columnDeleteQuery);
                 return Void.class;
             case OBJECT_METHOD:
