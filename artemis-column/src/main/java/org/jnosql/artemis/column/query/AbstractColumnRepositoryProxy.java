@@ -15,21 +15,14 @@
 package org.jnosql.artemis.column.query;
 
 
-import org.jnosql.aphrodite.antlr.method.SelectMethodFactory;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.Param;
 import org.jnosql.artemis.PreparedStatement;
 import org.jnosql.artemis.Query;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.column.ColumnTemplate;
-import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
-import org.jnosql.diana.api.column.ColumnObserverParser;
 import org.jnosql.diana.api.column.ColumnQuery;
-import org.jnosql.diana.api.column.query.ColumnQueryParams;
-import org.jnosql.diana.api.column.query.SelectQueryConverter;
-import org.jnosql.query.Params;
-import org.jnosql.query.SelectQuery;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -49,23 +42,15 @@ import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
  * @param <T>  the entity type
  * @param <ID> the ID entity
  */
-public abstract class AbstractColumnRepositoryProxy<T, ID> implements InvocationHandler {
-
-    private static final org.jnosql.diana.api.column.ColumnQueryParser PARSER = org.jnosql.diana.api.column.ColumnQueryParser.getParser();
+public abstract class AbstractColumnRepositoryProxy<T, ID> extends  BaseColumnRepository implements InvocationHandler {
 
     protected abstract Repository getRepository();
-
-    protected abstract ClassRepresentation getClassRepresentation();
 
     protected abstract ColumnQueryDeleteParser getDeleteParser();
 
     protected abstract ColumnTemplate getTemplate();
 
     protected abstract Converters getConverters();
-
-    private ColumnObserverParser columnObserverParser;
-
-    private ParamsBinder paramsBinder;
 
     @Override
     public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
@@ -104,31 +89,6 @@ public abstract class AbstractColumnRepositoryProxy<T, ID> implements Invocation
         }
     }
 
-    private ColumnQuery getQuery(Method method, Object[] args) {
-        SelectMethodFactory selectMethodFactory = SelectMethodFactory.get();
-        SelectQuery selectQuery = selectMethodFactory.apply(method, getClassRepresentation().getName());
-        SelectQueryConverter converter = SelectQueryConverter.get();
-        ColumnQueryParams queryParams = converter.apply(selectQuery, getParser());
-        ColumnQuery query = queryParams.getQuery();
-        Params params = queryParams.getParams();
-        ParamsBinder paramsBinder = getParamsBinder();
-        paramsBinder.bind(params, args);
-        return query;
-    }
-
-    private ColumnObserverParser getParser() {
-        if (columnObserverParser == null) {
-            this.columnObserverParser = new RepositoryColumnObserverParser(getClassRepresentation());
-        }
-        return columnObserverParser;
-    }
-
-    private ParamsBinder getParamsBinder() {
-        if (Objects.isNull(paramsBinder)) {
-            this.paramsBinder = new ParamsBinder(getClassRepresentation(), getConverters());
-        }
-        return paramsBinder;
-    }
 
     private Object getJnosqlQuery(Method method, Object[] args, Class<?> typeClass) {
         String value = method.getAnnotation(Query.class).value();
