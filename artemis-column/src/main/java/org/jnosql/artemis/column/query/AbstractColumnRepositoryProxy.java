@@ -108,9 +108,9 @@ public abstract class AbstractColumnRepositoryProxy<T, ID> implements Invocation
         SelectMethodFactory selectMethodFactory = SelectMethodFactory.get();
         SelectQuery selectQuery = selectMethodFactory.apply(method, getClassRepresentation().getName());
         SelectQueryConverter converter = SelectQueryConverter.get();
-        ColumnQueryParams columnSelectQuery = converter.apply(selectQuery, getParser());
-        ColumnQuery query = columnSelectQuery.getQuery();
-        Params params = columnSelectQuery.getParams();
+        ColumnQueryParams queryParams = converter.apply(selectQuery, getParser());
+        ColumnQuery query = queryParams.getQuery();
+        Params params = queryParams.getParams();
         ParamsBinder paramsBinder = getParamsBinder();
         paramsBinder.bind(params, args);
         return query;
