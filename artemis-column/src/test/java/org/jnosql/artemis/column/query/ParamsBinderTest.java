@@ -25,7 +25,7 @@ import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnCondition;
 import org.jnosql.diana.api.column.ColumnQuery;
-import org.jnosql.diana.api.column.query.ColumnSelectQuery;
+import org.jnosql.diana.api.column.query.ColumnQueryParams;
 import org.jnosql.diana.api.column.query.SelectQueryConverter;
 import org.jnosql.query.Params;
 import org.jnosql.query.SelectQuery;
@@ -68,10 +68,10 @@ class ParamsBinderTest {
         SelectMethodFactory selectMethodFactory = SelectMethodFactory.get();
         SelectQuery selectQuery = selectMethodFactory.apply(method, classRepresentation.getName());
         SelectQueryConverter converter = SelectQueryConverter.get();
-        ColumnSelectQuery columnSelectQuery = converter.apply(selectQuery, parser);
-        Params params = columnSelectQuery.getParams();
+        ColumnQueryParams columnQueryParams = converter.apply(selectQuery, parser);
+        Params params = columnQueryParams.getParams();
         paramsBinder.bind(params, new Object[]{10});
-        ColumnQuery query = columnSelectQuery.getQuery();
+        ColumnQuery query = columnQueryParams.getQuery();
         ColumnCondition columnCondition = query.getCondition().get();
         Value value = columnCondition.getColumn().getValue();
         assertEquals(10, value.get());
@@ -89,10 +89,10 @@ class ParamsBinderTest {
         SelectMethodFactory selectMethodFactory = SelectMethodFactory.get();
         SelectQuery selectQuery = selectMethodFactory.apply(method, classRepresentation.getName());
         SelectQueryConverter converter = SelectQueryConverter.get();
-        ColumnSelectQuery columnSelectQuery = converter.apply(selectQuery, parser);
-        Params params = columnSelectQuery.getParams();
+        ColumnQueryParams queryParams = converter.apply(selectQuery, parser);
+        Params params = queryParams.getParams();
         paramsBinder.bind(params, new Object[]{10L, "Ada"});
-        ColumnQuery query = columnSelectQuery.getQuery();
+        ColumnQuery query = queryParams.getQuery();
         ColumnCondition columnCondition = query.getCondition().get();
         List<ColumnCondition> conditions = columnCondition.getColumn().get(new TypeReference<List<ColumnCondition>>() {
         });
