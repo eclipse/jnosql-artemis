@@ -107,19 +107,6 @@ public abstract class AbstractColumnRepositoryAsyncProxy<T> extends BaseColumnRe
         return consumer;
     }
 
-    private Map<String, Object> getParams(Method method, Object[] args) {
-        Map<String, Object> params = new HashMap<>();
-
-        Parameter[] parameters = method.getParameters();
-        for (int index = 0; index < parameters.length; index++) {
-            Parameter parameter = parameters[index];
-            Param param = parameter.getAnnotation(Param.class);
-            if (Objects.nonNull(param)) {
-                params.put(param.value(), args[index]);
-            }
-        }
-        return params;
-    }
 
     private Object executeDelete(Object arg, ColumnDeleteQuery deleteQuery) {
         if (Consumer.class.isInstance(arg)) {
