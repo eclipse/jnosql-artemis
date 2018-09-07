@@ -12,7 +12,7 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis.document.util;
+package org.jnosql.artemis.util;
 
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.reflection.ClassRepresentation;
@@ -22,7 +22,8 @@ import org.jnosql.diana.api.Value;
 import java.lang.reflect.Field;
 import java.util.Optional;
 
-public final class ConverterUtil {
+public class ConverterUtil {
+
 
     private ConverterUtil() {
 
