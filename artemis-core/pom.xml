@@ -76,6 +76,12 @@
             <artifactId>diana-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.jnosql.query</groupId>
+            <artifactId>jnosql-query-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
     </dependencies>
 
 </project>
