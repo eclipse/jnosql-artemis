@@ -279,6 +279,7 @@ public interface ColumnTemplateAsync {
     /**
      * Returns the number of elements from column family
      *
+     * @param <T> the entity type
      * @param entityClass the entity class
      * @param callback     the callback with the response
      * @throws NullPointerException          when there is null parameter

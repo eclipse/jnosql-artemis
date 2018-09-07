@@ -58,6 +58,7 @@ public interface GraphConverter {
      * @param entity the entity
      * @param <T> the entity type
      * @throws NullPointerException when entity is null
+     * @return the properties of an entity
      */
     <T> List<Property<?>> getProperties(T entity);
 
