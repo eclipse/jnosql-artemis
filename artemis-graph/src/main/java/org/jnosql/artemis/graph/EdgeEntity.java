@@ -28,7 +28,7 @@ import static java.util.Objects.requireNonNull;
  * Along with its Property objects, an Edge has both a Direction and a label.
  * Any Change at the Edge is automatically continued in the database. However, any, change in the Entity will be ignored.
  * {@link GraphTemplate#update(Object)}
- * <p>
+ *
  * <pre>outVertex ---label---&#62; inVertex.</pre>
  */
 public interface EdgeEntity {
