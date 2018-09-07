@@ -19,6 +19,7 @@ import org.jnosql.aphrodite.antlr.method.SelectMethodFactory;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.Param;
 import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.util.ParamsBinder;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnObserverParser;
 import org.jnosql.diana.api.column.ColumnQuery;
