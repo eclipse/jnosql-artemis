@@ -22,8 +22,12 @@ import org.jnosql.query.Params;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * A Binder class, that will apply values in the {@link Params} instance to a dynamic query.
+ */
 public class ParamsBinder {
 
 
@@ -32,12 +36,29 @@ public class ParamsBinder {
     private final Converters converters;
 
 
-    ParamsBinder(ClassRepresentation representation, Converters converters) {
-        this.representation = representation;
-        this.converters = converters;
+    /**
+     * Creates a ParamsBinder instance
+     * @param representation the representation of the used class
+     * @param converters the converts
+     * @throws NullPointerException when there is null parameter
+     */
+    public ParamsBinder(ClassRepresentation representation, Converters converters) {
+        this.representation = Objects.requireNonNull(representation, "representation is required");
+        this.converters = Objects.requireNonNull(converters, "converters is required");
     }
 
+    /**
+     * Fill up the Params with the args
+     * @param params the params
+     * @param args the args
+     * @param method the method
+     * @throws NullPointerException when there is null parameter
+     */
     public void bind(Params params, Object[] args, Method method) {
+
+        Objects.requireNonNull(params, "params is required");
+        Objects.requireNonNull(args, "args is required");
+        Objects.requireNonNull(method, "method is required");
 
         List<String> names = params.getNames();
         if (names.size() > args.length) {
