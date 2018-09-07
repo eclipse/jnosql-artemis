@@ -17,9 +17,9 @@ package org.jnosql.artemis.document.query;
 
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.DynamicQueryException;
-import org.jnosql.artemis.document.util.ConverterUtil;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.util.ConverterUtil;
 import org.jnosql.query.Params;
 
 import java.lang.reflect.Method;
