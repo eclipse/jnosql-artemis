@@ -50,8 +50,8 @@ import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
 import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
