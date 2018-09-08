@@ -133,7 +133,7 @@ public class DocumentRepositoryAsyncProxyTest {
                 .withPhones(singletonList("123123"))
                 .build();
         template.insert(person, Duration.ofHours(2));
-        verify(template).insert(captor.capture(), Matchers.eq(Duration.ofHours(2)));
+        verify(template).insert(captor.capture(), ArgumentMatchers.eq(Duration.ofHours(2)));
         Person value = captor.getValue();
         assertEquals(person, value);
     }
@@ -254,7 +254,7 @@ public class DocumentRepositoryAsyncProxyTest {
         Consumer<Optional<Person>> callBack = p -> {
         };
         personRepository.findById(10L, callBack);
-        verify(template).find(Mockito.eq(Person.class), Mockito.eq(10L), Matchers.eq(callBack));
+        verify(template).find(Mockito.eq(Person.class), Mockito.eq(10L), ArgumentMatchers.eq(callBack));
 
     }
 
