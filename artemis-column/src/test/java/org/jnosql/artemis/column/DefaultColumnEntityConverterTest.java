@@ -53,6 +53,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -144,7 +145,7 @@ public class DefaultColumnEntityConverterTest {
         Actor actor = Actor.actorBuilder().build();
         Actor result = converter.toEntity(actor, entity);
 
-        assertTrue(actor == result);
+        assertSame(actor, result);
         assertEquals(10, actor.getAge());
         assertEquals(12L, actor.getId());
         assertEquals(asList("234", "2342"), actor.getPhones());

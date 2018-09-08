@@ -37,6 +37,7 @@ import static java.util.Comparator.comparing;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -73,7 +74,7 @@ abstract class AbstractGraphConverterTest {
         Person person = Person.builder().build();
         Person result = getConverter().toEntity(person, vertex);
 
-        assertTrue(person == result);
+        assertSame(person, result);
         assertNotNull(person.getId());
         assertEquals("Ada", person.getName());
         assertEquals(Integer.valueOf(22), Integer.valueOf(person.getAge()));
@@ -95,7 +96,7 @@ abstract class AbstractGraphConverterTest {
 
         assertEquals("James", worker.getName());
         assertEquals("USD", worker.getSalary().getCurrency());
-        assertTrue(BigDecimal.valueOf(1_000).compareTo(worker.getSalary().getValue()) == 0);
+        assertEquals(0, BigDecimal.valueOf(1_000).compareTo(worker.getSalary().getValue()));
     }
 
     @Test

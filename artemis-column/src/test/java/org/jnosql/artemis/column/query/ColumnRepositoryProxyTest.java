@@ -380,11 +380,11 @@ public class ColumnRepositoryProxyTest {
 
         assertEquals(Condition.EQUALS, columnCondition.getCondition());
         assertEquals("Ada", columnCondition.getColumn().get());
-        assertTrue(columnCondition.getColumn().getName().equals("name"));
+        assertEquals("name", columnCondition.getColumn().getName());
 
         assertEquals(Condition.GREATER_EQUALS_THAN, columnCondition2.getCondition());
         assertEquals(33, columnCondition2.getColumn().get());
-        assertTrue(columnCondition2.getColumn().getName().equals("age"));
+        assertEquals("age", columnCondition2.getColumn().getName());
     }
 
     @Test
