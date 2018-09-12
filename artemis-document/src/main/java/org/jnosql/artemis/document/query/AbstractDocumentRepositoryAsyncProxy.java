@@ -62,7 +62,7 @@ public abstract class AbstractDocumentRepositoryAsyncProxy<T> extends BaseDocume
             case OBJECT_METHOD:
                 return method.invoke(this, args);
             case JNOSQL_QUERY:
-                return getJnosqlQuery(method, args, typeClass);
+                return getJnosqlQuery(method, args);
             default:
                 return Void.class;
         }
@@ -94,7 +94,7 @@ public abstract class AbstractDocumentRepositoryAsyncProxy<T> extends BaseDocume
     }
 
 
-    private Object getJnosqlQuery(Method method, Object[] args, Class<?> typeClass) {
+    private Object getJnosqlQuery(Method method, Object[] args) {
         String value = method.getAnnotation(Query.class).value();
         Map<String, Object> params = getParams(method, args);
         Consumer<List<T>> consumer = getConsumer(args);
