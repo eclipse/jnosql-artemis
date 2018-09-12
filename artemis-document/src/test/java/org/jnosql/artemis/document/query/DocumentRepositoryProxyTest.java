@@ -264,36 +264,6 @@ public class DocumentRepositoryProxyTest {
     }
 
     @Test
-    public void shouldExecuteQuery() {
-        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
-        Person ada = Person.builder()
-                .withAge(20).withName("Ada").build();
-        when(template.singleResult(Mockito.any(DocumentQuery.class)))
-                .thenReturn(Optional.of(ada));
-
-
-        DocumentQuery query = select().from("Person")
-                .where("name").eq("Ada")
-                .build();
-        Person person = personRepository.query(query);
-        verify(template).singleResult(captor.capture());
-        assertEquals(ada, person);
-        assertEquals(query, captor.getValue());
-
-    }
-
-    @Test
-    public void shouldDeleteQuery() {
-        ArgumentCaptor<DocumentDeleteQuery> captor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
-
-        DocumentDeleteQuery query = delete().from("Person").where("name").eq("Ada").build();
-        personRepository.deleteQuery(query);
-        verify(template).delete(captor.capture());
-        assertEquals(query, captor.getValue());
-
-    }
-
-    @Test
     public void shouldFindById() {
         personRepository.findById(10L);
         verify(template).find(Mockito.eq(Person.class), Mockito.eq(10L));
@@ -565,10 +535,6 @@ public class DocumentRepositoryProxyTest {
         Set<Person> findByAgeBetween(Integer ageA, Integer ageB);
 
         Set<Person> findByNameLike(String name);
-
-        Person query(DocumentQuery query);
-
-        void deleteQuery(DocumentDeleteQuery query);
 
         @Query("select * from Person")
         Optional<Person> findByQuery();

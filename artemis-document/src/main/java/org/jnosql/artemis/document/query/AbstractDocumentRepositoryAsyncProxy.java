@@ -29,8 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
-
 /**
  * The template method to {@link org.jnosql.artemis.RepositoryAsync} to Document
  *
