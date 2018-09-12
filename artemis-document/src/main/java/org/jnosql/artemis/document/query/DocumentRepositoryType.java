@@ -26,16 +26,16 @@ import java.util.stream.Stream;
 
 enum DocumentRepositoryType {
 
-    DEFAULT, FIND_BY, FIND_ALL, DELETE_BY, QUERY, QUERY_DELETE, UNKNOWN, OBJECT_METHOD, JNOSQL_QUERY;
-
-    private static final Method[] METHODS = Object.class.getMethods();
+    DEFAULT, FIND_BY, FIND_ALL, DELETE_BY, UNKNOWN, OBJECT_METHOD, JNOSQL_QUERY;
 
     static DocumentRepositoryType of(Method method, Object[] args) {
 
 
-        if (Stream.of(METHODS).anyMatch(method::equals)) {
+        Class<?> declaringClass = method.getDeclaringClass();
+        if (Object.class.equals(declaringClass)) {
             return OBJECT_METHOD;
         }
+        if()
         if (Objects.nonNull(method.getAnnotation(Query.class))) {
             return JNOSQL_QUERY;
         }
@@ -53,13 +53,6 @@ enum DocumentRepositoryType {
             default:
         }
 
-        if (isQuery(args)) {
-            return QUERY;
-        }
-
-        if (isQueryDelete(args)) {
-            return QUERY_DELETE;
-        }
 
         if (methodName.startsWith("findBy")) {
             return FIND_BY;
@@ -67,14 +60,6 @@ enum DocumentRepositoryType {
             return DELETE_BY;
         }
         return UNKNOWN;
-    }
-
-    private static boolean isQuery(Object[] args) {
-        return getQuery(args).isPresent();
-    }
-
-    private static boolean isQueryDelete(Object[] args) {
-        return getDeleteQuery(args).isPresent();
     }
 
     static Optional<DocumentQuery> getQuery(Object[] args) {
