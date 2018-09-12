@@ -21,7 +21,6 @@ import org.jnosql.artemis.RepositoryAsync;
 import java.lang.reflect.Method;
 import java.util.Objects;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 public enum GraphRepositoryType {
 

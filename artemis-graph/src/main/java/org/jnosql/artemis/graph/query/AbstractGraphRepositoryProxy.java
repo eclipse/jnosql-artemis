@@ -62,7 +62,7 @@ abstract class AbstractGraphRepositoryProxy<T, ID> implements InvocationHandler 
     @Override
     public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
         String methodName = method.getName();
-        GraphRepositoryType type = GraphRepositoryType.of(method, args);
+        GraphRepositoryType type = GraphRepositoryType.of(method);
         Class<?> typeClass = getClassRepresentation().getClassInstance();
 
         switch (type) {
