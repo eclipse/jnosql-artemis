@@ -35,7 +35,7 @@ enum DocumentRepositoryType {
             Predicate.<Class<?>>isEqual(Repository.class)
                     .or(Predicate.isEqual(RepositoryAsync.class));
 
-    static DocumentRepositoryType of(Method method, Object[] args) {
+    static DocumentRepositoryType of(Method method) {
 
 
         Class<?> declaringClass = method.getDeclaringClass();
