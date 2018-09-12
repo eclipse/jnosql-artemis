@@ -18,18 +18,14 @@ package org.jnosql.artemis.document.query;
 import org.jnosql.artemis.Query;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.RepositoryAsync;
-import org.jnosql.diana.api.document.DocumentDeleteQuery;
-import org.jnosql.diana.api.document.DocumentQuery;
 
 import java.lang.reflect.Method;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 enum DocumentRepositoryType {
 
-    DEFAULT, FIND_BY, DELETE_BY, UNKNOWN, OBJECT_METHOD, JNOSQL_QUERY;
+    DEFAULT, FIND_BY, DELETE_BY, UNKNOWN, OBJECT_METHOD, JNOSQL_QUERY, FIND_ALL;
 
     private static final Predicate<Class<?>> IS_REPOSITORY_METHOD =
             Predicate.<Class<?>>isEqual(Repository.class)
@@ -50,25 +46,14 @@ enum DocumentRepositoryType {
         }
 
         String methodName = method.getName();
-        if (methodName.startsWith("findBy")) {
+        if ("findAll".equals(methodName)) {
+            return FIND_ALL;
+        } else if (methodName.startsWith("findBy")) {
             return FIND_BY;
         } else if (methodName.startsWith("deleteBy")) {
             return DELETE_BY;
         }
         return UNKNOWN;
-    }
-
-    static Optional<DocumentQuery> getQuery(Object[] args) {
-        return Stream.of(args)
-                .filter(DocumentQuery.class::isInstance).map(DocumentQuery.class::cast)
-                .findFirst();
-    }
-
-    static Optional<DocumentDeleteQuery> getDeleteQuery(Object[] args) {
-        return Stream.of(args)
-                .filter(DocumentDeleteQuery.class::isInstance)
-                .map(DocumentDeleteQuery.class::cast)
-                .findFirst();
     }
 
 }

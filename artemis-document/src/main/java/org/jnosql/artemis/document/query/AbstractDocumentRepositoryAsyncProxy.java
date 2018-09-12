@@ -48,7 +48,7 @@ public abstract class AbstractDocumentRepositoryAsyncProxy<T> extends BaseDocume
 
 
         Class<?> typeClass = getClassRepresentation().getClassInstance();
-        DocumentRepositoryType type = DocumentRepositoryType.of(method, args);
+        DocumentRepositoryType type = DocumentRepositoryType.of(method);
 
         switch (type) {
             case DEFAULT:
@@ -56,16 +56,9 @@ public abstract class AbstractDocumentRepositoryAsyncProxy<T> extends BaseDocume
             case FIND_BY:
                 DocumentQuery query = getQuery(method, args);
                 return executeQuery(getCallBack(args), query);
-            case FIND_ALL:
-                return executeQuery(getCallBack(args), select().from(getClassRepresentation().getName()).build());
             case DELETE_BY:
                 DocumentDeleteQuery deleteQuery = getDeleteQuery(method, args);
                 return executeDelete(args, deleteQuery);
-            case QUERY:
-                DocumentQuery documentQuery = DocumentRepositoryType.getQuery(args).get();
-                return executeQuery(getCallBack(args), documentQuery);
-            case QUERY_DELETE:
-                return executeDelete(args, DocumentRepositoryType.getDeleteQuery(args).get());
             case OBJECT_METHOD:
                 return method.invoke(this, args);
             case JNOSQL_QUERY:

@@ -46,7 +46,7 @@ public abstract class AbstractDocumentRepositoryProxy<T> extends BaseDocumentRep
     @Override
     public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
 
-        DocumentRepositoryType type = DocumentRepositoryType.of(method, args);
+        DocumentRepositoryType type = DocumentRepositoryType.of(method);
         Class<?> typeClass = getClassRepresentation().getClassInstance();
 
         switch (type) {
@@ -62,13 +62,6 @@ public abstract class AbstractDocumentRepositoryProxy<T> extends BaseDocumentRep
                 DocumentDeleteQuery documentDeleteQuery = getDeleteQuery(method, args);
                 getTemplate().delete(documentDeleteQuery);
                 return null;
-            case QUERY:
-                DocumentQuery documentQuery = DocumentRepositoryType.getQuery(args).get();
-                return returnObject(documentQuery, getTemplate(), typeClass, method);
-            case QUERY_DELETE:
-                DocumentDeleteQuery deleteQuery = DocumentRepositoryType.getDeleteQuery(args).get();
-                getTemplate().delete(deleteQuery);
-                return Void.class;
             case OBJECT_METHOD:
                 return method.invoke(this, args);
             case JNOSQL_QUERY:
