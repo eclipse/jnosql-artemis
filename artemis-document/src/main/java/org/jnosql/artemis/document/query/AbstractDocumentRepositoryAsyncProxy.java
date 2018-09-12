@@ -45,7 +45,6 @@ public abstract class AbstractDocumentRepositoryAsyncProxy<T> extends BaseDocume
     public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
 
 
-        Class<?> typeClass = getClassRepresentation().getClassInstance();
         DocumentRepositoryType type = DocumentRepositoryType.of(method);
 
         switch (type) {
