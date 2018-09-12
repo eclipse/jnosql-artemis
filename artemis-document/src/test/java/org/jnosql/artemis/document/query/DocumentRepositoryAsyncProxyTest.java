@@ -47,8 +47,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import static java.util.Collections.singletonList;
-import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.delete;
-import static org.jnosql.diana.api.document.query.DocumentQueryBuilder.select;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -215,40 +213,6 @@ public class DocumentRepositoryAsyncProxyTest {
     }
 
     @Test
-    public void shouldExecuteQuery() {
-        Consumer<List<Person>> callback = v -> {
-        };
-
-        ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
-        ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
-
-        DocumentQuery query = select().from("Person")
-                .where("name").eq("Ada")
-                .build();
-
-        personRepository.query(query, callback);
-        verify(template).select(captor.capture(), consumerCaptor.capture());
-        DocumentQuery queryCaptor = captor.getValue();
-        DocumentCondition condition = query.getCondition().get();
-        assertEquals(query, queryCaptor);
-        assertEquals(callback, consumerCaptor.getValue());
-    }
-
-    //
-    @Test
-    public void shouldExecuteDeleteQuery() {
-        ArgumentCaptor<DocumentDeleteQuery> captor = ArgumentCaptor.forClass(DocumentDeleteQuery.class);
-
-        DocumentDeleteQuery deleteQuery = delete().from("Person")
-                .where("name").eq("Ada")
-                .build();
-
-        personRepository.deleteQuery(deleteQuery);
-        verify(template).delete(captor.capture());
-        assertEquals(deleteQuery, captor.getValue());
-    }
-
-    @Test
     public void shouldFindById() {
         ArgumentCaptor<DocumentQuery> captor = ArgumentCaptor.forClass(DocumentQuery.class);
         Consumer<Optional<Person>> callBack = p -> {
@@ -318,10 +282,6 @@ public class DocumentRepositoryAsyncProxyTest {
         void findByName(String name, Consumer<List<Person>> callBack);
 
         void findByNameOrderByAgeDesc(String name, Consumer<List<Person>> callBack);
-
-        void query(DocumentQuery query, Consumer<List<Person>> callBack);
-
-        void deleteQuery(DocumentDeleteQuery query);
 
         @Query("select * from Person")
         void findByQuery();
