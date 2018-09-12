@@ -20,6 +20,7 @@ import org.jnosql.artemis.PreparedStatement;
 import org.jnosql.artemis.Query;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.column.ColumnTemplate;
+import org.jnosql.artemis.query.RepositoryType;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnQuery;
 
@@ -47,7 +48,7 @@ public abstract class AbstractColumnRepositoryProxy<T, ID> extends  BaseColumnRe
 
     @Override
     public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
-        ColumnRepositoryType type = ColumnRepositoryType.of(method);
+        RepositoryType type = RepositoryType.of(method);
         Class<?> typeClass = getClassRepresentation().getClassInstance();
 
         switch (type) {
