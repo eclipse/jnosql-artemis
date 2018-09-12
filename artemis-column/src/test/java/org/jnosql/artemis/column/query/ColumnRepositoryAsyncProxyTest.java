@@ -46,8 +46,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import static java.util.Collections.singletonList;
-import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.delete;
-import static org.jnosql.diana.api.column.query.ColumnQueryBuilder.select;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -211,39 +209,6 @@ public class ColumnRepositoryAsyncProxyTest {
 
     }
 
-    @Test
-    public void shouldExecuteQuery() {
-        Consumer<List<Person>> callback = v -> {
-        };
-
-        ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
-        ArgumentCaptor<Consumer> consumerCaptor = ArgumentCaptor.forClass(Consumer.class);
-
-        ColumnQuery query = select()
-                .from("Person")
-                .where("name").eq("Ada")
-                .build();
-
-        personRepository.query(query, callback);
-        verify(template).select(captor.capture(), consumerCaptor.capture());
-        ColumnQuery queryCaptor = captor.getValue();
-        ColumnCondition condition = query.getCondition().get();
-        assertEquals(query, queryCaptor);
-        assertEquals(callback, consumerCaptor.getValue());
-    }
-
-    @Test
-    public void shouldExecuteDeleteQuery() {
-        ArgumentCaptor<ColumnDeleteQuery> captor = ArgumentCaptor.forClass(ColumnDeleteQuery.class);
-
-        ColumnDeleteQuery deleteQuery = delete().from("Person")
-                .where("name").eq("Ada")
-                .build();
-
-        personRepository.deleteQuery(deleteQuery);
-        verify(template).delete(captor.capture());
-        assertEquals(deleteQuery, captor.getValue());
-    }
 
     @Test
     public void shouldFindById() {
@@ -311,10 +276,6 @@ public class ColumnRepositoryAsyncProxyTest {
         void findByName(String name, Consumer<List<Person>> callBack);
 
         void findByNameOrderByAgeDesc(String name, Consumer<List<Person>> callBack);
-
-        void query(ColumnQuery query, Consumer<List<Person>> callBack);
-
-        void deleteQuery(ColumnDeleteQuery query);
 
         @Query("select * from Person")
         void findByQuery();

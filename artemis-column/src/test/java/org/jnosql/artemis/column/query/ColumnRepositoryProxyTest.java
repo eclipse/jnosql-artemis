@@ -253,34 +253,6 @@ public class ColumnRepositoryProxyTest {
     }
 
     @Test
-    public void shouldExecuteQuery() {
-        ArgumentCaptor<ColumnQuery> captor = ArgumentCaptor.forClass(ColumnQuery.class);
-        Person ada = Person.builder()
-                .withAge(20).withName("Ada").build();
-        when(template.singleResult(any(ColumnQuery.class)))
-                .thenReturn(Optional.of(ada));
-
-
-        ColumnQuery query = select().from("Person").where("name").eq("Ada").build();
-        Person person = personRepository.query(query);
-        verify(template).singleResult(captor.capture());
-        assertEquals(ada, person);
-        assertEquals(query, captor.getValue());
-
-    }
-
-    @Test
-    public void shouldDeleteQuery() {
-        ArgumentCaptor<ColumnDeleteQuery> captor = ArgumentCaptor.forClass(ColumnDeleteQuery.class);
-
-        ColumnDeleteQuery query = delete().from("Person").where("name").eq("Ada").build();
-        personRepository.deleteQuery(query);
-        verify(template).delete(captor.capture());
-        assertEquals(query, captor.getValue());
-
-    }
-
-    @Test
     public void shouldFindById() {
         personRepository.findById(10L);
         verify(template).find(Mockito.eq(Person.class), Mockito.eq(10L));
@@ -536,10 +508,6 @@ public class ColumnRepositoryProxyTest {
         Stream<Person> findByNameAndAgeOrderByName(String name, Integer age);
 
         Queue<Person> findByNameAndAgeOrderByAge(String name, Integer age);
-
-        Person query(ColumnQuery query);
-
-        void deleteQuery(ColumnDeleteQuery query);
 
         Set<Person> findByNameAndAgeGreaterThanEqual(String name, Integer age);
 
