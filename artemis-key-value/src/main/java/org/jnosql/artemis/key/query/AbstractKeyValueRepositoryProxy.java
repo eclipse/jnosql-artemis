@@ -20,28 +20,17 @@ import org.jnosql.artemis.PreparedStatement;
 import org.jnosql.artemis.Query;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.key.KeyValueTemplate;
+import org.jnosql.artemis.query.RepositoryType;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 public abstract class AbstractKeyValueRepositoryProxy<T> implements InvocationHandler {
-
-
-    private static final List<Method> METHODS;
-
-    static {
-        METHODS = new ArrayList<>();
-        METHODS.addAll(Arrays.asList(Object.class.getMethods()));
-        METHODS.addAll(Arrays.asList(Repository.class.getMethods()));
-    }
 
 
     protected abstract Repository getRepository();
@@ -53,15 +42,16 @@ public abstract class AbstractKeyValueRepositoryProxy<T> implements InvocationHa
     @Override
     public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
 
-        if (METHODS.stream().anyMatch(method::equals)) {
-            return method.invoke(getRepository(), args);
-        }
-
-        Optional<String> query = getQuery(method);
-        if (query.isPresent()) {
-            return executeQuery(method, args, query.get());
-        } else {
-            throw new DynamicQueryException("Key Value repository does not support query method");
+        RepositoryType type = RepositoryType.of(method);
+        switch (type) {
+            case DEFAULT:
+                return method.invoke(getRepository(), args);
+            case OBJECT_METHOD:
+                return method.invoke(this, args);
+            case JNOSQL_QUERY:
+                return executeQuery(method, args, getQuery(method));
+            default:
+                throw new DynamicQueryException("Key Value repository does not support query method");
         }
     }
 
@@ -92,7 +82,7 @@ public abstract class AbstractKeyValueRepositoryProxy<T> implements InvocationHa
         return params;
     }
 
-    private Optional<String> getQuery(Method method) {
-        return Optional.ofNullable(method.getAnnotation(Query.class)).map(Query::value);
+    private String getQuery(Method method) {
+        return method.getAnnotation(Query.class).value();
     }
 }
