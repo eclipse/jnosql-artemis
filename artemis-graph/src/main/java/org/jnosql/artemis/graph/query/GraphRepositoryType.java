@@ -15,48 +15,47 @@
 package org.jnosql.artemis.graph.query;
 
 import org.jnosql.artemis.Query;
+import org.jnosql.artemis.Repository;
+import org.jnosql.artemis.RepositoryAsync;
 
 import java.lang.reflect.Method;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public enum GraphRepositoryType {
 
-    DEFAULT, FIND_ALL, FIND_BY, DELETE_BY, UNKNOWN, OBJECT_METHOD, JNOSQL_QUERY;
+    DEFAULT, FIND_BY, DELETE_BY, UNKNOWN, OBJECT_METHOD, JNOSQL_QUERY, FIND_ALL;
 
-    private static final Method[] METHODS = Object.class.getMethods();
+    private static final Predicate<Class<?>> IS_REPOSITORY_METHOD =
+            Predicate.<Class<?>>isEqual(Repository.class)
+                    .or(Predicate.isEqual(RepositoryAsync.class));
+
+    static GraphRepositoryType of(Method method) {
 
 
-    static GraphRepositoryType of(Method method, Object[] args) {
-
-        if (Stream.of(METHODS).anyMatch(method::equals)) {
+        Class<?> declaringClass = method.getDeclaringClass();
+        if (Object.class.equals(declaringClass)) {
             return OBJECT_METHOD;
         }
-
+        if (IS_REPOSITORY_METHOD.test(declaringClass)) {
+            return DEFAULT;
+        }
         if (Objects.nonNull(method.getAnnotation(Query.class))) {
             return JNOSQL_QUERY;
         }
 
         String methodName = method.getName();
-        switch (methodName) {
-            case "save":
-            case "deleteById":
-            case "delete":
-            case "findById":
-            case "existsById":
-                return DEFAULT;
-            case "findAll":
-                return FIND_ALL;
-            default:
-        }
-
-        if (methodName.startsWith("findBy")) {
+        if ("findAll".equals(methodName)) {
+            return FIND_ALL;
+        } else if (methodName.startsWith("findBy")) {
             return FIND_BY;
         } else if (methodName.startsWith("deleteBy")) {
             return DELETE_BY;
         }
         return UNKNOWN;
     }
+
 
 
 }
