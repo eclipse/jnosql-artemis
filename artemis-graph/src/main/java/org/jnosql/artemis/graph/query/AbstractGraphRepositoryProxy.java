@@ -24,6 +24,7 @@ import org.jnosql.artemis.Query;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.graph.GraphConverter;
 import org.jnosql.artemis.graph.GraphTemplate;
+import org.jnosql.artemis.query.RepositoryType;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 
 import java.lang.reflect.InvocationHandler;
@@ -62,7 +63,7 @@ abstract class AbstractGraphRepositoryProxy<T, ID> implements InvocationHandler 
     @Override
     public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
         String methodName = method.getName();
-        GraphRepositoryType type = GraphRepositoryType.of(method);
+        RepositoryType type = RepositoryType.of(method);
         Class<?> typeClass = getClassRepresentation().getClassInstance();
 
         switch (type) {
