@@ -15,52 +15,42 @@
 package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.Query;
+import org.jnosql.artemis.Repository;
+import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnQuery;
 
 import java.lang.reflect.Method;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 enum ColumnRepositoryType {
-    DEFAULT, FIND_BY, DELETE_BY, QUERY, QUERY_DELETE, UNKNOWN, FIND_ALL, OBJECT_METHOD, JNOSQL_QUERY;
+    DEFAULT, FIND_BY, DELETE_BY, UNKNOWN, OBJECT_METHOD, JNOSQL_QUERY, FIND_ALL;
+
+    private static final Predicate<Class<?>> IS_REPOSITORY_METHOD =
+            Predicate.<Class<?>>isEqual(Repository.class)
+                    .or(Predicate.isEqual(RepositoryAsync.class));
+
+    static ColumnRepositoryType of(Method method) {
 
 
-    private static final Method[] METHODS = Object.class.getMethods();
-
-    static ColumnRepositoryType of(Method method, Object[] args) {
-
-        if (Stream.of(METHODS).anyMatch(method::equals)) {
+        Class<?> declaringClass = method.getDeclaringClass();
+        if (Object.class.equals(declaringClass)) {
             return OBJECT_METHOD;
         }
-
+        if (IS_REPOSITORY_METHOD.test(declaringClass)) {
+            return DEFAULT;
+        }
         if (Objects.nonNull(method.getAnnotation(Query.class))) {
             return JNOSQL_QUERY;
         }
 
         String methodName = method.getName();
-        switch (methodName) {
-            case "save":
-            case "deleteById":
-            case "delete":
-            case "findById":
-            case "existsById":
-                return DEFAULT;
-            case "findAll":
-                return FIND_ALL;
-            default:
-        }
-
-        if (isQuery(args)) {
-            return QUERY;
-        }
-
-        if (isQueryDelete(args)) {
-            return QUERY_DELETE;
-        }
-
-        if (methodName.startsWith("findBy")) {
+        if ("findAll".equals(methodName)) {
+            return FIND_ALL;
+        } else if (methodName.startsWith("findBy")) {
             return FIND_BY;
         } else if (methodName.startsWith("deleteBy")) {
             return DELETE_BY;
@@ -68,25 +58,5 @@ enum ColumnRepositoryType {
         return UNKNOWN;
     }
 
-    private static boolean isQuery(Object[] args) {
-        return getQuery(args).isPresent();
-    }
-
-    private static boolean isQueryDelete(Object[] args) {
-        return getDeleteQuery(args).isPresent();
-    }
-
-    static Optional<ColumnQuery> getQuery(Object[] args) {
-        return Stream.of(args)
-                .filter(ColumnQuery.class::isInstance).map(ColumnQuery.class::cast)
-                .findFirst();
-    }
-
-    static Optional<ColumnDeleteQuery> getDeleteQuery(Object[] args) {
-        return Stream.of(args)
-                .filter(ColumnDeleteQuery.class::isInstance)
-                .map(ColumnDeleteQuery.class::cast)
-                .findFirst();
-    }
 
 }

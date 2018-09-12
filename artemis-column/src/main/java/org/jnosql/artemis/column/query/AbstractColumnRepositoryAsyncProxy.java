@@ -45,8 +45,7 @@ public abstract class AbstractColumnRepositoryAsyncProxy<T> extends BaseColumnRe
     @Override
     public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
 
-        Class<?> typeClass = getClassRepresentation().getClassInstance();
-        ColumnRepositoryType type = ColumnRepositoryType.of(method, args);
+        ColumnRepositoryType type = ColumnRepositoryType.of(method);
 
         switch (type) {
             case DEFAULT:
@@ -59,21 +58,16 @@ public abstract class AbstractColumnRepositoryAsyncProxy<T> extends BaseColumnRe
             case DELETE_BY:
                 ColumnDeleteQuery deleteQuery = getDeleteQuery(method, args);
                 return executeDelete(getCallback(args), deleteQuery);
-            case QUERY:
-                ColumnQuery columnQuery = ColumnRepositoryType.getQuery(args).get();
-                return executeQuery(getCallback(args), columnQuery);
-            case QUERY_DELETE:
-                return executeDelete(args, ColumnRepositoryType.getDeleteQuery(args).get());
             case OBJECT_METHOD:
                 return method.invoke(this, args);
             case JNOSQL_QUERY:
-                return getJnosqlQuery(method, args, typeClass);
+                return getJnosqlQuery(method, args);
             default:
                 return Void.class;
         }
     }
 
-    private Object getJnosqlQuery(Method method, Object[] args, Class<?> typeClass) {
+    private Object getJnosqlQuery(Method method, Object[] args) {
         String value = method.getAnnotation(Query.class).value();
         Map<String, Object> params = getParams(method, args);
         Consumer<List<T>> consumer = getConsumer(args);
