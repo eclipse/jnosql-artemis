@@ -19,6 +19,7 @@ import org.jnosql.artemis.PreparedStatement;
 import org.jnosql.artemis.Query;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.document.DocumentTemplate;
+import org.jnosql.artemis.query.RepositoryType;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentQuery;
 
@@ -46,7 +47,7 @@ public abstract class AbstractDocumentRepositoryProxy<T> extends BaseDocumentRep
     @Override
     public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
 
-        DocumentRepositoryType type = DocumentRepositoryType.of(method);
+        RepositoryType type = RepositoryType.of(method);
         Class<?> typeClass = getClassRepresentation().getClassInstance();
 
         switch (type) {

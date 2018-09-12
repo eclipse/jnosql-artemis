@@ -20,6 +20,7 @@ import org.jnosql.artemis.PreparedStatementAsync;
 import org.jnosql.artemis.Query;
 import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.document.DocumentTemplateAsync;
+import org.jnosql.artemis.query.RepositoryType;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentQuery;
 
@@ -45,7 +46,7 @@ public abstract class AbstractDocumentRepositoryAsyncProxy<T> extends BaseDocume
     public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
 
 
-        DocumentRepositoryType type = DocumentRepositoryType.of(method);
+        RepositoryType type = RepositoryType.of(method);
 
         switch (type) {
             case DEFAULT:
