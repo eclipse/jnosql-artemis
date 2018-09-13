@@ -16,7 +16,6 @@ package org.jnosql.artemis.column;
 
 import org.jnosql.artemis.EntityPostPersit;
 import org.jnosql.artemis.EntityPrePersist;
-import org.jnosql.artemis.MockitoExtension;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnEntity;
 import org.jnosql.diana.api.column.ColumnQuery;
@@ -25,6 +24,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.enterprise.event.Event;
 
