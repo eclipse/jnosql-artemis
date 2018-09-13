@@ -14,7 +14,6 @@
  */
 package org.jnosql.artemis.column;
 
-import org.jnosql.artemis.MockitoExtension;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.diana.api.column.ColumnEntity;
 import org.junit.jupiter.api.Assertions;
@@ -24,6 +23,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.function.UnaryOperator;
 
@@ -48,17 +48,6 @@ public class DefaultColumnWorkflowTest {
     @Mock
     private ColumnEntity columnEntity;
 
-    @BeforeEach
-    public void setUp() {
-        when(converter.toColumn(any(Object.class)))
-                .thenReturn(columnEntity);
-        when(converter.toEntity(Mockito.eq(Person.class), any(ColumnEntity.class)))
-                .thenReturn(Person.builder().build());
-        when(converter.toEntity(Mockito.any(Person.class), any(ColumnEntity.class)))
-                .thenReturn(Person.builder().build());
-
-    }
-
     @Test
     public void shouldReturnErrorWhenEntityIsNull() {
         Assertions.assertThrows(NullPointerException.class, () -> {
@@ -77,14 +66,14 @@ public class DefaultColumnWorkflowTest {
         UnaryOperator<ColumnEntity> action = t -> t;
         subject.flow(Person.builder().withId(1L).withAge().withName("Ada").build(), action);
 
-        verify(columnEventPersistManager).firePreColumn(any(ColumnEntity.class));
-        verify(columnEventPersistManager).firePostColumn(any(ColumnEntity.class));
-        verify(columnEventPersistManager).firePreEntity(any(Person.class));
-        verify(columnEventPersistManager).firePostEntity(any(Person.class));
+        verify(columnEventPersistManager).firePreColumn(any());
+        verify(columnEventPersistManager).firePostColumn(any());
+        verify(columnEventPersistManager).firePreEntity(any());
+        verify(columnEventPersistManager).firePostEntity(any());
 
-        verify(columnEventPersistManager).firePreColumnEntity(any(Person.class));
-        verify(columnEventPersistManager).firePostColumnEntity(any(Person.class));
-        verify(converter).toColumn(any(Object.class));
+        verify(columnEventPersistManager).firePreColumnEntity(any());
+        verify(columnEventPersistManager).firePostColumnEntity(any());
+        verify(converter).toColumn(any());
     }
 
 }
