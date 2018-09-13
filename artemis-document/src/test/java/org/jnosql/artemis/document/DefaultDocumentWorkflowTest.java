@@ -14,22 +14,19 @@
  */
 package org.jnosql.artemis.document;
 
-import org.jnosql.artemis.MockitoExtension;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.diana.api.document.DocumentEntity;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.function.UnaryOperator;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -48,16 +45,6 @@ public class DefaultDocumentWorkflowTest {
     @Mock
     private DocumentEntity documentEntity;
 
-    @BeforeEach
-    public void setUp() {
-        when(converter.toDocument(any(Object.class)))
-                .thenReturn(documentEntity);
-        when(converter.toEntity(Mockito.eq(Person.class), any(DocumentEntity.class)))
-                .thenReturn(Person.builder().build());
-        when(converter.toEntity(Mockito.any(Person.class), any(DocumentEntity.class)))
-                .thenReturn(Person.builder().build());
-
-    }
 
     @Test
     public void shouldReturnErrorWhenEntityIsNull() {
@@ -77,12 +64,12 @@ public class DefaultDocumentWorkflowTest {
         UnaryOperator<DocumentEntity> action = t -> t;
         subject.flow(Person.builder().withId(1L).withAge().withName("Ada").build(), action);
 
-        verify(columnEventPersistManager).firePreDocument(any(DocumentEntity.class));
-        verify(columnEventPersistManager).firePostDocument(any(DocumentEntity.class));
-        verify(columnEventPersistManager).firePreEntity(any(Person.class));
-        verify(columnEventPersistManager).firePostEntity(any(Person.class));
-        verify(columnEventPersistManager).firePreDocumentEntity(any(Person.class));
-        verify(columnEventPersistManager).firePostDocumentEntity(any(Person.class));
+        verify(columnEventPersistManager).firePreDocument(any());
+        verify(columnEventPersistManager).firePostDocument(any());
+        verify(columnEventPersistManager).firePreEntity(any());
+        verify(columnEventPersistManager).firePostEntity(any());
+        verify(columnEventPersistManager).firePreDocumentEntity(any());
+        verify(columnEventPersistManager).firePostDocumentEntity(any());
         verify(converter).toDocument(any(Object.class));
     }
 
