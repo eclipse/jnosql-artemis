@@ -15,21 +15,18 @@
 package org.jnosql.artemis.graph;
 
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.jnosql.artemis.graph.cdi.MockitoExtension;
 import org.jnosql.artemis.graph.model.Person;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.function.UnaryOperator;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class DefaultGraphWorkflowTest {
@@ -47,17 +44,6 @@ public class DefaultGraphWorkflowTest {
     @Mock
     private Vertex vertex;
 
-
-    @BeforeEach
-    public void setUp() {
-        when(converter.toVertex(any(Object.class)))
-                .thenReturn(vertex);
-        when(converter.toEntity(Mockito.eq(Person.class), any(Vertex.class)))
-                .thenReturn(Person.builder().build());
-        when(converter.toEntity(Mockito.any(Person.class), any(Vertex.class)))
-                .thenReturn(Person.builder().build());
-
-    }
 
     @Test
     public void shouldReturnErrorWhenEntityIsNull() {
@@ -77,14 +63,14 @@ public class DefaultGraphWorkflowTest {
         UnaryOperator<Vertex> action = t -> t;
         subject.flow(Person.builder().withId(1L).withAge().withName("Ada").build(), action);
 
-        verify(graphEventPersistManager).firePreGraph(any(Vertex.class));
-        verify(graphEventPersistManager).firePostGraph(any(Vertex.class));
-        verify(graphEventPersistManager).firePreEntity(any(Person.class));
-        verify(graphEventPersistManager).firePostEntity(any(Person.class));
+        verify(graphEventPersistManager).firePreGraph(any());
+        verify(graphEventPersistManager).firePostGraph(any());
+        verify(graphEventPersistManager).firePreEntity(any());
+        verify(graphEventPersistManager).firePostEntity(any());
 
-        verify(graphEventPersistManager).firePreGraphEntity(any(Person.class));
-        verify(graphEventPersistManager).firePostGraphEntity(any(Person.class));
-        verify(converter).toVertex(any(Object.class));
+        verify(graphEventPersistManager).firePreGraphEntity(any());
+        verify(graphEventPersistManager).firePostGraphEntity(any());
+        verify(converter).toVertex(any());
     }
 
 }
