@@ -17,7 +17,6 @@ package org.jnosql.artemis.key;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.jnosql.artemis.CDIExtension;
-import org.jnosql.artemis.MockitoExtension;
 import org.jnosql.artemis.PreparedStatement;
 import org.jnosql.artemis.model.User;
 import org.jnosql.diana.api.NonUniqueResultException;
@@ -32,6 +31,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -79,18 +79,6 @@ public class DefaultKeyValueTemplateTest {
     }
 
     @Test
-    public void shouldCheckNullParametersInPut() {
-        User user = new User(KEY, "otavio", 27);
-        assertThrows(NullPointerException.class, () -> subject.put(null));
-        assertThrows(NullPointerException.class, () -> subject.put(null, null));
-        assertThrows(NullPointerException.class, () -> subject.put(null, Duration.ofSeconds(2L)));
-        assertThrows(NullPointerException.class, () -> subject.put(user, null));
-        assertThrows(NullPointerException.class, () -> subject.put((Iterable<?>) null));
-        assertThrows(NullPointerException.class, () -> subject.put((Iterable<?>) null, null));
-    }
-
-
-    @Test
     public void shouldPut() {
         User user = new User(KEY, "otavio", 27);
         subject.put(user);
@@ -136,14 +124,6 @@ public class DefaultKeyValueTemplateTest {
         assertEquals(user, entity.getValue().get());
     }
 
-    @Test
-    public void shouldCheckNullParametersInGet() {
-        User user = new User(KEY, "otavio", 27);
-        assertThrows(NullPointerException.class, () -> subject.get(null, null));
-        assertThrows(NullPointerException.class, () -> subject.get(user, null));
-        assertThrows(NullPointerException.class, () -> subject.get(null, User.class));
-    }
-
 
     @Test
     public void shouldGet() {
@@ -166,12 +146,6 @@ public class DefaultKeyValueTemplateTest {
 
         assertFalse(userOptional.isEmpty());
         assertEquals(user, userOptional.get(0));
-    }
-
-    @Test
-    public void shouldCheckNullParametersInRemove() {
-        assertThrows(NullPointerException.class, () -> subject.remove(null));
-        assertThrows(NullPointerException.class, () -> subject.remove(null));
     }
 
 
@@ -226,18 +200,29 @@ public class DefaultKeyValueTemplateTest {
         when(manager.query("get id"))
                 .thenReturn(singletonList(Value.of("12")));
 
+        Optional<Integer> id = subject.getSingleResult("get id", Integer.class);
+        assertTrue(id.isPresent());
+    }
+
+    @Test
+    public void shouldReturnSingleResult2() {
+
         when(manager.query("get id2"))
                 .thenReturn(Collections.emptyList());
 
+
+        assertFalse(subject.getSingleResult("get id2", Integer.class).isPresent());
+    }
+
+
+    @Test
+    public void shouldReturnSingleResult3() {
         when(manager.query("get id3"))
                 .thenReturn(Arrays.asList(Value.of("12"), Value.of("15")));
 
-        Optional<Integer> id = subject.getSingleResult("get id", Integer.class);
-        assertTrue(id.isPresent());
-        assertFalse(subject.getSingleResult("get id2", Integer.class).isPresent());
-
         assertThrows(NonUniqueResultException.class, () -> subject.getSingleResult("get id3", Integer.class));
     }
+
 
     @Test
     public void shouldExecutePrepare() {

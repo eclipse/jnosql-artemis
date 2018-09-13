@@ -14,7 +14,6 @@
  */
 package org.jnosql.artemis.key;
 
-import org.jnosql.artemis.MockitoExtension;
 import org.jnosql.diana.api.key.KeyValueEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.function.UnaryOperator;
 
@@ -50,19 +50,6 @@ public class DefaultKeyValueWorkflowTest {
         when(converter.toKeyValue(any(Object.class)))
                 .thenReturn(keyValueEntity);
 
-    }
-
-    @Test
-    public void shouldReturnErrorWhenEntityIsNull() {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            UnaryOperator<KeyValueEntity<?>> action = t -> t;
-            subject.flow(null, action);
-        });
-    }
-
-    @Test
-    public void shouldReturnErrorWhenActionIsNull() {
-        Assertions.assertThrows(NullPointerException.class, () -> subject.flow("", null));
     }
 
     @Test

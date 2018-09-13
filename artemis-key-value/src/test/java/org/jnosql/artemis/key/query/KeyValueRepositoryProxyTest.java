@@ -16,7 +16,6 @@ package org.jnosql.artemis.key.query;
 
 import org.hamcrest.Matchers;
 import org.jnosql.artemis.DynamicQueryException;
-import org.jnosql.artemis.MockitoExtension;
 import org.jnosql.artemis.Param;
 import org.jnosql.artemis.PreparedStatement;
 import org.jnosql.artemis.Query;
@@ -30,6 +29,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
