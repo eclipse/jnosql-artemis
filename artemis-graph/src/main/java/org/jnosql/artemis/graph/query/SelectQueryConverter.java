@@ -23,6 +23,7 @@ import org.jnosql.query.Operator;
 import org.jnosql.query.SelectQuery;
 import org.jnosql.query.Where;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
@@ -40,30 +41,39 @@ class SelectQueryConverter implements Function<GraphQueryMethod, List<Vertex>> {
             Condition condition = where.getCondition();
             Operator operator = condition.getOperator();
             String name = condition.getName();
-            switch (operator) {
-                case EQUALS:
-                    traversal.has(name, graphQuery.getValue(name));
-                case GREATER_THAN:
-                    traversal.has(name, P.gt(graphQuery.getValue(name)));
-                case GREATER_EQUALS_THAN:
-                    traversal.has(name, P.gte(graphQuery.getValue(name)));
-                case LESSER_THAN:
-                    traversal.has(name, P.lt(graphQuery.getValue(name)));
-                case BETWEEN:
-                    traversal.has(name, P.between(graphQuery.getValue(name), graphQuery.getValue(name)));
-                case NOT:
-                    ConditionValue.class.cast(condition.getValue()).get().get(0);
-                case AND:
-                case OR:
-                default:
-                    throw new UnsupportedOperationException("There is not support to the type " + operator + " in graph");
-                case IN:
-                    traversal.has(name, P.within(graphQuery.getInValue(name)));
-                case LESSER_EQUALS_THAN:
-                    traversal.has(name, P.lte(graphQuery.getValue(name)));
-            }
+            P<?> predicate = getPredicate(graphQuery, condition, operator, name);
+            traversal.has(name, predicate);
         }
 
+        return null;
+    }
+
+    private P<?> getPredicate(GraphQueryMethod graphQuery, Condition condition, Operator operator, String name) {
+        switch (operator) {
+            case EQUALS:
+                return P.eq(graphQuery.getValue(name));
+            case GREATER_THAN:
+                return P.gt(graphQuery.getValue(name));
+            case GREATER_EQUALS_THAN:
+                return P.gte(graphQuery.getValue(name));
+            case LESSER_THAN:
+                return P.lt(graphQuery.getValue(name));
+            case LESSER_EQUALS_THAN:
+                return P.lte(graphQuery.getValue(name));
+            case BETWEEN:
+                return P.between(graphQuery.getValue(name), graphQuery.getValue(name));
+            case IN:
+                return P.within(graphQuery.getInValue(name));
+            case NOT:
+                Condition notCondition = ConditionValue.class.cast(condition.getValue()).get().get(0);
+                return getPredicate(graphQuery, notCondition, notCondition.getOperator(), name).negate();
+            case AND:
+            case OR:
+            default:
+                throw new UnsupportedOperationException("There is not support to the type " + operator + " in graph");
+
+
+        }
         return null;
     }
 }
