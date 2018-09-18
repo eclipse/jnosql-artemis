@@ -68,10 +68,12 @@ class SelectQueryConverter implements Function<GraphQueryMethod, List<Vertex>> {
                 return getPredicate(graphQuery, notCondition).negate();
             case AND:
                 return ConditionValue.class.cast(condition.getValue()).get().stream()
-                        .map(c -> getPredicate(graphQuery, c)).reduce((a, b) -> a.and(b)).get();
+                        .map(c -> getPredicate(graphQuery, c)).reduce((a, b) -> a.and(b))
+                        .orElseThrow(() -> new UnsupportedOperationException("There is an inconsistency at the AND operator"));
             case OR:
                 return ConditionValue.class.cast(condition.getValue()).get().stream()
-                        .map(c -> getPredicate(graphQuery, c)).reduce((a, b) -> a.or(b)).get();
+                        .map(c -> getPredicate(graphQuery, c)).reduce((a, b) -> a.or(b))
+                        .orElseThrow(() -> new UnsupportedOperationException("There is an inconsistency at the OR operator"));
             default:
                 throw new UnsupportedOperationException("There is not support to the type " + operator + " in graph");
 
