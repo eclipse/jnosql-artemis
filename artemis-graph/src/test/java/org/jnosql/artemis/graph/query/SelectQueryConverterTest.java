@@ -16,6 +16,7 @@ package org.jnosql.artemis.graph.query;
 
 import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.apache.tinkerpop.gremlin.structure.Graph;
+import org.apache.tinkerpop.gremlin.structure.T;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.Repository;
@@ -88,6 +89,101 @@ class SelectQueryConverterTest {
         assertNotEquals("Ada", vertices.get(1).value("name"));
     }
 
+    @ParameterizedTest(name = "Should parser the query {0}")
+    @ValueSource(strings = {"findByAgeLessThan"})
+    public void shouldRunQuery3(String methodName) {
+        Method method = Stream.of(PersonRepository.class.getMethods())
+                .filter(m -> m.getName().equals(methodName)).findFirst().get();
+
+        graph.addVertex(T.label, "Person", "name", "Otavio", "age", 30);
+        graph.addVertex(T.label, "Person", "name", "Ada", "age", 40);
+        graph.addVertex(T.label, "Person", "name", "Poliana", "age", 25);
+        ClassRepresentation representation = representations.get(Person.class);
+        GraphQueryMethod queryMethod = new GraphQueryMethod(representation, graph.traversal().V(),
+                converters, method, new Object[]{30});
+
+        List<Vertex> vertices = converter.apply(queryMethod);
+        assertEquals(1, vertices.size());
+        assertEquals("Poliana", vertices.get(0).value("name"));
+    }
+
+    @ParameterizedTest(name = "Should parser the query {0}")
+    @ValueSource(strings = {"findByAgeLessThanEqual"})
+    public void shouldRunQuery4(String methodName) {
+        Method method = Stream.of(PersonRepository.class.getMethods())
+                .filter(m -> m.getName().equals(methodName)).findFirst().get();
+
+        graph.addVertex(T.label, "Person", "name", "Otavio", "age", 30);
+        graph.addVertex(T.label, "Person", "name", "Ada", "age", 40);
+        graph.addVertex(T.label, "Person", "name", "Poliana", "age", 25);
+        ClassRepresentation representation = representations.get(Person.class);
+        GraphQueryMethod queryMethod = new GraphQueryMethod(representation, graph.traversal().V(),
+                converters, method, new Object[]{30});
+
+        List<Vertex> vertices = converter.apply(queryMethod);
+        assertEquals(2, vertices.size());
+        assertNotEquals("Ada", vertices.get(0).value("name"));
+        assertNotEquals("Ada", vertices.get(1).value("name"));
+    }
+
+
+    @ParameterizedTest(name = "Should parser the query {0}")
+    @ValueSource(strings = {"findByAgeGreaterThan"})
+    public void shouldRunQuery5(String methodName) {
+        Method method = Stream.of(PersonRepository.class.getMethods())
+                .filter(m -> m.getName().equals(methodName)).findFirst().get();
+
+        graph.addVertex(T.label, "Person", "name", "Otavio", "age", 30);
+        graph.addVertex(T.label, "Person", "name", "Ada", "age", 40);
+        graph.addVertex(T.label, "Person", "name", "Poliana", "age", 25);
+        ClassRepresentation representation = representations.get(Person.class);
+        GraphQueryMethod queryMethod = new GraphQueryMethod(representation, graph.traversal().V(),
+                converters, method, new Object[]{30});
+
+        List<Vertex> vertices = converter.apply(queryMethod);
+        assertEquals(1, vertices.size());
+        assertEquals("Ada", vertices.get(0).value("name"));
+    }
+
+    @ParameterizedTest(name = "Should parser the query {0}")
+    @ValueSource(strings = {"findByAgeGreaterThanEqual"})
+    public void shouldRunQuery6(String methodName) {
+        Method method = Stream.of(PersonRepository.class.getMethods())
+                .filter(m -> m.getName().equals(methodName)).findFirst().get();
+
+        graph.addVertex(T.label, "Person", "name", "Otavio", "age", 30);
+        graph.addVertex(T.label, "Person", "name", "Ada", "age", 40);
+        graph.addVertex(T.label, "Person", "name", "Poliana", "age", 25);
+        ClassRepresentation representation = representations.get(Person.class);
+        GraphQueryMethod queryMethod = new GraphQueryMethod(representation, graph.traversal().V(),
+                converters, method, new Object[]{30});
+
+        List<Vertex> vertices = converter.apply(queryMethod);
+        assertEquals(2, vertices.size());
+        assertNotEquals("Poliana", vertices.get(0).value("name"));
+        assertNotEquals("Poliana", vertices.get(1).value("name"));
+    }
+
+    @ParameterizedTest(name = "Should parser the query {0}")
+    @ValueSource(strings = {"findByAgeBetween"})
+    public void shouldRunQuery7(String methodName) {
+        Method method = Stream.of(PersonRepository.class.getMethods())
+                .filter(m -> m.getName().equals(methodName)).findFirst().get();
+
+        graph.addVertex(T.label, "Person", "name", "Otavio", "age", 30);
+        graph.addVertex(T.label, "Person", "name", "Ada", "age", 40);
+        graph.addVertex(T.label, "Person", "name", "Poliana", "age", 25);
+        ClassRepresentation representation = representations.get(Person.class);
+        GraphQueryMethod queryMethod = new GraphQueryMethod(representation, graph.traversal().V(),
+                converters, method, new Object[]{29, 41});
+
+        List<Vertex> vertices = converter.apply(queryMethod);
+        assertEquals(2, vertices.size());
+        assertNotEquals("Poliana", vertices.get(0).value("name"));
+        assertNotEquals("Poliana", vertices.get(1).value("name"));
+    }
+
+
     private void checkEquals(String methodName) {
         Method method = Stream.of(PersonRepository.class.getMethods())
                 .filter(m -> m.getName().equals(methodName)).findFirst().get();
@@ -108,8 +204,20 @@ class SelectQueryConverterTest {
     interface PersonRepository extends Repository<Person, String> {
 
         List<Person> findByName(String name);
+
         List<Person> findByNameEquals(String name);
+
         List<Person> findByNameNotEquals(String name);
+
+        List<Person> findByAgeLessThan(Integer age);
+
+        List<Person> findByAgeLessThanEqual(Integer age);
+
+        List<Person> findByAgeGreaterThan(Integer age);
+
+        List<Person> findByAgeGreaterThanEqual(Integer age);
+
+        List<Person> findByAgeBetween(Integer age, Integer ageB);
     }
 
 }
