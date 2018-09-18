@@ -17,6 +17,8 @@ package org.jnosql.artemis.graph.query;
 import org.apache.tinkerpop.gremlin.process.traversal.P;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
+import org.jnosql.aphrodite.antlr.method.SelectMethodFactory;
+import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.query.Condition;
 import org.jnosql.query.ConditionValue;
 import org.jnosql.query.Operator;
@@ -37,7 +39,9 @@ class SelectQueryConverter implements Function<GraphQueryMethod, List<Vertex>> {
     @Override
     public List<Vertex> apply(GraphQueryMethod graphQuery) {
 
-        SelectQuery query = graphQuery.getQuery();
+        SelectMethodFactory selectMethodFactory = SelectMethodFactory.get();
+        SelectQuery query = selectMethodFactory.apply(graphQuery.getMethod(), graphQuery.getEntityName());
+
         GraphTraversal<Vertex, Vertex> traversal = graphQuery.getTraversal();
         if (query.getWhere().isPresent()) {
             Where where = query.getWhere().get();
@@ -55,16 +59,16 @@ class SelectQueryConverter implements Function<GraphQueryMethod, List<Vertex>> {
         if (query.getLimit() > 0) {
             return traversal.next((int) query.getLimit());
         }
-        query.getOrderBy().forEach(getSort(traversal));
+        query.getOrderBy().forEach(getSort(traversal, graphQuery.getRepresentation()));
         return traversal.toList();
     }
 
-    private Consumer<Sort> getSort(GraphTraversal<Vertex, Vertex> traversal) {
+    private Consumer<Sort> getSort(GraphTraversal<Vertex, Vertex> traversal, ClassRepresentation representation) {
         return o -> {
             if (Sort.SortType.ASC.equals(o.getType())) {
-                traversal.order().by(o.getName(), incr);
+                traversal.order().by(representation.getColumnField(o.getName()), incr);
             } else {
-                traversal.order().by(o.getName(), decr);
+                traversal.order().by(representation.getColumnField(o.getName()), decr);
             }
         };
     }

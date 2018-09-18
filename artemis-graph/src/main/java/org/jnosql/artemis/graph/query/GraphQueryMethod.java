@@ -39,7 +39,7 @@ final class GraphQueryMethod {
 
     GraphQueryMethod(ClassRepresentation representation,
                      GraphTraversal<Vertex, Vertex> traversal,
-                     Object[] args, Converters converters, Method method) {
+                     Converters converters, Method method, Object[] args) {
         this.representation = representation;
         this.traversal = traversal;
         this.args = args;
