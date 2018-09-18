@@ -40,8 +40,7 @@ class SelectQueryConverter implements Function<GraphQueryMethod, List<Vertex>> {
             String name = condition.getName();
             switch (operator) {
                 case EQUALS:
-                    traversal.has(name, graphQuery.getValue())
-                case IN:
+                    traversal.has(name, graphQuery.getValue(name));
                 case GREATER_THAN:
                 case GREATER_EQUALS_THAN:
                 case LESSER_THAN:
@@ -50,6 +49,7 @@ class SelectQueryConverter implements Function<GraphQueryMethod, List<Vertex>> {
                 case AND:
                 case OR:
                 case NOT:
+                case IN:
                 case BETWEEN:
                 default:
                     throw new UnsupportedOperationException("There is not support to the type " + operator + " in graph");
