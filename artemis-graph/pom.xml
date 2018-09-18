@@ -73,6 +73,11 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.jnosql.query</groupId>
+            <artifactId>jnosql-query-antlr</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.tinkerpop</groupId>
             <artifactId>gremlin-core</artifactId>
             <version>${tinkerpop.version}</version>
@@ -84,7 +89,6 @@
             <version>${tinkerpop.version}</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.apache.tinkerpop</groupId>
             <artifactId>neo4j-gremlin</artifactId>
