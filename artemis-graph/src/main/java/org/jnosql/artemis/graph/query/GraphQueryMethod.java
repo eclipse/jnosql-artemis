@@ -20,7 +20,6 @@ import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.util.ConverterUtil;
-import org.jnosql.query.SelectQuery;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
