@@ -31,7 +31,6 @@ import static java.util.Collections.singletonList;
 
 final class GraphQueryMethod {
 
-    private final SelectQuery query;
     private final ClassRepresentation representation;
     private final GraphTraversal<Vertex, Vertex> traversal;
     private final Object[] args;
@@ -39,10 +38,9 @@ final class GraphQueryMethod {
     private final Method method;
     private int counter = 0;
 
-    GraphQueryMethod(SelectQuery query, ClassRepresentation representation,
+    GraphQueryMethod(ClassRepresentation representation,
                      GraphTraversal<Vertex, Vertex> traversal,
                      Object[] args, Converters converters, Method method) {
-        this.query = query;
         this.representation = representation;
         this.traversal = traversal;
         this.args = args;
@@ -50,8 +48,12 @@ final class GraphQueryMethod {
         this.method = method;
     }
 
-    public SelectQuery getQuery() {
-        return query;
+    public Method getMethod() {
+        return method;
+    }
+
+    public String getEntityName() {
+        return representation.getName();
     }
 
     public ClassRepresentation getRepresentation() {
@@ -86,4 +88,6 @@ final class GraphQueryMethod {
         counter++;
         return value;
     }
+
+
 }
