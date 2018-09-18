@@ -23,7 +23,6 @@ import org.jnosql.query.Operator;
 import org.jnosql.query.SelectQuery;
 import org.jnosql.query.Where;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
@@ -39,16 +38,16 @@ class SelectQueryConverter implements Function<GraphQueryMethod, List<Vertex>> {
             Where where = query.getWhere().get();
 
             Condition condition = where.getCondition();
-            Operator operator = condition.getOperator();
             String name = condition.getName();
-            P<?> predicate = getPredicate(graphQuery, condition, operator, name);
+            P<?> predicate = getPredicate(graphQuery, condition);
             traversal.has(name, predicate);
         }
-
-        return null;
+        return traversal.toList();
     }
 
-    private P<?> getPredicate(GraphQueryMethod graphQuery, Condition condition, Operator operator, String name) {
+    private P<?> getPredicate(GraphQueryMethod graphQuery, Condition condition) {
+        Operator operator = condition.getOperator();
+        String name = condition.getName();
         switch (operator) {
             case EQUALS:
                 return P.eq(graphQuery.getValue(name));
@@ -66,14 +65,17 @@ class SelectQueryConverter implements Function<GraphQueryMethod, List<Vertex>> {
                 return P.within(graphQuery.getInValue(name));
             case NOT:
                 Condition notCondition = ConditionValue.class.cast(condition.getValue()).get().get(0);
-                return getPredicate(graphQuery, notCondition, notCondition.getOperator(), name).negate();
+                return getPredicate(graphQuery, notCondition).negate();
             case AND:
+                return ConditionValue.class.cast(condition.getValue()).get().stream()
+                        .map(c -> getPredicate(graphQuery, c)).reduce((a, b) -> a.and(b)).get();
             case OR:
+                return ConditionValue.class.cast(condition.getValue()).get().stream()
+                        .map(c -> getPredicate(graphQuery, c)).reduce((a, b) -> a.or(b)).get();
             default:
                 throw new UnsupportedOperationException("There is not support to the type " + operator + " in graph");
 
 
         }
-        return null;
     }
 }
