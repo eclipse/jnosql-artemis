@@ -23,6 +23,11 @@ import org.jnosql.artemis.util.ConverterUtil;
 import org.jnosql.query.SelectQuery;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static java.util.Collections.singletonList;
 
 final class GraphQueryMethod {
 
@@ -58,12 +63,27 @@ final class GraphQueryMethod {
     }
 
     public Object getValue(String name) {
+        Object value = getValue();
+        return ConverterUtil.getValue(value, representation, name, converters);
+    }
+
+    public  Collection<?> getInValue(String name) {
+        Object value = getValue();
+        if(value instanceof Iterable<?>) {
+            return (Collection<?>) StreamSupport.stream(Iterable.class.cast(value).spliterator(), false)
+                    .map(v -> ConverterUtil.getValue(v, representation, name, converters))
+                    .collect(Collectors.toList());
+        }
+        return singletonList(ConverterUtil.getValue(value, representation, name, converters));
+    }
+
+    private Object getValue() {
         if ((counter + 1) > args.length) {
             throw new DynamicQueryException(String.format("There is a missed argument in the method %s",
                     method));
         }
         Object value = args[counter];
         counter++;
-        return ConverterUtil.getValue(value, representation, name, converters);
+        return value;
     }
 }

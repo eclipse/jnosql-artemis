@@ -14,6 +14,7 @@
  */
 package org.jnosql.artemis.graph.query;
 
+import org.apache.tinkerpop.gremlin.process.traversal.P;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.jnosql.query.Condition;
@@ -42,17 +43,23 @@ class SelectQueryConverter implements Function<GraphQueryMethod, List<Vertex>> {
                 case EQUALS:
                     traversal.has(name, graphQuery.getValue(name));
                 case GREATER_THAN:
+                    traversal.has(name, P.gt(graphQuery.getValue(name)));
                 case GREATER_EQUALS_THAN:
+                    traversal.has(name, P.gte(graphQuery.getValue(name)));
                 case LESSER_THAN:
-                case LESSER_EQUALS_THAN:
-                case LIKE:
+                    traversal.has(name, P.lt(graphQuery.getValue(name)));
+                case BETWEEN:
+                    traversal.has(name, P.between(graphQuery.getValue(name), graphQuery.getValue(name)));
+                case NOT:
+
                 case AND:
                 case OR:
-                case NOT:
-                case IN:
-                case BETWEEN:
                 default:
                     throw new UnsupportedOperationException("There is not support to the type " + operator + " in graph");
+                case IN:
+                    traversal.has(name, P.within(graphQuery.getInValue(name)));
+                case LESSER_EQUALS_THAN:
+                    traversal.has(name, P.lte(graphQuery.getValue(name)));
             }
         }
 
