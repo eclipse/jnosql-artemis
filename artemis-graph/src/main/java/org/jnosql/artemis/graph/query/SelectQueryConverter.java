@@ -16,6 +16,7 @@ package org.jnosql.artemis.graph.query;
 
 import org.apache.tinkerpop.gremlin.process.traversal.P;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.jnosql.aphrodite.antlr.method.SelectMethodFactory;
 import org.jnosql.artemis.reflection.ClassRepresentation;
@@ -47,9 +48,7 @@ class SelectQueryConverter implements Function<GraphQueryMethod, List<Vertex>> {
             Where where = query.getWhere().get();
 
             Condition condition = where.getCondition();
-            String name = condition.getName();
-            P<?> predicate = getPredicate(graphQuery, condition);
-            traversal.has(name, predicate);
+            traversal.filter(getPredicate(graphQuery, condition));
         }
 
         if (query.getSkip() > 0) {
@@ -73,35 +72,35 @@ class SelectQueryConverter implements Function<GraphQueryMethod, List<Vertex>> {
         };
     }
 
-    private P<?> getPredicate(GraphQueryMethod graphQuery, Condition condition) {
+    private GraphTraversal<Vertex, Vertex> getPredicate(GraphQueryMethod graphQuery, Condition condition) {
         Operator operator = condition.getOperator();
         String name = condition.getName();
         switch (operator) {
             case EQUALS:
-                return P.eq(graphQuery.getValue(name));
+                return __.has(name, P.eq(graphQuery.getValue(name)));
             case GREATER_THAN:
-                return P.gt(graphQuery.getValue(name));
+                return __.has(name, P.gt(graphQuery.getValue(name)));
             case GREATER_EQUALS_THAN:
-                return P.gte(graphQuery.getValue(name));
+                return __.has(name, P.gte(graphQuery.getValue(name)));
             case LESSER_THAN:
-                return P.lt(graphQuery.getValue(name));
+                return __.has(name, P.lt(graphQuery.getValue(name)));
             case LESSER_EQUALS_THAN:
-                return P.lte(graphQuery.getValue(name));
+                return __.has(name, P.lte(graphQuery.getValue(name)));
             case BETWEEN:
-                return P.between(graphQuery.getValue(name), graphQuery.getValue(name));
+                return __.has(name, P.between(graphQuery.getValue(name), graphQuery.getValue(name)));
             case IN:
-                return P.within(graphQuery.getInValue(name));
-            case NOT:
-                Condition notCondition = ConditionValue.class.cast(condition.getValue()).get().get(0);
-                return getPredicate(graphQuery, notCondition).negate();
-            case AND:
-                return ConditionValue.class.cast(condition.getValue()).get().stream()
-                        .map(c -> getPredicate(graphQuery, c)).reduce((a, b) -> a.and(b))
-                        .orElseThrow(() -> new UnsupportedOperationException("There is an inconsistency at the AND operator"));
-            case OR:
-                return ConditionValue.class.cast(condition.getValue()).get().stream()
-                        .map(c -> getPredicate(graphQuery, c)).reduce((a, b) -> a.or(b))
-                        .orElseThrow(() -> new UnsupportedOperationException("There is an inconsistency at the OR operator"));
+                return __.has(name, P.eq(graphQuery.getInValue(name)));
+//            case NOT:
+//                Condition notCondition = ConditionValue.class.cast(condition.getValue()).get().get(0);
+//                return getPredicate(graphQuery, notCondition).negate();
+//            case AND:
+//                return ConditionValue.class.cast(condition.getValue()).get().stream()
+//                        .map(c -> getPredicate(graphQuery, c)).reduce((a, b) -> a.and(b))
+//                        .orElseThrow(() -> new UnsupportedOperationException("There is an inconsistency at the AND operator"));
+//            case OR:
+//                return ConditionValue.class.cast(condition.getValue()).get().stream()
+//                        .map(c -> getPredicate(graphQuery, c)).reduce((a, b) -> a.or(b))
+//                        .orElseThrow(() -> new UnsupportedOperationException("There is an inconsistency at the OR operator"));
             default:
                 throw new UnsupportedOperationException("There is not support to the type " + operator + " in graph");
 
