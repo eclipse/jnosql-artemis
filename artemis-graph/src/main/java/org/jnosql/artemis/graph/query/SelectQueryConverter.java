@@ -18,6 +18,7 @@ import org.apache.tinkerpop.gremlin.process.traversal.P;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.jnosql.query.Condition;
+import org.jnosql.query.ConditionValue;
 import org.jnosql.query.Operator;
 import org.jnosql.query.SelectQuery;
 import org.jnosql.query.Where;
@@ -51,7 +52,7 @@ class SelectQueryConverter implements Function<GraphQueryMethod, List<Vertex>> {
                 case BETWEEN:
                     traversal.has(name, P.between(graphQuery.getValue(name), graphQuery.getValue(name)));
                 case NOT:
-
+                    ConditionValue.class.cast(condition.getValue()).get().get(0);
                 case AND:
                 case OR:
                 default:
