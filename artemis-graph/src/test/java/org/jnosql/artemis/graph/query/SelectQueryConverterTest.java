@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @ExtendWith(CDIExtension.class)
 class SelectQueryConverterTest {
@@ -59,6 +60,18 @@ class SelectQueryConverterTest {
     @ParameterizedTest(name = "Should parser the query {0}")
     @ValueSource(strings = {"findByName"})
     public void shouldRunQuery(String methodName) {
+        checkEquals(methodName);
+    }
+
+    @ParameterizedTest(name = "Should parser the query {0}")
+    @ValueSource(strings = {"findByNameEquals"})
+    public void shouldRunQuery1(String methodName) {
+        checkEquals(methodName);
+    }
+
+    @ParameterizedTest(name = "Should parser the query {0}")
+    @ValueSource(strings = {"findByNameNotEquals"})
+    public void shouldRunQuery2(String methodName) {
         Method method = Stream.of(PersonRepository.class.getMethods())
                 .filter(m -> m.getName().equals(methodName)).findFirst().get();
 
@@ -66,7 +79,24 @@ class SelectQueryConverterTest {
         graph.addVertex("Person").property("name", "Ada");
         graph.addVertex("Person").property("name", "Poliana");
         ClassRepresentation representation = representations.get(Person.class);
-        GraphQueryMethod queryMethod = new GraphQueryMethod(representation,graph.traversal().V(),
+        GraphQueryMethod queryMethod = new GraphQueryMethod(representation, graph.traversal().V(),
+                converters, method, new Object[]{"Ada"});
+
+        List<Vertex> vertices = converter.apply(queryMethod);
+        assertEquals(2, vertices.size());
+        assertNotEquals("Ada", vertices.get(0).value("name"));
+        assertNotEquals("Ada", vertices.get(1).value("name"));
+    }
+
+    private void checkEquals(String methodName) {
+        Method method = Stream.of(PersonRepository.class.getMethods())
+                .filter(m -> m.getName().equals(methodName)).findFirst().get();
+
+        graph.addVertex("Person").property("name", "Otavio");
+        graph.addVertex("Person").property("name", "Ada");
+        graph.addVertex("Person").property("name", "Poliana");
+        ClassRepresentation representation = representations.get(Person.class);
+        GraphQueryMethod queryMethod = new GraphQueryMethod(representation, graph.traversal().V(),
                 converters, method, new Object[]{"Ada"});
 
         List<Vertex> vertices = converter.apply(queryMethod);
@@ -75,10 +105,11 @@ class SelectQueryConverterTest {
     }
 
 
-
     interface PersonRepository extends Repository<Person, String> {
 
         List<Person> findByName(String name);
+        List<Person> findByNameEquals(String name);
+        List<Person> findByNameNotEquals(String name);
     }
 
 }
