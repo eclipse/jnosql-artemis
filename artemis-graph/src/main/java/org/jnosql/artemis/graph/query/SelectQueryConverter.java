@@ -90,17 +90,17 @@ class SelectQueryConverter implements Function<GraphQueryMethod, List<Vertex>> {
                 return __.has(name, P.between(graphQuery.getValue(name), graphQuery.getValue(name)));
             case IN:
                 return __.has(name, P.eq(graphQuery.getInValue(name)));
-//            case NOT:
-//                Condition notCondition = ConditionValue.class.cast(condition.getValue()).get().get(0);
-//                return getPredicate(graphQuery, notCondition).negate();
-//            case AND:
-//                return ConditionValue.class.cast(condition.getValue()).get().stream()
-//                        .map(c -> getPredicate(graphQuery, c)).reduce((a, b) -> a.and(b))
-//                        .orElseThrow(() -> new UnsupportedOperationException("There is an inconsistency at the AND operator"));
-//            case OR:
-//                return ConditionValue.class.cast(condition.getValue()).get().stream()
-//                        .map(c -> getPredicate(graphQuery, c)).reduce((a, b) -> a.or(b))
-//                        .orElseThrow(() -> new UnsupportedOperationException("There is an inconsistency at the OR operator"));
+            case NOT:
+                Condition notCondition = ConditionValue.class.cast(condition.getValue()).get().get(0);
+                return __.not(getPredicate(graphQuery, notCondition));
+            case AND:
+                return ConditionValue.class.cast(condition.getValue()).get().stream()
+                        .map(c -> getPredicate(graphQuery, c)).reduce((a, b) -> a.and(b))
+                        .orElseThrow(() -> new UnsupportedOperationException("There is an inconsistency at the AND operator"));
+            case OR:
+                return ConditionValue.class.cast(condition.getValue()).get().stream()
+                        .map(c -> getPredicate(graphQuery, c)).reduce((a, b) -> a.or(b))
+                        .orElseThrow(() -> new UnsupportedOperationException("There is an inconsistency at the OR operator"));
             default:
                 throw new UnsupportedOperationException("There is not support to the type " + operator + " in graph");
 
