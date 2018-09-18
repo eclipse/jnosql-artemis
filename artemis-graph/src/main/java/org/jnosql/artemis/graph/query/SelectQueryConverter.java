@@ -21,10 +21,15 @@ import org.jnosql.query.Condition;
 import org.jnosql.query.ConditionValue;
 import org.jnosql.query.Operator;
 import org.jnosql.query.SelectQuery;
+import org.jnosql.query.Sort;
 import org.jnosql.query.Where;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
+
+import static org.apache.tinkerpop.gremlin.process.traversal.Order.decr;
+import static org.apache.tinkerpop.gremlin.process.traversal.Order.incr;
 
 class SelectQueryConverter implements Function<GraphQueryMethod, List<Vertex>> {
 
@@ -42,7 +47,26 @@ class SelectQueryConverter implements Function<GraphQueryMethod, List<Vertex>> {
             P<?> predicate = getPredicate(graphQuery, condition);
             traversal.has(name, predicate);
         }
+
+        if (query.getSkip() > 0) {
+            traversal.skip(query.getSkip());
+        }
+
+        if (query.getLimit() > 0) {
+            return traversal.next((int) query.getLimit());
+        }
+        query.getOrderBy().forEach(getSort(traversal));
         return traversal.toList();
+    }
+
+    private Consumer<Sort> getSort(GraphTraversal<Vertex, Vertex> traversal) {
+        return o -> {
+            if (Sort.SortType.ASC.equals(o.getType())) {
+                traversal.order().by(o.getName(), incr);
+            } else {
+                traversal.order().by(o.getName(), decr);
+            }
+        };
     }
 
     private P<?> getPredicate(GraphQueryMethod graphQuery, Condition condition) {
