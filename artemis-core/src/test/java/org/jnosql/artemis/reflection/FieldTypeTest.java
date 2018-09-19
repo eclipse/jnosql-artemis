@@ -16,7 +16,6 @@ package org.jnosql.artemis.reflection;
 
 import org.jnosql.artemis.model.Actor;
 import org.jnosql.artemis.model.Address;
-import org.jnosql.artemis.model.Director;
 import org.jnosql.artemis.model.Movie;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.model.Worker;

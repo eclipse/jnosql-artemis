@@ -16,8 +16,6 @@ package org.jnosql.artemis.document.query;
 
 import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.model.Person;
-import org.jnosql.diana.api.document.query.DocumentDeleteFrom;
-import org.jnosql.diana.api.document.query.DocumentFrom;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
