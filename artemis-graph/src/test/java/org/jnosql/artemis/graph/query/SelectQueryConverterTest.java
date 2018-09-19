@@ -271,6 +271,27 @@ class SelectQueryConverterTest {
         MatcherAssert.assertThat(names, Matchers.contains("Ada", "Otavio", "Poliana"));
     }
 
+    @ParameterizedTest(name = "Should parser the query {0}")
+    @ValueSource(strings = {"findByNameIn"})
+    public void shouldRunQuery12(String methodName) {
+        Method method = Stream.of(PersonRepository.class.getMethods())
+                .filter(m -> m.getName().equals(methodName)).findFirst().get();
+
+        graph.addVertex(T.label, "Person", "name", "Otavio", "age", 30);
+        graph.addVertex(T.label, "Person", "name", "Ada", "age", 40);
+        graph.addVertex(T.label, "Person", "name", "Poliana", "age", 25);
+        ClassRepresentation representation = representations.get(Person.class);
+        GraphQueryMethod queryMethod = new GraphQueryMethod(representation, graph.traversal().V(),
+                converters, method, new Object[]{Arrays.asList("Otavio", "Ada", "Poliana")});
+
+        List<Vertex> vertices = converter.apply(queryMethod);
+        List<Object> names = vertices.stream().map(v -> v.value("name"))
+                .sorted()
+                .collect(Collectors.toList());
+        assertEquals(3, vertices.size());
+        MatcherAssert.assertThat(names, Matchers.contains("Ada", "Otavio", "Poliana"));
+    }
+
 
     private void checkEquals(String methodName) {
         Method method = Stream.of(PersonRepository.class.getMethods())
@@ -313,7 +334,9 @@ class SelectQueryConverterTest {
 
         List<Person> findByAgeLessThanOrderByNameDescAgeAsc(Integer age);
 
-        List<Person> findByAgeIn(List<Integer> name);
+        List<Person> findByAgeIn(List<Integer> ages);
+
+        List<Person> findByNameIn(List<String> names);
     }
 
 }
