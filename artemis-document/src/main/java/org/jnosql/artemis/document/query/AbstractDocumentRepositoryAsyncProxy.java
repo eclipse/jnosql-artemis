@@ -100,7 +100,7 @@ public abstract class AbstractDocumentRepositoryAsyncProxy<T> extends BaseDocume
             getTemplate().query(value, consumer);
         } else {
             PreparedStatementAsync prepare = getTemplate().prepare(value);
-            params.entrySet().forEach(e -> prepare.bind(e.getKey(), e.getValue()));
+            params.forEach((key, value1) -> prepare.bind(key, value1));
             prepare.getResultList(consumer);
         }
 

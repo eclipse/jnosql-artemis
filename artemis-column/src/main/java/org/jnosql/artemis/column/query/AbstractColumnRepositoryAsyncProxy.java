@@ -76,7 +76,7 @@ public abstract class AbstractColumnRepositoryAsyncProxy<T> extends BaseColumnRe
             getTemplate().query(value, consumer);
         } else {
             PreparedStatementAsync prepare = getTemplate().prepare(value);
-            params.entrySet().forEach(e -> prepare.bind(e.getKey(), e.getValue()));
+            params.forEach((key, value1) -> prepare.bind(key, value1));
             prepare.getResultList(consumer);
         }
 

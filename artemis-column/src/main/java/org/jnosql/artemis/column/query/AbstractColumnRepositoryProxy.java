@@ -82,7 +82,7 @@ public abstract class AbstractColumnRepositoryProxy<T, ID> extends  BaseColumnRe
             entities = getTemplate().query(value);
         } else {
             PreparedStatement prepare = getTemplate().prepare(value);
-            params.entrySet().forEach(e -> prepare.bind(e.getKey(), e.getValue()));
+            params.forEach((key, value1) -> prepare.bind(key, value1));
             entities = prepare.getResultList();
         }
         return ReturnTypeConverterUtil.returnObject(entities, typeClass, method);

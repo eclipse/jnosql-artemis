@@ -25,8 +25,6 @@ import javax.validation.ValidatorFactory;
 import java.util.HashSet;
 import java.util.Set;
 
-import static java.util.stream.Collectors.toSet;
-
 class DefaultArtemisValidator implements ArtemisValidator {
 
     @Inject
