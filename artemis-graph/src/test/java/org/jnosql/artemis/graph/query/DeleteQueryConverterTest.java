@@ -76,7 +76,7 @@ class DeleteQueryConverterTest {
     @ParameterizedTest(name = "Should parser the query {0}")
     @ValueSource(strings = {"deleteByNameNotEquals"})
     public void shouldRunQuery2(String methodName) {
-        Method method = Stream.of(SelectQueryConverterTest.PersonRepository.class.getMethods())
+        Method method = Stream.of(PersonRepository.class.getMethods())
                 .filter(m -> m.getName().equals(methodName)).findFirst().get();
 
         graph.addVertex("Person").property("name", "Otavio");
@@ -95,7 +95,7 @@ class DeleteQueryConverterTest {
     @ParameterizedTest(name = "Should parser the query {0}")
     @ValueSource(strings = {"deleteByAgeLessThan"})
     public void shouldRunQuery3(String methodName) {
-        Method method = Stream.of(SelectQueryConverterTest.PersonRepository.class.getMethods())
+        Method method = Stream.of(PersonRepository.class.getMethods())
                 .filter(m -> m.getName().equals(methodName)).findFirst().get();
 
         graph.addVertex(T.label, "Person", "name", "Otavio", "age", 30);
@@ -113,7 +113,7 @@ class DeleteQueryConverterTest {
     @ParameterizedTest(name = "Should parser the query {0}")
     @ValueSource(strings = {"deleteByAgeLessThanEqual"})
     public void shouldRunQuery4(String methodName) {
-        Method method = Stream.of(SelectQueryConverterTest.PersonRepository.class.getMethods())
+        Method method = Stream.of(PersonRepository.class.getMethods())
                 .filter(m -> m.getName().equals(methodName)).findFirst().get();
 
         graph.addVertex(T.label, "Person", "name", "Otavio", "age", 30);
@@ -133,7 +133,7 @@ class DeleteQueryConverterTest {
     @ParameterizedTest(name = "Should parser the query {0}")
     @ValueSource(strings = {"deleteByAgeGreaterThan"})
     public void shouldRunQuery5(String methodName) {
-        Method method = Stream.of(SelectQueryConverterTest.PersonRepository.class.getMethods())
+        Method method = Stream.of(PersonRepository.class.getMethods())
                 .filter(m -> m.getName().equals(methodName)).findFirst().get();
 
         graph.addVertex(T.label, "Person", "name", "Otavio", "age", 30);
@@ -151,7 +151,7 @@ class DeleteQueryConverterTest {
     @ParameterizedTest(name = "Should parser the query {0}")
     @ValueSource(strings = {"deleteByAgeGreaterThanEqual"})
     public void shouldRunQuery6(String methodName) {
-        Method method = Stream.of(SelectQueryConverterTest.PersonRepository.class.getMethods())
+        Method method = Stream.of(PersonRepository.class.getMethods())
                 .filter(m -> m.getName().equals(methodName)).findFirst().get();
 
         graph.addVertex(T.label, "Person", "name", "Otavio", "age", 30);
@@ -170,7 +170,7 @@ class DeleteQueryConverterTest {
     @ParameterizedTest(name = "Should parser the query {0}")
     @ValueSource(strings = {"deleteByAgeBetween"})
     public void shouldRunQuery7(String methodName) {
-        Method method = Stream.of(SelectQueryConverterTest.PersonRepository.class.getMethods())
+        Method method = Stream.of(PersonRepository.class.getMethods())
                 .filter(m -> m.getName().equals(methodName)).findFirst().get();
 
         graph.addVertex(T.label, "Person", "name", "Otavio", "age", 30);
@@ -188,70 +188,9 @@ class DeleteQueryConverterTest {
 
 
     @ParameterizedTest(name = "Should parser the query {0}")
-    @ValueSource(strings = {"deleteByAgeLessThanOrderByName"})
-    public void shouldRunQuery8(String methodName) {
-        Method method = Stream.of(SelectQueryConverterTest.PersonRepository.class.getMethods())
-                .filter(m -> m.getName().equals(methodName)).findFirst().get();
-
-        graph.addVertex(T.label, "Person", "name", "Otavio", "age", 30);
-        graph.addVertex(T.label, "Person", "name", "Ada", "age", 40);
-        graph.addVertex(T.label, "Person", "name", "Poliana", "age", 25);
-        ClassRepresentation representation = representations.get(Person.class);
-        GraphQueryMethod queryMethod = new GraphQueryMethod(representation, graph.traversal().V(),
-                converters, method, new Object[]{100});
-
-        List<Vertex> vertices = converter.apply(queryMethod);
-        List<Object> names = vertices.stream().map(v -> v.value("name"))
-                .collect(Collectors.toList());
-        assertEquals(3, vertices.size());
-        MatcherAssert.assertThat(names, Matchers.contains("Ada", "Otavio", "Poliana"));
-    }
-
-
-    @ParameterizedTest(name = "Should parser the query {0}")
-    @ValueSource(strings = {"deleteByAgeLessThanOrderByNameDesc"})
-    public void shouldRunQuery9(String methodName) {
-        Method method = Stream.of(SelectQueryConverterTest.PersonRepository.class.getMethods())
-                .filter(m -> m.getName().equals(methodName)).findFirst().get();
-
-        graph.addVertex(T.label, "Person", "name", "Otavio", "age", 30);
-        graph.addVertex(T.label, "Person", "name", "Ada", "age", 40);
-        graph.addVertex(T.label, "Person", "name", "Poliana", "age", 25);
-        ClassRepresentation representation = representations.get(Person.class);
-        GraphQueryMethod queryMethod = new GraphQueryMethod(representation, graph.traversal().V(),
-                converters, method, new Object[]{100});
-
-        List<Vertex> vertices = converter.apply(queryMethod);
-        List<Object> names = vertices.stream().map(v -> v.value("name"))
-                .collect(Collectors.toList());
-        assertEquals(3, vertices.size());
-        MatcherAssert.assertThat(names, Matchers.contains("Poliana", "Otavio", "Ada"));
-    }
-
-    @ParameterizedTest(name = "Should parser the query {0}")
-    @ValueSource(strings = {"deleteByAgeLessThanOrderByNameDescAgeAsc"})
-    public void shouldRunQuery10(String methodName) {
-        Method method = Stream.of(SelectQueryConverterTest.PersonRepository.class.getMethods())
-                .filter(m -> m.getName().equals(methodName)).findFirst().get();
-
-        graph.addVertex(T.label, "Person", "name", "Otavio", "age", 30);
-        graph.addVertex(T.label, "Person", "name", "Ada", "age", 40);
-        graph.addVertex(T.label, "Person", "name", "Poliana", "age", 25);
-        ClassRepresentation representation = representations.get(Person.class);
-        GraphQueryMethod queryMethod = new GraphQueryMethod(representation, graph.traversal().V(),
-                converters, method, new Object[]{100});
-
-        List<Vertex> vertices = converter.apply(queryMethod);
-        List<Object> names = vertices.stream().map(v -> v.value("name"))
-                .collect(Collectors.toList());
-        assertEquals(3, vertices.size());
-        MatcherAssert.assertThat(names, Matchers.contains("Poliana", "Otavio", "Ada"));
-    }
-
-    @ParameterizedTest(name = "Should parser the query {0}")
     @ValueSource(strings = {"deleteByAgeIn"})
     public void shouldRunQuery11(String methodName) {
-        Method method = Stream.of(SelectQueryConverterTest.PersonRepository.class.getMethods())
+        Method method = Stream.of(PersonRepository.class.getMethods())
                 .filter(m -> m.getName().equals(methodName)).findFirst().get();
 
         graph.addVertex(T.label, "Person", "name", "Otavio", "age", 30);
@@ -272,7 +211,7 @@ class DeleteQueryConverterTest {
     @ParameterizedTest(name = "Should parser the query {0}")
     @ValueSource(strings = {"deleteByNameIn"})
     public void shouldRunQuery12(String methodName) {
-        Method method = Stream.of(SelectQueryConverterTest.PersonRepository.class.getMethods())
+        Method method = Stream.of(PersonRepository.class.getMethods())
                 .filter(m -> m.getName().equals(methodName)).findFirst().get();
 
         graph.addVertex(T.label, "Person", "name", "Otavio", "age", 30);
