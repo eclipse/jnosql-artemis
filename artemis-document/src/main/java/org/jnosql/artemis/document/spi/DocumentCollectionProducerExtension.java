@@ -31,6 +31,7 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessProducer;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -63,7 +64,7 @@ public class DocumentCollectionProducerExtension implements Extension {
         }
 
 
-        if (Stream.of(javaClass.getInterfaces()).anyMatch(Repository.class::equals)
+        if (Arrays.asList(javaClass.getInterfaces()).contains(Repository.class)
                 && Modifier.isInterface(javaClass.getModifiers())) {
             LOGGER.info("Adding a new Repository as discovered on document: " + javaClass);
             crudTypes.add(javaClass);
@@ -77,7 +78,7 @@ public class DocumentCollectionProducerExtension implements Extension {
             return;
         }
 
-        if (Stream.of(javaClass.getInterfaces()).anyMatch(RepositoryAsync.class::equals)
+        if (Arrays.asList(javaClass.getInterfaces()).contains(RepositoryAsync.class)
                 && Modifier.isInterface(javaClass.getModifiers())) {
             LOGGER.info("Adding a new RepositoryAsync as discovered on document: " + javaClass);
             crudAsyncTypes.add(javaClass);

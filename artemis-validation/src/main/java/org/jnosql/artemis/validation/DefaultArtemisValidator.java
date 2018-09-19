@@ -22,6 +22,7 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import java.util.HashSet;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
@@ -39,7 +40,7 @@ class DefaultArtemisValidator implements ArtemisValidator {
         Set<ConstraintViolation<Object>> violations = validator.validate(bean);
 
         if (!violations.isEmpty()) {
-            throw new ConstraintViolationException(violations.stream().collect(toSet()));
+            throw new ConstraintViolationException(new HashSet<>(violations));
         }
 
     }

@@ -128,7 +128,7 @@ abstract class AbstractGraphRepositoryProxy<T, ID> implements InvocationHandler 
             entities = getTemplate().query(value);
         } else {
             PreparedStatement prepare = getTemplate().prepare(value);
-            params.entrySet().stream().forEach(e -> prepare.bind(e.getKey(), e.getValue()));
+            params.entrySet().forEach(e -> prepare.bind(e.getKey(), e.getValue()));
             entities = prepare.getResultList();
         }
         return ReturnTypeConverterUtil.returnObject(entities, typeClass, method);
