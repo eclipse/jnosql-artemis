@@ -92,7 +92,7 @@ class SelectQueryConverter implements Function<GraphQueryMethod, List<Vertex>> {
             case BETWEEN:
                 return __.has(nativeName, P.between(graphQuery.getValue(name), graphQuery.getValue(name)));
             case IN:
-                return __.has(nativeName, P.eq(graphQuery.getInValue(name)));
+                return __.has(nativeName, P.within(graphQuery.getInValue(name)));
             case NOT:
                 Condition notCondition = ConditionValue.class.cast(condition.getValue()).get().get(0);
                 return __.not(getPredicate(graphQuery, notCondition, representation));
