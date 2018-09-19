@@ -30,7 +30,7 @@ import java.util.function.Function;
 import static org.apache.tinkerpop.gremlin.process.traversal.Order.decr;
 import static org.apache.tinkerpop.gremlin.process.traversal.Order.incr;
 
-class SelectQueryConverter extends AbstractQueryConvert implements Function<GraphQueryMethod, List<Vertex>> {
+final class SelectQueryConverter extends AbstractQueryConvert implements Function<GraphQueryMethod, List<Vertex>> {
 
 
     @Override

@@ -25,7 +25,7 @@ import org.jnosql.query.Where;
 import java.util.List;
 import java.util.function.Function;
 
-class DeleteQueryConverter extends AbstractQueryConvert implements Function<GraphQueryMethod, List<Vertex>> {
+final class DeleteQueryConverter extends AbstractQueryConvert implements Function<GraphQueryMethod, List<Vertex>> {
 
     @Override
     public List<Vertex> apply(GraphQueryMethod graphQuery) {
