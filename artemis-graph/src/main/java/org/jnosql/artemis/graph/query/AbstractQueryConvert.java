@@ -51,11 +51,11 @@ abstract class AbstractQueryConvert {
                 return __.not(getPredicate(graphQuery, notCondition, representation));
             case AND:
                 return ConditionValue.class.cast(condition.getValue()).get().stream()
-                        .map(c -> getPredicate(graphQuery, c, representation)).reduce((a, b) -> a.and(b))
+                        .map(c -> getPredicate(graphQuery, c, representation)).reduce(GraphTraversal::and)
                         .orElseThrow(() -> new UnsupportedOperationException("There is an inconsistency at the AND operator"));
             case OR:
                 return ConditionValue.class.cast(condition.getValue()).get().stream()
-                        .map(c -> getPredicate(graphQuery, c, representation)).reduce((a, b) -> a.or(b))
+                        .map(c -> getPredicate(graphQuery, c, representation)).reduce(GraphTraversal::or)
                         .orElseThrow(() -> new UnsupportedOperationException("There is an inconsistency at the OR operator"));
             default:
                 throw new UnsupportedOperationException("There is not support to the type " + operator + " in graph");
