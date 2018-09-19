@@ -62,7 +62,7 @@ public abstract class AbstractKeyValueRepositoryProxy<T> implements InvocationHa
             entities = getTemplate().query(query, getEntityClass());
         } else {
             PreparedStatement prepare = getTemplate().prepare(query, getEntityClass());
-            params.forEach((key, value) -> prepare.bind(key, value));
+            params.forEach(prepare::bind);
             entities = prepare.getResultList();
         }
         return ReturnTypeConverterUtil.returnObject(entities, getEntityClass(), method);

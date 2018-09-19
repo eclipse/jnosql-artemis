@@ -80,7 +80,7 @@ public abstract class AbstractDocumentRepositoryProxy<T> extends BaseDocumentRep
             entities = getTemplate().query(value);
         } else {
             PreparedStatement prepare = getTemplate().prepare(value);
-            params.forEach((key, value1) -> prepare.bind(key, value1));
+            params.forEach(prepare::bind);
             entities = prepare.getResultList();
         }
         return ReturnTypeConverterUtil.returnObject(entities, typeClass, method);
