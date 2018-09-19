@@ -23,12 +23,12 @@ import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-@Target({FIELD, TYPE, PARAMETER})
-@Retention(RUNTIME)
-@Qualifier
 /**
  * All Graph operation go through the Graph traversal e.g. the GraphConverter and GraphTemplate implementation will use
  * {@link org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource} in all operations.
  */
+@Target({FIELD, TYPE, PARAMETER})
+@Retention(RUNTIME)
+@Qualifier
 public @interface GraphTraversalSourceOperation {
 }

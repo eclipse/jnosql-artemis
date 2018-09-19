@@ -23,12 +23,12 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-@InterceptorBinding
-@Target({METHOD, TYPE})
-@Retention(RUNTIME)
 /**
  * The Transactional annotation provides the application the ability to declaratively
  * control transaction boundaries on CDI managed beans. {@link org.apache.tinkerpop.gremlin.structure.Transaction}
  */
+@InterceptorBinding
+@Target({METHOD, TYPE})
+@Retention(RUNTIME)
 public @interface Transactional {
 }
