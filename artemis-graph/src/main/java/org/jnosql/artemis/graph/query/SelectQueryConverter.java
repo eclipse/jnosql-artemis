@@ -14,15 +14,11 @@
  */
 package org.jnosql.artemis.graph.query;
 
-import org.apache.tinkerpop.gremlin.process.traversal.P;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
-import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.jnosql.aphrodite.antlr.method.SelectMethodFactory;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.query.Condition;
-import org.jnosql.query.ConditionValue;
-import org.jnosql.query.Operator;
 import org.jnosql.query.SelectQuery;
 import org.jnosql.query.Sort;
 import org.jnosql.query.Where;
