@@ -40,6 +40,7 @@ class DeleteQueryConverter extends AbstractQueryConvert implements Function<Grap
             traversal.filter(getPredicate(graphQuery, condition, representation));
         }
 
-
+        traversal.hasLabel(representation.getName());
+        return traversal.toList();
     }
 }
