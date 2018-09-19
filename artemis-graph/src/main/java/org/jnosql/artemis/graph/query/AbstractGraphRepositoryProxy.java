@@ -15,9 +15,9 @@
 package org.jnosql.artemis.graph.query;
 
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
-import org.apache.tinkerpop.gremlin.structure.Element;
 import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.Param;
 import org.jnosql.artemis.PreparedStatement;
 import org.jnosql.artemis.Query;
@@ -47,17 +47,20 @@ import static org.jnosql.artemis.graph.query.ReturnTypeConverterUtil.returnObjec
 abstract class AbstractGraphRepositoryProxy<T, ID> implements InvocationHandler {
 
 
+    private final SelectQueryConverter converter = new SelectQueryConverter();
+    private final DeleteQueryConverter deleteConverter = new DeleteQueryConverter();
+
     protected abstract ClassRepresentation getClassRepresentation();
 
     protected abstract Repository getRepository();
-
-    protected abstract GraphQueryParser getQueryParser();
 
     protected abstract Graph getGraph();
 
     protected abstract GraphConverter getConverter();
 
     protected abstract GraphTemplate getTemplate();
+
+    protected abstract Converters getConverters();
 
 
     @Override
@@ -70,9 +73,9 @@ abstract class AbstractGraphRepositoryProxy<T, ID> implements InvocationHandler 
             case DEFAULT:
                 return method.invoke(getRepository(), args);
             case FIND_BY:
-                return executeFindByMethod(method, args, methodName);
+                return executeFindByMethod(method, args);
             case DELETE_BY:
-                return executeDeleteMethod(args, methodName);
+                return executeDeleteMethod(method, args);
             case FIND_ALL:
                 return executeFindAll(method, args);
             case OBJECT_METHOD:
@@ -86,26 +89,24 @@ abstract class AbstractGraphRepositoryProxy<T, ID> implements InvocationHandler 
         }
     }
 
-    private Object executeDeleteMethod(Object[] args, String methodName) {
-        GraphTraversal<Vertex, Vertex> traversal = getGraph().traversal().V();
-        getQueryParser().deleteByParse(methodName, args, getClassRepresentation(), traversal);
+    private Object executeDeleteMethod(Method method, Object[] args) {
 
-        List<?> vertices = traversal.toList();
+        GraphQueryMethod queryMethod = new GraphQueryMethod(getClassRepresentation(),
+                getGraph().traversal().V(),
+                getConverters(), method, args);
 
-        for (Object element : vertices) {
-            if (Element.class.isInstance(element)) {
-                Element.class.cast(element).remove();
-            }
-        }
+        List<Vertex> vertices = deleteConverter.apply(queryMethod);
+        vertices.forEach(Vertex::remove);
         return Void.class;
     }
 
-    private Object executeFindByMethod(Method method, Object[] args, String methodName) {
+    private Object executeFindByMethod(Method method, Object[] args) {
         Class<?> classInstance = getClassRepresentation().getClassInstance();
-        GraphTraversal<Vertex, Vertex> traversal = getGraph().traversal().V();
-        getQueryParser().findByParse(methodName, args, getClassRepresentation(), traversal);
+        GraphQueryMethod queryMethod = new GraphQueryMethod(getClassRepresentation(),
+                getGraph().traversal().V(),
+                getConverters(), method, args);
 
-        List<Vertex> vertices = traversal.hasLabel(getClassRepresentation().getName()).toList();
+        List<Vertex> vertices = converter.apply(queryMethod);
         Stream<T> stream = vertices.stream().map(getConverter()::toEntity);
 
         return returnObject(stream, classInstance, method);

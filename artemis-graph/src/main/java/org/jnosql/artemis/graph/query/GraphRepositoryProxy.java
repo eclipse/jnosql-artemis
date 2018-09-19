@@ -15,6 +15,7 @@
 package org.jnosql.artemis.graph.query;
 
 import org.apache.tinkerpop.gremlin.structure.Graph;
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.graph.GraphConverter;
 import org.jnosql.artemis.graph.GraphTemplate;
@@ -39,18 +40,18 @@ class GraphRepositoryProxy<T, ID> extends AbstractGraphRepositoryProxy<T, ID> {
 
     private final ClassRepresentation classRepresentation;
 
-    private final GraphQueryParser queryParser;
-
     private final Graph graph;
 
     private final GraphConverter converter;
 
     private final GraphTemplate template;
 
+    private final Converters converters;
+
 
     GraphRepositoryProxy(GraphTemplate template, ClassRepresentations classRepresentations,
                          Class<?> repositoryType, Reflections reflections,
-                         Graph graph, GraphConverter converter) {
+                         Graph graph, GraphConverter converter, Converters converters) {
 
         Class<T> typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
@@ -59,9 +60,9 @@ class GraphRepositoryProxy<T, ID> extends AbstractGraphRepositoryProxy<T, ID> {
         this.converter = converter;
         this.reflections = reflections;
         this.classRepresentation = classRepresentations.get(typeClass);
-        this.queryParser = new GraphQueryParser();
         this.repository = new GraphRepository(template, classRepresentation);
         this.template = template;
+        this.converters = converters;
 
     }
 
@@ -73,11 +74,6 @@ class GraphRepositoryProxy<T, ID> extends AbstractGraphRepositoryProxy<T, ID> {
     @Override
     protected Repository getRepository() {
         return repository;
-    }
-
-    @Override
-    protected GraphQueryParser getQueryParser() {
-        return queryParser;
     }
 
     @Override
@@ -93,6 +89,11 @@ class GraphRepositoryProxy<T, ID> extends AbstractGraphRepositoryProxy<T, ID> {
     @Override
     protected GraphTemplate getTemplate() {
         return template;
+    }
+
+    @Override
+    protected Converters getConverters() {
+        return converters;
     }
 
 

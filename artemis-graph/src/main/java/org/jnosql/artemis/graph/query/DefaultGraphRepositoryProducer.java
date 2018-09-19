@@ -15,6 +15,7 @@
 package org.jnosql.artemis.graph.query;
 
 import org.apache.tinkerpop.gremlin.structure.Graph;
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.graph.GraphConverter;
 import org.jnosql.artemis.graph.GraphRepositoryProducer;
@@ -39,6 +40,8 @@ class DefaultGraphRepositoryProducer implements GraphRepositoryProducer {
     private GraphConverter converter;
     @Inject
     private GraphTemplateProducer producer;
+    @Inject
+    private Converters converters;
 
     @Override
     public <E, ID, T extends Repository<E, ID>> T get(Class<T> repositoryClass, Graph manager) {
@@ -46,7 +49,7 @@ class DefaultGraphRepositoryProducer implements GraphRepositoryProducer {
         Objects.requireNonNull(manager, "manager class is required");
         GraphTemplate template = producer.get(manager);
         GraphRepositoryProxy<T, ID> handler = new GraphRepositoryProxy(template,
-                classRepresentations, repositoryClass, reflections, manager, converter);
+                classRepresentations, repositoryClass, reflections, manager, converter, converters);
         return (T) Proxy.newProxyInstance(repositoryClass.getClassLoader(),
                 new Class[]{repositoryClass},
                 handler);

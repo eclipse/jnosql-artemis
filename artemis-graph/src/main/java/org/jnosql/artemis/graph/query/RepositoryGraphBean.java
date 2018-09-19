@@ -15,6 +15,7 @@
 package org.jnosql.artemis.graph.query;
 
 import org.apache.tinkerpop.gremlin.structure.Graph;
+import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.Repository;
@@ -96,9 +97,10 @@ public class RepositoryGraphBean implements Bean<Repository>, PassivationCapable
         GraphConverter converter = getInstance(GraphConverter.class);
         Graph graph = provider.isEmpty() ? getInstance(Graph.class) :
                 getInstance(Graph.class, provider);
+        Converters converters = getInstance(Converters.class);
 
         GraphRepositoryProxy handler = new GraphRepositoryProxy(repository,
-                classRepresentations, type, reflections, graph, converter);
+                classRepresentations, type, reflections, graph, converter, converters);
         return (Repository) Proxy.newProxyInstance(type.getClassLoader(),
                 new Class[]{type},
                 handler);
