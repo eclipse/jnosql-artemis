@@ -33,6 +33,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import javax.inject.Inject;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -229,6 +230,47 @@ class SelectQueryConverterTest {
         MatcherAssert.assertThat(names, Matchers.contains("Poliana", "Otavio", "Ada"));
     }
 
+    @ParameterizedTest(name = "Should parser the query {0}")
+    @ValueSource(strings = {"findByAgeLessThanOrderByNameDescAgeAsc"})
+    public void shouldRunQuery10(String methodName) {
+        Method method = Stream.of(PersonRepository.class.getMethods())
+                .filter(m -> m.getName().equals(methodName)).findFirst().get();
+
+        graph.addVertex(T.label, "Person", "name", "Otavio", "age", 30);
+        graph.addVertex(T.label, "Person", "name", "Ada", "age", 40);
+        graph.addVertex(T.label, "Person", "name", "Poliana", "age", 25);
+        ClassRepresentation representation = representations.get(Person.class);
+        GraphQueryMethod queryMethod = new GraphQueryMethod(representation, graph.traversal().V(),
+                converters, method, new Object[]{100});
+
+        List<Vertex> vertices = converter.apply(queryMethod);
+        List<Object> names = vertices.stream().map(v -> v.value("name"))
+                .collect(Collectors.toList());
+        assertEquals(3, vertices.size());
+        MatcherAssert.assertThat(names, Matchers.contains("Poliana", "Otavio", "Ada"));
+    }
+
+    @ParameterizedTest(name = "Should parser the query {0}")
+    @ValueSource(strings = {"findByAgeIn"})
+    public void shouldRunQuery11(String methodName) {
+        Method method = Stream.of(PersonRepository.class.getMethods())
+                .filter(m -> m.getName().equals(methodName)).findFirst().get();
+
+        graph.addVertex(T.label, "Person", "name", "Otavio", "age", 30);
+        graph.addVertex(T.label, "Person", "name", "Ada", "age", 40);
+        graph.addVertex(T.label, "Person", "name", "Poliana", "age", 25);
+        ClassRepresentation representation = representations.get(Person.class);
+        GraphQueryMethod queryMethod = new GraphQueryMethod(representation, graph.traversal().V(),
+                converters, method, new Object[]{Arrays.asList(25,40,30)});
+
+        List<Vertex> vertices = converter.apply(queryMethod);
+        List<Object> names = vertices.stream().map(v -> v.value("name"))
+                .sorted()
+                .collect(Collectors.toList());
+        assertEquals(3, vertices.size());
+        MatcherAssert.assertThat(names, Matchers.contains("Ada", "Otavio", "Poliana"));
+    }
+
 
     private void checkEquals(String methodName) {
         Method method = Stream.of(PersonRepository.class.getMethods())
@@ -270,6 +312,8 @@ class SelectQueryConverterTest {
         List<Person> findByAgeLessThanOrderByNameDesc(Integer age);
 
         List<Person> findByAgeLessThanOrderByNameDescAgeAsc(Integer age);
+
+        List<Person> findByAgeIn(List<Integer> name);
     }
 
 }
