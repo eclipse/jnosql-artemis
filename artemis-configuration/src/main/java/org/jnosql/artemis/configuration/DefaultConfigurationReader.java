@@ -71,6 +71,8 @@ class DefaultConfigurationReader implements ConfigurationReader {
         String name = configuration.getName();
         String description = configuration.getDescription();
         Map<String, Object> settings = new HashMap<>(ofNullable(configuration.getSettings()).orElse(emptyMap()));
+        settings.putAll(System.getenv());
+        System.getProperties().forEach((k,v) -> settings.put(k.toString(), v));
         Class<?> provider = getProvider(configurationClass, configuration);
 
         return new DefaultConfigurationSettingsUnit(name, description, provider, Settings.of(settings));
