@@ -70,14 +70,11 @@ class DefaultConfigurationReader implements ConfigurationReader {
 
         String name = configuration.getName();
         String description = configuration.getDescription();
-        Map<String, Object> settings = new HashMap<>(ofNullable(configuration.getSettings()).orElse(emptyMap()));
-        settings.putAll(System.getenv());
-        System.getProperties().forEach((k,v) -> settings.put(k.toString(), v));
+        Map<String, Object> settings = getSettings(configuration);
         Class<?> provider = getProvider(configurationClass, configuration);
 
         return new DefaultConfigurationSettingsUnit(name, description, provider, Settings.of(settings));
     }
-
 
     @Override
     public <T> ConfigurationSettingsUnit read(ConfigurationUnit annotation) {
@@ -89,7 +86,7 @@ class DefaultConfigurationReader implements ConfigurationReader {
 
         String name = configuration.getName();
         String description = configuration.getDescription();
-        Map<String, Object> settings = new HashMap<>(ofNullable(configuration.getSettings()).orElse(emptyMap()));
+        Map<String, Object> settings = getSettings(configuration);
 
         return new DefaultConfigurationSettingsUnit(name, description, null, Settings.of(settings));
     }
@@ -105,6 +102,13 @@ class DefaultConfigurationReader implements ConfigurationReader {
 
 
         return select.get().read(stream, annotation);
+    }
+
+    private Map<String, Object> getSettings(Configurable configuration) {
+        Map<String, Object> settings = new HashMap<>(ofNullable(configuration.getSettings()).orElse(emptyMap()));
+        settings.putAll(System.getenv());
+        System.getProperties().forEach((k, v) -> settings.put(k.toString(), v));
+        return settings;
     }
 
     private String getExtension(ConfigurationUnit annotation) {

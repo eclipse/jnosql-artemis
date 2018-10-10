@@ -58,6 +58,8 @@ public class DefaultJSONConfigurationreaderTest {
         settings.put("key","value");
         settings.put("key2","value2");
         settings.put("key3","value3");
+        settings.putAll(System.getenv());
+        System.getProperties().forEach((k,v) -> settings.put(k.toString(), v));
 
         assertEquals("name-2", unit.getName().get());
         assertEquals("that is the description", unit.getDescription().get());
@@ -75,7 +77,8 @@ public class DefaultJSONConfigurationreaderTest {
         Map<String, Object> settings = new HashMap<>();
         settings.put("key","value");
         settings.put("key2","value2");
-
+        settings.putAll(System.getenv());
+        System.getProperties().forEach((k,v) -> settings.put(k.toString(), v));
         assertEquals("name", unit.getName().get());
         assertEquals("that is the description", unit.getDescription().get());
         assertEquals(Settings.of(settings), unit.getSettings());
@@ -93,6 +96,8 @@ public class DefaultJSONConfigurationreaderTest {
         settings.put("key","value");
         settings.put("key2","value2");
         settings.put("key3","value3");
+        settings.putAll(System.getenv());
+        System.getProperties().forEach((k,v) -> settings.put(k.toString(), v));
 
         assertEquals("name-2", unit.getName().get());
         assertEquals("that is the description", unit.getDescription().get());

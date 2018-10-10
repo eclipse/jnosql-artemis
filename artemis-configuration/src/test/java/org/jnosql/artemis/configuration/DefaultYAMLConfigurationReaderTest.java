@@ -48,6 +48,8 @@ public class DefaultYAMLConfigurationReaderTest {
         Map<String, Object> settings = new HashMap<>();
         settings.put("key","value");
         settings.put("key2","value2");
+        settings.putAll(System.getenv());
+        System.getProperties().forEach((k,v) -> settings.put(k.toString(), v));
 
         assertEquals("name", unit.getName().get());
         assertEquals("that is the description", unit.getDescription().get());
