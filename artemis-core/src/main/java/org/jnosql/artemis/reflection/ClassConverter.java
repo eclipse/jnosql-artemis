@@ -165,7 +165,7 @@ class ClassConverter {
         String columnName = id ? reflections.getIdName(field) : reflections.getColumnName(field);
 
         FieldRepresentationBuilder builder = FieldRepresentation.builder().withName(columnName)
-                .withField(field).withType(fieldType).withId(id);
+                .withField(field).withType(fieldType).withId(id).withReflections(reflections);
         if (nonNull(convert)) {
             builder.withConverter(convert.value());
         }
