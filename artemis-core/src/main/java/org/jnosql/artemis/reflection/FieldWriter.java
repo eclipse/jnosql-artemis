@@ -16,7 +16,7 @@ package org.jnosql.artemis.reflection;
 
 
 /**
- * This class represents given a Field, the set the value within a Bean instance.
+ * This class represents given a Field, the set the write operation value within a Bean instance.
  */
 public interface FieldWriter {
 
