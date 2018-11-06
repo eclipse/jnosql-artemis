@@ -43,9 +43,8 @@ class ClassConverter {
     private FieldReaderFactory readerFactory;
 
 
-
     @Inject
-    ClassConverter(Reflections reflections,FieldWriterFactory writerFactory, FieldReaderFactory readerFactory) {
+    ClassConverter(Reflections reflections, FieldWriterFactory writerFactory, FieldReaderFactory readerFactory) {
         this.reflections = reflections;
         this.readerFactory = readerFactory;
         this.writerFactory = writerFactory;
@@ -83,7 +82,7 @@ class ClassConverter {
     }
 
     private Map<String, NativeMapping> getNativeFieldGroupByJavaField(List<FieldRepresentation> fields,
-                                                               String javaField, String nativeField) {
+                                                                      String javaField, String nativeField) {
 
         Map<String, NativeMapping> nativeFieldGrouopByJavaField = new HashMap<>();
 
@@ -106,7 +105,7 @@ class ClassConverter {
                 appendFields(nativeFieldGroupByJavaField, field, javaField, nativeField);
                 return;
             case COLLECTION:
-                if(GenericFieldRepresentation.class.cast(field).isEmbeddable()) {
+                if (GenericFieldRepresentation.class.cast(field).isEmbeddable()) {
                     Class<?> entityClass = GenericFieldRepresentation.class.cast(field).getElementType();
                     String nativeFieldAppended = appendPreparePrefix(nativeField, field.getName());
                     appendFields(nativeFieldGroupByJavaField, field, javaField, nativeFieldAppended, entityClass);
@@ -172,7 +171,10 @@ class ClassConverter {
         String columnName = id ? reflections.getIdName(field) : reflections.getColumnName(field);
 
         FieldRepresentationBuilder builder = FieldRepresentation.builder().withName(columnName)
-                .withField(field).withType(fieldType).withId(id).withReflections(reflections);
+                .withField(field).withType(fieldType).withId(id)
+                .withReader(readerFactory.apply(field))
+                .withWriter(writerFactory.apply(field));
+
         if (nonNull(convert)) {
             builder.withConverter(convert.value());
         }

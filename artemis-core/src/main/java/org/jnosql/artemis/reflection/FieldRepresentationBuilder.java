@@ -75,12 +75,12 @@ class FieldRepresentationBuilder {
         return this;
     }
 
-    public FieldRepresentationBuilder setWriter(FieldWriter writer) {
+    public FieldRepresentationBuilder withWriter(FieldWriter writer) {
         this.writer = writer;
         return this;
     }
 
-    public FieldRepresentationBuilder setReader(FieldReader reader) {
+    public FieldRepresentationBuilder withReader(FieldReader reader) {
         this.reader = reader;
         return this;
     }
