@@ -38,10 +38,17 @@ class ClassConverter {
 
     private Reflections reflections;
 
+    private FieldWriterFactory writerFactory;
+
+    private FieldReaderFactory readerFactory;
+
+
 
     @Inject
-    ClassConverter(Reflections reflections) {
+    ClassConverter(Reflections reflections,FieldWriterFactory writerFactory, FieldReaderFactory readerFactory) {
         this.reflections = reflections;
+        this.readerFactory = readerFactory;
+        this.writerFactory = writerFactory;
     }
 
     ClassConverter() {
