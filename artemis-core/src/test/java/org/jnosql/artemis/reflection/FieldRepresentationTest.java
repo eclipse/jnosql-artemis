@@ -116,8 +116,8 @@ public class FieldRepresentationTest {
     @Test
     public void shouldUserFieldWriter() {
         ForClass forClass = new ForClass();
-        forClass.barClass = new BarClass();
-        forClass.barClass.integer = 10;
+        BarClass value = new BarClass();
+        value.integer = 10;
 
         ClassRepresentation classRepresentation = classConverter.create(ForClass.class);
 
@@ -129,7 +129,7 @@ public class FieldRepresentationTest {
         string.write(forClass, "text");
         list.write(forClass, Collections.singletonList("text"));
         map.write(forClass, Collections.singletonMap("key", "value"));
-        barClass.write(forClass, barClass);
+        barClass.write(forClass, value);
 
         assertEquals("text", string.read(forClass));
         assertEquals(forClass.list, list.read(forClass));

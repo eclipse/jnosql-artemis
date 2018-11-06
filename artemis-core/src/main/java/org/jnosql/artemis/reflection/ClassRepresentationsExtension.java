@@ -41,7 +41,15 @@ public class ClassRepresentationsExtension implements Extension {
 
     private final Map<Class<?>, ClassRepresentation> classes = new ConcurrentHashMap<>();
 
-    private final ClassConverter classConverter = new ClassConverter(new DefaultReflections());
+    private final ClassConverter classConverter;
+
+    {
+        DefaultReflections reflections = new DefaultReflections();
+        FieldWriterFactory writerFactory = new ReflectionFieldWriterFactory(reflections);
+        FieldReaderFactory readerFactory = new ReflectionFieldReaderFactory(reflections);
+        classConverter = new ClassConverter(reflections, writerFactory, readerFactory);
+
+    }
 
     /**
      * Event observer
