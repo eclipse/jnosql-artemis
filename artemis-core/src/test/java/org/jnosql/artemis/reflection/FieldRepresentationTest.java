@@ -91,7 +91,7 @@ public class FieldRepresentationTest {
     }
 
     @Test
-    public void shouldGetter() {
+    public void shouldUserFieldReader() {
         ForClass forClass = new ForClass();
         forClass.string = "text";
         forClass.list = Collections.singletonList( "text");
@@ -106,12 +106,37 @@ public class FieldRepresentationTest {
         FieldRepresentation map = classRepresentation.getFieldRepresentation("map").get();
         FieldRepresentation barClass = classRepresentation.getFieldRepresentation("barClass").get();
 
-        assertEquals("text", string.getFieldReader().read(forClass));
-        assertEquals(forClass.list, list.getFieldReader().read(forClass));
-        assertEquals(forClass.map, map.getFieldReader().read(forClass));
-        assertEquals(forClass.barClass, barClass.getFieldReader().read(forClass));
+        assertEquals("text", string.getReader().read(forClass));
+        assertEquals(forClass.list, list.getReader().read(forClass));
+        assertEquals(forClass.map, map.getReader().read(forClass));
+        assertEquals(forClass.barClass, barClass.getReader().read(forClass));
 
     }
+
+    @Test
+    public void shouldUserFieldWriter() {
+        ForClass forClass = new ForClass();
+    /*    forClass.string = "text";
+        forClass.list = Collections.singletonList( "text");
+        forClass.map = Collections.singletonMap("key", "value");
+        forClass.barClass = new BarClass();
+        forClass.barClass.integer = 10;*/
+
+        ClassRepresentation classRepresentation = classConverter.create(ForClass.class);
+
+        FieldRepresentation string = classRepresentation.getFieldRepresentation("string").get();
+        FieldRepresentation list = classRepresentation.getFieldRepresentation("list").get();
+        FieldRepresentation map = classRepresentation.getFieldRepresentation("map").get();
+        FieldRepresentation barClass = classRepresentation.getFieldRepresentation("barClass").get();
+
+        string.getWriter().write(forClass, "text");
+        assertEquals("text", string.getReader().read(forClass));
+        assertEquals(forClass.list, list.getReader().read(forClass));
+        assertEquals(forClass.map, map.getReader().read(forClass));
+        assertEquals(forClass.barClass, barClass.getReader().read(forClass));
+
+    }
+
 
     public static class ForClass {
 

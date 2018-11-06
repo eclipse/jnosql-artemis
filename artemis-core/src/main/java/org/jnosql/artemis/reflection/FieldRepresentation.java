@@ -43,16 +43,22 @@ public interface FieldRepresentation extends Serializable {
     Field getNativeField();
 
     /**
-     * Returns the {@link FieldReader}
-     * @return the {@link FieldReader} instance
+     * Reads the field using {@link FieldReader}
+     *
+     * @param bean the bean
+     * @return the property value
+     * @throws NullPointerException when bean is null
      */
-    FieldReader getFieldReader();
+    Object read(Object bean);
 
     /**
-     * Returns the {@link FieldWriter}
-     * @return the {@link FieldWriter} instance
+     * Writes the field using {@link java.io.FileWriter}
+     *
+     * @param bean  the bean
+     * @param value the value to write
+     * @throws NullPointerException when there is null parameter
      */
-    FieldWriter getFieldWriter();
+    void write(Object bean, Object value);
 
     /**
      * Returns the name of the field that can be eiher the field name
