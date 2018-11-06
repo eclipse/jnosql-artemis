@@ -43,6 +43,18 @@ public interface FieldRepresentation extends Serializable {
     Field getNativeField();
 
     /**
+     * Returns the {@link GetterAcessor}
+     * @return the {@link GetterAcessor} instance
+     */
+    GetterAcessor getGetterAcessor();
+
+    /**
+     * Returns the {@link SetterAcessor}
+     * @return the {@link SetterAcessor} instance
+     */
+    SetterAcessor getSetterAcessor();
+
+    /**
      * Returns the name of the field that can be eiher the field name
      * or {@link org.jnosql.artemis.Column#value()}
      *
