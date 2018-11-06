@@ -18,7 +18,7 @@ package org.jnosql.artemis.reflection;
 /**
  * This class represents given a Field, the set the value within a Bean instance.
  */
-public interface SetterAcessor {
+public interface FieldWriter {
 
     /**
      * From the entity bean, it will write the respective field and return the value.
@@ -28,5 +28,5 @@ public interface SetterAcessor {
      * @return the field value from the entity
      * @throws NullPointerException when there is null parameter
      */
-    Object get(Object bean, Object value);
+    Object write(Object bean, Object value);
 }

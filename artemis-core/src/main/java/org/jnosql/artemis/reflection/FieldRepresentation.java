@@ -49,10 +49,10 @@ public interface FieldRepresentation extends Serializable {
     FieldReader getFieldReader();
 
     /**
-     * Returns the {@link SetterAcessor}
-     * @return the {@link SetterAcessor} instance
+     * Returns the {@link FieldWriter}
+     * @return the {@link FieldWriter} instance
      */
-    SetterAcessor getSetterAcessor();
+    FieldWriter getFieldWriter();
 
     /**
      * Returns the name of the field that can be eiher the field name
