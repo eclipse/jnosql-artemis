@@ -16,16 +16,17 @@ package org.jnosql.artemis.reflection;
 
 
 /**
- * This class represents given a Field, the value within a Bean instance.
+ * This class represents given a Field, the set the value within a Bean instance.
  */
-public interface GetterAcessor {
+public interface SetterAcessor {
 
     /**
-     * From the entity bean, it will read the respective field and return the value.
+     * From the entity bean, it will write the respective field and return the value.
      *
-     * @param bean the entity that has the field
+     * @param bean  the entity that has the field
+     * @param value the value to the field
      * @return the field value from the entity
-     * @throws NullPointerException when bean is null
+     * @throws NullPointerException when there is null parameter
      */
-    Object get(Object bean);
+    Object get(Object bean, Object value);
 }
