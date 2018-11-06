@@ -22,8 +22,9 @@ public final class EmbeddedFieldRepresentation extends AbstractFieldRepresentati
 
     private final String entityName;
 
-    public EmbeddedFieldRepresentation(FieldType type, Field field, String name, String entityName, Reflections reflections) {
-        super(type, field, name, null, reflections);
+    public EmbeddedFieldRepresentation(FieldType type, Field field, String name, String entityName,
+                                       FieldReader reader, FieldWriter writer) {
+        super(type, field, name, null, reader, writer);
         this.entityName = entityName;
     }
 
