@@ -43,10 +43,10 @@ public interface FieldRepresentation extends Serializable {
     Field getNativeField();
 
     /**
-     * Returns the {@link GetterAcessor}
-     * @return the {@link GetterAcessor} instance
+     * Returns the {@link FieldReader}
+     * @return the {@link FieldReader} instance
      */
-    GetterAcessor getGetterAcessor();
+    FieldReader getFieldReader();
 
     /**
      * Returns the {@link SetterAcessor}

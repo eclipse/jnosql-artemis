@@ -37,7 +37,7 @@ abstract class AbstractFieldRepresentation implements FieldRepresentation {
 
     protected final Class<? extends AttributeConverter> converter;
 
-    protected final GetterAcessor getterAcessor;
+    protected final FieldReader fieldReader;
 
     protected final SetterAcessor setterAcessor;
 
@@ -48,7 +48,7 @@ abstract class AbstractFieldRepresentation implements FieldRepresentation {
         this.name = name;
         this.fieldName = field.getName();
         this.converter = converter;
-        this.getterAcessor = b -> reflections.getValue(b, field);
+        this.fieldReader = b -> reflections.getValue(b, field);
         this.setterAcessor = (b, v) -> reflections.setValue(b, field, v);
     }
 
@@ -73,8 +73,8 @@ abstract class AbstractFieldRepresentation implements FieldRepresentation {
     }
 
     @Override
-    public GetterAcessor getGetterAcessor() {
-        return this.getterAcessor;
+    public FieldReader getFieldReader() {
+        return this.fieldReader;
     }
 
     @Override

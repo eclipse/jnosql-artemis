@@ -106,10 +106,10 @@ public class FieldRepresentationTest {
         FieldRepresentation map = classRepresentation.getFieldRepresentation("map").get();
         FieldRepresentation barClass = classRepresentation.getFieldRepresentation("barClass").get();
 
-        assertEquals("text", string.getGetterAcessor().get(forClass));
-        assertEquals(forClass.list, list.getGetterAcessor().get(forClass));
-        assertEquals(forClass.map, map.getGetterAcessor().get(forClass));
-        assertEquals(forClass.barClass, barClass.getGetterAcessor().get(forClass));
+        assertEquals("text", string.getFieldReader().read(forClass));
+        assertEquals(forClass.list, list.getFieldReader().read(forClass));
+        assertEquals(forClass.map, map.getFieldReader().read(forClass));
+        assertEquals(forClass.barClass, barClass.getFieldReader().read(forClass));
 
     }
 

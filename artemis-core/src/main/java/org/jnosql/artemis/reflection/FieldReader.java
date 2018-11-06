@@ -16,16 +16,16 @@ package org.jnosql.artemis.reflection;
 
 
 /**
- * This class represents given a Field, the value within a Bean instance.
+ * The reader operation to give {@link FieldRepresentation}
  */
-public interface GetterAcessor {
+public interface FieldReader {
 
     /**
-     * From the entity bean, it will read the respective field and return the value.
+     * Reads the entity bean, it will read the respective field and return the value.
      *
      * @param bean the entity that has the field
      * @return the field value from the entity
      * @throws NullPointerException when bean is null
      */
-    Object get(Object bean);
+    Object read(Object bean);
 }
