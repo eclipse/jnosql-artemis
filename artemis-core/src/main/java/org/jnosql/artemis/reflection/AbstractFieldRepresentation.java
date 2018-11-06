@@ -37,12 +37,19 @@ abstract class AbstractFieldRepresentation implements FieldRepresentation {
 
     protected final Class<? extends AttributeConverter> converter;
 
-    AbstractFieldRepresentation(FieldType type, Field field, String name, Class<? extends AttributeConverter> converter) {
+    protected final GetterAcessor getterAcessor;
+
+    protected final SetterAcessor setterAcessor;
+
+    AbstractFieldRepresentation(FieldType type, Field field, String name,
+                                Class<? extends AttributeConverter> converter, Reflections reflections) {
         this.type = type;
         this.field = field;
         this.name = name;
         this.fieldName = field.getName();
         this.converter = converter;
+        this.getterAcessor = b -> reflections.getValue(b, field);
+        this.setterAcessor = (b, v) -> reflections.setValue(b, field, v);
     }
 
     @Override
@@ -65,6 +72,15 @@ abstract class AbstractFieldRepresentation implements FieldRepresentation {
         return fieldName;
     }
 
+    @Override
+    public GetterAcessor getGetterAcessor() {
+        return this.getterAcessor;
+    }
+
+    @Override
+    public SetterAcessor getSetterAcessor() {
+        return this.setterAcessor;
+    }
 
     @Override
     public <T extends AttributeConverter> Optional<Class<? extends AttributeConverter>> getConverter() {

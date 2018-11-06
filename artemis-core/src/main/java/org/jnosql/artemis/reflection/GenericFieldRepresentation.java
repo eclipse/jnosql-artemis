@@ -40,8 +40,9 @@ public class GenericFieldRepresentation extends AbstractFieldRepresentation {
 
     private final TypeSupplier<?> typeSupplier;
 
-    GenericFieldRepresentation(FieldType type, Field field, String name, TypeSupplier<?> typeSupplier, Class<? extends AttributeConverter> converter) {
-        super(type, field, name, converter);
+    GenericFieldRepresentation(FieldType type, Field field, String name, TypeSupplier<?> typeSupplier,
+                               Class<? extends AttributeConverter> converter, Reflections reflections) {
+        super(type, field, name, converter, reflections);
         this.typeSupplier = typeSupplier;
     }
 

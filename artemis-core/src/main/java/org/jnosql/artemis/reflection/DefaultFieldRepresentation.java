@@ -28,8 +28,9 @@ public class DefaultFieldRepresentation extends AbstractFieldRepresentation {
 
     private final boolean id;
 
-    DefaultFieldRepresentation(FieldType type, Field field, String name, Class<? extends AttributeConverter> converter, boolean id) {
-        super(type, field, name, converter);
+    DefaultFieldRepresentation(FieldType type, Field field, String name,
+                               Class<? extends AttributeConverter> converter, boolean id, Reflections reflections) {
+        super(type, field, name, converter, reflections);
         this.id = id;
     }
 
