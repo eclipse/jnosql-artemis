@@ -30,7 +30,7 @@ class ReflectionInstanceSupplierFactory implements InstanceSupplierFactory {
     }
 
     @Override
-    public InstanceSupplier apply(Constructor constructor) {
+    public InstanceSupplier apply(Constructor<?> constructor) {
         return () -> reflections.newInstance(constructor);
     }
 }

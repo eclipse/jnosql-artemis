@@ -20,5 +20,5 @@ import java.util.function.Function;
 /**
  * A {@link InstanceSupplier} factory
  */
-public interface InstanceSupplierFactory extends Function<Constructor, InstanceSupplier> {
+public interface InstanceSupplierFactory extends Function<Constructor<?>, InstanceSupplier> {
 }
