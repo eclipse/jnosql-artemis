@@ -18,7 +18,6 @@ import org.jnosql.artemis.Convert;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashMap;

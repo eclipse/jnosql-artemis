@@ -47,8 +47,6 @@ public abstract class AbstractColumnEntityConverter implements ColumnEntityConve
 
     protected abstract ClassRepresentations getClassRepresentations();
 
-    protected abstract Reflections getReflections();
-
     protected abstract Converters getConverters();
 
     @Override
@@ -80,7 +78,6 @@ public abstract class AbstractColumnEntityConverter implements ColumnEntityConve
         return convertEntity(entity.getColumns(), representation, entityInstance);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> T toEntity(ColumnEntity entity) {
         requireNonNull(entity, "entity is required");
@@ -90,7 +87,7 @@ public abstract class AbstractColumnEntityConverter implements ColumnEntityConve
     }
 
     protected ColumnFieldValue to(FieldRepresentation field, Object entityInstance) {
-        Object value = getReflections().getValue(entityInstance, field.getNativeField());
+        Object value = field.read(entityInstance);
         return DefaultColumnFieldValue.of(value, field);
     }
 
