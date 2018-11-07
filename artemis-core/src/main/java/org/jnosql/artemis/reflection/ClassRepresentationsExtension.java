@@ -47,7 +47,8 @@ public class ClassRepresentationsExtension implements Extension {
         DefaultReflections reflections = new DefaultReflections();
         FieldWriterFactory writerFactory = new ReflectionFieldWriterFactory(reflections);
         FieldReaderFactory readerFactory = new ReflectionFieldReaderFactory(reflections);
-        classConverter = new ClassConverter(reflections, writerFactory, readerFactory);
+        InstanceSupplierFactory instanceSupplierFactory = new ReflectionInstanceSupplierFactory(reflections);
+        classConverter = new ClassConverter(reflections, writerFactory, readerFactory, instanceSupplierFactory);
 
     }
 

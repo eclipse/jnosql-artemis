@@ -14,7 +14,6 @@
  */
 package org.jnosql.artemis.reflection;
 
-import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -45,10 +44,13 @@ public interface ClassRepresentation {
      */
     List<FieldRepresentation> getFields();
 
+
     /**
-     * @return The constructor
+     * Creates a new instance from {@link InstanceSupplier}
+     *
+     * @return a new instance of this class
      */
-    Constructor getConstructor();
+    <T> T newInstance();
 
 
     /**

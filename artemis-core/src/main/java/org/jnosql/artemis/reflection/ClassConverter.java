@@ -42,12 +42,16 @@ class ClassConverter {
 
     private FieldReaderFactory readerFactory;
 
+    private InstanceSupplierFactory instanceSupplierFactory;
+
 
     @Inject
-    ClassConverter(Reflections reflections, FieldWriterFactory writerFactory, FieldReaderFactory readerFactory) {
+    ClassConverter(Reflections reflections, FieldWriterFactory writerFactory,
+                   FieldReaderFactory readerFactory, InstanceSupplierFactory instanceSupplierFactory) {
         this.reflections = reflections;
         this.readerFactory = readerFactory;
         this.writerFactory = writerFactory;
+        this.instanceSupplierFactory = instanceSupplierFactory;
     }
 
     ClassConverter() {
@@ -55,7 +59,6 @@ class ClassConverter {
 
     public ClassRepresentation create(Class<?> entityClass) {
 
-        Constructor constructor = reflections.makeAccessible(entityClass);
 
         String entityName = reflections.getEntityName(entityClass);
 
@@ -71,11 +74,13 @@ class ClassConverter {
                 .collect(collectingAndThen(toMap(FieldRepresentation::getName,
                         Function.identity()), Collections::unmodifiableMap));
 
+        InstanceSupplier instanceSupplier = instanceSupplierFactory.apply(reflections.makeAccessible(entityClass));
+
         return DefaultClassRepresentation.builder().withName(entityName)
                 .withClassInstance(entityClass)
                 .withFields(fields)
                 .withFieldsName(fieldsName)
-                .withConstructor(constructor)
+                .withInstanceSupplier(instanceSupplier)
                 .withJavaFieldGroupedByColumn(nativeFieldGroupByJavaField)
                 .withFieldsGroupedByName(fieldsGroupedByName)
                 .build();

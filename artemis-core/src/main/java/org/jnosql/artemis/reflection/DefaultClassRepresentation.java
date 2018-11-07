@@ -15,7 +15,6 @@
 package org.jnosql.artemis.reflection;
 
 
-import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -35,7 +34,7 @@ class DefaultClassRepresentation implements ClassRepresentation {
 
     private final List<FieldRepresentation> fields;
 
-    private final Constructor constructor;
+    private final InstanceSupplier instanceSupplier;
 
     private final Map<String, NativeMapping> javaFieldGroupedByColumn;
 
@@ -44,16 +43,16 @@ class DefaultClassRepresentation implements ClassRepresentation {
     private final FieldRepresentation id;
 
     DefaultClassRepresentation(String name, List<String> fieldsName, Class<?> classInstance,
-                               List<FieldRepresentation> fields, Constructor constructor,
+                               List<FieldRepresentation> fields,
                                Map<String, NativeMapping> javaFieldGroupedByColumn,
-                               Map<String, FieldRepresentation> fieldsGroupedByName) {
+                               Map<String, FieldRepresentation> fieldsGroupedByName, InstanceSupplier instanceSupplier) {
         this.name = name;
         this.fieldsName = fieldsName;
         this.classInstance = classInstance;
         this.fields = fields;
-        this.constructor = constructor;
         this.fieldsGroupedByName = fieldsGroupedByName;
         this.javaFieldGroupedByColumn = javaFieldGroupedByColumn;
+        this.instanceSupplier = instanceSupplier;
         this.id = fields.stream().filter(FieldRepresentation::isId).findFirst().orElse(null);
     }
 
@@ -78,10 +77,9 @@ class DefaultClassRepresentation implements ClassRepresentation {
     }
 
     @Override
-    public Constructor getConstructor() {
-        return constructor;
+    public <T> T newInstance() {
+        return (T) instanceSupplier.get();
     }
-
 
     @Override
     public String getColumnField(String javaField) {
@@ -132,7 +130,6 @@ class DefaultClassRepresentation implements ClassRepresentation {
         sb.append(", fieldsName=").append(fieldsName);
         sb.append(", classInstance=").append(classInstance);
         sb.append(", fields=").append(fields);
-        sb.append(", constructor=").append(constructor);
         sb.append(", javaFieldGroupedByColumn=").append(javaFieldGroupedByColumn);
         sb.append(", fieldsGroupedByName=").append(fieldsGroupedByName);
         sb.append(", id=").append(id);
