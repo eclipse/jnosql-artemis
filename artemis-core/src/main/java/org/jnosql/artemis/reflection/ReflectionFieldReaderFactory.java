@@ -16,6 +16,7 @@ package org.jnosql.artemis.reflection;
 
 import javax.inject.Inject;
 import java.lang.reflect.Field;
+import java.util.Objects;
 
 class ReflectionFieldReaderFactory implements FieldReaderFactory {
 
@@ -31,6 +32,7 @@ class ReflectionFieldReaderFactory implements FieldReaderFactory {
 
     @Override
     public FieldReader apply(Field field) {
+        Objects.requireNonNull(field, "field is required");
         return bean -> reflections.getValue(bean, field);
     }
 }
