@@ -16,7 +16,8 @@ package org.jnosql.artemis.reflection;
 
 
 /**
- * This class represents given a Field, the set the write operation value within a Bean instance.
+ * A piece of operations within a class.
+ * This class does the setter operation in a {@link java.lang.reflect.Field} in a class from a Field.
  */
 public interface FieldWriter {
 

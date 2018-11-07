@@ -17,7 +17,7 @@ package org.jnosql.artemis.reflection;
 import java.util.function.Supplier;
 
 /**
- * The Supplier of instance at {@link ClassRepresentation}
+ * A piece of operations within a class. This class does the new instance creation.
  */
 public interface InstanceSupplier extends Supplier<Object> {
 

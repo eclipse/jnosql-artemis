@@ -16,7 +16,8 @@ package org.jnosql.artemis.reflection;
 
 
 /**
- * The reader operation to give {@link FieldRepresentation}
+ * A piece of operations within a class.
+ * This class does the getter operation in a {@link java.lang.reflect.Field} in a class from a Field.
  */
 public interface FieldReader {
 

@@ -17,5 +17,8 @@ package org.jnosql.artemis.reflection;
 import java.lang.reflect.Field;
 import java.util.function.Function;
 
+/**
+ * A factory of {@link FieldWriter}
+ */
 public interface FieldWriterFactory extends Function<Field, FieldWriter> {
 }
