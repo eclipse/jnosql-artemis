@@ -19,7 +19,6 @@ import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.FieldRepresentation;
-import org.jnosql.artemis.reflection.Reflections;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -35,15 +34,12 @@ public abstract class AbstractColumnRepositoryAsync<T, ID> implements Repository
 
     protected abstract ColumnTemplateAsync getTemplate();
 
-    protected abstract Reflections getReflections();
-
     protected abstract ClassRepresentation getClassRepresentation();
-
 
     @Override
     public <S extends T> void save(S entity) {
         requireNonNull(entity, "Entity is required");
-        Object id = getReflections().getValue(entity, getIdField().getNativeField());
+        Object id = getIdField().read(entity);
 
         if (isNull(id)) {
             getTemplate().insert(entity);

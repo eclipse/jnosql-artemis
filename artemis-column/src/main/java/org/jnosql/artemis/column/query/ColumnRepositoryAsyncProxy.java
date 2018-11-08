@@ -20,7 +20,6 @@ import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.artemis.reflection.Reflections;
 
 import java.lang.reflect.ParameterizedType;
 
@@ -41,13 +40,13 @@ class ColumnRepositoryAsyncProxy<T> extends AbstractColumnRepositoryAsyncProxy<T
 
 
     ColumnRepositoryAsyncProxy(ColumnTemplateAsync template, ClassRepresentations classRepresentations,
-                               Class<?> repositoryType, Reflections reflections, Converters converters) {
+                               Class<?> repositoryType, Converters converters) {
 
         this.template = template;
         Class<T> typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
-        this.repository = new ColumnRepositoryAsync(template, reflections, classRepresentation);
+        this.repository = new ColumnRepositoryAsync(template, classRepresentation);
         this.converters = converters;
     }
 
@@ -77,13 +76,11 @@ class ColumnRepositoryAsyncProxy<T> extends AbstractColumnRepositoryAsyncProxy<T
 
         private final ColumnTemplateAsync template;
 
-        private final Reflections reflections;
 
         private final ClassRepresentation classRepresentation;
 
-        ColumnRepositoryAsync(ColumnTemplateAsync repository, Reflections reflections, ClassRepresentation classRepresentation) {
+        ColumnRepositoryAsync(ColumnTemplateAsync repository,  ClassRepresentation classRepresentation) {
             this.template = repository;
-            this.reflections = reflections;
             this.classRepresentation = classRepresentation;
         }
 
@@ -92,10 +89,6 @@ class ColumnRepositoryAsyncProxy<T> extends AbstractColumnRepositoryAsyncProxy<T
             return template;
         }
 
-        @Override
-        protected Reflections getReflections() {
-            return reflections;
-        }
 
         @Override
         protected ClassRepresentation getClassRepresentation() {

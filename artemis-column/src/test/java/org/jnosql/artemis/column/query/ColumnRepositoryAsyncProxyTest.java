@@ -24,7 +24,6 @@ import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.Condition;
 import org.jnosql.diana.api.Sort;
 import org.jnosql.diana.api.column.Column;
@@ -62,9 +61,6 @@ public class ColumnRepositoryAsyncProxyTest {
     private ClassRepresentations classRepresentations;
 
     @Inject
-    private Reflections reflections;
-
-    @Inject
     private Converters converters;
 
     private PersonAsyncRepository personRepository;
@@ -75,7 +71,7 @@ public class ColumnRepositoryAsyncProxyTest {
         this.template = Mockito.mock(ColumnTemplateAsync.class);
 
         ColumnRepositoryAsyncProxy handler = new ColumnRepositoryAsyncProxy(template,
-                classRepresentations, PersonAsyncRepository.class, reflections, converters);
+                classRepresentations, PersonAsyncRepository.class, converters);
 
 
         personRepository = (PersonAsyncRepository) Proxy.newProxyInstance(PersonAsyncRepository.class.getClassLoader(),
