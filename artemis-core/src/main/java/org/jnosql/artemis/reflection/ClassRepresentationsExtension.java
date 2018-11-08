@@ -44,7 +44,7 @@ public class ClassRepresentationsExtension implements Extension {
     private final ClassConverter classConverter;
 
     {
-        classConverter = new ClassConverter(new DefaultReflections(), ClassOperationFactory.INSTANCE.get());
+        classConverter = new ClassConverter(new DefaultReflections(), new ClassOperationFactory().get());
     }
 
     /**

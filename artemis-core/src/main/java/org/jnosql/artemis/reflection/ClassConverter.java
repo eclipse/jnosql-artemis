@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
@@ -34,6 +35,8 @@ import static java.util.stream.Collectors.toMap;
 @ApplicationScoped
 class ClassConverter {
 
+
+    private static final Logger LOGGER = Logger.getLogger(ClassConverter.class.getName());
 
     private Reflections reflections;
 
@@ -57,7 +60,7 @@ class ClassConverter {
 
     public ClassRepresentation create(Class<?> entityClass) {
 
-
+        long start = System.currentTimeMillis();
         String entityName = reflections.getEntityName(entityClass);
 
         List<FieldRepresentation> fields = reflections.getFields(entityClass)
@@ -74,7 +77,7 @@ class ClassConverter {
 
         InstanceSupplier instanceSupplier = instanceSupplierFactory.apply(reflections.makeAccessible(entityClass));
 
-        return DefaultClassRepresentation.builder().withName(entityName)
+        ClassRepresentation representation = DefaultClassRepresentation.builder().withName(entityName)
                 .withClassInstance(entityClass)
                 .withFields(fields)
                 .withFieldsName(fieldsName)
@@ -82,6 +85,11 @@ class ClassConverter {
                 .withJavaFieldGroupedByColumn(nativeFieldGroupByJavaField)
                 .withFieldsGroupedByName(fieldsGroupedByName)
                 .build();
+
+        long end = System.currentTimeMillis() - start;
+        LOGGER.info(String.format("Class %s loaded with time %d", entityName, end));
+
+        return representation;
     }
 
     private Map<String, NativeMapping> getNativeFieldGroupByJavaField(List<FieldRepresentation> fields,

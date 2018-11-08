@@ -14,19 +14,19 @@
  */
 package org.jnosql.artemis.reflection;
 
+import javax.enterprise.inject.Produces;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 import java.util.stream.StreamSupport;
 
-enum ClassOperationFactory implements Supplier<ClassOperation> {
+class ClassOperationFactory implements Supplier<ClassOperation> {
 
-    INSTANCE;
-
-    private static Logger LOGGER = Logger.getLogger(ClassOperationFactory.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ClassOperationFactory.class.getName());
 
 
+    @Produces
     @Override
     public ClassOperation get() {
 
@@ -45,6 +45,6 @@ enum ClassOperationFactory implements Supplier<ClassOperation> {
         }
 
 
-        return null;
+        return new ReflectionClassOperation();
     }
 }
