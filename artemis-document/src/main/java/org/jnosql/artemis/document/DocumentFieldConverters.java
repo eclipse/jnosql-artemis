@@ -76,15 +76,16 @@ class DocumentFieldConverters {
                     for (Map.Entry entry : (Set<Map.Entry>) map.entrySet()) {
                         embeddedDocument.add(Document.of(entry.getKey().toString(), entry.getValue()));
                     }
-                    converter.getReflections().setValue(instance, field.getNativeField(), converter.toEntity(field.getNativeField().getType(), embeddedDocument));
+                    field.write(instance, converter.toEntity(field.getNativeField().getType(), embeddedDocument));
+
                 } else {
-                    converter.getReflections().setValue(instance, field.getNativeField(), converter.toEntity(field.getNativeField().getType(),
+                    field.write(instance, converter.toEntity(field.getNativeField().getType(),
                             sudDocument.get(new TypeReference<List<Document>>() {
                             })));
                 }
 
             } else {
-                converter.getReflections().setValue(instance, field.getNativeField(), converter.toEntity(field.getNativeField().getType(), documents));
+                field.write(instance, converter.toEntity(field.getNativeField().getType(), documents));
             }
         }
     }
@@ -98,7 +99,7 @@ class DocumentFieldConverters {
 
             Field nativeField = field.getNativeField();
             Object subEntity = converter.toEntity(nativeField.getType(), documents);
-            converter.getReflections().setValue(instance, nativeField, subEntity);
+            field.write(instance, subEntity);
 
         }
     }
@@ -114,9 +115,9 @@ class DocumentFieldConverters {
             if (optionalConverter.isPresent()) {
                 AttributeConverter attributeConverter = converter.getConverters().get(optionalConverter.get());
                 Object attributeConverted = attributeConverter.convertToEntityAttribute(value.get());
-                converter.getReflections().setValue(instance, field.getNativeField(), field.getValue(Value.of(attributeConverted)));
+                field.write(instance, field.getValue(Value.of(attributeConverted)));
             } else {
-                converter.getReflections().setValue(instance, field.getNativeField(), field.getValue(value));
+                field.write(instance, field.getValue(value));
             }
         }
     }
@@ -138,7 +139,7 @@ class DocumentFieldConverters {
                     Object element = converter.toEntity(genericField.getElementType(), documentList);
                     collection.add(element);
                 }
-                converter.getReflections().setValue(instance, field.getNativeField(), collection);
+                field.write(instance, collection);
             };
         }
     }

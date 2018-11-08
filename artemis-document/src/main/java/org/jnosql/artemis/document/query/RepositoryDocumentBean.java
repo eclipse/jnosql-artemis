@@ -15,12 +15,11 @@
 package org.jnosql.artemis.document.query;
 
 import org.jnosql.artemis.Converters;
-import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
+import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.document.DocumentTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.artemis.reflection.Reflections;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
@@ -91,11 +90,10 @@ public class RepositoryDocumentBean implements Bean<Repository>, PassivationCapa
         DocumentTemplate repository = provider.isEmpty() ? getInstance(DocumentTemplate.class) :
                 getInstance(DocumentTemplate.class, provider);
 
-        Reflections reflections = getInstance(Reflections.class);
         Converters converters = getInstance(Converters.class);
 
         DocumentRepositoryProxy handler = new DocumentRepositoryProxy(repository,
-                classRepresentations, type, reflections, converters);
+                classRepresentations, type, converters);
         return (Repository) Proxy.newProxyInstance(type.getClassLoader(),
                 new Class[]{type},
                 handler);

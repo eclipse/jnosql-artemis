@@ -16,7 +16,6 @@ package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.artemis.reflection.Reflections;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -30,8 +29,6 @@ class DefaultDocumentEntityConverter extends AbstractDocumentEntityConverter imp
     @Inject
     private ClassRepresentations classRepresentations;
 
-    @Inject
-    private Reflections reflections;
 
     @Inject
     private Converters converters;
@@ -40,11 +37,6 @@ class DefaultDocumentEntityConverter extends AbstractDocumentEntityConverter imp
     @Override
     protected ClassRepresentations getClassRepresentations() {
         return classRepresentations;
-    }
-
-    @Override
-    protected Reflections getReflections() {
-        return reflections;
     }
 
     @Override

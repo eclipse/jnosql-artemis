@@ -21,7 +21,6 @@ import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.FieldRepresentation;
 import org.jnosql.artemis.reflection.FieldType;
 import org.jnosql.artemis.reflection.FieldValue;
-import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentEntity;
 
@@ -43,8 +42,6 @@ import static org.jnosql.artemis.reflection.FieldType.SUBENTITY;
 public abstract class AbstractDocumentEntityConverter implements DocumentEntityConverter {
 
     protected abstract ClassRepresentations getClassRepresentations();
-
-    protected abstract Reflections getReflections();
 
     protected abstract Converters getConverters();
 
@@ -84,7 +81,7 @@ public abstract class AbstractDocumentEntityConverter implements DocumentEntityC
 
     protected <T> T toEntity(Class<T> entityClass, List<Document> documents) {
         ClassRepresentation representation = getClassRepresentations().get(entityClass);
-        T instance = getReflections().newInstance(representation.getConstructor());
+        T instance = representation.newInstance();
         return convertEntity(documents, representation, instance);
     }
 
@@ -94,7 +91,7 @@ public abstract class AbstractDocumentEntityConverter implements DocumentEntityC
     public <T> T toEntity(DocumentEntity entity) {
         requireNonNull(entity, "entity is required");
         ClassRepresentation representation = getClassRepresentations().findByName(entity.getName());
-        T instance = getReflections().newInstance(representation.getConstructor());
+        T instance = representation.newInstance();
         return convertEntity(entity.getDocuments(), representation, instance);
     }
 
@@ -126,7 +123,7 @@ public abstract class AbstractDocumentEntityConverter implements DocumentEntityC
 
 
     private DocumentFieldValue to(FieldRepresentation field, Object entityInstance) {
-        Object value = getReflections().getValue(entityInstance, field.getNativeField());
+        Object value = field.read(entityInstance);
         return DefaultDocumentFieldValue.of(value, field);
     }
 

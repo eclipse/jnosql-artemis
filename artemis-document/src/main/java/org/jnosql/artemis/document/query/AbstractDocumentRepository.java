@@ -18,7 +18,6 @@ import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.document.DocumentTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.FieldRepresentation;
-import org.jnosql.artemis.reflection.Reflections;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -42,12 +41,10 @@ public abstract class AbstractDocumentRepository<T, ID> implements Repository<T,
 
     protected abstract ClassRepresentation getClassRepresentation();
 
-    protected abstract Reflections getReflections();
-
     @Override
     public <S extends T> S save(S entity) {
         Objects.requireNonNull(entity, "Entity is required");
-        Object id = getReflections().getValue(entity, getIdField().getNativeField());
+        Object id = getIdField().read(entity);
         if (nonNull(id) && existsById((ID) id)) {
             return getTemplate().update(entity);
         } else {

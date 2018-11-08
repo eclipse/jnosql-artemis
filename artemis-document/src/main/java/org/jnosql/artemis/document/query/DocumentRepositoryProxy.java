@@ -20,7 +20,6 @@ import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.document.DocumentTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.artemis.reflection.Reflections;
 
 import java.lang.reflect.ParameterizedType;
 
@@ -42,12 +41,12 @@ class DocumentRepositoryProxy<T> extends AbstractDocumentRepositoryProxy<T> {
 
 
     DocumentRepositoryProxy(DocumentTemplate template, ClassRepresentations classRepresentations,
-                            Class<?> repositoryType, Reflections reflections, Converters converters) {
+                            Class<?> repositoryType, Converters converters) {
         this.template = template;
         Class<T> typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
         this.classRepresentation = classRepresentations.get(typeClass);
-        this.repository = new DocumentRepository(template, classRepresentation, reflections);
+        this.repository = new DocumentRepository(template, classRepresentation);
         this.converters = converters;
     }
 
@@ -79,12 +78,9 @@ class DocumentRepositoryProxy<T> extends AbstractDocumentRepositoryProxy<T> {
 
         private final ClassRepresentation classRepresentation;
 
-        private final Reflections reflections;
-
-        DocumentRepository(DocumentTemplate template, ClassRepresentation classRepresentation, Reflections reflections) {
+        DocumentRepository(DocumentTemplate template, ClassRepresentation classRepresentation) {
             this.template = template;
             this.classRepresentation = classRepresentation;
-            this.reflections = reflections;
         }
 
         @Override
@@ -95,11 +91,6 @@ class DocumentRepositoryProxy<T> extends AbstractDocumentRepositoryProxy<T> {
         @Override
         protected ClassRepresentation getClassRepresentation() {
             return classRepresentation;
-        }
-
-        @Override
-        protected Reflections getReflections() {
-            return reflections;
         }
 
 
