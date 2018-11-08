@@ -35,7 +35,12 @@ class JavaCompilerBeanPropertyReaderFactory {
 
         JavaSource<ReadFromGetterMethod> javaSource = new JavaSource() {
             @Override
-            public String getClassName() {
+            public String getSimpleName() {
+                return fullClassName;
+            }
+
+            @Override
+            public String getName() {
                 return fullClassName;
             }
 

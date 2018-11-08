@@ -22,11 +22,18 @@ package org.jnosql.artemis.reflection.compiler;
 interface JavaSource<T> {
 
     /**
+     * returns the {@link Class#getSimpleName()} to the class compiled
+     *
+     * @return the {@link Class#getSimpleName()}
+     */
+    String getSimpleName();
+
+    /**
      * returns the {@link Class#getName()} to the class compiled
      *
-     * @return
+     * @return the {@link Class#getName()}
      */
-    String getClassName();
+    String getName();
 
     /**
      * returns the java source code

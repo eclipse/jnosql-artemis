@@ -37,10 +37,10 @@ final class JavaCompilerFacade {
     private final DiagnosticCollector<javax.tools.JavaFileObject> diagnosticCollector;
 
     public JavaCompilerFacade(ClassLoader loader) {
-        compiler = Optional.ofNullable(ToolProvider.getSystemJavaCompiler())
+        this.compiler = Optional.ofNullable(ToolProvider.getSystemJavaCompiler())
                 .orElseThrow(() -> new IllegalStateException("Cannot find the system Java compiler"));
-        classLoader = new JavaCompilerClassLoader(loader);
-        diagnosticCollector = new DiagnosticCollector<>();
+        this.classLoader = new JavaCompilerClassLoader(loader);
+        this.diagnosticCollector = new DiagnosticCollector<>();
     }
 
     public <T> Class<? extends T> apply(JavaSource<T> source) {
@@ -48,7 +48,7 @@ final class JavaCompilerFacade {
     }
 
     private synchronized <T> Class<? extends T> compile(JavaSource<T> source) {
-        JavaFileObject fileObject = new JavaFileObject(source.getClassName(), source.getJavaSource());
+        JavaFileObject fileObject = new JavaFileObject(source.getSimpleName(), source.getJavaSource());
 
         JavaFileManager standardFileManager = compiler.getStandardFileManager(diagnosticCollector, null, null);
 
@@ -61,22 +61,22 @@ final class JavaCompilerFacade {
                         .map(d -> d.getKind() + ":[" + d.getLineNumber() + "," + d.getColumnNumber() + "] " + d.getMessage(null)
                                 + "\n        " + (d.getLineNumber() <= 0 ? "" : BREAK_LINE.splitAsStream(source.getJavaSource()).skip(d.getLineNumber() - 1).findFirst().orElse("")))
                         .collect(Collectors.joining("\n"));
-                throw new IllegalStateException("The generated class (" + source.getClassName() + ") failed to compile.\n"
+                throw new IllegalStateException("The generated class (" + source.getSimpleName() + ") failed to compile.\n"
                         + compilationMessages);
             }
         } catch (IOException e) {
-            throw new IllegalStateException("The generated class (" + source.getClassName() + ") failed to compile because the "
+            throw new IllegalStateException("The generated class (" + source.getSimpleName() + ") failed to compile because the "
                     + JavaFileManager.class.getSimpleName() + " didn't close.", e);
         }
         try {
-            Class<T> compiledClass = (Class<T>) classLoader.loadClass(source.getClassName());
+            Class<T> compiledClass = (Class<T>) classLoader.loadClass(source.getName());
             if (!source.getType().isAssignableFrom(compiledClass)) {
                 throw new ClassCastException("The generated compiledClass (" + compiledClass
                         + ") cannot be assigned to the superclass/interface (" + source.getType() + ").");
             }
             return compiledClass;
         } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("The generated class (" + source.getClassName()
+            throw new IllegalStateException("The generated class (" + source.getSimpleName()
                     + ") compiled, but failed to load.", e);
         }
 
