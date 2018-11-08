@@ -82,7 +82,7 @@ public abstract class AbstractColumnEntityConverter implements ColumnEntityConve
     public <T> T toEntity(ColumnEntity entity) {
         requireNonNull(entity, "entity is required");
         ClassRepresentation representation = getClassRepresentations().findByName(entity.getName());
-        T instance = getReflections().newInstance(representation.getConstructor());
+        T instance = representation.newInstance();
         return convertEntity(entity.getColumns(), representation, instance);
     }
 
@@ -102,7 +102,7 @@ public abstract class AbstractColumnEntityConverter implements ColumnEntityConve
 
     protected <T> T toEntity(Class<T> entityClass, List<Column> columns) {
         ClassRepresentation representation = getClassRepresentations().get(entityClass);
-        T instance = getReflections().newInstance(representation.getConstructor());
+        T instance = representation.newInstance();
         return convertEntity(columns, representation, instance);
     }
 
