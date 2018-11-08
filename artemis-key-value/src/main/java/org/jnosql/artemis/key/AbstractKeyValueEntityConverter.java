@@ -18,7 +18,6 @@ import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.FieldRepresentation;
-import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.key.KeyValueEntity;
 
@@ -34,7 +33,6 @@ public abstract class AbstractKeyValueEntityConverter implements KeyValueEntityC
 
     protected abstract ClassRepresentations getClassRepresentations();
 
-    protected abstract Reflections getReflections();
 
     @Override
     public KeyValueEntity<?> toKeyValue(Object entityInstance) {
@@ -43,7 +41,8 @@ public abstract class AbstractKeyValueEntityConverter implements KeyValueEntityC
         ClassRepresentation representation = getClassRepresentations().get(clazz);
 
         FieldRepresentation key = getId(clazz, representation);
-        Object value = getReflections().getValue(entityInstance, key.getNativeField());
+
+        Object value = key.read(entityInstance);
         requireNonNull(value, String.format("The key field %s is required", key.getName()));
 
         return KeyValueEntity.of(value, entityInstance);
@@ -58,9 +57,10 @@ public abstract class AbstractKeyValueEntityConverter implements KeyValueEntityC
             return null;
         }
         FieldRepresentation key = getId(entityClass, getClassRepresentations().get(entityClass));
-        Object keyValue = getReflections().getValue(t, key.getNativeField());
+
+        Object keyValue = key.read(t);
         if (Objects.isNull(keyValue) || !keyValue.equals(entity.getKey())) {
-            getReflections().setValue(t, key.getNativeField(), entity.getKey());
+            key.write(t, entity.getKey());
         }
         return t;
     }

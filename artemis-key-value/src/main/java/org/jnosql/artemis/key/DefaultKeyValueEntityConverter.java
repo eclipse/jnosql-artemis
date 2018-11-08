@@ -15,7 +15,6 @@
 package org.jnosql.artemis.key;
 
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.artemis.reflection.Reflections;
 
 import javax.inject.Inject;
 
@@ -27,16 +26,9 @@ class DefaultKeyValueEntityConverter extends AbstractKeyValueEntityConverter imp
     @Inject
     private ClassRepresentations classRepresentations;
 
-    @Inject
-    private Reflections reflections;
-
     @Override
     protected ClassRepresentations getClassRepresentations() {
         return classRepresentations;
     }
 
-    @Override
-    protected Reflections getReflections() {
-        return reflections;
-    }
 }
