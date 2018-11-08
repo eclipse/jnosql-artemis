@@ -44,12 +44,7 @@ public class ClassRepresentationsExtension implements Extension {
     private final ClassConverter classConverter;
 
     {
-        DefaultReflections reflections = new DefaultReflections();
-        FieldWriterFactory writerFactory = new ReflectionFieldWriterFactory(reflections);
-        FieldReaderFactory readerFactory = new ReflectionFieldReaderFactory(reflections);
-        InstanceSupplierFactory instanceSupplierFactory = new ReflectionInstanceSupplierFactory(reflections);
-        classConverter = new ClassConverter(reflections, writerFactory, readerFactory, instanceSupplierFactory);
-
+        classConverter = new ClassConverter(new DefaultReflections(), ClassOperationFactory.INSTANCE.get());
     }
 
     /**
