@@ -16,7 +16,7 @@ package org.jnosql.artemis.reflection.compiler;
 
 class JavaCompilerBeanPropertyReaderFactory {
 
-    private final StringGeneratedJavaCompilerFacade compilerFacade = new StringGeneratedJavaCompilerFacade(
+    private final JavaCompilerFacade compilerFacade = new JavaCompilerFacade(
             JavaCompilerBeanPropertyReaderFactory.class.getClassLoader());
 
     public BeanPropertyReader generate(Class<?> beanClass, String propertyName) {
@@ -32,8 +32,24 @@ class JavaCompilerBeanPropertyReaderFactory {
                 + "        return ((" + beanClass.getName() + ") bean)." + getterName + "();\n"
                 + "    }\n"
                 + "}";
-        Class<? extends BeanPropertyReader> compiledClass = compilerFacade.compile(
-                fullClassName, source, BeanPropertyReader.class);
+
+        JavaSource<BeanPropertyReader> javaSource = new JavaSource() {
+            @Override
+            public String getClassName() {
+                return fullClassName;
+            }
+
+            @Override
+            public String getJavaSource() {
+                return source;
+            }
+
+            @Override
+            public Class<BeanPropertyReader> getType() {
+                return BeanPropertyReader.class;
+            }
+        };
+        Class<? extends BeanPropertyReader> compiledClass = compilerFacade.apply(javaSource);
         try {
             return compiledClass.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {

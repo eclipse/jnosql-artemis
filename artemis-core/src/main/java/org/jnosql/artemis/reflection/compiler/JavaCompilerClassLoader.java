@@ -17,17 +17,17 @@ package org.jnosql.artemis.reflection.compiler;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class StringGeneratedClassLoader extends ClassLoader {
+final class JavaCompilerClassLoader extends ClassLoader {
 
-    private final Map<String, StringGeneratedClassFileObject> fileObjectMap = new HashMap<>();
+    private final Map<String, JavaCompiledStream> fileObjectMap = new HashMap<>();
 
-    public StringGeneratedClassLoader(ClassLoader parent) {
+    public JavaCompilerClassLoader(ClassLoader parent) {
         super(parent);
     }
 
     @Override
     protected Class<?> findClass(String fullClassName) throws ClassNotFoundException {
-        StringGeneratedClassFileObject fileObject = fileObjectMap.get(fullClassName);
+        JavaCompiledStream fileObject = fileObjectMap.get(fullClassName);
         if (fileObject != null) {
             byte[] classBytes = fileObject.getClassBytes();
             return defineClass(fullClassName, classBytes, 0, classBytes.length);
@@ -35,7 +35,7 @@ public final class StringGeneratedClassLoader extends ClassLoader {
         return super.findClass(fullClassName);
     }
 
-    public void addJavaFileObject(String qualifiedName, StringGeneratedClassFileObject fileObject) {
+    public void addJavaFileObject(String qualifiedName, JavaCompiledStream fileObject) {
         fileObjectMap.put(qualifiedName, fileObject);
     }
 

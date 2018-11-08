@@ -22,11 +22,11 @@ import java.io.OutputStream;
 import java.net.URI;
 import javax.tools.SimpleJavaFileObject;
 
-final class StringGeneratedClassFileObject extends SimpleJavaFileObject {
+final class JavaCompiledStream extends SimpleJavaFileObject {
 
     private ByteArrayOutputStream classOutputStream;
 
-    public StringGeneratedClassFileObject(String fullClassName) {
+    public JavaCompiledStream(String fullClassName) {
         super(URI.create("bytes:///" + fullClassName), Kind.CLASS);
     }
 

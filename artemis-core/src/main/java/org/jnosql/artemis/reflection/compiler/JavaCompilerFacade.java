@@ -24,30 +24,31 @@ import javax.tools.ToolProvider;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-final class StringGeneratedJavaCompilerFacade implements Function<JavaSource, Class<?>> {
+/**
+ * Class that converts a {@link JavaSource} to a compiled class
+ */
+final class JavaCompilerFacade {
 
     private static final Pattern BREAK_LINE = Pattern.compile("\n");
-    private final StringGeneratedClassLoader classLoader;
+    private final JavaCompilerClassLoader classLoader;
     private final JavaCompiler compiler;
     private final DiagnosticCollector<JavaFileObject> diagnosticCollector;
 
-    public StringGeneratedJavaCompilerFacade(ClassLoader loader) {
+    public JavaCompilerFacade(ClassLoader loader) {
         compiler = Optional.ofNullable(ToolProvider.getSystemJavaCompiler())
                 .orElseThrow(() -> new IllegalStateException("Cannot find the system Java compiler"));
-        classLoader = new StringGeneratedClassLoader(loader);
+        classLoader = new JavaCompilerClassLoader(loader);
         diagnosticCollector = new DiagnosticCollector<>();
     }
 
-    @Override
-    public Class<?> apply(JavaSource source) {
+    public <T> Class<? extends T> apply(JavaSource<T> source) {
         return compile(source);
     }
 
-    private synchronized <T> Class<? extends T> compile(JavaSource source) {
+    private synchronized <T> Class<? extends T> compile(JavaSource<T> source) {
         StringGeneratedSourceFileObject fileObject;
         fileObject = new StringGeneratedSourceFileObject(source.getClassName(), source.getJavaSource());
 

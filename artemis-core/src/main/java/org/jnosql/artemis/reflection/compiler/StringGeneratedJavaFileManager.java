@@ -22,9 +22,9 @@ import javax.tools.JavaFileObject.Kind;
 
 final class StringGeneratedJavaFileManager extends ForwardingJavaFileManager<JavaFileManager> {
 
-    private final StringGeneratedClassLoader classLoader;
+    private final JavaCompilerClassLoader classLoader;
 
-    public StringGeneratedJavaFileManager(JavaFileManager fileManager, StringGeneratedClassLoader classLoader) {
+    public StringGeneratedJavaFileManager(JavaFileManager fileManager, JavaCompilerClassLoader classLoader) {
         super(fileManager);
         this.classLoader = classLoader;
     }
@@ -34,7 +34,7 @@ final class StringGeneratedJavaFileManager extends ForwardingJavaFileManager<Jav
         if (kind != Kind.CLASS) {
             throw new IllegalArgumentException("Unsupported kind (" + kind + ") for class (" + qualifiedName + ").");
         }
-        StringGeneratedClassFileObject fileObject = new StringGeneratedClassFileObject(qualifiedName);
+        JavaCompiledStream fileObject = new JavaCompiledStream(qualifiedName);
         classLoader.addJavaFileObject(qualifiedName, fileObject);
         return fileObject;
     }

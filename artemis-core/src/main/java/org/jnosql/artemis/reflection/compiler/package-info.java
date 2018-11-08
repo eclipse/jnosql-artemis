@@ -12,33 +12,10 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis.reflection.compiler;
 
 /**
- * The Java source code to be compiled.
- *
- * @param <T> the source result type
+ * This domains contains implementations of
+ * {@link org.jnosql.artemis.reflection.FieldReader} {@link org.jnosql.artemis.reflection.FieldWriter} and
+ * {@link org.jnosql.artemis.reflection.InstanceSupplier} that create/compile new class instead of reflection.
  */
-interface JavaSource<T> {
-
-    /**
-     * returns the {@link Class#getName()} to the class compiled
-     *
-     * @return
-     */
-    String getClassName();
-
-    /**
-     * returns the java source code
-     *
-     * @return the java source code
-     */
-    String getJavaSource();
-
-    /**
-     * Returns the type class that the code will compile
-     *
-     * @return the Super class from the source code
-     */
-    Class<T> getType();
-}
+package org.jnosql.artemis.reflection.compiler;
