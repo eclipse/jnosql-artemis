@@ -19,7 +19,6 @@ import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaCompiler.CompilationTask;
 import javax.tools.JavaFileManager;
-import javax.tools.JavaFileObject;
 import javax.tools.ToolProvider;
 import java.io.IOException;
 import java.util.Collections;
@@ -35,7 +34,7 @@ final class JavaCompilerFacade {
     private static final Pattern BREAK_LINE = Pattern.compile("\n");
     private final JavaCompilerClassLoader classLoader;
     private final JavaCompiler compiler;
-    private final DiagnosticCollector<JavaFileObject> diagnosticCollector;
+    private final DiagnosticCollector<javax.tools.JavaFileObject> diagnosticCollector;
 
     public JavaCompilerFacade(ClassLoader loader) {
         compiler = Optional.ofNullable(ToolProvider.getSystemJavaCompiler())
@@ -49,8 +48,8 @@ final class JavaCompilerFacade {
     }
 
     private synchronized <T> Class<? extends T> compile(JavaSource<T> source) {
-        GeneratedFileObject fileObject;
-        fileObject = new GeneratedFileObject(source.getClassName(), source.getJavaSource());
+        JavaFileObject fileObject;
+        fileObject = new JavaFileObject(source.getClassName(), source.getJavaSource());
 
         JavaFileManager standardFileManager = compiler.getStandardFileManager(diagnosticCollector, null, null);
 

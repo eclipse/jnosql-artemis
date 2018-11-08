@@ -18,11 +18,11 @@ package org.jnosql.artemis.reflection.compiler;
 import java.net.URI;
 import javax.tools.SimpleJavaFileObject;
 
-final class GeneratedFileObject extends SimpleJavaFileObject {
+final class JavaFileObject extends SimpleJavaFileObject {
 
     private final String javaSource;
 
-    public GeneratedFileObject(String fullClassName, String javaSource) {
+    public JavaFileObject(String fullClassName, String javaSource) {
         super(URI.create("string:///" + fullClassName.replace('.', '/') + Kind.SOURCE.extension), Kind.SOURCE);
         this.javaSource = javaSource;
     }
