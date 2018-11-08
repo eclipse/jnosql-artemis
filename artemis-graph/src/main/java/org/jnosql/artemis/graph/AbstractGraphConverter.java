@@ -24,7 +24,6 @@ import org.jnosql.artemis.EntityNotFoundException;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.FieldRepresentation;
-import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.Value;
 
 import java.lang.reflect.Field;
@@ -47,8 +46,6 @@ abstract class AbstractGraphConverter implements GraphConverter {
 
 
     protected abstract ClassRepresentations getClassRepresentations();
-
-    protected abstract Reflections getReflections();
 
     protected abstract Converters getConverters();
 
@@ -164,9 +161,10 @@ abstract class AbstractGraphConverter implements GraphConverter {
             if (fieldRepresentation.getConverter().isPresent()) {
                 AttributeConverter attributeConverter = getConverters().get(fieldRepresentation.getConverter().get());
                 Object attributeConverted = attributeConverter.convertToEntityAttribute(vertexId);
-                getReflections().setValue(entity, fieldId, fieldRepresentation.getValue(Value.of(attributeConverted)));
+
+                fieldRepresentation.write(entity, fieldRepresentation.getValue(Value.of(attributeConverted)));
             } else {
-                getReflections().setValue(entity, fieldId, fieldRepresentation.getValue(Value.of(vertexId)));
+                fieldRepresentation.write(entity, fieldRepresentation.getValue(Value.of(vertexId)));
             }
 
         }
@@ -174,7 +172,7 @@ abstract class AbstractGraphConverter implements GraphConverter {
 
     private <T> T toEntity(Class<T> entityClass, List<Property> properties) {
         ClassRepresentation representation = getClassRepresentations().get(entityClass);
-        T instance = getReflections().newInstance(representation.getConstructor());
+        T instance = representation.newInstance();
         return convertEntity(properties, representation, instance);
     }
 
@@ -217,19 +215,19 @@ abstract class AbstractGraphConverter implements GraphConverter {
         if (converter.isPresent()) {
             AttributeConverter attributeConverter = getConverters().get(converter.get());
             Object attributeConverted = attributeConverter.convertToEntityAttribute(value);
-            getReflections().setValue(instance, field.getNativeField(), field.getValue(Value.of(attributeConverted)));
+            field.write(instance, field.getValue(Value.of(attributeConverted)));
         } else {
-            getReflections().setValue(instance, field.getNativeField(), field.getValue(Value.of(value)));
+            field.write(instance, field.getValue(Value.of(value)));
         }
     }
 
     private <T> void setEmbeddedField(T instance, List<Property> elements,
                                       FieldRepresentation field) {
-        getReflections().setValue(instance, field.getNativeField(), toEntity(field.getNativeField().getType(), elements));
+        field.write(instance, toEntity(field.getNativeField().getType(), elements));
     }
 
     protected FieldGraph to(FieldRepresentation field, Object entityInstance) {
-        Object value = getReflections().getValue(entityInstance, field.getNativeField());
+        Object value = field.read(entityInstance);
         return FieldGraph.of(value, field);
     }
 }

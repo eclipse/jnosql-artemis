@@ -28,7 +28,6 @@ import org.jnosql.artemis.graph.GraphTemplate;
 import org.jnosql.artemis.graph.cdi.CDIExtension;
 import org.jnosql.artemis.graph.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.artemis.reflection.Reflections;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -64,9 +63,6 @@ public class GraphRepositoryProxyTest {
     @Inject
     private ClassRepresentations classRepresentations;
 
-    @Inject
-    private Reflections reflections;
-
     private PersonRepository personRepository;
 
     @Inject
@@ -88,7 +84,7 @@ public class GraphRepositoryProxyTest {
         this.template = Mockito.mock(GraphTemplate.class);
 
         GraphRepositoryProxy handler = new GraphRepositoryProxy(template,
-                classRepresentations, PersonRepository.class, reflections, graph, converter, converters);
+                classRepresentations, PersonRepository.class,graph, converter, converters);
 
         when(template.insert(any(Person.class))).thenReturn(Person.builder().build());
         when(template.update(any(Person.class))).thenReturn(Person.builder().build());

@@ -28,7 +28,6 @@ import org.jnosql.artemis.PreparedStatement;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.FieldRepresentation;
-import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.NonUniqueResultException;
 
 import java.util.ArrayList;
@@ -64,8 +63,6 @@ public abstract class AbstractGraphTemplate implements GraphTemplate {
     protected abstract GraphConverter getConverter();
 
     protected abstract GraphWorkflow getFlow();
-
-    protected abstract Reflections getReflections();
 
     private GremlinExecutor gremlinExecutor;
 
@@ -296,7 +293,7 @@ public abstract class AbstractGraphTemplate implements GraphTemplate {
     private <T> Optional<Vertex> getVertex(T entity) {
         ClassRepresentation classRepresentation = getClassRepresentations().get(entity.getClass());
         FieldRepresentation field = classRepresentation.getId().get();
-        Object id = getReflections().getValue(entity, field.getNativeField());
+        Object id = field.read(entity);
         Iterator<Vertex> vertices = getVertices(id);
         if (vertices.hasNext()) {
             return Optional.of(vertices.next());
@@ -328,7 +325,7 @@ public abstract class AbstractGraphTemplate implements GraphTemplate {
     private <T> boolean isIdNull(T entity) {
         ClassRepresentation classRepresentation = getClassRepresentations().get(entity.getClass());
         FieldRepresentation field = classRepresentation.getId().get();
-        return isNull(getReflections().getValue(entity, field.getNativeField()));
+        return isNull(field.read(entity));
 
     }
 

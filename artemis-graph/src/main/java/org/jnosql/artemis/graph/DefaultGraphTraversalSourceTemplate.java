@@ -19,7 +19,6 @@ import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.apache.tinkerpop.gremlin.structure.Transaction;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.artemis.reflection.Reflections;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -40,18 +39,15 @@ class DefaultGraphTraversalSourceTemplate extends AbstractGraphTemplate {
 
     private GraphWorkflow workflow;
 
-    private Reflections reflections;
-
     @Inject
     DefaultGraphTraversalSourceTemplate(Instance<GraphTraversalSourceSupplier> supplierInstance,
                                         ClassRepresentations classRepresentations,
                                         @GraphTraversalSourceOperation GraphConverter converter,
-                                        GraphWorkflow workflow, Reflections reflections) {
+                                        GraphWorkflow workflow) {
         this.supplierInstance = supplierInstance;
         this.classRepresentations = classRepresentations;
         this.converter = converter;
         this.workflow = workflow;
-        this.reflections = reflections;
     }
 
     DefaultGraphTraversalSourceTemplate() {
@@ -85,12 +81,6 @@ class DefaultGraphTraversalSourceTemplate extends AbstractGraphTemplate {
     protected GraphWorkflow getFlow() {
         return workflow;
     }
-
-    @Override
-    protected Reflections getReflections() {
-        return reflections;
-    }
-
 
     @Override
     protected Iterator<Vertex> getVertices(Object id) {

@@ -21,7 +21,6 @@ import org.jnosql.artemis.graph.GraphConverter;
 import org.jnosql.artemis.graph.GraphTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.artemis.reflection.Reflections;
 
 import java.lang.reflect.ParameterizedType;
 
@@ -36,8 +35,6 @@ class GraphRepositoryProxy<T, ID> extends AbstractGraphRepositoryProxy<T, ID> {
 
     private final GraphRepository repository;
 
-    private final Reflections reflections;
-
     private final ClassRepresentation classRepresentation;
 
     private final Graph graph;
@@ -50,15 +47,15 @@ class GraphRepositoryProxy<T, ID> extends AbstractGraphRepositoryProxy<T, ID> {
 
 
     GraphRepositoryProxy(GraphTemplate template, ClassRepresentations classRepresentations,
-                         Class<?> repositoryType, Reflections reflections,
-                         Graph graph, GraphConverter converter, Converters converters) {
+                         Class<?> repositoryType,
+                         Graph graph, GraphConverter converter,
+                         Converters converters) {
 
         Class<T> typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
 
         this.graph = graph;
         this.converter = converter;
-        this.reflections = reflections;
         this.classRepresentation = classRepresentations.get(typeClass);
         this.repository = new GraphRepository(template, classRepresentation);
         this.template = template;
@@ -116,11 +113,6 @@ class GraphRepositoryProxy<T, ID> extends AbstractGraphRepositoryProxy<T, ID> {
         @Override
         protected ClassRepresentation getClassRepresentation() {
             return classRepresentation;
-        }
-
-        @Override
-        protected Reflections getReflections() {
-            return reflections;
         }
 
     }

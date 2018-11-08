@@ -23,7 +23,6 @@ import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.EntityNotFoundException;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.artemis.reflection.Reflections;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -44,18 +43,15 @@ class DefaultGraphTraversalSourceConverter extends AbstractGraphConverter {
 
     private ClassRepresentations classRepresentations;
 
-    private Reflections reflections;
-
     private Converters converters;
 
     private Instance<GraphTraversalSourceSupplier> suppliers;
 
 
     @Inject
-    DefaultGraphTraversalSourceConverter(ClassRepresentations classRepresentations, Reflections reflections, Converters converters,
+    DefaultGraphTraversalSourceConverter(ClassRepresentations classRepresentations, Converters converters,
                                          Instance<GraphTraversalSourceSupplier> suppliers) {
         this.classRepresentations = classRepresentations;
-        this.reflections = reflections;
         this.converters = converters;
         this.suppliers = suppliers;
     }
@@ -66,11 +62,6 @@ class DefaultGraphTraversalSourceConverter extends AbstractGraphConverter {
     @Override
     protected ClassRepresentations getClassRepresentations() {
         return classRepresentations;
-    }
-
-    @Override
-    protected Reflections getReflections() {
-        return reflections;
     }
 
     @Override
