@@ -20,11 +20,11 @@ import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
 import javax.tools.JavaFileObject.Kind;
 
-final class StringGeneratedJavaFileManager extends ForwardingJavaFileManager<JavaFileManager> {
+final class GeneratedJavaFileManager extends ForwardingJavaFileManager<JavaFileManager> {
 
     private final JavaCompilerClassLoader classLoader;
 
-    public StringGeneratedJavaFileManager(JavaFileManager fileManager, JavaCompilerClassLoader classLoader) {
+    public GeneratedJavaFileManager(JavaFileManager fileManager, JavaCompilerClassLoader classLoader) {
         super(fileManager);
         this.classLoader = classLoader;
     }

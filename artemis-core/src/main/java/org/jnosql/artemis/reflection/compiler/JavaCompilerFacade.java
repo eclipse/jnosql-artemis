@@ -49,12 +49,12 @@ final class JavaCompilerFacade {
     }
 
     private synchronized <T> Class<? extends T> compile(JavaSource<T> source) {
-        StringGeneratedSourceFileObject fileObject;
-        fileObject = new StringGeneratedSourceFileObject(source.getClassName(), source.getJavaSource());
+        GeneratedFileObject fileObject;
+        fileObject = new GeneratedFileObject(source.getClassName(), source.getJavaSource());
 
         JavaFileManager standardFileManager = compiler.getStandardFileManager(diagnosticCollector, null, null);
 
-        try (StringGeneratedJavaFileManager javaFileManager = new StringGeneratedJavaFileManager(standardFileManager, classLoader)) {
+        try (GeneratedJavaFileManager javaFileManager = new GeneratedJavaFileManager(standardFileManager, classLoader)) {
             CompilationTask task = compiler.getTask(null, javaFileManager, diagnosticCollector,
                     null, null, Collections.singletonList(fileObject));
 
