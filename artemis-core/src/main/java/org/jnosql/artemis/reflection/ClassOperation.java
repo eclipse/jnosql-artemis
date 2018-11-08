@@ -25,18 +25,18 @@ public interface ClassOperation {
      * Returns a factory of {@link InstanceSupplier}
      * @return a {@link InstanceSupplier} instance
      */
-    InstanceSupplierFactory newInstance();
+    InstanceSupplierFactory getInstanceSupplierFactory();
 
     /**
      * Returns a factory of {@link FieldWriterFactory}
      * @return a {@link FieldWriterFactory}
      */
-    FieldWriterFactory write();
+    FieldWriterFactory getFieldWriterFactory();
 
     /**
      * Returns a factory of {@link FieldReaderFactory}
      * @return a {@link FieldReaderFactory}
      */
-    FieldReaderFactory read();
+    FieldReaderFactory getFieldReaderFactory();
 }
 
