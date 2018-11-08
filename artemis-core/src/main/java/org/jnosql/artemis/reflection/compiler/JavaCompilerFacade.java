@@ -48,8 +48,7 @@ final class JavaCompilerFacade {
     }
 
     private synchronized <T> Class<? extends T> compile(JavaSource<T> source) {
-        JavaFileObject fileObject;
-        fileObject = new JavaFileObject(source.getClassName(), source.getJavaSource());
+        JavaFileObject fileObject = new JavaFileObject(source.getClassName(), source.getJavaSource());
 
         JavaFileManager standardFileManager = compiler.getStandardFileManager(diagnosticCollector, null, null);
 

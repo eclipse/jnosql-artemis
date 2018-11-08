@@ -19,7 +19,7 @@ class JavaCompilerBeanPropertyReaderFactory {
     private final JavaCompilerFacade compilerFacade = new JavaCompilerFacade(
             JavaCompilerBeanPropertyReaderFactory.class.getClassLoader());
 
-    public BeanPropertyReader generate(Class<?> beanClass, String propertyName) {
+    public ReadFromGetterMethod generate(Class<?> beanClass, String propertyName) {
 
         String getterName = "get" + propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
         String packageName = JavaCompilerBeanPropertyReaderFactory.class.getPackage().getName()
@@ -27,13 +27,13 @@ class JavaCompilerBeanPropertyReaderFactory {
         String simpleClassName = beanClass.getSimpleName() + "$" + propertyName;
         String fullClassName = packageName + "." + simpleClassName;
         final String source = "package " + packageName + ";\n"
-                + "public class " + simpleClassName + " implements " + BeanPropertyReader.class.getName() + " {\n"
-                + "    public Object executeGetter(Object bean) {\n"
+                + "public class " + simpleClassName + " implements " + ReadFromGetterMethod.class.getName() + " {\n"
+                + "    public Object apply(Object bean) {\n"
                 + "        return ((" + beanClass.getName() + ") bean)." + getterName + "();\n"
                 + "    }\n"
                 + "}";
 
-        JavaSource<BeanPropertyReader> javaSource = new JavaSource() {
+        JavaSource<ReadFromGetterMethod> javaSource = new JavaSource() {
             @Override
             public String getClassName() {
                 return fullClassName;
@@ -45,11 +45,11 @@ class JavaCompilerBeanPropertyReaderFactory {
             }
 
             @Override
-            public Class<BeanPropertyReader> getType() {
-                return BeanPropertyReader.class;
+            public Class<ReadFromGetterMethod> getType() {
+                return ReadFromGetterMethod.class;
             }
         };
-        Class<? extends BeanPropertyReader> compiledClass = compilerFacade.apply(javaSource);
+        Class<? extends ReadFromGetterMethod> compiledClass = compilerFacade.apply(javaSource);
         try {
             return compiledClass.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {

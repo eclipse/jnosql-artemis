@@ -14,7 +14,8 @@
  */
 package org.jnosql.artemis.reflection.compiler;
 
-public interface BeanPropertyReader {
+import java.util.function.Function;
 
-    Object executeGetter(Object bean);
+public interface ReadFromGetterMethod extends Function<Object, Object> {
+
 }
