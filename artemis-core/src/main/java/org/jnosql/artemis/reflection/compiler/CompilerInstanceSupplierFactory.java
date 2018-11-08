@@ -43,10 +43,9 @@ final class CompilerInstanceSupplierFactory implements InstanceSupplierFactory {
         Class<?> declaringClass = constructor.getDeclaringClass();
         String packageName = declaringClass.getPackage().getName();
         String simpleName = declaringClass.getSimpleName() + "$InstanceSupplier";
-        String newInsance = declaringClass.getName();
+        String newInstance = declaringClass.getName();
         String name = declaringClass.getName() + "$InstanceSupplier";
-        String javaSource = StringFormatter.INSTANCE.format(TEMPLATE, packageName, simpleName, newInsance);
-        System.out.println(javaSource);
+        String javaSource = StringFormatter.INSTANCE.format(TEMPLATE, packageName, simpleName, newInstance);
         InstanceJavaSource source = new InstanceJavaSource(name, simpleName, javaSource);
         Class<? extends InstanceSupplier> supplier = compilerFacade.apply(source);
         return reflections.newInstance(supplier);

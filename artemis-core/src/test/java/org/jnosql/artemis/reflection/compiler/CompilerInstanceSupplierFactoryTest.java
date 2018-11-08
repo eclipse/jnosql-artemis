@@ -20,6 +20,8 @@ import org.jnosql.artemis.reflection.Reflections;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Constructor;
+
 class CompilerInstanceSupplierFactoryTest {
 
     private final JavaCompilerFacade compilerFacade = new JavaCompilerFacade(
@@ -32,6 +34,20 @@ class CompilerInstanceSupplierFactoryTest {
         CompilerInstanceSupplierFactory factory = new CompilerInstanceSupplierFactory(compilerFacade, reflections);
         InstanceSupplier instanceSupplier = factory.apply(Foo.class.getConstructors()[0]);
         Assertions.assertNotNull(instanceSupplier);
+        Object value = instanceSupplier.get();
+        Assertions.assertTrue( value instanceof Foo);
+    }
+
+    @Test
+    public void shouldCreateInstanceSupplier2() {
+        CompilerInstanceSupplierFactory factory = new CompilerInstanceSupplierFactory(compilerFacade, reflections);
+        Constructor<?> constructor = Faa.class.getDeclaredConstructors()[0];
+        constructor.setAccessible(true);
+
+        InstanceSupplier instanceSupplier = factory.apply(constructor);
+        Assertions.assertNotNull(instanceSupplier);
+        Object value = instanceSupplier.get();
+        Assertions.assertTrue( value instanceof Foo);
     }
 
 }

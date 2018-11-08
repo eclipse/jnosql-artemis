@@ -24,7 +24,7 @@ final class GeneratedJavaFileManager extends ForwardingJavaFileManager<JavaFileM
 
     private final JavaCompilerClassLoader classLoader;
 
-    public GeneratedJavaFileManager(JavaFileManager fileManager, JavaCompilerClassLoader classLoader) {
+    public GeneratedJavaFileManager(JavaFileManager fileManager, ClassLoader classLoader) {
         super(fileManager);
         this.classLoader = classLoader;
     }
