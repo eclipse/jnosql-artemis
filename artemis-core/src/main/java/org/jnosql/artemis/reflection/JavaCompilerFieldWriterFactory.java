@@ -32,7 +32,7 @@ final class JavaCompilerFieldWriterFactory implements FieldWriterFactory {
 
     private static final Logger LOGGER = Logger.getLogger(JavaCompilerFieldWriterFactory.class.getName());
 
-    private static final String TEMPLATE_FILE = "FieldWriter.tempalte";
+    private static final String TEMPLATE_FILE = "FieldWriter.template";
 
     private static final String TEMPLATE = TemplateReader.INSTANCE.apply(TEMPLATE_FILE);
 
@@ -55,20 +55,22 @@ final class JavaCompilerFieldWriterFactory implements FieldWriterFactory {
         Class<?> declaringClass = field.getDeclaringClass();
         Optional<String> methodName = getMethodName(declaringClass, field);
 
-        FieldWriter fieldWriter = methodName.map(compile(declaringClass))
+        FieldWriter fieldWriter = methodName.map(compile(declaringClass, field.getType()))
                 .orElseGet(() -> fallback.apply(field));
 
         return fieldWriter;
     }
 
-    private Function<String, FieldWriter> compile(Class<?> declaringClass) {
+    private Function<String, FieldWriter> compile(Class<?> declaringClass, Class<?> type) {
         return method -> {
             String packageName = declaringClass.getPackage().getName();
-
             String simpleName = declaringClass.getSimpleName() + "$" + method;
             String newInstance = declaringClass.getName();
             String name = declaringClass.getName() + "$" + method;
-            String javaSource = StringFormatter.INSTANCE.format(TEMPLATE, packageName, simpleName, newInstance, method);
+            String typeCast = type.getName();
+            String javaSource = StringFormatter.INSTANCE.format(TEMPLATE, packageName, simpleName,
+                    newInstance, method, typeCast);
+
             FieldWriterJavaSource source = new FieldWriterJavaSource(name, simpleName, javaSource);
             Class<FieldWriter> reader = (Class<FieldWriter>) compilerFacade.apply(source);
             return reflections.newInstance(reader);

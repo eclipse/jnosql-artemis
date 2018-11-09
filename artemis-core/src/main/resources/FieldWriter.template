@@ -6,7 +6,7 @@ public class {1} implements FieldWriter '{'
 
     @Override
     public void write(Object bean, Object value) '{'
-        {2}.class.cast(bean).setBar(({3}) value);
+        {2}.class.cast(bean).{3}(({4}) value);
 
     '}'
 '}'

@@ -14,8 +14,53 @@
  */
 package org.jnosql.artemis.reflection;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import java.lang.reflect.Field;
 
 class JavaCompilerFieldWriterFactoryTest {
 
+    private final JavaCompilerFacade compilerFacade = new JavaCompilerFacade(
+            JavaCompilerBeanPropertyReaderFactory.class.getClassLoader());
+
+    private final Reflections reflections = new DefaultReflections();
+
+    private FieldWriterFactory fallback = new ReflectionFieldWriterFactory(reflections);
+
+    private FieldWriterFactory factory = new JavaCompilerFieldWriterFactory(compilerFacade, reflections, fallback);
+
+
+    @Test
+    public void shouldCreateFieldWriter() {
+        Foo foo = new Foo();
+        foo.setBar("bar");
+        FieldWriter writer = factory.apply(Foo.class.getDeclaredFields()[0]);
+        Assertions.assertNotNull(writer);
+        writer.write(foo, "bar");
+        Assertions.assertEquals("bar", foo.getBar());
+    }
+
+    @Test
+    public void shouldUseFallBackWhenThereIsNotSetter() throws IllegalAccessException {
+        Foo foo = new Foo();
+        Field field = Foo.class.getDeclaredFields()[1];
+        field.setAccessible(true);
+        FieldWriter writer = factory.apply(field);
+        Assertions.assertNotNull(writer);
+        writer.write(foo, "update");
+        Assertions.assertEquals("update", field.get(foo));
+    }
+
+    @Test
+    public void shouldUseFallBackWhenGetterIsNotPublic() throws IllegalAccessException {
+        Foo foo = new Foo();
+        Field field = Foo.class.getDeclaredFields()[2];
+        field.setAccessible(true);
+
+        FieldWriter writer = factory.apply(field);
+        Assertions.assertNotNull(writer);
+        writer.write(foo, "update");
+        Assertions.assertEquals("update", field.get(foo));
+    }
 }
