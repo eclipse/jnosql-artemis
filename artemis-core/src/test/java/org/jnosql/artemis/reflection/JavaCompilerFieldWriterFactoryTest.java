@@ -14,24 +14,8 @@
  */
 package org.jnosql.artemis.reflection;
 
-import javax.inject.Inject;
-import java.lang.reflect.Field;
+import static org.junit.jupiter.api.Assertions.*;
 
-class ReflectionFieldWriterFactory implements FieldWriterFactory {
+class JavaCompilerFieldWriterFactoryTest {
 
-
-    private Reflections reflections;
-
-    @Inject
-    public ReflectionFieldWriterFactory(Reflections reflections) {
-        this.reflections = reflections;
-    }
-
-    ReflectionFieldWriterFactory() {
-    }
-
-    @Override
-    public FieldWriter apply(Field field) {
-        return (bean, value) -> reflections.setValue(bean, field, value);
-    }
 }
