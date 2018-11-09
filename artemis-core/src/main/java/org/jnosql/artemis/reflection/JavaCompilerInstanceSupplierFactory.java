@@ -60,7 +60,7 @@ final class JavaCompilerInstanceSupplierFactory implements InstanceSupplierFacto
         return fallback.apply(constructor);
     }
 
-    static final class InstanceJavaSource implements JavaSource<InstanceSupplier> {
+    private static final class InstanceJavaSource implements JavaSource<InstanceSupplier> {
 
         private final String name;
 
