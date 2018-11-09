@@ -48,7 +48,7 @@ enum ClassOperationFactory implements Supplier<ClassOperation> {
     @Override
     public ClassOperation get() {
 
-        LOGGER.fine("Logging the operation factory");
+        LOGGER.info("Logging the operation factory");
         ServiceLoader<ClassOperation> serviceLoader = ServiceLoader.load(ClassOperation.class);
 
         Optional<ClassOperation> classOperation = StreamSupport.stream(serviceLoader.spliterator(), false)
@@ -56,10 +56,10 @@ enum ClassOperationFactory implements Supplier<ClassOperation> {
 
         if (classOperation.isPresent()) {
             ClassOperation operation = classOperation.get();
-            LOGGER.fine("ClassOperation found: " + operation.getClass());
+            LOGGER.info("ClassOperation found: " + operation.getClass());
             return operation;
         } else {
-            LOGGER.fine("ClassOperation does not found, using the default implementation");
+            LOGGER.info("ClassOperation does not found, using the default implementation");
             boolean isDisableCompiler = Boolean.valueOf(System.getProperty(DISABLE_COMPILER));
             if (isDisableCompiler) {
                 LOGGER.fine(LOG_MESSAGE);
