@@ -14,19 +14,28 @@
  */
 package org.jnosql.artemis.reflection;
 
-import javax.enterprise.inject.Produces;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 import java.util.stream.StreamSupport;
 
-class ClassOperationFactory implements Supplier<ClassOperation> {
+enum ClassOperationFactory implements Supplier<ClassOperation> {
+
+    INSTANCE;
 
     private static final Logger LOGGER = Logger.getLogger(ClassOperationFactory.class.getName());
 
+    private final Reflections reflections = new DefaultReflections();
 
-    @Produces
+    private final ClassOperation reflection = new ReflectionClassOperation(reflections);
+
+    private final JavaCompilerFacade compilerFacade = new JavaCompilerFacade(ClassOperationFactory
+            .class.getClassLoader());
+
+    private final ClassOperation compiler = new JavaCompilerClassOperation(reflection, reflections, compilerFacade);
+
+
     @Override
     public ClassOperation get() {
 
@@ -42,9 +51,9 @@ class ClassOperationFactory implements Supplier<ClassOperation> {
             return operation;
         } else {
             LOGGER.info("ClassOperation does not found, using the default implementation");
+            return reflection;
         }
 
 
-        return new ReflectionClassOperation();
     }
 }
