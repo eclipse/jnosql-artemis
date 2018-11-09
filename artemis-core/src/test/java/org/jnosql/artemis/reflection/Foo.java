@@ -18,11 +18,31 @@ package org.jnosql.artemis.reflection;
 
      private String bar;
 
+     private String bar2 = "bar2";
+
+     private String bar3 = "bar3";
+
      public String getBar() {
          return bar;
      }
 
      public void setBar(String bar) {
          this.bar = bar;
+     }
+
+     String getBar2() {
+         return bar2;
+     }
+
+     void setBar2(String bar2) {
+         this.bar2 = bar2;
+     }
+
+     String getBar3() {
+         return bar3;
+     }
+
+     void setBar3(String bar3) {
+         this.bar3 = bar3;
      }
  }
