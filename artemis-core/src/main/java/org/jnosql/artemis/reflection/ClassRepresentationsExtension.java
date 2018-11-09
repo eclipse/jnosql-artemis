@@ -43,7 +43,7 @@ public class ClassRepresentationsExtension implements Extension {
     private final ClassConverter classConverter;
 
     {
-        classConverter = new ClassConverter(INSTANCE.getReflections(), INSTANCE.get());
+        classConverter = new ClassConverter(INSTANCE.getReflections());
     }
 
     /**

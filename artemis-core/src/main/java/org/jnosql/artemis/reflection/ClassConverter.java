@@ -48,7 +48,9 @@ class ClassConverter {
 
 
     @Inject
-    ClassConverter(Reflections reflections, ClassOperation classOperation) {
+    ClassConverter(Reflections reflections) {
+        ClassOperation classOperation = ClassOperationFactory.INSTANCE.get();
+
         this.reflections = reflections;
         this.readerFactory = classOperation.getFieldReaderFactory();
         this.writerFactory = classOperation.getFieldWriterFactory();
