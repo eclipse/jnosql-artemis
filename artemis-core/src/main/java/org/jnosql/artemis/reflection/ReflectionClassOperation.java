@@ -14,8 +14,6 @@
  */
 package org.jnosql.artemis.reflection;
 
-import javax.enterprise.inject.Vetoed;
-
 /**
  * An implementation of {@link ClassOperation} the supplier operations with Reflection
  */
