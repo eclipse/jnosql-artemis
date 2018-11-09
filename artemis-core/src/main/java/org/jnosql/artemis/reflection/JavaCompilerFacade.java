@@ -57,12 +57,7 @@ final class JavaCompilerFacade {
                     null, null, Collections.singletonList(fileObject));
 
             if (!task.call()) {
-                String compilationMessages = diagnosticCollector.getDiagnostics().stream()
-                        .map(d -> d.getKind() + ":[" + d.getLineNumber() + "," + d.getColumnNumber() + "] " + d.getMessage(null)
-                                + "\n        " + (d.getLineNumber() <= 0 ? "" : BREAK_LINE.splitAsStream(source.getJavaSource()).skip(d.getLineNumber() - 1).findFirst().orElse("")))
-                        .collect(Collectors.joining("\n"));
-                throw new IllegalStateException("The generated class (" + source.getSimpleName() + ") failed to compile.\n"
-                        + compilationMessages);
+                return createCompilerErrorMessage(source);
             }
         } catch (IOException e) {
             throw new IllegalStateException("The generated class (" + source.getSimpleName() + ") failed to compile because the "
@@ -80,6 +75,18 @@ final class JavaCompilerFacade {
                     + ") compiled, but failed to load.", e);
         }
 
+    }
+
+    private <T> Class<? extends T> createCompilerErrorMessage(JavaSource<T> source) {
+        String compilationMessages = diagnosticCollector.getDiagnostics().stream()
+                .map(d -> d.getKind() + ":[" + d.getLineNumber() + "," + d.getColumnNumber() + "] "
+                        + d.getMessage(null)
+                        + "\n        " + (d
+                        .getLineNumber() <= 0 ? "" : BREAK_LINE.splitAsStream(source.getJavaSource())
+                        .skip(d.getLineNumber() - 1).findFirst().orElse("")))
+                .collect(Collectors.joining("\n"));
+        throw new IllegalStateException("The generated class (" + source.getSimpleName() + ") failed to compile.\n"
+                + compilationMessages);
     }
 
 
