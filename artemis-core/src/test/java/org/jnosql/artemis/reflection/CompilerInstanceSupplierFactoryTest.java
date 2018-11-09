@@ -26,25 +26,27 @@ class CompilerInstanceSupplierFactoryTest {
 
     private final Reflections reflections = new DefaultReflections();
 
+    private InstanceSupplierFactory fallback = new ReflectionInstanceSupplierFactory(reflections);
+
     @Test
     public void shouldCreateInstanceSupplier() {
-        CompilerInstanceSupplierFactory factory = new CompilerInstanceSupplierFactory(compilerFacade, reflections);
+        CompilerInstanceSupplierFactory factory = new CompilerInstanceSupplierFactory(compilerFacade, reflections, fallback);
         InstanceSupplier instanceSupplier = factory.apply(Foo.class.getConstructors()[0]);
         Assertions.assertNotNull(instanceSupplier);
         Object value = instanceSupplier.get();
-        Assertions.assertTrue( value instanceof Foo);
+        Assertions.assertTrue(value instanceof Foo);
     }
 
     @Test
     public void shouldUseFallbackWhenConstructorIsNotPublic() {
-        CompilerInstanceSupplierFactory factory = new CompilerInstanceSupplierFactory(compilerFacade, reflections);
+        CompilerInstanceSupplierFactory factory = new CompilerInstanceSupplierFactory(compilerFacade, reflections, fallback);
         Constructor<?> constructor = Faa.class.getDeclaredConstructors()[0];
         constructor.setAccessible(true);
 
         InstanceSupplier instanceSupplier = factory.apply(constructor);
         Assertions.assertNotNull(instanceSupplier);
         Object value = instanceSupplier.get();
-        Assertions.assertTrue( value instanceof Foo);
+        Assertions.assertTrue(value instanceof Faa);
     }
 
 }
