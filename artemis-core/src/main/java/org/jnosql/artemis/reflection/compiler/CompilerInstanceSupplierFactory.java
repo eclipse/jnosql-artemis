@@ -19,11 +19,15 @@ import org.jnosql.artemis.reflection.InstanceSupplierFactory;
 import org.jnosql.artemis.reflection.Reflections;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
+import java.util.logging.Logger;
 
 /**
  * An {@link InstanceSupplierFactory} implementation that uses compiler code
  */
 final class CompilerInstanceSupplierFactory implements InstanceSupplierFactory {
+
+    private static final Logger LOGGER = Logger.getLogger(CompilerInstanceSupplierFactory.class.getName());
 
     private static final String TEMPLATE_FILE = "InstanceSupplier.template";
 
@@ -33,22 +37,31 @@ final class CompilerInstanceSupplierFactory implements InstanceSupplierFactory {
 
     private final Reflections reflections;
 
-    CompilerInstanceSupplierFactory(JavaCompilerFacade compilerFacade, Reflections reflections) {
+    private final InstanceSupplierFactory fallback;
+
+    CompilerInstanceSupplierFactory(JavaCompilerFacade compilerFacade, Reflections reflections, InstanceSupplierFactory fallback) {
         this.compilerFacade = compilerFacade;
         this.reflections = reflections;
+        this.fallback = fallback;
     }
 
     @Override
     public InstanceSupplier apply(Constructor<?> constructor) {
         Class<?> declaringClass = constructor.getDeclaringClass();
-        String packageName = declaringClass.getPackage().getName();
-        String simpleName = declaringClass.getSimpleName() + "$InstanceSupplier";
-        String newInstance = declaringClass.getName();
-        String name = declaringClass.getName() + "$InstanceSupplier";
-        String javaSource = StringFormatter.INSTANCE.format(TEMPLATE, packageName, simpleName, newInstance);
-        InstanceJavaSource source = new InstanceJavaSource(name, simpleName, javaSource);
-        Class<? extends InstanceSupplier> supplier = compilerFacade.apply(source);
-        return reflections.newInstance(supplier);
+        if (Modifier.isPublic(constructor.getModifiers())) {
+            String packageName = declaringClass.getPackage().getName();
+            String simpleName = declaringClass.getSimpleName() + "$InstanceSupplier";
+            String newInstance = declaringClass.getName();
+            String name = declaringClass.getName() + "$InstanceSupplier";
+            String javaSource = StringFormatter.INSTANCE.format(TEMPLATE, packageName, simpleName, newInstance);
+            InstanceJavaSource source = new InstanceJavaSource(name, simpleName, javaSource);
+            Class<? extends InstanceSupplier> supplier = compilerFacade.apply(source);
+            return reflections.newInstance(supplier);
+        }
+
+        LOGGER.fine(String.format("The constructor to the class %s is not public, using fallback with Reflectioin",
+                declaringClass.getName()));
+        return fallback.apply(constructor);
     }
 
     static final class InstanceJavaSource implements JavaSource<InstanceSupplier> {

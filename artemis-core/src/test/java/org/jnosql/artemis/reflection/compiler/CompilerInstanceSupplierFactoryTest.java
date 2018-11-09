@@ -39,7 +39,7 @@ class CompilerInstanceSupplierFactoryTest {
     }
 
     @Test
-    public void shouldCreateInstanceSupplier2() {
+    public void shouldUseFallbackWhenConstructorIsNotPublic() {
         CompilerInstanceSupplierFactory factory = new CompilerInstanceSupplierFactory(compilerFacade, reflections);
         Constructor<?> constructor = Faa.class.getDeclaredConstructors()[0];
         constructor.setAccessible(true);
