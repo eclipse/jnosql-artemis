@@ -19,23 +19,35 @@ import javax.enterprise.inject.Vetoed;
 /**
  * An implementation of {@link ClassOperation} the supplier operations with Reflection
  */
-@Vetoed
 class ReflectionClassOperation implements ClassOperation {
 
-    private final Reflections reflections = new DefaultReflections();
+    private final Reflections reflections;
+
+    private final ReflectionInstanceSupplierFactory supplierFactory;
+
+    private final ReflectionFieldWriterFactory writerFactory;
+
+    private final ReflectionFieldReaderFactory readerFactory;
+
+    ReflectionClassOperation(Reflections reflections) {
+        this.reflections = reflections;
+        supplierFactory = new ReflectionInstanceSupplierFactory(reflections);
+        writerFactory = new ReflectionFieldWriterFactory(reflections);
+        readerFactory = new ReflectionFieldReaderFactory(reflections);
+    }
 
     @Override
     public InstanceSupplierFactory getInstanceSupplierFactory() {
-        return new ReflectionInstanceSupplierFactory(reflections);
+        return supplierFactory;
     }
 
     @Override
     public FieldWriterFactory getFieldWriterFactory() {
-        return new ReflectionFieldWriterFactory(reflections);
+        return writerFactory;
     }
 
     @Override
     public FieldReaderFactory getFieldReaderFactory() {
-        return new ReflectionFieldReaderFactory(reflections);
+        return readerFactory;
     }
 }
