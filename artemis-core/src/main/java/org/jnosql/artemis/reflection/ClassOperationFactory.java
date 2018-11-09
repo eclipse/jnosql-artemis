@@ -41,6 +41,10 @@ enum ClassOperationFactory implements Supplier<ClassOperation> {
     private final ClassOperation compiler = new JavaCompilerClassOperation(reflection, reflections, compilerFacade);
 
 
+    public Reflections getReflections() {
+        return reflections;
+    }
+
     @Override
     public ClassOperation get() {
 

@@ -26,6 +26,8 @@ import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static org.jnosql.artemis.reflection.ClassOperationFactory.INSTANCE;
+
 /**
  * This class is a CDI extension to load all class that has {@link Entity} annotation.
  * This extension will load all Classes and put in a map.
@@ -41,7 +43,7 @@ public class ClassRepresentationsExtension implements Extension {
     private final ClassConverter classConverter;
 
     {
-        classConverter = new ClassConverter(new DefaultReflections(), new ClassOperationFactory().get());
+        classConverter = new ClassConverter(INSTANCE.getReflections(), INSTANCE.get());
     }
 
     /**
