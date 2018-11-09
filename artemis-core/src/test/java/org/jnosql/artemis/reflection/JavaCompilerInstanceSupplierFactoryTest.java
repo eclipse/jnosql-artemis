@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Constructor;
 
-class CompilerInstanceSupplierFactoryTest {
+class JavaCompilerInstanceSupplierFactoryTest {
 
     private final JavaCompilerFacade compilerFacade = new JavaCompilerFacade(
             JavaCompilerBeanPropertyReaderFactory.class.getClassLoader());
@@ -30,7 +30,7 @@ class CompilerInstanceSupplierFactoryTest {
 
     @Test
     public void shouldCreateInstanceSupplier() {
-        CompilerInstanceSupplierFactory factory = new CompilerInstanceSupplierFactory(compilerFacade, reflections, fallback);
+        JavaCompilerInstanceSupplierFactory factory = new JavaCompilerInstanceSupplierFactory(compilerFacade, reflections, fallback);
         InstanceSupplier instanceSupplier = factory.apply(Foo.class.getConstructors()[0]);
         Assertions.assertNotNull(instanceSupplier);
         Object value = instanceSupplier.get();
@@ -39,7 +39,7 @@ class CompilerInstanceSupplierFactoryTest {
 
     @Test
     public void shouldUseFallbackWhenConstructorIsNotPublic() {
-        CompilerInstanceSupplierFactory factory = new CompilerInstanceSupplierFactory(compilerFacade, reflections, fallback);
+        JavaCompilerInstanceSupplierFactory factory = new JavaCompilerInstanceSupplierFactory(compilerFacade, reflections, fallback);
         Constructor<?> constructor = Faa.class.getDeclaredConstructors()[0];
         constructor.setAccessible(true);
 

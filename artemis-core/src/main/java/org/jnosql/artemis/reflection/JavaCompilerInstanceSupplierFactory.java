@@ -21,9 +21,9 @@ import java.util.logging.Logger;
 /**
  * An {@link InstanceSupplierFactory} implementation that uses compiler code
  */
-final class CompilerInstanceSupplierFactory implements InstanceSupplierFactory {
+final class JavaCompilerInstanceSupplierFactory implements InstanceSupplierFactory {
 
-    private static final Logger LOGGER = Logger.getLogger(CompilerInstanceSupplierFactory.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(JavaCompilerInstanceSupplierFactory.class.getName());
 
     private static final String TEMPLATE_FILE = "InstanceSupplier.template";
 
@@ -35,7 +35,7 @@ final class CompilerInstanceSupplierFactory implements InstanceSupplierFactory {
 
     private final InstanceSupplierFactory fallback;
 
-    CompilerInstanceSupplierFactory(JavaCompilerFacade compilerFacade, Reflections reflections, InstanceSupplierFactory fallback) {
+    JavaCompilerInstanceSupplierFactory(JavaCompilerFacade compilerFacade, Reflections reflections, InstanceSupplierFactory fallback) {
         this.compilerFacade = compilerFacade;
         this.reflections = reflections;
         this.fallback = fallback;
