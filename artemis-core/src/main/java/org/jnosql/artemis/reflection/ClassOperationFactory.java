@@ -24,6 +24,11 @@ enum ClassOperationFactory implements Supplier<ClassOperation> {
 
     INSTANCE;
 
+    private static final String DISABLE_COMPILER = "artemis.reclection.disableCompiler";
+
+    private static final String LOG_MESSAGE = "It will use the compiler optimizations to access the class instead" +
+            " of reflections. To disable it set artemis.reclection.disableCompiler as true.";
+
     private static final Logger LOGGER = Logger.getLogger(ClassOperationFactory.class.getName());
 
     private final Reflections reflections = new DefaultReflections();
@@ -39,7 +44,7 @@ enum ClassOperationFactory implements Supplier<ClassOperation> {
     @Override
     public ClassOperation get() {
 
-        LOGGER.info("Logging the operation factory");
+        LOGGER.fine("Logging the operation factory");
         ServiceLoader<ClassOperation> serviceLoader = ServiceLoader.load(ClassOperation.class);
 
         Optional<ClassOperation> classOperation = StreamSupport.stream(serviceLoader.spliterator(), false)
@@ -47,10 +52,15 @@ enum ClassOperationFactory implements Supplier<ClassOperation> {
 
         if (classOperation.isPresent()) {
             ClassOperation operation = classOperation.get();
-            LOGGER.info("ClassOperation found: " + operation.getClass());
+            LOGGER.fine("ClassOperation found: " + operation.getClass());
             return operation;
         } else {
-            LOGGER.info("ClassOperation does not found, using the default implementation");
+            LOGGER.fine("ClassOperation does not found, using the default implementation");
+            boolean isDisableCompiler = Boolean.valueOf(System.getProperty(DISABLE_COMPILER));
+            if (isDisableCompiler) {
+                LOGGER.fine(LOG_MESSAGE);
+                return compiler;
+            }
             return reflection;
         }
 
