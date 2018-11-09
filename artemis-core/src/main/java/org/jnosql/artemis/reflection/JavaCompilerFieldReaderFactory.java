@@ -23,6 +23,9 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * An {@link FieldReaderFactory} implementation that compiles a code and
+ */
 final class JavaCompilerFieldReaderFactory implements FieldReaderFactory {
 
     private static final Logger LOGGER = Logger.getLogger(JavaCompilerFieldReaderFactory.class.getName());
