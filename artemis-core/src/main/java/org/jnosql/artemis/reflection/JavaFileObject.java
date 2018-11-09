@@ -12,18 +12,24 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis.reflection.compiler;
+package org.jnosql.artemis.reflection;
 
 
-import java.text.MessageFormat;
+import java.net.URI;
+import javax.tools.SimpleJavaFileObject;
 
-enum StringFormatter {
+final class JavaFileObject extends SimpleJavaFileObject {
 
-    INSTANCE;
+    private final String javaSource;
 
+    public JavaFileObject(String fullClassName, String javaSource) {
+        super(URI.create("string:///" + fullClassName.replace('.', '/') + Kind.SOURCE.extension), Kind.SOURCE);
+        this.javaSource = javaSource;
+    }
 
-    public String format(String template, Object... params) {
-        return MessageFormat.format(template, params);
+    @Override
+    public String getCharContent(boolean ignoreEncodingErrors) {
+        return javaSource;
     }
 
 }

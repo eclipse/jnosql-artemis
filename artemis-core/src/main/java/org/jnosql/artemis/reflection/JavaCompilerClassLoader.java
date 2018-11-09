@@ -12,7 +12,7 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis.reflection.compiler;
+package org.jnosql.artemis.reflection;
 
 import java.util.HashMap;
 import java.util.Map;

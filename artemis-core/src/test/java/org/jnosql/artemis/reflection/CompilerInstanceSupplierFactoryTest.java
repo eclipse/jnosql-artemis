@@ -12,11 +12,8 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis.reflection.compiler;
+package org.jnosql.artemis.reflection;
 
-import org.jnosql.artemis.reflection.DefaultReflections;
-import org.jnosql.artemis.reflection.InstanceSupplier;
-import org.jnosql.artemis.reflection.Reflections;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

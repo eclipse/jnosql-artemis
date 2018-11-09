@@ -12,7 +12,7 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis.reflection.compiler;
+package org.jnosql.artemis.reflection;
 
 /**
  * The Java source code to be compiled.

@@ -12,24 +12,17 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis.reflection.compiler;
+package org.jnosql.artemis.reflection;
 
+ public class Foo {
 
-import java.net.URI;
-import javax.tools.SimpleJavaFileObject;
+     private String bar;
 
-final class JavaFileObject extends SimpleJavaFileObject {
+     public String getBar() {
+         return bar;
+     }
 
-    private final String javaSource;
-
-    public JavaFileObject(String fullClassName, String javaSource) {
-        super(URI.create("string:///" + fullClassName.replace('.', '/') + Kind.SOURCE.extension), Kind.SOURCE);
-        this.javaSource = javaSource;
-    }
-
-    @Override
-    public String getCharContent(boolean ignoreEncodingErrors) {
-        return javaSource;
-    }
-
-}
+     public void setBar(String bar) {
+         this.bar = bar;
+     }
+ }

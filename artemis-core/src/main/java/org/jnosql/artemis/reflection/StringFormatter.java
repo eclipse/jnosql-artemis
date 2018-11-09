@@ -12,10 +12,18 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis.reflection.compiler;
+package org.jnosql.artemis.reflection;
 
-import java.util.function.Function;
 
-public interface ReadFromGetterMethod extends Function<Object, Object> {
+import java.text.MessageFormat;
+
+enum StringFormatter {
+
+    INSTANCE;
+
+
+    public String format(String template, Object... params) {
+        return MessageFormat.format(template, params);
+    }
 
 }

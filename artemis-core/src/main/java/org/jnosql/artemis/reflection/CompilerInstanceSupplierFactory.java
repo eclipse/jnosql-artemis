@@ -12,11 +12,7 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis.reflection.compiler;
-
-import org.jnosql.artemis.reflection.InstanceSupplier;
-import org.jnosql.artemis.reflection.InstanceSupplierFactory;
-import org.jnosql.artemis.reflection.Reflections;
+package org.jnosql.artemis.reflection;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;

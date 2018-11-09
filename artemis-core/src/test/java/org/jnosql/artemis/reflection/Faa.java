@@ -12,10 +12,10 @@
  *
  *   Otavio Santana
  */
+package org.jnosql.artemis.reflection;
 
-/**
- * This domains contains implementations of
- * {@link org.jnosql.artemis.reflection.FieldReader} {@link org.jnosql.artemis.reflection.FieldWriter} and
- * {@link org.jnosql.artemis.reflection.InstanceSupplier} that create/compile new class instead of reflection.
- */
-package org.jnosql.artemis.reflection.compiler;
+public class Faa {
+
+    Faa() {
+    }
+}

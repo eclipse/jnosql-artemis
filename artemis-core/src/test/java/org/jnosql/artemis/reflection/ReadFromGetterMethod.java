@@ -12,10 +12,10 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis.reflection.compiler;
+package org.jnosql.artemis.reflection;
 
-public class Faa {
+import java.util.function.Function;
 
-    Faa() {
-    }
+public interface ReadFromGetterMethod extends Function<Object, Object> {
+
 }
