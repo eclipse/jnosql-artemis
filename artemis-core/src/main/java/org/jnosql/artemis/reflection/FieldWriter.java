@@ -26,8 +26,7 @@ public interface FieldWriter {
      *
      * @param bean  the entity that has the field
      * @param value the value to the field
-     * @return the field value from the entity
      * @throws NullPointerException when there is null parameter
      */
-    Object write(Object bean, Object value);
+    void write(Object bean, Object value);
 }
