@@ -16,13 +16,6 @@ package org.jnosql.artemis.reflection;
 
 final class JavaCompilerClassOperation implements ClassOperation {
 
-
-    private final ClassOperation fallback;
-
-    private final Reflections reflections;
-
-    private final JavaCompilerFacade compilerFacade;
-
     private final InstanceSupplierFactory instanceSupplierFactory;
 
     private final FieldWriterFactory fieldWriterFactory;
@@ -31,9 +24,6 @@ final class JavaCompilerClassOperation implements ClassOperation {
 
 
     JavaCompilerClassOperation(ClassOperation fallback, Reflections reflections, JavaCompilerFacade compilerFacade) {
-        this.fallback = fallback;
-        this.reflections = reflections;
-        this.compilerFacade = compilerFacade;
         this.instanceSupplierFactory = new JavaCompilerInstanceSupplierFactory(compilerFacade, reflections,
                 fallback.getInstanceSupplierFactory());
         this.fieldWriterFactory = new JavaCompilerFieldWriterFactory(compilerFacade, reflections,
