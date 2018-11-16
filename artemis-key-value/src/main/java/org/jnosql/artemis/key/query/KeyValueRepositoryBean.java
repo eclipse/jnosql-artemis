@@ -39,6 +39,8 @@ import java.util.Set;
  */
 public class KeyValueRepositoryBean implements Bean<Repository>, PassivationCapable {
 
+    private static final AnnotationLiteral<Default> DEFAULT_ANNOTATION = new AnnotationLiteral<Default>() {
+    };
     private final Class type;
 
     private final BeanManager beanManager;
@@ -64,8 +66,7 @@ public class KeyValueRepositoryBean implements Bean<Repository>, PassivationCapa
         if (provider.isEmpty()) {
             this.qualifiers = new HashSet<>();
             qualifiers.add(DatabaseQualifier.ofKeyValue());
-            qualifiers.add(new AnnotationLiteral<Default>() {
-            });
+            qualifiers.add(DEFAULT_ANNOTATION);
         } else {
             this.qualifiers = Collections.singleton(DatabaseQualifier.ofKeyValue(provider));
         }
