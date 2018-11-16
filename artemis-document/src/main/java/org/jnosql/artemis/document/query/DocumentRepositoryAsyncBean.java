@@ -20,6 +20,7 @@ import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.document.DocumentTemplateAsync;
 import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.util.AnnotationLiteralUtil;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
@@ -38,6 +39,7 @@ import java.util.Set;
  * Artemis discoveryBean to CDI extension to register {@link org.jnosql.artemis.RepositoryAsync}
  */
 public class DocumentRepositoryAsyncBean implements Bean<RepositoryAsync>, PassivationCapable {
+
 
     private final Class type;
 
@@ -64,6 +66,7 @@ public class DocumentRepositoryAsyncBean implements Bean<RepositoryAsync>, Passi
         if (provider.isEmpty()) {
             this.qualifiers = new HashSet<>();
             qualifiers.add(DatabaseQualifier.ofDocument());
+            qualifiers.add(AnnotationLiteralUtil.DEFAULT_ANNOTATION);
         } else {
             this.qualifiers = Collections.singleton(DatabaseQualifier.ofDocument(provider));
         }

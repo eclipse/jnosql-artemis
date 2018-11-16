@@ -20,6 +20,7 @@ import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.document.DocumentTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.util.AnnotationLiteralUtil;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
@@ -64,6 +65,7 @@ public class RepositoryDocumentBean implements Bean<Repository>, PassivationCapa
         if (provider.isEmpty()) {
             this.qualifiers = new HashSet<>();
             qualifiers.add(DatabaseQualifier.ofDocument());
+            qualifiers.add(AnnotationLiteralUtil.DEFAULT_ANNOTATION);
         } else {
             this.qualifiers = Collections.singleton(DatabaseQualifier.ofDocument(provider));
         }

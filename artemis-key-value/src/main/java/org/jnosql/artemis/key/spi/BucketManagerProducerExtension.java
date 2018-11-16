@@ -71,8 +71,7 @@ public class BucketManagerProducerExtension implements Extension {
                 databases.size(), crudTypes.size()));
 
         databases.forEach(type -> {
-            final org.jnosql.artemis.key.spi.KeyValueRepositoryBean bean =
-                    new org.jnosql.artemis.key.spi.KeyValueRepositoryBean(beanManager, type.getProvider());
+            final KeyValueTemplateBean bean = new KeyValueTemplateBean(beanManager, type.getProvider());
             afterBeanDiscovery.addBean(bean);
         });
 

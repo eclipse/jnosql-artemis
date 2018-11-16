@@ -20,6 +20,7 @@ import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.util.AnnotationLiteralUtil;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
@@ -64,6 +65,7 @@ public class RepositoryColumnBean implements Bean<Repository>, PassivationCapabl
         if (provider.isEmpty()) {
             this.qualifiers = new HashSet<>();
             qualifiers.add(DatabaseQualifier.ofColumn());
+            qualifiers.add(AnnotationLiteralUtil.DEFAULT_ANNOTATION);
         } else {
             this.qualifiers = Collections.singleton(DatabaseQualifier.ofColumn(provider));
         }
