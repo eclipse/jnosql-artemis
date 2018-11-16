@@ -18,6 +18,7 @@ import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.key.KeyValueTemplate;
+import org.jnosql.artemis.util.AnnotationLiteralUtil;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
@@ -39,8 +40,6 @@ import java.util.Set;
  */
 public class KeyValueRepositoryBean implements Bean<Repository>, PassivationCapable {
 
-    private static final AnnotationLiteral<Default> DEFAULT_ANNOTATION = new AnnotationLiteral<Default>() {
-    };
     private final Class type;
 
     private final BeanManager beanManager;
@@ -66,7 +65,7 @@ public class KeyValueRepositoryBean implements Bean<Repository>, PassivationCapa
         if (provider.isEmpty()) {
             this.qualifiers = new HashSet<>();
             qualifiers.add(DatabaseQualifier.ofKeyValue());
-            qualifiers.add(DEFAULT_ANNOTATION);
+            qualifiers.add(AnnotationLiteralUtil.DEFAULT_ANNOTATION);
         } else {
             this.qualifiers = Collections.singleton(DatabaseQualifier.ofKeyValue(provider));
         }
