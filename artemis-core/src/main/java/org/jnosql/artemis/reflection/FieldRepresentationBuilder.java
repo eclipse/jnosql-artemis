@@ -35,6 +35,11 @@ class FieldRepresentationBuilder {
 
     private boolean id;
 
+    private FieldReader reader;
+
+    private FieldWriter writer;
+
+
     public FieldRepresentationBuilder withType(FieldType type) {
         this.type = type;
         return this;
@@ -70,16 +75,26 @@ class FieldRepresentationBuilder {
         return this;
     }
 
+    public FieldRepresentationBuilder withWriter(FieldWriter writer) {
+        this.writer = writer;
+        return this;
+    }
+
+    public FieldRepresentationBuilder withReader(FieldReader reader) {
+        this.reader = reader;
+        return this;
+    }
+
     public DefaultFieldRepresentation buildDefault() {
-        return new DefaultFieldRepresentation(type, field, name, converter, id);
+        return new DefaultFieldRepresentation(type, field, name, converter, id, reader, writer);
     }
 
     public GenericFieldRepresentation buildGeneric() {
-        return new GenericFieldRepresentation(type, field, name, typeSupplier, converter);
+        return new GenericFieldRepresentation(type, field, name, typeSupplier, converter, reader, writer);
     }
 
     public EmbeddedFieldRepresentation buildEmedded() {
-        return new EmbeddedFieldRepresentation(type, field, name, entityName);
+        return new EmbeddedFieldRepresentation(type, field, name, entityName, reader, writer);
     }
 
 }

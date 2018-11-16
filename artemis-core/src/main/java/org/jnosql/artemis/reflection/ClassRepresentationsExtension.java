@@ -25,7 +25,8 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
+
+import static org.jnosql.artemis.reflection.ClassOperationFactory.INSTANCE;
 
 /**
  * This class is a CDI extension to load all class that has {@link Entity} annotation.
@@ -35,13 +36,15 @@ import java.util.logging.Logger;
 @ApplicationScoped
 public class ClassRepresentationsExtension implements Extension {
 
-    private static final Logger LOGGER = Logger.getLogger(ClassRepresentationsExtension.class.getName());
-
     private final Map<String, ClassRepresentation> representations = new ConcurrentHashMap<>();
 
     private final Map<Class<?>, ClassRepresentation> classes = new ConcurrentHashMap<>();
 
-    private final ClassConverter classConverter = new ClassConverter(new DefaultReflections());
+    private final ClassConverter classConverter;
+
+    {
+        classConverter = new ClassConverter(INSTANCE.getReflections());
+    }
 
     /**
      * Event observer
@@ -54,13 +57,11 @@ public class ClassRepresentationsExtension implements Extension {
         AnnotatedType<T> annotatedType = target.getAnnotatedType();
         if (annotatedType.isAnnotationPresent(Entity.class)) {
             Class<T> javaClass = target.getAnnotatedType().getJavaClass();
-            LOGGER.info("scanning type: " + javaClass.getName());
             ClassRepresentation classRepresentation = classConverter.create(javaClass);
             representations.put(classRepresentation.getName(), classRepresentation);
             classes.put(javaClass, classRepresentation);
         } else if (isSubElement(annotatedType)) {
             Class<T> javaClass = target.getAnnotatedType().getJavaClass();
-            LOGGER.info("scanning type: " + javaClass.getName());
             ClassRepresentation classRepresentation = classConverter.create(javaClass);
             classes.put(javaClass, classRepresentation);
         }

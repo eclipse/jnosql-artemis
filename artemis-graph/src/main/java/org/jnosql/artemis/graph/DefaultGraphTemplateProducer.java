@@ -17,7 +17,6 @@ package org.jnosql.artemis.graph;
 import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.artemis.reflection.Reflections;
 
 import javax.enterprise.inject.Instance;
 import javax.enterprise.util.TypeLiteral;
@@ -37,9 +36,6 @@ class DefaultGraphTemplateProducer implements GraphTemplateProducer {
     private ClassRepresentations classRepresentations;
 
     @Inject
-    private Reflections reflections;
-
-    @Inject
     private Converters converters;
 
     @Inject
@@ -51,11 +47,11 @@ class DefaultGraphTemplateProducer implements GraphTemplateProducer {
 
         SingleInstance<Graph> instance = new SingleInstance<>(graph);
 
-        GraphConverter converter = new DefaultGraphConverter(classRepresentations, reflections,
+        GraphConverter converter = new DefaultGraphConverter(classRepresentations,
                 converters,
                 instance);
         GraphWorkflow workflow = new DefaultGraphWorkflow(persistManager, converter);
-        return new DefaultGraphTemplate(instance, classRepresentations, converter, workflow, reflections);
+        return new DefaultGraphTemplate(instance, classRepresentations, converter, workflow);
     }
 
     @Override
@@ -64,11 +60,11 @@ class DefaultGraphTemplateProducer implements GraphTemplateProducer {
 
         SingleInstance<GraphTraversalSourceSupplier> instance = new SingleInstance<>(supplier);
 
-        GraphConverter converter = new DefaultGraphTraversalSourceConverter(classRepresentations, reflections,
+        GraphConverter converter = new DefaultGraphTraversalSourceConverter(classRepresentations,
                 converters,
                 instance);
         GraphWorkflow workflow = new DefaultGraphWorkflow(persistManager, converter);
-        return new DefaultGraphTraversalSourceTemplate(instance, classRepresentations, converter, workflow, reflections);
+        return new DefaultGraphTraversalSourceTemplate(instance, classRepresentations, converter, workflow);
     }
 
     class SingleInstance<T> implements Instance<T> {

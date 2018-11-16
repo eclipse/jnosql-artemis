@@ -24,7 +24,6 @@ import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.document.DocumentTemplateAsync;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.Condition;
 import org.jnosql.diana.api.Sort;
 import org.jnosql.diana.api.document.Document;
@@ -63,9 +62,6 @@ public class DocumentRepositoryAsyncProxyTest {
     private ClassRepresentations classRepresentations;
 
     @Inject
-    private Reflections reflections;
-
-    @Inject
     private Converters converters;
 
     private PersonAsyncRepository personRepository;
@@ -76,7 +72,7 @@ public class DocumentRepositoryAsyncProxyTest {
         this.template = Mockito.mock(DocumentTemplateAsync.class);
 
         DocumentRepositoryAsyncProxy handler = new DocumentRepositoryAsyncProxy(template,
-                classRepresentations, PersonAsyncRepository.class, reflections, converters);
+                classRepresentations, PersonAsyncRepository.class, converters);
 
 
         personRepository = (PersonAsyncRepository) Proxy.newProxyInstance(PersonAsyncRepository.class.getClassLoader(),

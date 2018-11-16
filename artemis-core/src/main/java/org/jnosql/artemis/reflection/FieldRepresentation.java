@@ -43,6 +43,24 @@ public interface FieldRepresentation extends Serializable {
     Field getNativeField();
 
     /**
+     * Reads the field using {@link FieldReader}
+     *
+     * @param bean the bean
+     * @return the property value
+     * @throws NullPointerException when bean is null
+     */
+    Object read(Object bean);
+
+    /**
+     * Writes the field using {@link java.io.FileWriter}
+     *
+     * @param bean  the bean
+     * @param value the value to write
+     * @throws NullPointerException when there is null parameter
+     */
+    void write(Object bean, Object value);
+
+    /**
      * Returns the name of the field that can be eiher the field name
      * or {@link org.jnosql.artemis.Column#value()}
      *

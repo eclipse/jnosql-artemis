@@ -77,15 +77,16 @@ class ColumnFieldConverters {
                     for (Map.Entry entry : (Set<Map.Entry>) map.entrySet()) {
                         embeddedColumns.add(Column.of(entry.getKey().toString(), entry.getValue()));
                     }
-                    converter.getReflections().setValue(instance, field.getNativeField(), converter.toEntity(field.getNativeField().getType(), embeddedColumns));
+                    field.write(instance, converter.toEntity(field.getNativeField().getType(), embeddedColumns));
+
                 } else {
-                    converter.getReflections().setValue(instance, field.getNativeField(), converter.toEntity(field.getNativeField().getType(),
+                    field.write(instance, converter.toEntity(field.getNativeField().getType(),
                             subColumn.get(new TypeReference<List<Column>>() {
                             })));
                 }
 
             } else {
-                converter.getReflections().setValue(instance, field.getNativeField(), converter.toEntity(field.getNativeField().getType(), columns));
+                field.write(instance, converter.toEntity(field.getNativeField().getType(), columns));
             }
         }
     }
@@ -100,7 +101,7 @@ class ColumnFieldConverters {
 
             Field nativeField = field.getNativeField();
             Object subEntity = converter.toEntity(nativeField.getType(), columns);
-            converter.getReflections().setValue(instance, nativeField, subEntity);
+            field.write(instance, subEntity);
 
         }
     }
@@ -118,9 +119,9 @@ class ColumnFieldConverters {
 
                 AttributeConverter attributeConverter = converter.getConverters().get(optionalConverter.get());
                 Object attributeConverted = attributeConverter.convertToEntityAttribute(value.get());
-                converter.getReflections().setValue(instance, field.getNativeField(), field.getValue(Value.of(attributeConverted)));
+                field.write(instance, field.getValue(Value.of(attributeConverted)));
             } else {
-                converter.getReflections().setValue(instance, field.getNativeField(), field.getValue(value));
+                field.write(instance, field.getValue(value));
             }
         }
     }
@@ -144,7 +145,7 @@ class ColumnFieldConverters {
                     Object element = converter.toEntity(genericField.getElementType(), columnList);
                     collection.add(element);
                 }
-                converter.getReflections().setValue(instance, field.getNativeField(), collection);
+                field.write(instance, collection);
             };
         }
     }

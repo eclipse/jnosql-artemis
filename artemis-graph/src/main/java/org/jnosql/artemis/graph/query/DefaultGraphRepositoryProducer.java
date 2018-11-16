@@ -22,7 +22,6 @@ import org.jnosql.artemis.graph.GraphRepositoryProducer;
 import org.jnosql.artemis.graph.GraphTemplate;
 import org.jnosql.artemis.graph.GraphTemplateProducer;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.artemis.reflection.Reflections;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -34,12 +33,13 @@ class DefaultGraphRepositoryProducer implements GraphRepositoryProducer {
 
     @Inject
     private ClassRepresentations classRepresentations;
-    @Inject
-    private Reflections reflections;
+
     @Inject
     private GraphConverter converter;
+
     @Inject
     private GraphTemplateProducer producer;
+
     @Inject
     private Converters converters;
 
@@ -49,7 +49,7 @@ class DefaultGraphRepositoryProducer implements GraphRepositoryProducer {
         Objects.requireNonNull(manager, "manager class is required");
         GraphTemplate template = producer.get(manager);
         GraphRepositoryProxy<T, ID> handler = new GraphRepositoryProxy(template,
-                classRepresentations, repositoryClass, reflections, manager, converter, converters);
+                classRepresentations, repositoryClass, manager, converter, converters);
         return (T) Proxy.newProxyInstance(repositoryClass.getClassLoader(),
                 new Class[]{repositoryClass},
                 handler);

@@ -31,7 +31,7 @@ public final class Databases {
     }
 
     /**
-     * This method get the class from ProcessProduce, check if the object is a valid object for the database type
+     * This method read the class from ProcessProduce, check if the object is a valid object for the database type
      * add it for a list passed for CDI's lifecycle.
      *
      * @param processProducer the {@link ProcessProducer} of CDI Exntesion

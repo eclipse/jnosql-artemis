@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -87,6 +88,53 @@ public class FieldRepresentationTest {
         assertEquals("barClass", field.getFieldName());
         assertEquals("barClass", field.getName());
         assertEquals(EMBEDDED, field.getType());
+    }
+
+    @Test
+    public void shouldUserFieldReader() {
+        ForClass forClass = new ForClass();
+        forClass.string = "text";
+        forClass.list = Collections.singletonList("text");
+        forClass.map = Collections.singletonMap("key", "value");
+        forClass.barClass = new BarClass();
+        forClass.barClass.integer = 10;
+
+        ClassRepresentation classRepresentation = classConverter.create(ForClass.class);
+
+        FieldRepresentation string = classRepresentation.getFieldRepresentation("string").get();
+        FieldRepresentation list = classRepresentation.getFieldRepresentation("list").get();
+        FieldRepresentation map = classRepresentation.getFieldRepresentation("map").get();
+        FieldRepresentation barClass = classRepresentation.getFieldRepresentation("barClass").get();
+
+        assertEquals("text", string.read(forClass));
+        assertEquals(forClass.list, list.read(forClass));
+        assertEquals(forClass.map, map.read(forClass));
+        assertEquals(forClass.barClass, barClass.read(forClass));
+
+    }
+
+    @Test
+    public void shouldUserFieldWriter() {
+        ForClass forClass = new ForClass();
+        BarClass value = new BarClass();
+        value.integer = 10;
+
+        ClassRepresentation classRepresentation = classConverter.create(ForClass.class);
+
+        FieldRepresentation string = classRepresentation.getFieldRepresentation("string").get();
+        FieldRepresentation list = classRepresentation.getFieldRepresentation("list").get();
+        FieldRepresentation map = classRepresentation.getFieldRepresentation("map").get();
+        FieldRepresentation barClass = classRepresentation.getFieldRepresentation("barClass").get();
+
+        string.write(forClass, "text");
+        list.write(forClass, Collections.singletonList("text"));
+        map.write(forClass, Collections.singletonMap("key", "value"));
+        barClass.write(forClass, value);
+
+        assertEquals("text", string.read(forClass));
+        assertEquals(forClass.list, list.read(forClass));
+        assertEquals(forClass.map, map.read(forClass));
+        assertEquals(forClass.barClass, barClass.read(forClass));
     }
 
 

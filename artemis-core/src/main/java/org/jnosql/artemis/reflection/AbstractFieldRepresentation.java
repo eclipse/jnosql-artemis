@@ -18,6 +18,7 @@ import org.jnosql.artemis.AttributeConverter;
 import org.jnosql.diana.api.Value;
 
 import java.lang.reflect.Field;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -37,12 +38,19 @@ abstract class AbstractFieldRepresentation implements FieldRepresentation {
 
     protected final Class<? extends AttributeConverter> converter;
 
-    AbstractFieldRepresentation(FieldType type, Field field, String name, Class<? extends AttributeConverter> converter) {
+    protected final FieldReader reader;
+
+    protected final FieldWriter writer;
+
+    AbstractFieldRepresentation(FieldType type, Field field, String name,
+                                Class<? extends AttributeConverter> converter, FieldReader reader, FieldWriter writer) {
         this.type = type;
         this.field = field;
         this.name = name;
         this.fieldName = field.getName();
         this.converter = converter;
+        this.reader = reader;
+        this.writer = writer;
     }
 
     @Override
@@ -65,6 +73,17 @@ abstract class AbstractFieldRepresentation implements FieldRepresentation {
         return fieldName;
     }
 
+    @Override
+    public Object read(Object bean) {
+        Objects.requireNonNull(bean, "bean is required");
+        return this.reader.read(bean);
+    }
+
+    @Override
+    public void write(Object bean, Object value) {
+        Objects.requireNonNull(bean, "bean is required");
+        this.writer.write(bean, value);
+    }
 
     @Override
     public <T extends AttributeConverter> Optional<Class<? extends AttributeConverter>> getConverter() {

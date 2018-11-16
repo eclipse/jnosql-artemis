@@ -20,7 +20,6 @@ import org.jnosql.artemis.column.ColumnRepositoryProducer;
 import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.column.ColumnTemplateProducer;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -33,10 +32,10 @@ class DefaultColumnRepositoryProducer implements ColumnRepositoryProducer {
 
     @Inject
     private ClassRepresentations classRepresentations;
-    @Inject
-    private Reflections reflections;
+
     @Inject
     private Converters converters;
+
     @Inject
     private ColumnTemplateProducer producer;
 
@@ -54,7 +53,7 @@ class DefaultColumnRepositoryProducer implements ColumnRepositoryProducer {
         Objects.requireNonNull(template, "template class is required");
 
         ColumnRepositoryProxy<E,ID> handler = new ColumnRepositoryProxy<>(template,
-                classRepresentations, repositoryClass, reflections, converters);
+                classRepresentations, repositoryClass, converters);
         return (T) Proxy.newProxyInstance(repositoryClass.getClassLoader(),
                 new Class[]{repositoryClass},
                 handler);

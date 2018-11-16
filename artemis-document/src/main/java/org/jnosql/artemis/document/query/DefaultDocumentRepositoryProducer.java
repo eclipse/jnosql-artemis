@@ -20,7 +20,6 @@ import org.jnosql.artemis.document.DocumentRepositoryProducer;
 import org.jnosql.artemis.document.DocumentTemplate;
 import org.jnosql.artemis.document.DocumentTemplateProducer;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -33,10 +32,10 @@ class DefaultDocumentRepositoryProducer implements DocumentRepositoryProducer {
 
     @Inject
     private ClassRepresentations classRepresentations;
-    @Inject
-    private Reflections reflections;
+
     @Inject
     private Converters converters;
+
     @Inject
     private DocumentTemplateProducer producer;
 
@@ -54,7 +53,7 @@ class DefaultDocumentRepositoryProducer implements DocumentRepositoryProducer {
         Objects.requireNonNull(template, "template class is required");
 
         DocumentRepositoryProxy<T> handler = new DocumentRepositoryProxy<>(template,
-                classRepresentations, repositoryClass, reflections, converters);
+                classRepresentations, repositoryClass, converters);
         return (T) Proxy.newProxyInstance(repositoryClass.getClassLoader(),
                 new Class[]{repositoryClass},
                 handler);

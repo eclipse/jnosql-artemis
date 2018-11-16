@@ -18,13 +18,13 @@ import org.jnosql.artemis.Convert;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
@@ -36,12 +36,25 @@ import static java.util.stream.Collectors.toMap;
 class ClassConverter {
 
 
+    private static final Logger LOGGER = Logger.getLogger(ClassConverter.class.getName());
+
     private Reflections reflections;
+
+    private FieldWriterFactory writerFactory;
+
+    private FieldReaderFactory readerFactory;
+
+    private InstanceSupplierFactory instanceSupplierFactory;
 
 
     @Inject
     ClassConverter(Reflections reflections) {
+        ClassOperation classOperation = ClassOperationFactory.INSTANCE.get();
+
         this.reflections = reflections;
+        this.readerFactory = classOperation.getFieldReaderFactory();
+        this.writerFactory = classOperation.getFieldWriterFactory();
+        this.instanceSupplierFactory = classOperation.getInstanceSupplierFactory();
     }
 
     ClassConverter() {
@@ -49,8 +62,7 @@ class ClassConverter {
 
     public ClassRepresentation create(Class<?> entityClass) {
 
-        Constructor constructor = reflections.makeAccessible(entityClass);
-
+        long start = System.currentTimeMillis();
         String entityName = reflections.getEntityName(entityClass);
 
         List<FieldRepresentation> fields = reflections.getFields(entityClass)
@@ -65,18 +77,24 @@ class ClassConverter {
                 .collect(collectingAndThen(toMap(FieldRepresentation::getName,
                         Function.identity()), Collections::unmodifiableMap));
 
-        return DefaultClassRepresentation.builder().withName(entityName)
+        InstanceSupplier instanceSupplier = instanceSupplierFactory.apply(reflections.makeAccessible(entityClass));
+
+        ClassRepresentation representation = DefaultClassRepresentation.builder().withName(entityName)
                 .withClassInstance(entityClass)
                 .withFields(fields)
                 .withFieldsName(fieldsName)
-                .withConstructor(constructor)
+                .withInstanceSupplier(instanceSupplier)
                 .withJavaFieldGroupedByColumn(nativeFieldGroupByJavaField)
                 .withFieldsGroupedByName(fieldsGroupedByName)
                 .build();
+
+        long end = System.currentTimeMillis() - start;
+        LOGGER.info(String.format("Scanned %s loaded with time %d ms", entityClass.getName(), end));
+        return representation;
     }
 
     private Map<String, NativeMapping> getNativeFieldGroupByJavaField(List<FieldRepresentation> fields,
-                                                               String javaField, String nativeField) {
+                                                                      String javaField, String nativeField) {
 
         Map<String, NativeMapping> nativeFieldGrouopByJavaField = new HashMap<>();
 
@@ -99,7 +117,7 @@ class ClassConverter {
                 appendFields(nativeFieldGroupByJavaField, field, javaField, nativeField);
                 return;
             case COLLECTION:
-                if(GenericFieldRepresentation.class.cast(field).isEmbeddable()) {
+                if (GenericFieldRepresentation.class.cast(field).isEmbeddable()) {
                     Class<?> entityClass = GenericFieldRepresentation.class.cast(field).getElementType();
                     String nativeFieldAppended = appendPreparePrefix(nativeField, field.getName());
                     appendFields(nativeFieldGroupByJavaField, field, javaField, nativeFieldAppended, entityClass);
@@ -165,7 +183,10 @@ class ClassConverter {
         String columnName = id ? reflections.getIdName(field) : reflections.getColumnName(field);
 
         FieldRepresentationBuilder builder = FieldRepresentation.builder().withName(columnName)
-                .withField(field).withType(fieldType).withId(id);
+                .withField(field).withType(fieldType).withId(id)
+                .withReader(readerFactory.apply(field))
+                .withWriter(writerFactory.apply(field));
+
         if (nonNull(convert)) {
             builder.withConverter(convert.value());
         }

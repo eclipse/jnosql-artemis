@@ -21,7 +21,6 @@ import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.FieldRepresentation;
 import org.jnosql.artemis.reflection.FieldType;
 import org.jnosql.artemis.reflection.FieldValue;
-import org.jnosql.artemis.reflection.Reflections;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnEntity;
 
@@ -46,8 +45,6 @@ public abstract class AbstractColumnEntityConverter implements ColumnEntityConve
 
 
     protected abstract ClassRepresentations getClassRepresentations();
-
-    protected abstract Reflections getReflections();
 
     protected abstract Converters getConverters();
 
@@ -80,17 +77,16 @@ public abstract class AbstractColumnEntityConverter implements ColumnEntityConve
         return convertEntity(entity.getColumns(), representation, entityInstance);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> T toEntity(ColumnEntity entity) {
         requireNonNull(entity, "entity is required");
         ClassRepresentation representation = getClassRepresentations().findByName(entity.getName());
-        T instance = getReflections().newInstance(representation.getConstructor());
+        T instance = representation.newInstance();
         return convertEntity(entity.getColumns(), representation, instance);
     }
 
     protected ColumnFieldValue to(FieldRepresentation field, Object entityInstance) {
-        Object value = getReflections().getValue(entityInstance, field.getNativeField());
+        Object value = field.read(entityInstance);
         return DefaultColumnFieldValue.of(value, field);
     }
 
@@ -105,7 +101,7 @@ public abstract class AbstractColumnEntityConverter implements ColumnEntityConve
 
     protected <T> T toEntity(Class<T> entityClass, List<Column> columns) {
         ClassRepresentation representation = getClassRepresentations().get(entityClass);
-        T instance = getReflections().newInstance(representation.getConstructor());
+        T instance = representation.newInstance();
         return convertEntity(columns, representation, instance);
     }
 
