@@ -44,7 +44,7 @@ public class ClassConverterTest {
 
 
     @Test
-    public void shouldCreateClassRepresentation() {
+    public void shouldCreateClassMapping() {
         ClassMapping classMapping = classConverter.create(Person.class);
 
         assertEquals("Person", classMapping.getName());
@@ -55,7 +55,7 @@ public class ClassConverterTest {
     }
 
     @Test
-    public void shouldCreateClassRepresentation2() {
+    public void shouldCreateClassMapping2() {
         ClassMapping classMapping = classConverter.create(Actor.class);
 
         assertEquals("Actor", classMapping.getName());
@@ -66,7 +66,7 @@ public class ClassConverterTest {
     }
 
     @Test
-    public void shouldCreateClassRepresentationWithEmbeddedClass() {
+    public void shouldCreateClassMappingWithEmbeddedClass() {
         ClassMapping classMapping = classConverter.create(Director.class);
         assertEquals("Director", classMapping.getName());
         assertEquals(Director.class, classMapping.getClassInstance());

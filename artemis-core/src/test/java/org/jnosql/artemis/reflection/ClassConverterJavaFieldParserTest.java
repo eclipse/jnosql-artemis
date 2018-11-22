@@ -53,7 +53,7 @@ public class ClassConverterJavaFieldParserTest {
     }
 
     @Test
-    public void shouldReturnTheSameValueWhenTheFieldDoesNotExistInTheClassRepresentation() {
+    public void shouldReturnTheSameValueWhenTheFieldDoesNotExistInTheClassMapping() {
         ClassMapping classMapping = classConverter.create(Person.class);
         String notFound = classMapping.getColumnField("notFound");
         assertEquals("notFound", notFound);

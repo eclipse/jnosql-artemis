@@ -100,12 +100,12 @@ public interface FieldMapping {
     <T extends AttributeConverter> Optional<Class<? extends AttributeConverter>> getConverter();
 
     /**
-     * Creates the FieldRepresentationBuilder
+     * Creates the FieldMappingBuilder
      *
      * @return a new Builder instance
      */
-    static FieldRepresentationBuilder builder() {
-        return new FieldRepresentationBuilder();
+    static FieldMappingBuilder builder() {
+        return new FieldMappingBuilder();
     }
 
 }

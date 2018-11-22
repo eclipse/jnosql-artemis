@@ -79,7 +79,7 @@ class ClassConverter {
 
         InstanceSupplier instanceSupplier = instanceSupplierFactory.apply(reflections.makeAccessible(entityClass));
 
-        ClassMapping representation = DefaultClassMapping.builder().withName(entityName)
+        ClassMapping mapping = DefaultClassMapping.builder().withName(entityName)
                 .withClassInstance(entityClass)
                 .withFields(fields)
                 .withFieldsName(fieldsName)
@@ -90,7 +90,7 @@ class ClassConverter {
 
         long end = System.currentTimeMillis() - start;
         LOGGER.info(String.format("Scanned %s loaded with time %d ms", entityClass.getName(), end));
-        return representation;
+        return mapping;
     }
 
     private Map<String, NativeMapping> getNativeFieldGroupByJavaField(List<FieldMapping> fields,
@@ -182,7 +182,7 @@ class ClassConverter {
         boolean id = reflections.isIdField(field);
         String columnName = id ? reflections.getIdName(field) : reflections.getColumnName(field);
 
-        FieldRepresentationBuilder builder = FieldMapping.builder().withName(columnName)
+        FieldMappingBuilder builder = FieldMapping.builder().withName(columnName)
                 .withField(field).withType(fieldType).withId(id)
                 .withReader(readerFactory.apply(field))
                 .withWriter(writerFactory.apply(field));

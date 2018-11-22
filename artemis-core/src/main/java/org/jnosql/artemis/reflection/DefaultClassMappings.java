@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @ApplicationScoped
 class DefaultClassMappings implements ClassMappings {
 
-    private Map<String, ClassMapping> representations;
+    private Map<String, ClassMapping> mappings;
 
     private Map<Class<?>, ClassMapping> classes;
 
@@ -43,18 +43,18 @@ class DefaultClassMappings implements ClassMappings {
     private ClassConverter classConverter;
 
     @Inject
-    private ClassRepresentationsExtension extension;
+    private ClassMappingExtension extension;
 
     @PostConstruct
     public void init() {
-        representations = new ConcurrentHashMap<>();
+        mappings = new ConcurrentHashMap<>();
         classes = new ConcurrentHashMap<>();
         findBySimpleName = new ConcurrentHashMap<>();
         findByClassName = new ConcurrentHashMap<>();
 
         classes.putAll(extension.getClasses());
-        representations.putAll(extension.getMappings());
-        representations.values().forEach(r -> {
+        mappings.putAll(extension.getMappings());
+        mappings.values().forEach(r -> {
             Class<?> entityClass = r.getClassInstance();
             findBySimpleName.put(entityClass.getSimpleName(), r);
             findByClassName.put(entityClass.getName(), r);
@@ -63,7 +63,7 @@ class DefaultClassMappings implements ClassMappings {
 
     void load(Class classEntity) {
         ClassMapping classMapping = classConverter.create(classEntity);
-        representations.put(classEntity.getName(), classMapping);
+        mappings.put(classEntity.getName(), classMapping);
         findBySimpleName.put(classEntity.getSimpleName(), classMapping);
         findByClassName.put(classEntity.getName(), classMapping);
     }
@@ -81,8 +81,8 @@ class DefaultClassMappings implements ClassMappings {
 
     @Override
     public ClassMapping findByName(String name) {
-        return representations.keySet().stream()
-                .map(k -> representations.get(k))
+        return mappings.keySet().stream()
+                .map(k -> mappings.get(k))
                 .filter(r -> r.getName().equalsIgnoreCase(name)).findFirst()
                 .orElseThrow(() -> new ClassInformationNotFoundException("There is not entity found with the name: " + name));
     }
@@ -102,7 +102,7 @@ class DefaultClassMappings implements ClassMappings {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("DefaultClassMappings{");
-        sb.append("representations-size=").append(representations.size());
+        sb.append("mappings-size=").append(mappings.size());
         sb.append(", classes=").append(classes);
         sb.append(", classConverter=").append(classConverter);
         sb.append(", extension=").append(extension);

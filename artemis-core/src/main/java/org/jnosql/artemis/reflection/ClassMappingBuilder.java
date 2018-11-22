@@ -20,7 +20,7 @@ import java.util.Map;
 
 import static java.util.Collections.emptyMap;
 
-class ClassRepresentationBuilder {
+class ClassMappingBuilder {
 
     private String name;
 
@@ -36,37 +36,37 @@ class ClassRepresentationBuilder {
 
     private InstanceSupplier instanceSupplier;
 
-    public ClassRepresentationBuilder withName(String name) {
+    public ClassMappingBuilder withName(String name) {
         this.name = name;
         return this;
     }
 
-    public ClassRepresentationBuilder withFieldsName(List<String> fieldsName) {
+    public ClassMappingBuilder withFieldsName(List<String> fieldsName) {
         this.fieldsName = fieldsName;
         return this;
     }
 
-    public ClassRepresentationBuilder withClassInstance(Class<?> classInstance) {
+    public ClassMappingBuilder withClassInstance(Class<?> classInstance) {
         this.classInstance = classInstance;
         return this;
     }
 
-    public ClassRepresentationBuilder withFields(List<FieldMapping> fields) {
+    public ClassMappingBuilder withFields(List<FieldMapping> fields) {
         this.fields = fields;
         return this;
     }
 
-    public ClassRepresentationBuilder withJavaFieldGroupedByColumn(Map<String, NativeMapping> javaFieldGroupedByColumn) {
+    public ClassMappingBuilder withJavaFieldGroupedByColumn(Map<String, NativeMapping> javaFieldGroupedByColumn) {
         this.javaFieldGroupedByColumn = javaFieldGroupedByColumn;
         return this;
     }
 
-    public ClassRepresentationBuilder withFieldsGroupedByName(Map<String, FieldMapping> fieldsGroupedByName) {
+    public ClassMappingBuilder withFieldsGroupedByName(Map<String, FieldMapping> fieldsGroupedByName) {
         this.fieldsGroupedByName = fieldsGroupedByName;
         return this;
     }
 
-    public ClassRepresentationBuilder withInstanceSupplier(InstanceSupplier instanceSupplier) {
+    public ClassMappingBuilder withInstanceSupplier(InstanceSupplier instanceSupplier) {
         this.instanceSupplier = instanceSupplier;
         return this;
     }

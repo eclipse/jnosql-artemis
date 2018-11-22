@@ -140,10 +140,10 @@ class DefaultClassMapping implements ClassMapping {
     /**
      * Creates a builder
      *
-     * @return {@link ClassRepresentationBuilder}
+     * @return {@link ClassMappingBuilder}
      */
-    static ClassRepresentationBuilder builder() {
-        return new ClassRepresentationBuilder();
+    static ClassMappingBuilder builder() {
+        return new ClassMappingBuilder();
     }
 
 

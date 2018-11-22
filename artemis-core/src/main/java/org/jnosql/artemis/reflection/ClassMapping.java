@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * This class is a representation of {@link Class} in cached way
+ * This instance is the meta-info of a loaded class that used to be annotated with {@link org.jnosql.artemis.Entity}.
  */
 public interface ClassMapping {
 
@@ -66,7 +66,7 @@ public interface ClassMapping {
      * Gets the {@link FieldMapping} from the java field name
      *
      * @param javaField the java field
-     * @return the field representation otherwise {@link Optional#EMPTY}
+     * @return the field otherwise {@link Optional#EMPTY}
      * @throws NullPointerException when the javaField is null
      */
     Optional<FieldMapping> getFieldMapping(String javaField);

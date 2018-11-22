@@ -34,7 +34,7 @@ import static org.jnosql.artemis.reflection.ClassOperationFactory.INSTANCE;
  * Where the key is {@link Class#getName()} and the value is {@link ClassMapping}
  */
 @ApplicationScoped
-public class ClassRepresentationsExtension implements Extension {
+public class ClassMappingExtension implements Extension {
 
     private final Map<String, ClassMapping> mappings = new ConcurrentHashMap<>();
 
@@ -93,7 +93,7 @@ public class ClassRepresentationsExtension implements Extension {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("ClassRepresentationsExtension{");
+        final StringBuilder sb = new StringBuilder("ClassMappingExtension{");
         sb.append("classConverter=").append(classConverter);
         sb.append(", mappings-size=").append(mappings.size());
         sb.append(", classes=").append(classes);

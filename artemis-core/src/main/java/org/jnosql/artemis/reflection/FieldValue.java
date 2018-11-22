@@ -40,7 +40,7 @@ public interface FieldValue {
     Object getValue();
 
     /**
-     * returns the Field representation
+     * returns the {@link FieldMapping}
      *
      * @return the {@link FieldMapping} instance
      */
