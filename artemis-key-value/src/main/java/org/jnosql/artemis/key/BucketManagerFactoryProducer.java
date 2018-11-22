@@ -63,7 +63,7 @@ class BucketManagerFactoryProducer {
 
         ConfigurationSettingsUnit unit = configurationReader.get().read(annotation, KeyValueConfiguration.class);
         Class<KeyValueConfiguration> configurationClass = unit.<KeyValueConfiguration>getProvider()
-                .orElseThrow(() -> new IllegalStateException("The ColumnConfiguration provider is required in the configuration"));
+                .orElseThrow(() -> new IllegalStateException("The KeyValueConfiguration provider is required in the configuration"));
 
         KeyValueConfiguration columnConfiguration = reflections.newInstance(configurationClass);
 
