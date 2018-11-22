@@ -28,9 +28,8 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
-import java.util.Optional;
 
-import static java.util.Optional.ofNullable;
+import static org.jnosql.artemis.util.ConfigurationUnitUtils.getConfigurationUnit;
 
 /**
  * The class that creates {@link BucketManagerFactory} from the {@link ConfigurationUnit}
@@ -71,14 +70,4 @@ class BucketManagerFactoryProducer {
         return columnConfiguration.get(unit.getSettings());
     }
 
-    private Optional<ConfigurationUnit> getConfigurationUnit(InjectionPoint injectionPoint, Annotated annotated) {
-
-        if (annotated == null) {
-            return injectionPoint.getQualifiers().stream()
-                    .filter(annotation -> ConfigurationUnit.class.equals(annotation.annotationType()))
-                    .map(ConfigurationUnit.class::cast)
-                    .findFirst();
-        }
-        return ofNullable(annotated.getAnnotation(ConfigurationUnit.class));
-    }
 }
