@@ -17,6 +17,10 @@ package org.jnosql.artemis.graph;
 import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.jnosql.artemis.ConfigurationUnit;
 import org.jnosql.artemis.graph.cdi.CDIExtension;
+import org.jnosql.artemis.graph.producer.GraphMockA;
+import org.jnosql.artemis.graph.producer.GraphMockB;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
@@ -34,4 +38,23 @@ class GraphProducerTest {
     @Inject
     @ConfigurationUnit(fileName = "graph.json", name = "graphB")
     private Graph graphB;
+
+
+    @Test
+    public void shouldInjectGraphA() {
+        Assertions.assertTrue(graphA.getClass().isInstance(GraphMockA.class));
+        GraphMockA graphMockA = GraphMockA.class.cast(GraphMockA.class);
+        Assertions.assertEquals("key", graphMockA.get("valueA"));
+        Assertions.assertEquals("key2", graphMockA.get("valueB"));
+
+    }
+
+    @Test
+    public void shouldInjectGraphB() {
+        Assertions.assertTrue(graphB.getClass().isInstance(GraphMockB.class));
+        GraphMockB graphMockB = GraphMockB.class.cast(GraphMockB.class);
+        Assertions.assertEquals("key", graphMockB.get("valueA"));
+        Assertions.assertEquals("key2", graphMockB.get("valueB"));
+
+    }
 }
