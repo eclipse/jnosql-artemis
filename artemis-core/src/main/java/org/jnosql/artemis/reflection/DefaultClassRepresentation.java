@@ -32,20 +32,20 @@ class DefaultClassRepresentation implements ClassRepresentation {
 
     private final Class<?> classInstance;
 
-    private final List<FieldRepresentation> fields;
+    private final List<FieldMapping> fields;
 
     private final InstanceSupplier instanceSupplier;
 
     private final Map<String, NativeMapping> javaFieldGroupedByColumn;
 
-    private final Map<String, FieldRepresentation> fieldsGroupedByName;
+    private final Map<String, FieldMapping> fieldsGroupedByName;
 
-    private final FieldRepresentation id;
+    private final FieldMapping id;
 
     DefaultClassRepresentation(String name, List<String> fieldsName, Class<?> classInstance,
-                               List<FieldRepresentation> fields,
+                               List<FieldMapping> fields,
                                Map<String, NativeMapping> javaFieldGroupedByColumn,
-                               Map<String, FieldRepresentation> fieldsGroupedByName, InstanceSupplier instanceSupplier) {
+                               Map<String, FieldMapping> fieldsGroupedByName, InstanceSupplier instanceSupplier) {
         this.name = name;
         this.fieldsName = fieldsName;
         this.classInstance = classInstance;
@@ -53,7 +53,7 @@ class DefaultClassRepresentation implements ClassRepresentation {
         this.fieldsGroupedByName = fieldsGroupedByName;
         this.javaFieldGroupedByColumn = javaFieldGroupedByColumn;
         this.instanceSupplier = instanceSupplier;
-        this.id = fields.stream().filter(FieldRepresentation::isId).findFirst().orElse(null);
+        this.id = fields.stream().filter(FieldMapping::isId).findFirst().orElse(null);
     }
 
     @Override
@@ -72,7 +72,7 @@ class DefaultClassRepresentation implements ClassRepresentation {
     }
 
     @Override
-    public List<FieldRepresentation> getFields() {
+    public List<FieldMapping> getFields() {
         return fields;
     }
 
@@ -90,19 +90,19 @@ class DefaultClassRepresentation implements ClassRepresentation {
     }
 
     @Override
-    public Optional<FieldRepresentation> getFieldRepresentation(String javaField) {
+    public Optional<FieldMapping> getFieldRepresentation(String javaField) {
         requireNonNull(javaField, "javaField is required");
         return ofNullable(javaFieldGroupedByColumn.get(javaField))
-                .map(NativeMapping::getFieldRepresentation);
+                .map(NativeMapping::getFieldMapping);
     }
 
     @Override
-    public Map<String, FieldRepresentation> getFieldsGroupByName() {
+    public Map<String, FieldMapping> getFieldsGroupByName() {
         return fieldsGroupedByName;
     }
 
     @Override
-    public Optional<FieldRepresentation> getId() {
+    public Optional<FieldMapping> getId() {
         return Optional.ofNullable(id);
     }
 

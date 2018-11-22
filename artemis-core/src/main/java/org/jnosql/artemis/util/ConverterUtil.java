@@ -17,7 +17,7 @@ package org.jnosql.artemis.util;
 import org.jnosql.artemis.AttributeConverter;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.reflection.ClassRepresentation;
-import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.FieldMapping;
 import org.jnosql.diana.api.Value;
 
 import java.lang.reflect.Field;
@@ -44,23 +44,23 @@ public class ConverterUtil {
      * @return the value converted
      */
     public static Object getValue(Object value, ClassRepresentation representation, String name, Converters converters) {
-        Optional<FieldRepresentation> fieldOptional = representation.getFieldRepresentation(name);
+        Optional<FieldMapping> fieldOptional = representation.getFieldRepresentation(name);
         if (fieldOptional.isPresent()) {
-            FieldRepresentation field = fieldOptional.get();
+            FieldMapping field = fieldOptional.get();
             return getValue(value, converters, field);
         }
         return value;
     }
 
     /**
-     * Converts the value from the field with {@link FieldRepresentation} to database format
+     * Converts the value from the field with {@link FieldMapping} to database format
      *
      * @param value      the value to be converted
      * @param converters the converter
      * @param field      the field
      * @return tje value converted
      */
-    public static Object getValue(Object value, Converters converters, FieldRepresentation field) {
+    public static Object getValue(Object value, Converters converters, FieldMapping field) {
         Field nativeField = field.getNativeField();
         if (!nativeField.getType().equals(value.getClass())) {
             return field.getConverter()

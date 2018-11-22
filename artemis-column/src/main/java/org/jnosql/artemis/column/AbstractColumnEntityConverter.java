@@ -18,7 +18,7 @@ import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.column.ColumnFieldConverters.ColumnFieldConverterFactory;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.FieldMapping;
 import org.jnosql.artemis.reflection.FieldType;
 import org.jnosql.artemis.reflection.FieldValue;
 import org.jnosql.diana.api.column.Column;
@@ -85,15 +85,15 @@ public abstract class AbstractColumnEntityConverter implements ColumnEntityConve
         return convertEntity(entity.getColumns(), representation, instance);
     }
 
-    protected ColumnFieldValue to(FieldRepresentation field, Object entityInstance) {
+    protected ColumnFieldValue to(FieldMapping field, Object entityInstance) {
         Object value = field.read(entityInstance);
         return DefaultColumnFieldValue.of(value, field);
     }
 
-    protected <T> Consumer<String> feedObject(T instance, List<Column> columns, Map<String, FieldRepresentation> fieldsGroupByName) {
+    protected <T> Consumer<String> feedObject(T instance, List<Column> columns, Map<String, FieldMapping> fieldsGroupByName) {
         return (String k) -> {
             Optional<Column> column = columns.stream().filter(c -> c.getName().equals(k)).findFirst();
-            FieldRepresentation field = fieldsGroupByName.get(k);
+            FieldMapping field = fieldsGroupByName.get(k);
             ColumnFieldConverter fieldConverter = converterFactory.get(field);
             fieldConverter.convert(instance, columns, column, field, this);
         };
@@ -106,7 +106,7 @@ public abstract class AbstractColumnEntityConverter implements ColumnEntityConve
     }
 
     private <T> T convertEntity(List<Column> columns, ClassRepresentation representation, T instance) {
-        final Map<String, FieldRepresentation> fieldsGroupByName = representation.getFieldsGroupByName();
+        final Map<String, FieldMapping> fieldsGroupByName = representation.getFieldsGroupByName();
         final List<String> names = columns.stream().map(Column::getName).sorted().collect(Collectors.toList());
         final Predicate<String> existField = k -> Collections.binarySearch(names, k) >= 0;
         final Predicate<String> isElementType = k -> {

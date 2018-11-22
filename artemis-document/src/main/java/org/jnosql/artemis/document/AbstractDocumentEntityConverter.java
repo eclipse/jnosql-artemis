@@ -18,7 +18,7 @@ import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.document.DocumentFieldConverters.DocumentFieldConverterFactory;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.FieldMapping;
 import org.jnosql.artemis.reflection.FieldType;
 import org.jnosql.artemis.reflection.FieldValue;
 import org.jnosql.diana.api.document.Document;
@@ -96,7 +96,7 @@ public abstract class AbstractDocumentEntityConverter implements DocumentEntityC
     }
 
     private <T> T convertEntity(List<Document> documents, ClassRepresentation representation, T instance) {
-        final Map<String, FieldRepresentation> fieldsGroupByName = representation.getFieldsGroupByName();
+        final Map<String, FieldMapping> fieldsGroupByName = representation.getFieldsGroupByName();
         final List<String> names = documents.stream().map(Document::getName).sorted().collect(Collectors.toList());
         final Predicate<String> existField = k -> Collections.binarySearch(names, k) >= 0;
         final Predicate<String> isElementType = k -> {
@@ -111,18 +111,18 @@ public abstract class AbstractDocumentEntityConverter implements DocumentEntityC
         return instance;
     }
 
-    protected <T> Consumer<String> feedObject(T instance, List<Document> documents, Map<String, FieldRepresentation> fieldsGroupByName) {
+    protected <T> Consumer<String> feedObject(T instance, List<Document> documents, Map<String, FieldMapping> fieldsGroupByName) {
         return k -> {
             Optional<Document> document = documents.stream().filter(c -> c.getName().equals(k)).findFirst();
 
-            FieldRepresentation field = fieldsGroupByName.get(k);
+            FieldMapping field = fieldsGroupByName.get(k);
             DocumentFieldConverter fieldConverter = converterFactory.get(field);
             fieldConverter.convert(instance, documents, document, field, this);
         };
     }
 
 
-    private DocumentFieldValue to(FieldRepresentation field, Object entityInstance) {
+    private DocumentFieldValue to(FieldMapping field, Object entityInstance) {
         Object value = field.read(entityInstance);
         return DefaultDocumentFieldValue.of(value, field);
     }

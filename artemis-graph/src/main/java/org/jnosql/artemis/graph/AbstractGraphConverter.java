@@ -23,7 +23,7 @@ import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.EntityNotFoundException;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.FieldMapping;
 import org.jnosql.diana.api.Value;
 
 import java.lang.reflect.Field;
@@ -151,20 +151,20 @@ abstract class AbstractGraphConverter implements GraphConverter {
 
     private <T> void feedId(Vertex vertex, T entity) {
         ClassRepresentation representation = getClassRepresentations().get(entity.getClass());
-        Optional<FieldRepresentation> id = representation.getId();
+        Optional<FieldMapping> id = representation.getId();
 
 
         Object vertexId = vertex.id();
         if (Objects.nonNull(vertexId) && id.isPresent()) {
-            FieldRepresentation fieldRepresentation = id.get();
-            Field fieldId = fieldRepresentation.getNativeField();
-            if (fieldRepresentation.getConverter().isPresent()) {
-                AttributeConverter attributeConverter = getConverters().get(fieldRepresentation.getConverter().get());
+            FieldMapping fieldMapping = id.get();
+            Field fieldId = fieldMapping.getNativeField();
+            if (fieldMapping.getConverter().isPresent()) {
+                AttributeConverter attributeConverter = getConverters().get(fieldMapping.getConverter().get());
                 Object attributeConverted = attributeConverter.convertToEntityAttribute(vertexId);
 
-                fieldRepresentation.write(entity, fieldRepresentation.getValue(Value.of(attributeConverted)));
+                fieldMapping.write(entity, fieldMapping.getValue(Value.of(attributeConverted)));
             } else {
-                fieldRepresentation.write(entity, fieldRepresentation.getValue(Value.of(vertexId)));
+                fieldMapping.write(entity, fieldMapping.getValue(Value.of(vertexId)));
             }
 
         }
@@ -178,7 +178,7 @@ abstract class AbstractGraphConverter implements GraphConverter {
 
     private <T> T convertEntity(List<Property> elements, ClassRepresentation representation, T instance) {
 
-        Map<String, FieldRepresentation> fieldsGroupByName = representation.getFieldsGroupByName();
+        Map<String, FieldMapping> fieldsGroupByName = representation.getFieldsGroupByName();
         List<String> names = elements.stream()
                 .map(Property::key)
                 .sorted()
@@ -193,14 +193,14 @@ abstract class AbstractGraphConverter implements GraphConverter {
     }
 
     private <T> Consumer<String> feedObject(T instance, List<Property> elements,
-                                            Map<String, FieldRepresentation> fieldsGroupByName) {
+                                            Map<String, FieldMapping> fieldsGroupByName) {
         return k -> {
             Optional<Property> element = elements
                     .stream()
                     .filter(c -> c.key().equals(k))
                     .findFirst();
 
-            FieldRepresentation field = fieldsGroupByName.get(k);
+            FieldMapping field = fieldsGroupByName.get(k);
             if (EMBEDDED.equals(field.getType())) {
                 setEmbeddedField(instance, elements, field);
             } else {
@@ -209,7 +209,7 @@ abstract class AbstractGraphConverter implements GraphConverter {
         };
     }
 
-    private <T> void setSingleField(T instance, Optional<Property> element, FieldRepresentation field) {
+    private <T> void setSingleField(T instance, Optional<Property> element, FieldMapping field) {
         Object value = element.get().value();
         Optional<Class<? extends AttributeConverter>> converter = field.getConverter();
         if (converter.isPresent()) {
@@ -222,11 +222,11 @@ abstract class AbstractGraphConverter implements GraphConverter {
     }
 
     private <T> void setEmbeddedField(T instance, List<Property> elements,
-                                      FieldRepresentation field) {
+                                      FieldMapping field) {
         field.write(instance, toEntity(field.getNativeField().getType(), elements));
     }
 
-    protected FieldGraph to(FieldRepresentation field, Object entityInstance) {
+    protected FieldGraph to(FieldMapping field, Object entityInstance) {
         Object value = field.read(entityInstance);
         return FieldGraph.of(value, field);
     }

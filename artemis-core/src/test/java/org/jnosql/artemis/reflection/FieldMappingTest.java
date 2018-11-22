@@ -33,7 +33,7 @@ import static org.jnosql.artemis.reflection.FieldType.MAP;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(CDIExtension.class)
-public class FieldRepresentationTest {
+public class FieldMappingTest {
 
 
     @Inject
@@ -42,9 +42,9 @@ public class FieldRepresentationTest {
     @Test
     public void shouldReadDefaultField() {
         ClassRepresentation classRepresentation = classConverter.create(ForClass.class);
-        List<FieldRepresentation> fields = classRepresentation.getFields();
+        List<FieldMapping> fields = classRepresentation.getFields();
 
-        FieldRepresentation field = fields.stream()
+        FieldMapping field = fields.stream()
                 .filter(f -> "string".equals(f.getFieldName())).findFirst().get();
 
         assertEquals("string", field.getFieldName());
@@ -56,8 +56,8 @@ public class FieldRepresentationTest {
     @Test
     public void shouldReadCollectionField() {
         ClassRepresentation classRepresentation = classConverter.create(ForClass.class);
-        List<FieldRepresentation> fields = classRepresentation.getFields();
-        FieldRepresentation field = fields.stream()
+        List<FieldMapping> fields = classRepresentation.getFields();
+        FieldMapping field = fields.stream()
                 .filter(f -> "list".equals(f.getFieldName())).findFirst().get();
 
         assertEquals("list", field.getFieldName());
@@ -68,8 +68,8 @@ public class FieldRepresentationTest {
     @Test
     public void shouldReadMapField() {
         ClassRepresentation classRepresentation = classConverter.create(ForClass.class);
-        List<FieldRepresentation> fields = classRepresentation.getFields();
-        FieldRepresentation field = fields.stream()
+        List<FieldMapping> fields = classRepresentation.getFields();
+        FieldMapping field = fields.stream()
                 .filter(f -> "map".equals(f.getFieldName())).findFirst().get();
 
         assertEquals("map", field.getFieldName());
@@ -81,8 +81,8 @@ public class FieldRepresentationTest {
     @Test
     public void shouldReadEmbeddableField() {
         ClassRepresentation classRepresentation = classConverter.create(ForClass.class);
-        List<FieldRepresentation> fields = classRepresentation.getFields();
-        FieldRepresentation field = fields.stream()
+        List<FieldMapping> fields = classRepresentation.getFields();
+        FieldMapping field = fields.stream()
                 .filter(f -> "barClass".equals(f.getFieldName())).findFirst().get();
 
         assertEquals("barClass", field.getFieldName());
@@ -101,10 +101,10 @@ public class FieldRepresentationTest {
 
         ClassRepresentation classRepresentation = classConverter.create(ForClass.class);
 
-        FieldRepresentation string = classRepresentation.getFieldRepresentation("string").get();
-        FieldRepresentation list = classRepresentation.getFieldRepresentation("list").get();
-        FieldRepresentation map = classRepresentation.getFieldRepresentation("map").get();
-        FieldRepresentation barClass = classRepresentation.getFieldRepresentation("barClass").get();
+        FieldMapping string = classRepresentation.getFieldRepresentation("string").get();
+        FieldMapping list = classRepresentation.getFieldRepresentation("list").get();
+        FieldMapping map = classRepresentation.getFieldRepresentation("map").get();
+        FieldMapping barClass = classRepresentation.getFieldRepresentation("barClass").get();
 
         assertEquals("text", string.read(forClass));
         assertEquals(forClass.list, list.read(forClass));
@@ -121,10 +121,10 @@ public class FieldRepresentationTest {
 
         ClassRepresentation classRepresentation = classConverter.create(ForClass.class);
 
-        FieldRepresentation string = classRepresentation.getFieldRepresentation("string").get();
-        FieldRepresentation list = classRepresentation.getFieldRepresentation("list").get();
-        FieldRepresentation map = classRepresentation.getFieldRepresentation("map").get();
-        FieldRepresentation barClass = classRepresentation.getFieldRepresentation("barClass").get();
+        FieldMapping string = classRepresentation.getFieldRepresentation("string").get();
+        FieldMapping list = classRepresentation.getFieldRepresentation("list").get();
+        FieldMapping map = classRepresentation.getFieldRepresentation("map").get();
+        FieldMapping barClass = classRepresentation.getFieldRepresentation("barClass").get();
 
         string.write(forClass, "text");
         list.write(forClass, Collections.singletonList("text"));

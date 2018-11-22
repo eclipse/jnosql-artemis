@@ -17,7 +17,7 @@ package org.jnosql.artemis.document.query;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.document.DocumentTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentation;
-import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.FieldMapping;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -92,7 +92,7 @@ public abstract class AbstractDocumentRepository<T, ID> implements Repository<T,
     }
 
 
-    private FieldRepresentation getIdField() {
+    private FieldMapping getIdField() {
         return getClassRepresentation().getId().orElseThrow(KEY_NOT_FOUND_EXCEPTION_SUPPLIER);
     }
 

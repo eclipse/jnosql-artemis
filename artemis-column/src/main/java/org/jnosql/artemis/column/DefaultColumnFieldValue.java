@@ -16,10 +16,10 @@ package org.jnosql.artemis.column;
 
 import org.jnosql.artemis.AttributeConverter;
 import org.jnosql.artemis.Converters;
-import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.FieldMapping;
 import org.jnosql.artemis.reflection.FieldType;
 import org.jnosql.artemis.reflection.FieldValue;
-import org.jnosql.artemis.reflection.GenericFieldRepresentation;
+import org.jnosql.artemis.reflection.GenericFieldMapping;
 import org.jnosql.diana.api.column.Column;
 
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ final class DefaultColumnFieldValue implements ColumnFieldValue {
     }
 
     @Override
-    public FieldRepresentation getField() {
+    public FieldMapping getField() {
         return fieldValue.getField();
     }
 
@@ -93,7 +93,7 @@ final class DefaultColumnFieldValue implements ColumnFieldValue {
     }
 
     private boolean isEmbeddableElement() {
-        return GenericFieldRepresentation.class.cast(getField()).isEmbeddable();
+        return GenericFieldMapping.class.cast(getField()).isEmbeddable();
     }
 
     @Override
@@ -104,7 +104,7 @@ final class DefaultColumnFieldValue implements ColumnFieldValue {
         return sb.toString();
     }
 
-    static ColumnFieldValue of(Object value, FieldRepresentation field) {
+    static ColumnFieldValue of(Object value, FieldMapping field) {
         return new DefaultColumnFieldValue(FieldValue.of(value, field));
     }
 }

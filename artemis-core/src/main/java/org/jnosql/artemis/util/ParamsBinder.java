@@ -17,7 +17,7 @@ package org.jnosql.artemis.util;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.DynamicQueryException;
 import org.jnosql.artemis.reflection.ClassRepresentation;
-import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.FieldMapping;
 import org.jnosql.query.Params;
 
 import java.lang.reflect.Method;
@@ -68,7 +68,7 @@ public class ParamsBinder {
         for (int index = 0; index < names.size(); index++) {
             String name = names.get(index);
             String fieldName = name.substring(0, name.lastIndexOf("_"));
-            Optional<FieldRepresentation> field = this.representation.getFields().stream()
+            Optional<FieldMapping> field = this.representation.getFields().stream()
                     .filter(f -> f.getName().equals(fieldName)).findFirst();
 
             Object value;

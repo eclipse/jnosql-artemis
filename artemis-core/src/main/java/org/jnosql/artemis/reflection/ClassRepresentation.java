@@ -42,7 +42,7 @@ public interface ClassRepresentation {
     /**
      * @return The fields from this class
      */
-    List<FieldRepresentation> getFields();
+    List<FieldMapping> getFields();
 
 
     /**
@@ -63,22 +63,22 @@ public interface ClassRepresentation {
     String getColumnField(String javaField);
 
     /**
-     * Gets the {@link FieldRepresentation} from the java field name
+     * Gets the {@link FieldMapping} from the java field name
      *
      * @param javaField the java field
      * @return the field representation otherwise {@link Optional#EMPTY}
      * @throws NullPointerException when the javaField is null
      */
-    Optional<FieldRepresentation> getFieldRepresentation(String javaField);
+    Optional<FieldMapping> getFieldRepresentation(String javaField);
 
     /**
      * Returns a Fields grouped by the name
      *
-     * @return a {@link FieldRepresentation} grouped by
-     * {@link FieldRepresentation#getName()}
-     * @see FieldRepresentation#getName()
+     * @return a {@link FieldMapping} grouped by
+     * {@link FieldMapping#getName()}
+     * @see FieldMapping#getName()
      */
-    Map<String, FieldRepresentation> getFieldsGroupByName();
+    Map<String, FieldMapping> getFieldsGroupByName();
 
 
     /**
@@ -86,5 +86,5 @@ public interface ClassRepresentation {
      *
      * @return the field with ID annotation
      */
-    Optional<FieldRepresentation> getId();
+    Optional<FieldMapping> getId();
 }

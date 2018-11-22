@@ -15,8 +15,8 @@
 package org.jnosql.artemis.column;
 
 import org.jnosql.artemis.AttributeConverter;
-import org.jnosql.artemis.reflection.FieldRepresentation;
-import org.jnosql.artemis.reflection.GenericFieldRepresentation;
+import org.jnosql.artemis.reflection.FieldMapping;
+import org.jnosql.artemis.reflection.GenericFieldMapping;
 import org.jnosql.diana.api.TypeReference;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.column.Column;
@@ -43,7 +43,7 @@ class ColumnFieldConverters {
         private final CollectionEmbeddableConverter embeddableConverter = new CollectionEmbeddableConverter();
         private final SubEntityConverter subEntityConverter = new SubEntityConverter();
 
-        ColumnFieldConverter get(FieldRepresentation field) {
+        ColumnFieldConverter get(FieldMapping field) {
             if (EMBEDDED.equals(field.getType())) {
                 return embeddedFieldConverter;
             } else if (SUBENTITY.equals(field.getType())) {
@@ -55,8 +55,8 @@ class ColumnFieldConverters {
             }
         }
 
-        private boolean isCollectionEmbeddable(FieldRepresentation field) {
-            return COLLECTION.equals(field.getType()) && GenericFieldRepresentation.class.cast(field).isEmbeddable();
+        private boolean isCollectionEmbeddable(FieldMapping field) {
+            return COLLECTION.equals(field.getType()) && GenericFieldMapping.class.cast(field).isEmbeddable();
         }
     }
 
@@ -64,7 +64,7 @@ class ColumnFieldConverters {
     private static class SubEntityConverter implements ColumnFieldConverter {
 
         @Override
-        public <T> void convert(T instance, List<Column> columns, Optional<Column> column, FieldRepresentation field,
+        public <T> void convert(T instance, List<Column> columns, Optional<Column> column, FieldMapping field,
                                 AbstractColumnEntityConverter converter) {
 
             if (column.isPresent()) {
@@ -96,7 +96,7 @@ class ColumnFieldConverters {
 
         @Override
         public <T> void convert(T instance, List<Column> columns, Optional<Column> column,
-                                FieldRepresentation field, AbstractColumnEntityConverter converter) {
+                                FieldMapping field, AbstractColumnEntityConverter converter) {
 
 
             Field nativeField = field.getNativeField();
@@ -112,7 +112,7 @@ class ColumnFieldConverters {
 
         @Override
         public <T> void convert(T instance, List<Column> columns, Optional<Column> column,
-                                FieldRepresentation field, AbstractColumnEntityConverter converter) {
+                                FieldMapping field, AbstractColumnEntityConverter converter) {
             Value value = column.get().getValue();
             Optional<Class<? extends AttributeConverter>> optionalConverter = field.getConverter();
             if (optionalConverter.isPresent()) {
@@ -130,15 +130,15 @@ class ColumnFieldConverters {
     private static class CollectionEmbeddableConverter implements ColumnFieldConverter {
 
         @Override
-        public <T> void convert(T instance, List<Column> columns, Optional<Column> column, FieldRepresentation field,
+        public <T> void convert(T instance, List<Column> columns, Optional<Column> column, FieldMapping field,
                                 AbstractColumnEntityConverter converter) {
 
             column.ifPresent(convertColumn(instance, field, converter));
         }
 
-        private <T> Consumer<Column> convertColumn(T instance, FieldRepresentation field, AbstractColumnEntityConverter converter) {
+        private <T> Consumer<Column> convertColumn(T instance, FieldMapping field, AbstractColumnEntityConverter converter) {
             return column -> {
-                GenericFieldRepresentation genericField = GenericFieldRepresentation.class.cast(field);
+                GenericFieldMapping genericField = GenericFieldMapping.class.cast(field);
                 Collection collection = genericField.getCollectionInstance();
                 List<List<Column>> embeddable = (List<List<Column>>) column.get();
                 for (List<Column> columnList : embeddable) {

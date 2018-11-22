@@ -18,7 +18,7 @@ package org.jnosql.artemis.column.query;
 import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.reflection.ClassRepresentation;
-import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.FieldMapping;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -95,7 +95,7 @@ public abstract class AbstractColumnRepositoryAsync<T, ID> implements Repository
         return (Class<T>) getClassRepresentation().getClassInstance();
     }
 
-    private FieldRepresentation getIdField() {
+    private FieldMapping getIdField() {
         return getClassRepresentation().getId().orElseThrow(KEY_NOT_FOUND_EXCEPTION_SUPPLIER);
     }
 }

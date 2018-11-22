@@ -19,7 +19,7 @@ import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.artemis.PreparedStatementAsync;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.FieldMapping;
 import org.jnosql.artemis.util.ConverterUtil;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnEntity;
@@ -142,7 +142,7 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
         requireNonNull(callback, "callBack is required");
 
         ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
-        FieldRepresentation idField = classRepresentation.getId()
+        FieldMapping idField = classRepresentation.getId()
                 .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
 
         Object value = ConverterUtil.getValue(id, classRepresentation, idField.getFieldName(), getConverters());
@@ -227,7 +227,7 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
 
     private <T, ID> ColumnDeleteQuery getDeleteQuery(Class<T> entityClass, ID id) {
         ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
-        FieldRepresentation idField = classRepresentation.getId()
+        FieldMapping idField = classRepresentation.getId()
                 .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
 
         Object value = ConverterUtil.getValue(id, classRepresentation, idField.getFieldName(), getConverters());

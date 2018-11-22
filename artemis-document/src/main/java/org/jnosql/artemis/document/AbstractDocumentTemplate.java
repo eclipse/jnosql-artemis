@@ -20,7 +20,7 @@ import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.artemis.PreparedStatement;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.FieldMapping;
 import org.jnosql.artemis.util.ConverterUtil;
 import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
@@ -121,7 +121,7 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
         requireNonNull(entityClass, "entityClass is required");
         requireNonNull(id, "id is required");
         ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
-        FieldRepresentation idField = classRepresentation.getId()
+        FieldMapping idField = classRepresentation.getId()
                 .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
 
         Object value = ConverterUtil.getValue(id, classRepresentation, idField.getFieldName(), getConverters());
@@ -137,7 +137,7 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
         requireNonNull(id, "id is required");
 
         ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
-        FieldRepresentation idField = classRepresentation.getId()
+        FieldMapping idField = classRepresentation.getId()
                 .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
 
         Object value = ConverterUtil.getValue(id, classRepresentation, idField.getFieldName(), getConverters());

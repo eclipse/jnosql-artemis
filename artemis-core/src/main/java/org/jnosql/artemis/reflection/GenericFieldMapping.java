@@ -36,12 +36,12 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-public class GenericFieldRepresentation extends AbstractFieldRepresentation {
+public class GenericFieldMapping extends AbstractFieldMapping {
 
     private final TypeSupplier<?> typeSupplier;
 
-    GenericFieldRepresentation(FieldType type, Field field, String name, TypeSupplier<?> typeSupplier,
-                               Class<? extends AttributeConverter> converter, FieldReader reader, FieldWriter writer) {
+    GenericFieldMapping(FieldType type, Field field, String name, TypeSupplier<?> typeSupplier,
+                        Class<? extends AttributeConverter> converter, FieldReader reader, FieldWriter writer) {
         super(type, field, name, converter, reader, writer);
         this.typeSupplier = typeSupplier;
     }
@@ -64,7 +64,7 @@ public class GenericFieldRepresentation extends AbstractFieldRepresentation {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        GenericFieldRepresentation that = (GenericFieldRepresentation) o;
+        GenericFieldMapping that = (GenericFieldMapping) o;
         return type == that.type &&
                 Objects.equals(field, that.field) &&
                 Objects.equals(typeSupplier, that.typeSupplier) &&
@@ -117,7 +117,7 @@ public class GenericFieldRepresentation extends AbstractFieldRepresentation {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("GenericFieldRepresentation{");
+        final StringBuilder sb = new StringBuilder("GenericFieldMapping{");
         sb.append("typeSupplier=").append(typeSupplier);
         sb.append(", type=").append(type);
         sb.append(", field=").append(field);

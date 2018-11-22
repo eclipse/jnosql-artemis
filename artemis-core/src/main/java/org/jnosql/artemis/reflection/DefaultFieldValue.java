@@ -21,10 +21,10 @@ final class DefaultFieldValue implements FieldValue {
 
     private final Object value;
 
-    private final FieldRepresentation field;
+    private final FieldMapping field;
 
 
-    DefaultFieldValue(Object value, FieldRepresentation field) {
+    DefaultFieldValue(Object value, FieldMapping field) {
         this.value = value;
         this.field = Objects.requireNonNull(field, "field is required");
     }
@@ -35,7 +35,7 @@ final class DefaultFieldValue implements FieldValue {
     }
 
     @Override
-    public FieldRepresentation getField() {
+    public FieldMapping getField() {
         return field;
     }
 

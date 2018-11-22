@@ -17,7 +17,7 @@ package org.jnosql.artemis.graph.query;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.graph.GraphTemplate;
 import org.jnosql.artemis.reflection.ClassRepresentation;
-import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.FieldMapping;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -90,7 +90,7 @@ abstract class AbstractGraphRepository<T, ID> implements Repository<T, ID> {
         return getTemplate().count(getClassRepresentation().getName());
     }
 
-    private FieldRepresentation getIdField() {
+    private FieldMapping getIdField() {
         return getClassRepresentation().getId().orElseThrow(KEY_NOT_FOUND_EXCEPTION_SUPPLIER);
     }
 

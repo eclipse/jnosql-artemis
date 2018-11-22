@@ -17,7 +17,7 @@ package org.jnosql.artemis.key;
 import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.FieldMapping;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.key.KeyValueEntity;
 
@@ -40,7 +40,7 @@ public abstract class AbstractKeyValueEntityConverter implements KeyValueEntityC
         Class<?> clazz = entityInstance.getClass();
         ClassRepresentation representation = getClassRepresentations().get(clazz);
 
-        FieldRepresentation key = getId(clazz, representation);
+        FieldMapping key = getId(clazz, representation);
 
         Object value = key.read(entityInstance);
         requireNonNull(value, String.format("The key field %s is required", key.getName()));
@@ -56,7 +56,7 @@ public abstract class AbstractKeyValueEntityConverter implements KeyValueEntityC
         if (Objects.isNull(t)) {
             return null;
         }
-        FieldRepresentation key = getId(entityClass, getClassRepresentations().get(entityClass));
+        FieldMapping key = getId(entityClass, getClassRepresentations().get(entityClass));
 
         Object keyValue = key.read(t);
         if (Objects.isNull(keyValue) || !keyValue.equals(entity.getKey())) {
@@ -74,9 +74,9 @@ public abstract class AbstractKeyValueEntityConverter implements KeyValueEntityC
         return t;
     }
 
-    private FieldRepresentation getId(Class<?> clazz, ClassRepresentation representation) {
-        List<FieldRepresentation> fields = representation.getFields();
-        return fields.stream().filter(FieldRepresentation::isId)
+    private FieldMapping getId(Class<?> clazz, ClassRepresentation representation) {
+        List<FieldMapping> fields = representation.getFields();
+        return fields.stream().filter(FieldMapping::isId)
                 .findFirst().orElseThrow(() -> IdNotFoundException.newInstance(clazz));
     }
 }

@@ -78,7 +78,7 @@ public class ClassConverterTest {
     @Test
     public void shouldReturnFalseWhenThereIsNotKey() {
         ClassRepresentation classRepresentation = classConverter.create(Worker.class);
-        boolean allMatch = classRepresentation.getFields().stream().noneMatch(FieldRepresentation::isId);
+        boolean allMatch = classRepresentation.getFields().stream().noneMatch(FieldMapping::isId);
         assertTrue(allMatch);
     }
 
@@ -86,13 +86,13 @@ public class ClassConverterTest {
     @Test
     public void shouldReturnTrueWhenThereIsKey() {
         ClassRepresentation classRepresentation = classConverter.create(User.class);
-        List<FieldRepresentation> fields = classRepresentation.getFields();
+        List<FieldMapping> fields = classRepresentation.getFields();
 
-        Predicate<FieldRepresentation> hasKeyAnnotation = FieldRepresentation::isId;
+        Predicate<FieldMapping> hasKeyAnnotation = FieldMapping::isId;
         assertTrue(fields.stream().anyMatch(hasKeyAnnotation));
-        FieldRepresentation fieldRepresentation = fields.stream().filter(hasKeyAnnotation).findFirst().get();
-        assertEquals("_id", fieldRepresentation.getName());
-        assertEquals(DEFAULT, fieldRepresentation.getType());
+        FieldMapping fieldMapping = fields.stream().filter(hasKeyAnnotation).findFirst().get();
+        assertEquals("_id", fieldMapping.getName());
+        assertEquals(DEFAULT, fieldMapping.getType());
 
     }
 
@@ -104,7 +104,7 @@ public class ClassConverterTest {
     @Test
     public void shouldReturnWhenIsDefaultConstructor() {
         ClassRepresentation classRepresentation = classConverter.create(Machine.class);
-        List<FieldRepresentation> fields = classRepresentation.getFields();
+        List<FieldMapping> fields = classRepresentation.getFields();
         assertEquals(1, fields.size());
     }
 

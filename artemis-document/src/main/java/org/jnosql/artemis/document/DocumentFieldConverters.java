@@ -15,8 +15,8 @@
 package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.AttributeConverter;
-import org.jnosql.artemis.reflection.FieldRepresentation;
-import org.jnosql.artemis.reflection.GenericFieldRepresentation;
+import org.jnosql.artemis.reflection.FieldMapping;
+import org.jnosql.artemis.reflection.GenericFieldMapping;
 import org.jnosql.diana.api.TypeReference;
 import org.jnosql.diana.api.Value;
 import org.jnosql.diana.api.document.Document;
@@ -43,7 +43,7 @@ class DocumentFieldConverters {
         private final CollectionEmbeddableConverter embeddableConverter = new CollectionEmbeddableConverter();
         private final SubEntityConverter subEntityConverter = new SubEntityConverter();
 
-        DocumentFieldConverter get(FieldRepresentation field) {
+        DocumentFieldConverter get(FieldMapping field) {
             if (EMBEDDED.equals(field.getType())) {
                 return embeddedFieldConverter;
             } else if (SUBENTITY.equals(field.getType())) {
@@ -55,8 +55,8 @@ class DocumentFieldConverters {
             }
         }
 
-        private boolean isCollectionEmbeddable(FieldRepresentation field) {
-            return COLLECTION.equals(field.getType()) && GenericFieldRepresentation.class.cast(field).isEmbeddable();
+        private boolean isCollectionEmbeddable(FieldMapping field) {
+            return COLLECTION.equals(field.getType()) && GenericFieldMapping.class.cast(field).isEmbeddable();
         }
     }
 
@@ -64,7 +64,7 @@ class DocumentFieldConverters {
 
         @Override
         public <T> void convert(T instance, List<Document> documents, Optional<Document> document,
-                                FieldRepresentation field, AbstractDocumentEntityConverter converter) {
+                                FieldMapping field, AbstractDocumentEntityConverter converter) {
 
             if (document.isPresent()) {
                 Document sudDocument = document.get();
@@ -95,7 +95,7 @@ class DocumentFieldConverters {
 
         @Override
         public <T> void convert(T instance, List<Document> documents, Optional<Document> document,
-                                FieldRepresentation field, AbstractDocumentEntityConverter converter) {
+                                FieldMapping field, AbstractDocumentEntityConverter converter) {
 
             Field nativeField = field.getNativeField();
             Object subEntity = converter.toEntity(nativeField.getType(), documents);
@@ -108,7 +108,7 @@ class DocumentFieldConverters {
 
         @Override
         public <T> void convert(T instance, List<Document> documents, Optional<Document> document,
-                                FieldRepresentation field, AbstractDocumentEntityConverter converter) {
+                                FieldMapping field, AbstractDocumentEntityConverter converter) {
             Value value = document.get().getValue();
 
             Optional<Class<? extends AttributeConverter>> optionalConverter = field.getConverter();
@@ -126,13 +126,13 @@ class DocumentFieldConverters {
 
         @Override
         public <T> void convert(T instance, List<Document> documents, Optional<Document> document,
-                                FieldRepresentation field, AbstractDocumentEntityConverter converter) {
+                                FieldMapping field, AbstractDocumentEntityConverter converter) {
             document.ifPresent(convertDocument(instance, field, converter));
         }
 
-        private <T> Consumer<Document> convertDocument(T instance, FieldRepresentation field, AbstractDocumentEntityConverter converter) {
+        private <T> Consumer<Document> convertDocument(T instance, FieldMapping field, AbstractDocumentEntityConverter converter) {
             return document -> {
-                GenericFieldRepresentation genericField = GenericFieldRepresentation.class.cast(field);
+                GenericFieldMapping genericField = GenericFieldMapping.class.cast(field);
                 Collection collection = genericField.getCollectionInstance();
                 List<List<Document>> embeddable = (List<List<Document>>) document.get();
                 for (List<Document> documentList : embeddable) {

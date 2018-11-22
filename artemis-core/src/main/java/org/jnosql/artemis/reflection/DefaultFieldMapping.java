@@ -21,16 +21,16 @@ import java.lang.reflect.Field;
 import java.util.Objects;
 
 /**
- * Class that represents {@link FieldRepresentation} a default field
+ * Class that represents {@link FieldMapping} a default field
  */
-public class DefaultFieldRepresentation extends AbstractFieldRepresentation {
+public class DefaultFieldMapping extends AbstractFieldMapping {
 
 
     private final boolean id;
 
-    DefaultFieldRepresentation(FieldType type, Field field, String name,
-                               Class<? extends AttributeConverter> converter, boolean id,
-                               FieldReader reader, FieldWriter writer) {
+    DefaultFieldMapping(FieldType type, Field field, String name,
+                        Class<? extends AttributeConverter> converter, boolean id,
+                        FieldReader reader, FieldWriter writer) {
         super(type, field, name, converter, reader, writer);
         this.id = id;
     }
@@ -48,7 +48,7 @@ public class DefaultFieldRepresentation extends AbstractFieldRepresentation {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        AbstractFieldRepresentation that = (AbstractFieldRepresentation) o;
+        AbstractFieldMapping that = (AbstractFieldMapping) o;
         return type == that.type &&
                 Objects.equals(field, that.field) &&
                 Objects.equals(name, that.name);
@@ -62,7 +62,7 @@ public class DefaultFieldRepresentation extends AbstractFieldRepresentation {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("DefaultFieldRepresentation{");
+        final StringBuilder sb = new StringBuilder("DefaultFieldMapping{");
         sb.append("id=").append(id);
         sb.append(", type=").append(type);
         sb.append(", field=").append(field);

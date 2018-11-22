@@ -25,7 +25,7 @@ import java.util.Optional;
  * This class represents the information from {@link Field}.
  * The strategy is do cache in all fields in a class to either read and writer faster from Field
  */
-public interface FieldRepresentation  {
+public interface FieldMapping {
 
     /**
      * Return the type of the field

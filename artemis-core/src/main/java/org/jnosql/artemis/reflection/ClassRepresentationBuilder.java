@@ -28,11 +28,11 @@ class ClassRepresentationBuilder {
 
     private Class<?> classInstance;
 
-    private List<FieldRepresentation> fields = Collections.emptyList();
+    private List<FieldMapping> fields = Collections.emptyList();
 
     private Map<String, NativeMapping> javaFieldGroupedByColumn = emptyMap();
 
-    private Map<String, FieldRepresentation> fieldsGroupedByName = emptyMap();
+    private Map<String, FieldMapping> fieldsGroupedByName = emptyMap();
 
     private InstanceSupplier instanceSupplier;
 
@@ -51,7 +51,7 @@ class ClassRepresentationBuilder {
         return this;
     }
 
-    public ClassRepresentationBuilder withFields(List<FieldRepresentation> fields) {
+    public ClassRepresentationBuilder withFields(List<FieldMapping> fields) {
         this.fields = fields;
         return this;
     }
@@ -61,7 +61,7 @@ class ClassRepresentationBuilder {
         return this;
     }
 
-    public ClassRepresentationBuilder withFieldsGroupedByName(Map<String, FieldRepresentation> fieldsGroupedByName) {
+    public ClassRepresentationBuilder withFieldsGroupedByName(Map<String, FieldMapping> fieldsGroupedByName) {
         this.fieldsGroupedByName = fieldsGroupedByName;
         return this;
     }

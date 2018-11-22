@@ -27,7 +27,7 @@ import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.artemis.PreparedStatement;
 import org.jnosql.artemis.reflection.ClassRepresentation;
 import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.FieldMapping;
 import org.jnosql.diana.api.NonUniqueResultException;
 
 import java.util.ArrayList;
@@ -292,7 +292,7 @@ public abstract class AbstractGraphTemplate implements GraphTemplate {
 
     private <T> Optional<Vertex> getVertex(T entity) {
         ClassRepresentation classRepresentation = getClassRepresentations().get(entity.getClass());
-        FieldRepresentation field = classRepresentation.getId().get();
+        FieldMapping field = classRepresentation.getId().get();
         Object id = field.read(entity);
         Iterator<Vertex> vertices = getVertices(id);
         if (vertices.hasNext()) {
@@ -324,7 +324,7 @@ public abstract class AbstractGraphTemplate implements GraphTemplate {
 
     private <T> boolean isIdNull(T entity) {
         ClassRepresentation classRepresentation = getClassRepresentations().get(entity.getClass());
-        FieldRepresentation field = classRepresentation.getId().get();
+        FieldMapping field = classRepresentation.getId().get();
         return isNull(field.read(entity));
 
     }

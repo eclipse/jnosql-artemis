@@ -22,11 +22,11 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Base class to all {@link FieldRepresentation}
+ * Base class to all {@link FieldMapping}
  *
- * @see FieldRepresentation
+ * @see FieldMapping
  */
-abstract class AbstractFieldRepresentation implements FieldRepresentation {
+abstract class AbstractFieldMapping implements FieldMapping {
 
     protected final FieldType type;
 
@@ -42,8 +42,8 @@ abstract class AbstractFieldRepresentation implements FieldRepresentation {
 
     protected final FieldWriter writer;
 
-    AbstractFieldRepresentation(FieldType type, Field field, String name,
-                                Class<? extends AttributeConverter> converter, FieldReader reader, FieldWriter writer) {
+    AbstractFieldMapping(FieldType type, Field field, String name,
+                         Class<? extends AttributeConverter> converter, FieldReader reader, FieldWriter writer) {
         this.type = type;
         this.field = field;
         this.name = name;
@@ -93,7 +93,7 @@ abstract class AbstractFieldRepresentation implements FieldRepresentation {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("AbstractFieldRepresentation{");
+        final StringBuilder sb = new StringBuilder("AbstractFieldMapping{");
         sb.append("type=").append(type);
         sb.append(", field=").append(field);
         sb.append(", name='").append(name).append('\'');
