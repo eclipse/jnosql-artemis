@@ -21,7 +21,7 @@ import org.apache.tinkerpop.gremlin.structure.Property;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.EntityNotFoundException;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 
 import javax.enterprise.inject.Instance;
@@ -78,7 +78,7 @@ class DefaultGraphTraversalSourceConverter extends AbstractGraphConverter {
     public <T> Vertex toVertex(T entity) {
         requireNonNull(entity, "entity is required");
 
-        ClassRepresentation representation = getClassRepresentations().get(entity.getClass());
+        ClassMapping representation = getClassRepresentations().get(entity.getClass());
         String label = representation.getName();
 
         List<FieldGraph> fields = representation.getFields().stream()

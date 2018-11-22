@@ -45,48 +45,48 @@ public class ClassConverterTest {
 
     @Test
     public void shouldCreateClassRepresentation() {
-        ClassRepresentation classRepresentation = classConverter.create(Person.class);
+        ClassMapping classMapping = classConverter.create(Person.class);
 
-        assertEquals("Person", classRepresentation.getName());
-        assertEquals(Person.class, classRepresentation.getClassInstance());
-        assertEquals(4, classRepresentation.getFields().size());
-        assertThat(classRepresentation.getFieldsName(), containsInAnyOrder("_id", "name", "age", "phones"));
+        assertEquals("Person", classMapping.getName());
+        assertEquals(Person.class, classMapping.getClassInstance());
+        assertEquals(4, classMapping.getFields().size());
+        assertThat(classMapping.getFieldsName(), containsInAnyOrder("_id", "name", "age", "phones"));
 
     }
 
     @Test
     public void shouldCreateClassRepresentation2() {
-        ClassRepresentation classRepresentation = classConverter.create(Actor.class);
+        ClassMapping classMapping = classConverter.create(Actor.class);
 
-        assertEquals("Actor", classRepresentation.getName());
-        assertEquals(Actor.class, classRepresentation.getClassInstance());
-        assertEquals(6, classRepresentation.getFields().size());
-        assertThat(classRepresentation.getFieldsName(), containsInAnyOrder("_id", "name", "age", "phones", "movieCharacter", "movieRating"));
+        assertEquals("Actor", classMapping.getName());
+        assertEquals(Actor.class, classMapping.getClassInstance());
+        assertEquals(6, classMapping.getFields().size());
+        assertThat(classMapping.getFieldsName(), containsInAnyOrder("_id", "name", "age", "phones", "movieCharacter", "movieRating"));
 
     }
 
     @Test
     public void shouldCreateClassRepresentationWithEmbeddedClass() {
-        ClassRepresentation classRepresentation = classConverter.create(Director.class);
-        assertEquals("Director", classRepresentation.getName());
-        assertEquals(Director.class, classRepresentation.getClassInstance());
-        assertEquals(5, classRepresentation.getFields().size());
-        assertThat(classRepresentation.getFieldsName(), containsInAnyOrder("_id", "name", "age", "phones", "movie"));
+        ClassMapping classMapping = classConverter.create(Director.class);
+        assertEquals("Director", classMapping.getName());
+        assertEquals(Director.class, classMapping.getClassInstance());
+        assertEquals(5, classMapping.getFields().size());
+        assertThat(classMapping.getFieldsName(), containsInAnyOrder("_id", "name", "age", "phones", "movie"));
 
     }
 
     @Test
     public void shouldReturnFalseWhenThereIsNotKey() {
-        ClassRepresentation classRepresentation = classConverter.create(Worker.class);
-        boolean allMatch = classRepresentation.getFields().stream().noneMatch(FieldMapping::isId);
+        ClassMapping classMapping = classConverter.create(Worker.class);
+        boolean allMatch = classMapping.getFields().stream().noneMatch(FieldMapping::isId);
         assertTrue(allMatch);
     }
 
 
     @Test
     public void shouldReturnTrueWhenThereIsKey() {
-        ClassRepresentation classRepresentation = classConverter.create(User.class);
-        List<FieldMapping> fields = classRepresentation.getFields();
+        ClassMapping classMapping = classConverter.create(User.class);
+        List<FieldMapping> fields = classMapping.getFields();
 
         Predicate<FieldMapping> hasKeyAnnotation = FieldMapping::isId;
         assertTrue(fields.stream().anyMatch(hasKeyAnnotation));
@@ -103,8 +103,8 @@ public class ClassConverterTest {
 
     @Test
     public void shouldReturnWhenIsDefaultConstructor() {
-        ClassRepresentation classRepresentation = classConverter.create(Machine.class);
-        List<FieldMapping> fields = classRepresentation.getFields();
+        ClassMapping classMapping = classConverter.create(Machine.class);
+        List<FieldMapping> fields = classMapping.getFields();
         assertEquals(1, fields.size());
     }
 

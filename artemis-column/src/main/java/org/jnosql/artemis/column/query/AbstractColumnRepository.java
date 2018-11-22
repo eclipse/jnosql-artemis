@@ -16,7 +16,7 @@ package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.column.ColumnTemplate;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.artemis.reflection.FieldMapping;
 
 import java.util.Objects;
@@ -38,7 +38,7 @@ public abstract class AbstractColumnRepository<T, ID> implements Repository<T, I
 
     protected abstract ColumnTemplate getTemplate();
 
-    protected abstract ClassRepresentation getClassRepresentation();
+    protected abstract ClassMapping getClassMapping();
 
 
     @Override
@@ -86,7 +86,7 @@ public abstract class AbstractColumnRepository<T, ID> implements Repository<T, I
     }
 
     private Class<T> getEntityClass() {
-        return (Class<T>) getClassRepresentation().getClassInstance();
+        return (Class<T>) getClassMapping().getClassInstance();
     }
 
     @Override
@@ -97,7 +97,7 @@ public abstract class AbstractColumnRepository<T, ID> implements Repository<T, I
     }
 
     private FieldMapping getIdField() {
-        return getClassRepresentation().getId().orElseThrow(KEY_NOT_FOUND_EXCEPTION_SUPPLIER);
+        return getClassMapping().getId().orElseThrow(KEY_NOT_FOUND_EXCEPTION_SUPPLIER);
     }
 
     private Function optionalToStream() {

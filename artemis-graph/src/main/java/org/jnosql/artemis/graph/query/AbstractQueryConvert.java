@@ -18,7 +18,7 @@ import org.apache.tinkerpop.gremlin.process.traversal.P;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.query.Condition;
 import org.jnosql.query.ConditionValue;
 import org.jnosql.query.Operator;
@@ -27,7 +27,7 @@ abstract class AbstractQueryConvert {
 
 
     protected GraphTraversal<Vertex, Vertex> getPredicate(GraphQueryMethod graphQuery, Condition condition,
-                                                        ClassRepresentation representation) {
+                                                        ClassMapping representation) {
         Operator operator = condition.getOperator();
         String name = condition.getName();
         String nativeName = representation.getColumnField(name);

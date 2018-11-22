@@ -17,7 +17,7 @@ package org.jnosql.artemis.column;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.artemis.PreparedStatementAsync;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.FieldMapping;
 import org.jnosql.artemis.util.ConverterUtil;
@@ -141,13 +141,13 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
         requireNonNull(id, "id is required");
         requireNonNull(callback, "callBack is required");
 
-        ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
-        FieldMapping idField = classRepresentation.getId()
+        ClassMapping classMapping = getClassRepresentations().get(entityClass);
+        FieldMapping idField = classMapping.getId()
                 .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
 
-        Object value = ConverterUtil.getValue(id, classRepresentation, idField.getFieldName(), getConverters());
+        Object value = ConverterUtil.getValue(id, classMapping, idField.getFieldName(), getConverters());
 
-        ColumnQuery query = ColumnQueryBuilder.select().from(classRepresentation.getName())
+        ColumnQuery query = ColumnQueryBuilder.select().from(classMapping.getName())
                 .where(idField.getName()).eq(value).build();
 
         singleResult(query, callback);
@@ -220,18 +220,18 @@ public abstract class AbstractColumnTemplateAsync implements ColumnTemplateAsync
     public <T> void count(Class<T> entityClass, Consumer<Long> callback){
         requireNonNull(entityClass, "entity class is required");
         requireNonNull(callback, "callback is required");
-        ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
-        getManager().count(classRepresentation.getName(), callback);
+        ClassMapping classMapping = getClassRepresentations().get(entityClass);
+        getManager().count(classMapping.getName(), callback);
     }
 
 
     private <T, ID> ColumnDeleteQuery getDeleteQuery(Class<T> entityClass, ID id) {
-        ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
-        FieldMapping idField = classRepresentation.getId()
+        ClassMapping classMapping = getClassRepresentations().get(entityClass);
+        FieldMapping idField = classMapping.getId()
                 .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
 
-        Object value = ConverterUtil.getValue(id, classRepresentation, idField.getFieldName(), getConverters());
-        return ColumnQueryBuilder.delete().from(classRepresentation.getName())
+        Object value = ConverterUtil.getValue(id, classMapping, idField.getFieldName(), getConverters());
+        return ColumnQueryBuilder.delete().from(classMapping.getName())
                 .where(idField.getName()).eq(value).build();
     }
 }

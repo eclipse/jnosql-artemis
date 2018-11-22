@@ -18,7 +18,7 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.DynamicQueryException;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.artemis.util.ConverterUtil;
 
 import java.lang.reflect.Method;
@@ -30,14 +30,14 @@ import static java.util.Collections.singletonList;
 
 final class GraphQueryMethod {
 
-    private final ClassRepresentation representation;
+    private final ClassMapping representation;
     private final GraphTraversal<Vertex, Vertex> traversal;
     private final Object[] args;
     private final Converters converters;
     private final Method method;
     private int counter = 0;
 
-    GraphQueryMethod(ClassRepresentation representation,
+    GraphQueryMethod(ClassMapping representation,
                      GraphTraversal<Vertex, Vertex> traversal,
                      Converters converters, Method method, Object[] args) {
         this.representation = representation;
@@ -55,7 +55,7 @@ final class GraphQueryMethod {
         return representation.getName();
     }
 
-    public ClassRepresentation getRepresentation() {
+    public ClassMapping getRepresentation() {
         return representation;
     }
 

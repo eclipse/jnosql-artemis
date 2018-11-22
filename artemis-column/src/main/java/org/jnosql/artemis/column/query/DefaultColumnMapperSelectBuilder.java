@@ -17,7 +17,7 @@ package org.jnosql.artemis.column.query;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.column.ColumnTemplateAsync;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.diana.api.Sort;
 import org.jnosql.diana.api.column.ColumnQuery;
 
@@ -35,7 +35,7 @@ class DefaultColumnMapperSelectBuilder extends AbstractMapperQuery implements Co
     private final List<Sort> sorts = new ArrayList<>();
 
 
-    DefaultColumnMapperSelectBuilder(ClassRepresentation representation, Converters converters) {
+    DefaultColumnMapperSelectBuilder(ClassMapping representation, Converters converters) {
         super(representation, converters);
     }
 

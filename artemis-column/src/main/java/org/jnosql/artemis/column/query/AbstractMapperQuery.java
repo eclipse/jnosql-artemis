@@ -15,7 +15,7 @@
 package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.Converters;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.artemis.util.ConverterUtil;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnCondition;
@@ -40,7 +40,7 @@ abstract class AbstractMapperQuery {
 
     protected String name;
 
-    protected final ClassRepresentation representation;
+    protected final ClassMapping representation;
 
     protected final Converters converters;
 
@@ -49,7 +49,7 @@ abstract class AbstractMapperQuery {
     protected long limit;
 
 
-    AbstractMapperQuery(ClassRepresentation representation, Converters converters) {
+    AbstractMapperQuery(ClassMapping representation, Converters converters) {
         this.representation = representation;
         this.converters = converters;
         this.columnFamily = representation.getName();

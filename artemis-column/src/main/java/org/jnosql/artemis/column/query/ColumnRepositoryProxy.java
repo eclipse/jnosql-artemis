@@ -18,7 +18,7 @@ package org.jnosql.artemis.column.query;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.column.ColumnTemplate;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 
 import java.lang.reflect.ParameterizedType;
@@ -37,7 +37,7 @@ class ColumnRepositoryProxy<T, ID> extends AbstractColumnRepositoryProxy {
 
     private final ColumnRepository repository;
 
-    private final ClassRepresentation classRepresentation;
+    private final ClassMapping classMapping;
 
     private final Converters converters;
 
@@ -47,8 +47,8 @@ class ColumnRepositoryProxy<T, ID> extends AbstractColumnRepositoryProxy {
         this.template = template;
         Class<T> typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
-        this.classRepresentation = classRepresentations.get(typeClass);
-        this.repository = new ColumnRepository(template, classRepresentation);
+        this.classMapping = classRepresentations.get(typeClass);
+        this.repository = new ColumnRepository(template, classMapping);
         this.converters = converters;
     }
 
@@ -58,8 +58,8 @@ class ColumnRepositoryProxy<T, ID> extends AbstractColumnRepositoryProxy {
     }
 
     @Override
-    protected ClassRepresentation getClassRepresentation() {
-        return classRepresentation;
+    protected ClassMapping getClassMapping() {
+        return classMapping;
     }
 
     @Override
@@ -77,11 +77,11 @@ class ColumnRepositoryProxy<T, ID> extends AbstractColumnRepositoryProxy {
 
         private final ColumnTemplate template;
 
-        private final ClassRepresentation classRepresentation;
+        private final ClassMapping classMapping;
 
-        ColumnRepository(ColumnTemplate template, ClassRepresentation classRepresentation) {
+        ColumnRepository(ColumnTemplate template, ClassMapping classMapping) {
             this.template = template;
-            this.classRepresentation = classRepresentation;
+            this.classMapping = classMapping;
         }
 
         @Override
@@ -90,8 +90,8 @@ class ColumnRepositoryProxy<T, ID> extends AbstractColumnRepositoryProxy {
         }
 
         @Override
-        protected ClassRepresentation getClassRepresentation() {
-            return classRepresentation;
+        protected ClassMapping getClassMapping() {
+            return classMapping;
         }
 
     }

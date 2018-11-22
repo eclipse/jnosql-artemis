@@ -19,7 +19,7 @@ import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.model.Money;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.model.Worker;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,7 +42,7 @@ public class ConverterUtilTest {
 
     @Test
     public void shouldNotConvert() {
-        ClassRepresentation representation = representations.get(Person.class);
+        ClassMapping representation = representations.get(Person.class);
         Object value = 10_000L;
         Object id = ConverterUtil.getValue(value, representation, "id", converters);
         assertEquals(id, value);
@@ -50,7 +50,7 @@ public class ConverterUtilTest {
 
     @Test
     public void shouldConvert() {
-        ClassRepresentation representation = representations.get(Person.class);
+        ClassMapping representation = representations.get(Person.class);
         String value = "100";
         Object id = ConverterUtil.getValue(value, representation, "id", converters);
         assertEquals(100L, id);
@@ -58,7 +58,7 @@ public class ConverterUtilTest {
 
     @Test
     public void shouldUseAttributeConvert() {
-        ClassRepresentation representation = representations.get(Worker.class);
+        ClassMapping representation = representations.get(Worker.class);
         Object value = new Money("BRL", BigDecimal.TEN);
         Object converted = ConverterUtil.getValue(value, representation, "salary", converters);
         assertEquals("BRL 10", converted);

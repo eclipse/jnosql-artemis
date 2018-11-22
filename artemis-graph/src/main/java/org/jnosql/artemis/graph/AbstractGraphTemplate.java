@@ -25,7 +25,7 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.jnosql.artemis.EntityNotFoundException;
 import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.artemis.PreparedStatement;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.FieldMapping;
 import org.jnosql.diana.api.NonUniqueResultException;
@@ -291,8 +291,8 @@ public abstract class AbstractGraphTemplate implements GraphTemplate {
     }
 
     private <T> Optional<Vertex> getVertex(T entity) {
-        ClassRepresentation classRepresentation = getClassRepresentations().get(entity.getClass());
-        FieldMapping field = classRepresentation.getId().get();
+        ClassMapping classMapping = getClassRepresentations().get(entity.getClass());
+        FieldMapping field = classMapping.getId().get();
         Object id = field.read(entity);
         Iterator<Vertex> vertices = getVertices(id);
         if (vertices.hasNext()) {
@@ -323,15 +323,15 @@ public abstract class AbstractGraphTemplate implements GraphTemplate {
     }
 
     private <T> boolean isIdNull(T entity) {
-        ClassRepresentation classRepresentation = getClassRepresentations().get(entity.getClass());
-        FieldMapping field = classRepresentation.getId().get();
+        ClassMapping classMapping = getClassRepresentations().get(entity.getClass());
+        FieldMapping field = classMapping.getId().get();
         return isNull(field.read(entity));
 
     }
 
 
     private <T> void checkId(T entity) {
-        ClassRepresentation classRepresentation = getClassRepresentations().get(entity.getClass());
-        classRepresentation.getId().orElseThrow(() -> IdNotFoundException.newInstance(entity.getClass()));
+        ClassMapping classMapping = getClassRepresentations().get(entity.getClass());
+        classMapping.getId().orElseThrow(() -> IdNotFoundException.newInstance(entity.getClass()));
     }
 }

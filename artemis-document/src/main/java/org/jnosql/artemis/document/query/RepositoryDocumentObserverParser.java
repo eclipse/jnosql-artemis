@@ -14,26 +14,26 @@
  */
 package org.jnosql.artemis.document.query;
 
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.diana.api.document.DocumentObserverParser;
 
 import java.util.Optional;
 
 public class RepositoryDocumentObserverParser implements DocumentObserverParser {
 
-    private final ClassRepresentation classRepresentation;
+    private final ClassMapping classMapping;
 
-    RepositoryDocumentObserverParser(ClassRepresentation classRepresentation) {
-        this.classRepresentation = classRepresentation;
+    RepositoryDocumentObserverParser(ClassMapping classMapping) {
+        this.classMapping = classMapping;
     }
 
     @Override
     public String fireEntity(String entity) {
-        return classRepresentation.getName();
+        return classMapping.getName();
     }
 
     @Override
     public String fireField(String entity, String field) {
-        return Optional.ofNullable(classRepresentation.getColumnField(field)).orElse(field);
+        return Optional.ofNullable(classMapping.getColumnField(field)).orElse(field);
     }
 }

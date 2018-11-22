@@ -24,19 +24,19 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * The default implementation of {@link ClassRepresentation}.
+ * The default implementation of {@link ClassMapping}.
  * It's storage the class information in a {@link ConcurrentHashMap}
  */
 @ApplicationScoped
 class DefaultClassRepresentations implements ClassRepresentations {
 
-    private Map<String, ClassRepresentation> representations;
+    private Map<String, ClassMapping> representations;
 
-    private Map<Class<?>, ClassRepresentation> classes;
+    private Map<Class<?>, ClassMapping> classes;
 
-    private Map<String, ClassRepresentation> findBySimpleName;
+    private Map<String, ClassMapping> findBySimpleName;
 
-    private Map<String, ClassRepresentation> findByClassName;
+    private Map<String, ClassMapping> findByClassName;
 
 
     @Inject
@@ -62,25 +62,25 @@ class DefaultClassRepresentations implements ClassRepresentations {
     }
 
     void load(Class classEntity) {
-        ClassRepresentation classRepresentation = classConverter.create(classEntity);
-        representations.put(classEntity.getName(), classRepresentation);
-        findBySimpleName.put(classEntity.getSimpleName(), classRepresentation);
-        findByClassName.put(classEntity.getName(), classRepresentation);
+        ClassMapping classMapping = classConverter.create(classEntity);
+        representations.put(classEntity.getName(), classMapping);
+        findBySimpleName.put(classEntity.getSimpleName(), classMapping);
+        findByClassName.put(classEntity.getName(), classMapping);
     }
 
     @Override
-    public ClassRepresentation get(Class classEntity) {
-        ClassRepresentation classRepresentation = classes.get(classEntity);
-        if (classRepresentation == null) {
-            classRepresentation = classConverter.create(classEntity);
-            classes.put(classEntity, classRepresentation);
+    public ClassMapping get(Class classEntity) {
+        ClassMapping classMapping = classes.get(classEntity);
+        if (classMapping == null) {
+            classMapping = classConverter.create(classEntity);
+            classes.put(classEntity, classMapping);
             return this.get(classEntity);
         }
-        return classRepresentation;
+        return classMapping;
     }
 
     @Override
-    public ClassRepresentation findByName(String name) {
+    public ClassMapping findByName(String name) {
         return representations.keySet().stream()
                 .map(k -> representations.get(k))
                 .filter(r -> r.getName().equalsIgnoreCase(name)).findFirst()
@@ -88,13 +88,13 @@ class DefaultClassRepresentations implements ClassRepresentations {
     }
 
     @Override
-    public Optional<ClassRepresentation> findBySimpleName(String name) {
+    public Optional<ClassMapping> findBySimpleName(String name) {
         Objects.requireNonNull(name, "name is required");
         return Optional.ofNullable(findBySimpleName.get(name));
     }
 
     @Override
-    public Optional<ClassRepresentation> findByClassName(String name) {
+    public Optional<ClassMapping> findByClassName(String name) {
         Objects.requireNonNull(name, "name is required");
         return Optional.ofNullable(findByClassName.get(name));
     }

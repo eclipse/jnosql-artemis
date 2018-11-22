@@ -18,7 +18,7 @@ package org.jnosql.artemis.document;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.artemis.PreparedStatementAsync;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.FieldMapping;
 import org.jnosql.artemis.util.ConverterUtil;
@@ -145,12 +145,12 @@ public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateA
         requireNonNull(id, "id is required");
         requireNonNull(callBack, "callBack is required");
 
-        ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
-        FieldMapping idField = classRepresentation.getId()
+        ClassMapping classMapping = getClassRepresentations().get(entityClass);
+        FieldMapping idField = classMapping.getId()
                 .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
 
-        Object value = ConverterUtil.getValue(id, classRepresentation, idField.getFieldName(), getConverters());
-        DocumentQuery query = DocumentQueryBuilder.select().from(classRepresentation.getName())
+        Object value = ConverterUtil.getValue(id, classMapping, idField.getFieldName(), getConverters());
+        DocumentQuery query = DocumentQueryBuilder.select().from(classMapping.getName())
                 .where(idField.getName()).eq(value).build();
 
         singleResult(query, callBack);
@@ -220,18 +220,18 @@ public abstract class AbstractDocumentTemplateAsync implements DocumentTemplateA
     public <T> void count(Class<T> entityClass, Consumer<Long> callback) {
         Objects.requireNonNull(entityClass, "entityClass is required");
         Objects.requireNonNull(callback, "callback is required");
-        ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
-        getManager().count(classRepresentation.getName(), callback);
+        ClassMapping classMapping = getClassRepresentations().get(entityClass);
+        getManager().count(classMapping.getName(), callback);
     }
 
     private <T, ID> DocumentDeleteQuery getDeleteQuery(Class<T> entityClass, ID id) {
-        ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
-        FieldMapping idField = classRepresentation.getId()
+        ClassMapping classMapping = getClassRepresentations().get(entityClass);
+        FieldMapping idField = classMapping.getId()
                 .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
 
-        Object value = ConverterUtil.getValue(id, classRepresentation, idField.getFieldName(), getConverters());
+        Object value = ConverterUtil.getValue(id, classMapping, idField.getFieldName(), getConverters());
 
-        return DocumentQueryBuilder.delete().from(classRepresentation.getName())
+        return DocumentQueryBuilder.delete().from(classMapping.getName())
                 .where(idField.getName()).eq(value).build();
     }
 }

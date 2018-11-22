@@ -15,7 +15,7 @@
 package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.Converters;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.diana.api.column.ColumnCondition;
 
 interface ColumnTokenProcessor {
@@ -24,6 +24,6 @@ interface ColumnTokenProcessor {
                             int index,
                             Object[] args,
                             String methodName,
-                            ClassRepresentation representation,
+                            ClassMapping representation,
                             Converters converters);
 }

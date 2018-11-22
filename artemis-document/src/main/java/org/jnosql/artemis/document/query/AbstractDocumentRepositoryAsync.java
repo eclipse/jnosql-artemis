@@ -17,7 +17,7 @@ package org.jnosql.artemis.document.query;
 
 import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.document.DocumentTemplateAsync;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.artemis.reflection.FieldMapping;
 
 import java.util.Objects;
@@ -36,7 +36,7 @@ public abstract class AbstractDocumentRepositoryAsync<T, ID> implements Reposito
 
     protected abstract DocumentTemplateAsync getTemplate();
 
-    protected abstract ClassRepresentation getClassRepresentation();
+    protected abstract ClassMapping getClassMapping();
 
 
     @Override
@@ -94,11 +94,11 @@ public abstract class AbstractDocumentRepositoryAsync<T, ID> implements Reposito
 
 
     private Class<T> getEntityClass() {
-        return (Class<T>) getClassRepresentation().getClassInstance();
+        return (Class<T>) getClassMapping().getClassInstance();
     }
 
     private FieldMapping getIdField() {
-        return getClassRepresentation().getId().orElseThrow(KEY_NOT_FOUND_EXCEPTION_SUPPLIER);
+        return getClassMapping().getId().orElseThrow(KEY_NOT_FOUND_EXCEPTION_SUPPLIER);
     }
 
 }

@@ -17,7 +17,7 @@ package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.column.ColumnTemplateAsync;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.artemis.reflection.FieldMapping;
 
 import java.util.Optional;
@@ -34,7 +34,7 @@ public abstract class AbstractColumnRepositoryAsync<T, ID> implements Repository
 
     protected abstract ColumnTemplateAsync getTemplate();
 
-    protected abstract ClassRepresentation getClassRepresentation();
+    protected abstract ClassMapping getClassMapping();
 
     @Override
     public <S extends T> void save(S entity) {
@@ -92,10 +92,10 @@ public abstract class AbstractColumnRepositoryAsync<T, ID> implements Repository
     }
 
     private Class<T> getEntityClass() {
-        return (Class<T>) getClassRepresentation().getClassInstance();
+        return (Class<T>) getClassMapping().getClassInstance();
     }
 
     private FieldMapping getIdField() {
-        return getClassRepresentation().getId().orElseThrow(KEY_NOT_FOUND_EXCEPTION_SUPPLIER);
+        return getClassMapping().getId().orElseThrow(KEY_NOT_FOUND_EXCEPTION_SUPPLIER);
     }
 }

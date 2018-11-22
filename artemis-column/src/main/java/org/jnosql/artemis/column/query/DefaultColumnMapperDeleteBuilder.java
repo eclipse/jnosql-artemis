@@ -17,7 +17,7 @@ package org.jnosql.artemis.column.query;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.column.ColumnTemplate;
 import org.jnosql.artemis.column.ColumnTemplateAsync;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 
 import java.util.function.Consumer;
@@ -28,7 +28,7 @@ class DefaultColumnMapperDeleteBuilder extends AbstractMapperQuery implements Co
         ColumnMapperDeleteWhere, ColumnMapperDeleteNameCondition, ColumnMapperDeleteNotCondition {
 
 
-    DefaultColumnMapperDeleteBuilder(ClassRepresentation representation, Converters converters) {
+    DefaultColumnMapperDeleteBuilder(ClassMapping representation, Converters converters) {
         super(representation, converters);
     }
 

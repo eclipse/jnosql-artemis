@@ -23,7 +23,7 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 
-class DefaultClassRepresentation implements ClassRepresentation {
+class DefaultClassMapping implements ClassMapping {
 
 
     private final String name;
@@ -42,10 +42,10 @@ class DefaultClassRepresentation implements ClassRepresentation {
 
     private final FieldMapping id;
 
-    DefaultClassRepresentation(String name, List<String> fieldsName, Class<?> classInstance,
-                               List<FieldMapping> fields,
-                               Map<String, NativeMapping> javaFieldGroupedByColumn,
-                               Map<String, FieldMapping> fieldsGroupedByName, InstanceSupplier instanceSupplier) {
+    DefaultClassMapping(String name, List<String> fieldsName, Class<?> classInstance,
+                        List<FieldMapping> fields,
+                        Map<String, NativeMapping> javaFieldGroupedByColumn,
+                        Map<String, FieldMapping> fieldsGroupedByName, InstanceSupplier instanceSupplier) {
         this.name = name;
         this.fieldsName = fieldsName;
         this.classInstance = classInstance;
@@ -111,10 +111,10 @@ class DefaultClassRepresentation implements ClassRepresentation {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof DefaultClassRepresentation)) {
+        if (!(o instanceof DefaultClassMapping)) {
             return false;
         }
-        DefaultClassRepresentation that = (DefaultClassRepresentation) o;
+        DefaultClassMapping that = (DefaultClassMapping) o;
         return Objects.equals(classInstance, that.classInstance);
     }
 
@@ -125,7 +125,7 @@ class DefaultClassRepresentation implements ClassRepresentation {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("DefaultClassRepresentation{");
+        final StringBuilder sb = new StringBuilder("DefaultClassMapping{");
         sb.append("name='").append(name).append('\'');
         sb.append(", fieldsName=").append(fieldsName);
         sb.append(", classInstance=").append(classInstance);

@@ -15,7 +15,7 @@
 package org.jnosql.artemis.key;
 
 import org.jnosql.artemis.IdNotFoundException;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.FieldMapping;
 import org.jnosql.diana.api.Value;
@@ -38,7 +38,7 @@ public abstract class AbstractKeyValueEntityConverter implements KeyValueEntityC
     public KeyValueEntity<?> toKeyValue(Object entityInstance) {
         requireNonNull(entityInstance, "Object is required");
         Class<?> clazz = entityInstance.getClass();
-        ClassRepresentation representation = getClassRepresentations().get(clazz);
+        ClassMapping representation = getClassRepresentations().get(clazz);
 
         FieldMapping key = getId(clazz, representation);
 
@@ -74,7 +74,7 @@ public abstract class AbstractKeyValueEntityConverter implements KeyValueEntityC
         return t;
     }
 
-    private FieldMapping getId(Class<?> clazz, ClassRepresentation representation) {
+    private FieldMapping getId(Class<?> clazz, ClassMapping representation) {
         List<FieldMapping> fields = representation.getFields();
         return fields.stream().filter(FieldMapping::isId)
                 .findFirst().orElseThrow(() -> IdNotFoundException.newInstance(clazz));

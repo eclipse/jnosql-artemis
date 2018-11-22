@@ -17,7 +17,7 @@ package org.jnosql.artemis.document.query;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.document.DocumentTemplate;
 import org.jnosql.artemis.document.DocumentTemplateAsync;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.diana.api.Sort;
 import org.jnosql.diana.api.document.DocumentQuery;
 
@@ -36,7 +36,7 @@ class DefaultDocumentMapperSelectBuilder extends AbstractMapperQuery implements 
     private final List<Sort> sorts = new ArrayList<>();
 
 
-    DefaultDocumentMapperSelectBuilder(ClassRepresentation representation, Converters converters) {
+    DefaultDocumentMapperSelectBuilder(ClassMapping representation, Converters converters) {
         super(representation, converters);
     }
 

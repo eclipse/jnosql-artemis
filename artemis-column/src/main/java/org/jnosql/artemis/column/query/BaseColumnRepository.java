@@ -18,7 +18,7 @@ import org.jnosql.aphrodite.antlr.method.DeleteMethodFactory;
 import org.jnosql.aphrodite.antlr.method.SelectMethodFactory;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.Param;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.artemis.util.ParamsBinder;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
 import org.jnosql.diana.api.column.ColumnObserverParser;
@@ -41,7 +41,7 @@ abstract class BaseColumnRepository {
 
     protected abstract Converters getConverters();
 
-    protected abstract ClassRepresentation getClassRepresentation();
+    protected abstract ClassMapping getClassMapping();
 
     private ColumnObserverParser parser;
 
@@ -50,7 +50,7 @@ abstract class BaseColumnRepository {
 
     protected ColumnQuery getQuery(Method method, Object[] args) {
         SelectMethodFactory selectMethodFactory = SelectMethodFactory.get();
-        SelectQuery selectQuery = selectMethodFactory.apply(method, getClassRepresentation().getName());
+        SelectQuery selectQuery = selectMethodFactory.apply(method, getClassMapping().getName());
         SelectQueryConverter converter = SelectQueryConverter.get();
         ColumnQueryParams queryParams = converter.apply(selectQuery, getParser());
         ColumnQuery query = queryParams.getQuery();
@@ -62,7 +62,7 @@ abstract class BaseColumnRepository {
 
     protected ColumnDeleteQuery getDeleteQuery(Method method, Object[] args) {
         DeleteMethodFactory deleteMethodFactory = DeleteMethodFactory.get();
-        DeleteQuery deleteQuery = deleteMethodFactory.apply(method, getClassRepresentation().getName());
+        DeleteQuery deleteQuery = deleteMethodFactory.apply(method, getClassMapping().getName());
         DeleteQueryConverter converter = DeleteQueryConverter.get();
         ColumnDeleteQueryParams queryParams = converter.apply(deleteQuery, getParser());
         ColumnDeleteQuery query = queryParams.getQuery();
@@ -75,14 +75,14 @@ abstract class BaseColumnRepository {
 
     protected ColumnObserverParser getParser() {
         if (parser == null) {
-            this.parser = new RepositoryColumnObserverParser(getClassRepresentation());
+            this.parser = new RepositoryColumnObserverParser(getClassMapping());
         }
         return parser;
     }
 
     protected ParamsBinder getParamsBinder() {
         if (Objects.isNull(paramsBinder)) {
-            this.paramsBinder = new ParamsBinder(getClassRepresentation(), getConverters());
+            this.paramsBinder = new ParamsBinder(getClassMapping(), getConverters());
         }
         return paramsBinder;
     }

@@ -60,7 +60,7 @@ class ClassConverter {
     ClassConverter() {
     }
 
-    public ClassRepresentation create(Class<?> entityClass) {
+    public ClassMapping create(Class<?> entityClass) {
 
         long start = System.currentTimeMillis();
         String entityName = reflections.getEntityName(entityClass);
@@ -79,7 +79,7 @@ class ClassConverter {
 
         InstanceSupplier instanceSupplier = instanceSupplierFactory.apply(reflections.makeAccessible(entityClass));
 
-        ClassRepresentation representation = DefaultClassRepresentation.builder().withName(entityName)
+        ClassMapping representation = DefaultClassMapping.builder().withName(entityName)
                 .withClassInstance(entityClass)
                 .withFields(fields)
                 .withFieldsName(fieldsName)

@@ -16,7 +16,7 @@ package org.jnosql.artemis.document.query;
 
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.document.DocumentTemplate;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.artemis.reflection.FieldMapping;
 
 import java.util.Objects;
@@ -39,7 +39,7 @@ public abstract class AbstractDocumentRepository<T, ID> implements Repository<T,
 
     protected abstract DocumentTemplate getTemplate();
 
-    protected abstract ClassRepresentation getClassRepresentation();
+    protected abstract ClassMapping getClassMapping();
 
     @Override
     public <S extends T> S save(S entity) {
@@ -93,7 +93,7 @@ public abstract class AbstractDocumentRepository<T, ID> implements Repository<T,
 
 
     private FieldMapping getIdField() {
-        return getClassRepresentation().getId().orElseThrow(KEY_NOT_FOUND_EXCEPTION_SUPPLIER);
+        return getClassMapping().getId().orElseThrow(KEY_NOT_FOUND_EXCEPTION_SUPPLIER);
     }
 
     private Function optionalToStream() {
@@ -109,6 +109,6 @@ public abstract class AbstractDocumentRepository<T, ID> implements Repository<T,
     }
 
     private Class<T> getEntityClass() {
-        return (Class<T>) getClassRepresentation().getClassInstance();
+        return (Class<T>) getClassMapping().getClassInstance();
     }
 }

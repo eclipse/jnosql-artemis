@@ -17,7 +17,7 @@ package org.jnosql.artemis.graph.query;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.jnosql.aphrodite.antlr.method.SelectMethodFactory;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.query.Condition;
 import org.jnosql.query.SelectQuery;
 import org.jnosql.query.Sort;
@@ -38,7 +38,7 @@ final class SelectQueryConverter extends AbstractQueryConvert implements Functio
 
         SelectMethodFactory selectMethodFactory = SelectMethodFactory.get();
         SelectQuery query = selectMethodFactory.apply(graphQuery.getMethod(), graphQuery.getEntityName());
-        ClassRepresentation representation = graphQuery.getRepresentation();
+        ClassMapping representation = graphQuery.getRepresentation();
 
         GraphTraversal<Vertex, Vertex> traversal = graphQuery.getTraversal();
         if (query.getWhere().isPresent()) {
@@ -60,7 +60,7 @@ final class SelectQueryConverter extends AbstractQueryConvert implements Functio
         return traversal.toList();
     }
 
-    private Consumer<Sort> getSort(GraphTraversal<Vertex, Vertex> traversal, ClassRepresentation representation) {
+    private Consumer<Sort> getSort(GraphTraversal<Vertex, Vertex> traversal, ClassMapping representation) {
         return o -> {
             if (Sort.SortType.ASC.equals(o.getType())) {
                 traversal.order().by(representation.getColumnField(o.getName()), incr);

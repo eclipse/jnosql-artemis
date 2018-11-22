@@ -71,8 +71,8 @@ class ClassRepresentationBuilder {
         return this;
     }
 
-    public ClassRepresentation build() {
-        return new DefaultClassRepresentation(name, fieldsName, classInstance, fields,
+    public ClassMapping build() {
+        return new DefaultClassMapping(name, fieldsName, classInstance, fields,
                  javaFieldGroupedByColumn, fieldsGroupedByName, instanceSupplier);
     }
 }

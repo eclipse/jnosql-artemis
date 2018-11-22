@@ -16,7 +16,7 @@ package org.jnosql.artemis.util;
 
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.DynamicQueryException;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.artemis.reflection.FieldMapping;
 import org.jnosql.query.Params;
 
@@ -31,7 +31,7 @@ import java.util.Optional;
 public class ParamsBinder {
 
 
-    private final ClassRepresentation representation;
+    private final ClassMapping representation;
 
     private final Converters converters;
 
@@ -42,7 +42,7 @@ public class ParamsBinder {
      * @param converters the converts
      * @throws NullPointerException when there is null parameter
      */
-    public ParamsBinder(ClassRepresentation representation, Converters converters) {
+    public ParamsBinder(ClassMapping representation, Converters converters) {
         this.representation = Objects.requireNonNull(representation, "representation is required");
         this.converters = Objects.requireNonNull(converters, "converters is required");
     }

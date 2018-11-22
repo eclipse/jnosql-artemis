@@ -16,7 +16,7 @@ package org.jnosql.artemis.column;
 
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.column.ColumnFieldConverters.ColumnFieldConverterFactory;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.reflection.FieldMapping;
 import org.jnosql.artemis.reflection.FieldType;
@@ -51,7 +51,7 @@ public abstract class AbstractColumnEntityConverter implements ColumnEntityConve
     @Override
     public ColumnEntity toColumn(Object entityInstance) {
         requireNonNull(entityInstance, "Object is required");
-        ClassRepresentation representation = getClassRepresentations().get(entityInstance.getClass());
+        ClassMapping representation = getClassRepresentations().get(entityInstance.getClass());
         ColumnEntity entity = ColumnEntity.of(representation.getName());
         representation.getFields().stream()
                 .map(f -> to(f, entityInstance))
@@ -73,14 +73,14 @@ public abstract class AbstractColumnEntityConverter implements ColumnEntityConve
     public <T> T toEntity(T entityInstance, ColumnEntity entity) {
         requireNonNull(entity, "entity is required");
         requireNonNull(entityInstance, "entityInstance is required");
-        ClassRepresentation representation = getClassRepresentations().get(entityInstance.getClass());
+        ClassMapping representation = getClassRepresentations().get(entityInstance.getClass());
         return convertEntity(entity.getColumns(), representation, entityInstance);
     }
 
     @Override
     public <T> T toEntity(ColumnEntity entity) {
         requireNonNull(entity, "entity is required");
-        ClassRepresentation representation = getClassRepresentations().findByName(entity.getName());
+        ClassMapping representation = getClassRepresentations().findByName(entity.getName());
         T instance = representation.newInstance();
         return convertEntity(entity.getColumns(), representation, instance);
     }
@@ -100,12 +100,12 @@ public abstract class AbstractColumnEntityConverter implements ColumnEntityConve
     }
 
     protected <T> T toEntity(Class<T> entityClass, List<Column> columns) {
-        ClassRepresentation representation = getClassRepresentations().get(entityClass);
+        ClassMapping representation = getClassRepresentations().get(entityClass);
         T instance = representation.newInstance();
         return convertEntity(columns, representation, instance);
     }
 
-    private <T> T convertEntity(List<Column> columns, ClassRepresentation representation, T instance) {
+    private <T> T convertEntity(List<Column> columns, ClassMapping representation, T instance) {
         final Map<String, FieldMapping> fieldsGroupByName = representation.getFieldsGroupByName();
         final List<String> names = columns.stream().map(Column::getName).sorted().collect(Collectors.toList());
         final Predicate<String> existField = k -> Collections.binarySearch(names, k) >= 0;

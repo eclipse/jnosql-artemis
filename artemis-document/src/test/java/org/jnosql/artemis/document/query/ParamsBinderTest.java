@@ -19,7 +19,7 @@ import org.jnosql.aphrodite.antlr.method.SelectMethodFactory;
 import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.model.Person;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 import org.jnosql.artemis.util.ParamsBinder;
 import org.jnosql.diana.api.TypeReference;
@@ -59,12 +59,12 @@ class ParamsBinderTest {
 
         Method method = Stream.of(PersonRepository.class.getMethods())
                 .filter(m -> m.getName().equals("findByAge")).findFirst().get();
-        ClassRepresentation classRepresentation = representations.get(Person.class);
-        RepositoryDocumentObserverParser parser = new RepositoryDocumentObserverParser(classRepresentation);
-        paramsBinder = new ParamsBinder(classRepresentation, converters);
+        ClassMapping classMapping = representations.get(Person.class);
+        RepositoryDocumentObserverParser parser = new RepositoryDocumentObserverParser(classMapping);
+        paramsBinder = new ParamsBinder(classMapping, converters);
 
         SelectMethodFactory selectMethodFactory = SelectMethodFactory.get();
-        SelectQuery selectQuery = selectMethodFactory.apply(method, classRepresentation.getName());
+        SelectQuery selectQuery = selectMethodFactory.apply(method, classMapping.getName());
         SelectQueryConverter converter = SelectQueryConverter.get();
         DocumentQueryParams columnQueryParams = converter.apply(selectQuery, parser);
         Params params = columnQueryParams.getParams();
@@ -82,12 +82,12 @@ class ParamsBinderTest {
 
         Method method = Stream.of(PersonRepository.class.getMethods())
                 .filter(m -> m.getName().equals("findByAgeAndName")).findFirst().get();
-        ClassRepresentation classRepresentation = representations.get(Person.class);
-        RepositoryDocumentObserverParser parser = new RepositoryDocumentObserverParser(classRepresentation);
-        paramsBinder = new ParamsBinder(classRepresentation, converters);
+        ClassMapping classMapping = representations.get(Person.class);
+        RepositoryDocumentObserverParser parser = new RepositoryDocumentObserverParser(classMapping);
+        paramsBinder = new ParamsBinder(classMapping, converters);
 
         SelectMethodFactory selectMethodFactory = SelectMethodFactory.get();
-        SelectQuery selectQuery = selectMethodFactory.apply(method, classRepresentation.getName());
+        SelectQuery selectQuery = selectMethodFactory.apply(method, classMapping.getName());
         SelectQueryConverter converter = SelectQueryConverter.get();
         DocumentQueryParams queryParams = converter.apply(selectQuery, parser);
         Params params = queryParams.getParams();

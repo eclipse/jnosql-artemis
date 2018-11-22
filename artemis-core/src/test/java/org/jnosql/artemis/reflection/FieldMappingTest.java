@@ -41,8 +41,8 @@ public class FieldMappingTest {
 
     @Test
     public void shouldReadDefaultField() {
-        ClassRepresentation classRepresentation = classConverter.create(ForClass.class);
-        List<FieldMapping> fields = classRepresentation.getFields();
+        ClassMapping classMapping = classConverter.create(ForClass.class);
+        List<FieldMapping> fields = classMapping.getFields();
 
         FieldMapping field = fields.stream()
                 .filter(f -> "string".equals(f.getFieldName())).findFirst().get();
@@ -55,8 +55,8 @@ public class FieldMappingTest {
 
     @Test
     public void shouldReadCollectionField() {
-        ClassRepresentation classRepresentation = classConverter.create(ForClass.class);
-        List<FieldMapping> fields = classRepresentation.getFields();
+        ClassMapping classMapping = classConverter.create(ForClass.class);
+        List<FieldMapping> fields = classMapping.getFields();
         FieldMapping field = fields.stream()
                 .filter(f -> "list".equals(f.getFieldName())).findFirst().get();
 
@@ -67,8 +67,8 @@ public class FieldMappingTest {
 
     @Test
     public void shouldReadMapField() {
-        ClassRepresentation classRepresentation = classConverter.create(ForClass.class);
-        List<FieldMapping> fields = classRepresentation.getFields();
+        ClassMapping classMapping = classConverter.create(ForClass.class);
+        List<FieldMapping> fields = classMapping.getFields();
         FieldMapping field = fields.stream()
                 .filter(f -> "map".equals(f.getFieldName())).findFirst().get();
 
@@ -80,8 +80,8 @@ public class FieldMappingTest {
 
     @Test
     public void shouldReadEmbeddableField() {
-        ClassRepresentation classRepresentation = classConverter.create(ForClass.class);
-        List<FieldMapping> fields = classRepresentation.getFields();
+        ClassMapping classMapping = classConverter.create(ForClass.class);
+        List<FieldMapping> fields = classMapping.getFields();
         FieldMapping field = fields.stream()
                 .filter(f -> "barClass".equals(f.getFieldName())).findFirst().get();
 
@@ -99,12 +99,12 @@ public class FieldMappingTest {
         forClass.barClass = new BarClass();
         forClass.barClass.integer = 10;
 
-        ClassRepresentation classRepresentation = classConverter.create(ForClass.class);
+        ClassMapping classMapping = classConverter.create(ForClass.class);
 
-        FieldMapping string = classRepresentation.getFieldRepresentation("string").get();
-        FieldMapping list = classRepresentation.getFieldRepresentation("list").get();
-        FieldMapping map = classRepresentation.getFieldRepresentation("map").get();
-        FieldMapping barClass = classRepresentation.getFieldRepresentation("barClass").get();
+        FieldMapping string = classMapping.getFieldRepresentation("string").get();
+        FieldMapping list = classMapping.getFieldRepresentation("list").get();
+        FieldMapping map = classMapping.getFieldRepresentation("map").get();
+        FieldMapping barClass = classMapping.getFieldRepresentation("barClass").get();
 
         assertEquals("text", string.read(forClass));
         assertEquals(forClass.list, list.read(forClass));
@@ -119,12 +119,12 @@ public class FieldMappingTest {
         BarClass value = new BarClass();
         value.integer = 10;
 
-        ClassRepresentation classRepresentation = classConverter.create(ForClass.class);
+        ClassMapping classMapping = classConverter.create(ForClass.class);
 
-        FieldMapping string = classRepresentation.getFieldRepresentation("string").get();
-        FieldMapping list = classRepresentation.getFieldRepresentation("list").get();
-        FieldMapping map = classRepresentation.getFieldRepresentation("map").get();
-        FieldMapping barClass = classRepresentation.getFieldRepresentation("barClass").get();
+        FieldMapping string = classMapping.getFieldRepresentation("string").get();
+        FieldMapping list = classMapping.getFieldRepresentation("list").get();
+        FieldMapping map = classMapping.getFieldRepresentation("map").get();
+        FieldMapping barClass = classMapping.getFieldRepresentation("barClass").get();
 
         string.write(forClass, "text");
         list.write(forClass, Collections.singletonList("text"));

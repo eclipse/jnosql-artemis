@@ -18,7 +18,7 @@ package org.jnosql.artemis.document.query;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.document.DocumentTemplateAsync;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.artemis.reflection.ClassRepresentations;
 
 import java.lang.reflect.ParameterizedType;
@@ -35,7 +35,7 @@ class DocumentRepositoryAsyncProxy<T> extends AbstractDocumentRepositoryAsyncPro
 
     private final DocumentRepositoryAsync repository;
 
-    private final ClassRepresentation classRepresentation;
+    private final ClassMapping classMapping;
 
 
     private final Converters converters;
@@ -47,8 +47,8 @@ class DocumentRepositoryAsyncProxy<T> extends AbstractDocumentRepositoryAsyncPro
         this.template = template;
         Class<T> typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
-        this.classRepresentation = classRepresentations.get(typeClass);
-        this.repository = new DocumentRepositoryAsync(template, classRepresentation);
+        this.classMapping = classRepresentations.get(typeClass);
+        this.repository = new DocumentRepositoryAsync(template, classMapping);
         this.converters = converters;
     }
 
@@ -64,8 +64,8 @@ class DocumentRepositoryAsyncProxy<T> extends AbstractDocumentRepositoryAsyncPro
     }
 
     @Override
-    protected ClassRepresentation getClassRepresentation() {
-        return classRepresentation;
+    protected ClassMapping getClassMapping() {
+        return classMapping;
     }
 
     @Override
@@ -77,13 +77,13 @@ class DocumentRepositoryAsyncProxy<T> extends AbstractDocumentRepositoryAsyncPro
 
         private final DocumentTemplateAsync template;
 
-        private final ClassRepresentation classRepresentation;
+        private final ClassMapping classMapping;
 
         DocumentRepositoryAsync(DocumentTemplateAsync template,
-                                ClassRepresentation classRepresentation) {
+                                ClassMapping classMapping) {
 
             this.template = template;
-            this.classRepresentation = classRepresentation;
+            this.classMapping = classMapping;
         }
 
         @Override
@@ -92,8 +92,8 @@ class DocumentRepositoryAsyncProxy<T> extends AbstractDocumentRepositoryAsyncPro
         }
 
         @Override
-        protected ClassRepresentation getClassRepresentation() {
-            return classRepresentation;
+        protected ClassMapping getClassMapping() {
+            return classMapping;
         }
 
     }

@@ -18,7 +18,7 @@ import org.jnosql.aphrodite.antlr.method.DeleteMethodFactory;
 import org.jnosql.aphrodite.antlr.method.SelectMethodFactory;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.Param;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.artemis.util.ParamsBinder;
 import org.jnosql.diana.api.document.DocumentDeleteQuery;
 import org.jnosql.diana.api.document.DocumentObserverParser;
@@ -42,7 +42,7 @@ abstract class BaseDocumentRepository {
 
     protected abstract Converters getConverters();
 
-    protected abstract ClassRepresentation getClassRepresentation();
+    protected abstract ClassMapping getClassMapping();
 
     private DocumentObserverParser parser;
 
@@ -51,7 +51,7 @@ abstract class BaseDocumentRepository {
 
     protected DocumentQuery getQuery(Method method, Object[] args) {
         SelectMethodFactory selectMethodFactory = SelectMethodFactory.get();
-        SelectQuery selectQuery = selectMethodFactory.apply(method, getClassRepresentation().getName());
+        SelectQuery selectQuery = selectMethodFactory.apply(method, getClassMapping().getName());
         SelectQueryConverter converter = SelectQueryConverter.get();
         DocumentQueryParams queryParams = converter.apply(selectQuery, getParser());
         DocumentQuery query = queryParams.getQuery();
@@ -63,7 +63,7 @@ abstract class BaseDocumentRepository {
 
     protected DocumentDeleteQuery getDeleteQuery(Method method, Object[] args) {
         DeleteMethodFactory deleteMethodFactory = DeleteMethodFactory.get();
-        DeleteQuery deleteQuery = deleteMethodFactory.apply(method, getClassRepresentation().getName());
+        DeleteQuery deleteQuery = deleteMethodFactory.apply(method, getClassMapping().getName());
         DeleteQueryConverter converter = DeleteQueryConverter.get();
         DocumentDeleteQueryParams queryParams = converter.apply(deleteQuery, getParser());
         DocumentDeleteQuery query = queryParams.getQuery();
@@ -76,14 +76,14 @@ abstract class BaseDocumentRepository {
 
     protected DocumentObserverParser getParser() {
         if (parser == null) {
-            this.parser = new RepositoryDocumentObserverParser(getClassRepresentation());
+            this.parser = new RepositoryDocumentObserverParser(getClassMapping());
         }
         return parser;
     }
 
     protected ParamsBinder getParamsBinder() {
         if (Objects.isNull(paramsBinder)) {
-            this.paramsBinder = new ParamsBinder(getClassRepresentation(), getConverters());
+            this.paramsBinder = new ParamsBinder(getClassMapping(), getConverters());
         }
         return paramsBinder;
     }
