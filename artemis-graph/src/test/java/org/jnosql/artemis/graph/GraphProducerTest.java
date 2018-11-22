@@ -52,7 +52,7 @@ class GraphProducerTest {
         Assertions.assertTrue(GraphMockB.class.isInstance(graphB));
         GraphMockB graphmock = GraphMockB.class.cast(graphB);
         Assertions.assertEquals("valueB", graphmock.get("key"));
-        Assertions.assertEquals("valueBA", graphmock.get("key2"));
+        Assertions.assertEquals("value2B", graphmock.get("key2"));
 
     }
 }
