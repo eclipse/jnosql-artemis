@@ -4,8 +4,8 @@
     "name":"graphA",
     "provider":"org.jnosql.artemis.graph.producer.GraphFactoryA",
     "settings":{
-      "key":"value",
-      "key2":"value2"
+      "key":"valueA",
+      "key2":"value2B"
 
     }
   },
@@ -14,9 +14,8 @@
     "name":"graphB",
     "provider":"org.jnosql.artemis.graph.producer.GraphFactoryB",
     "settings":{
-      "key":"value",
-      "key2":"value2",
-      "key3":"value3"
+      "key":"valueB",
+      "key2":"value2B"
     }
   }
 ]
