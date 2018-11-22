@@ -25,8 +25,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 
 @ExtendWith(CDIExtension.class)
 class GraphProducerTest {
@@ -42,19 +40,19 @@ class GraphProducerTest {
 
     @Test
     public void shouldInjectGraphA() {
-        Assertions.assertTrue(graphA.getClass().isInstance(GraphMockA.class));
-        GraphMockA graphMockA = GraphMockA.class.cast(GraphMockA.class);
-        Assertions.assertEquals("key", graphMockA.get("valueA"));
-        Assertions.assertEquals("key2", graphMockA.get("valueB"));
+        Assertions.assertTrue(GraphMockA.class.isInstance(graphA));
+        GraphMockA graphmock = GraphMockA.class.cast(graphA);
+        Assertions.assertEquals("valueA", graphmock.get("key"));
+        Assertions.assertEquals("value2A", graphmock.get("key2"));
 
     }
 
     @Test
     public void shouldInjectGraphB() {
-        Assertions.assertTrue(graphB.getClass().isInstance(GraphMockB.class));
-        GraphMockB graphMockB = GraphMockB.class.cast(GraphMockB.class);
-        Assertions.assertEquals("key", graphMockB.get("valueA"));
-        Assertions.assertEquals("key2", graphMockB.get("valueB"));
+        Assertions.assertTrue(GraphMockB.class.isInstance(graphB));
+        GraphMockB graphmock = GraphMockB.class.cast(graphB);
+        Assertions.assertEquals("valueB", graphmock.get("key"));
+        Assertions.assertEquals("valueBA", graphmock.get("key2"));
 
     }
 }
