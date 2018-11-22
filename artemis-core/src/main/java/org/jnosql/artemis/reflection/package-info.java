@@ -14,6 +14,6 @@
  */
 /**
  * This package contains all reflections utils, the
- * representation of Field and class and also the extension to load all entity.
+ * mapping of Field and class and also the extension to load all entity.
  */
 package org.jnosql.artemis.reflection;

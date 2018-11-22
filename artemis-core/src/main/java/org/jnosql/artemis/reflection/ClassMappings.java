@@ -23,11 +23,11 @@ import java.util.Optional;
 public interface ClassMappings {
 
     /**
-     * Find a class in the cached way and return in a class representation,
+     * Find a class in the cached way and return in a class,
      * if it's not found the class will be both, loaded and cached, when this method is called
      *
      * @param classEntity the class of entity
-     * @return the class representation
+     * @return the {@link ClassMapping}
      * @throws NullPointerException whend class entity is null
      */
     ClassMapping get(Class classEntity);
