@@ -38,29 +38,29 @@ public class ConverterUtilTest {
     private Converters converters;
 
     @Inject
-    private ClassMappings representations;
+    private ClassMappings mappings;
 
     @Test
     public void shouldNotConvert() {
-        ClassMapping representation = representations.get(Person.class);
+        ClassMapping mapping = mappings.get(Person.class);
         Object value = 10_000L;
-        Object id = ConverterUtil.getValue(value, representation, "id", converters);
+        Object id = ConverterUtil.getValue(value, mapping, "id", converters);
         assertEquals(id, value);
     }
 
     @Test
     public void shouldConvert() {
-        ClassMapping representation = representations.get(Person.class);
+        ClassMapping mapping = mappings.get(Person.class);
         String value = "100";
-        Object id = ConverterUtil.getValue(value, representation, "id", converters);
+        Object id = ConverterUtil.getValue(value, mapping, "id", converters);
         assertEquals(100L, id);
     }
 
     @Test
     public void shouldUseAttributeConvert() {
-        ClassMapping representation = representations.get(Worker.class);
+        ClassMapping mapping = mappings.get(Worker.class);
         Object value = new Money("BRL", BigDecimal.TEN);
-        Object converted = ConverterUtil.getValue(value, representation, "salary", converters);
+        Object converted = ConverterUtil.getValue(value, mapping, "salary", converters);
         assertEquals("BRL 10", converted);
     }
 }

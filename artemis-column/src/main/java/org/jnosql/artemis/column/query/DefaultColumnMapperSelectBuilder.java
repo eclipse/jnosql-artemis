@@ -35,8 +35,8 @@ class DefaultColumnMapperSelectBuilder extends AbstractMapperQuery implements Co
     private final List<Sort> sorts = new ArrayList<>();
 
 
-    DefaultColumnMapperSelectBuilder(ClassMapping representation, Converters converters) {
-        super(representation, converters);
+    DefaultColumnMapperSelectBuilder(ClassMapping mapping, Converters converters) {
+        super(mapping, converters);
     }
 
 
@@ -144,13 +144,13 @@ class DefaultColumnMapperSelectBuilder extends AbstractMapperQuery implements Co
 
     @Override
     public ColumnMapperNameOrder asc() {
-        this.sorts.add(Sort.of(representation.getColumnField(name), Sort.SortType.ASC));
+        this.sorts.add(Sort.of(mapping.getColumnField(name), Sort.SortType.ASC));
         return this;
     }
 
     @Override
     public ColumnMapperNameOrder desc() {
-        this.sorts.add(Sort.of(representation.getColumnField(name), Sort.SortType.DESC));
+        this.sorts.add(Sort.of(mapping.getColumnField(name), Sort.SortType.DESC));
         return this;
     }
 

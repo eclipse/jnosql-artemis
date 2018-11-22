@@ -53,7 +53,7 @@ class DefaultClassMappings implements ClassMappings {
         findByClassName = new ConcurrentHashMap<>();
 
         classes.putAll(extension.getClasses());
-        representations.putAll(extension.getRepresentations());
+        representations.putAll(extension.getMappings());
         representations.values().forEach(r -> {
             Class<?> entityClass = r.getClassInstance();
             findBySimpleName.put(entityClass.getSimpleName(), r);

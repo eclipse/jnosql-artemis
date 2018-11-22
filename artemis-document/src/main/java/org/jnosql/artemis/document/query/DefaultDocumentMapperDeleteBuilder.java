@@ -28,8 +28,8 @@ class DefaultDocumentMapperDeleteBuilder extends AbstractMapperQuery implements 
         DocumentMapperDeleteWhere, DocumentMapperDeleteNameCondition, DocumentMapperDeleteNotCondition {
 
 
-    DefaultDocumentMapperDeleteBuilder(ClassMapping representation, Converters converters) {
-        super(representation, converters);
+    DefaultDocumentMapperDeleteBuilder(ClassMapping mapping, Converters converters) {
+        super(mapping, converters);
     }
 
     @Override

@@ -36,8 +36,8 @@ class DefaultDocumentMapperSelectBuilder extends AbstractMapperQuery implements 
     private final List<Sort> sorts = new ArrayList<>();
 
 
-    DefaultDocumentMapperSelectBuilder(ClassMapping representation, Converters converters) {
-        super(representation, converters);
+    DefaultDocumentMapperSelectBuilder(ClassMapping mapping, Converters converters) {
+        super(mapping, converters);
     }
 
 
@@ -145,13 +145,13 @@ class DefaultDocumentMapperSelectBuilder extends AbstractMapperQuery implements 
 
     @Override
     public DocumentMapperNameOrder asc() {
-        this.sorts.add(Sort.of(representation.getColumnField(name), Sort.SortType.ASC));
+        this.sorts.add(Sort.of(mapping.getColumnField(name), Sort.SortType.ASC));
         return this;
     }
 
     @Override
     public DocumentMapperNameOrder desc() {
-        this.sorts.add(Sort.of(representation.getColumnField(name), Sort.SortType.DESC));
+        this.sorts.add(Sort.of(mapping.getColumnField(name), Sort.SortType.DESC));
         return this;
     }
 

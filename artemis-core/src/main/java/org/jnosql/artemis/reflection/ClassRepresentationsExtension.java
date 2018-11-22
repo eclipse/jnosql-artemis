@@ -36,7 +36,7 @@ import static org.jnosql.artemis.reflection.ClassOperationFactory.INSTANCE;
 @ApplicationScoped
 public class ClassRepresentationsExtension implements Extension {
 
-    private final Map<String, ClassMapping> representations = new ConcurrentHashMap<>();
+    private final Map<String, ClassMapping> mappings = new ConcurrentHashMap<>();
 
     private final Map<Class<?>, ClassMapping> classes = new ConcurrentHashMap<>();
 
@@ -58,7 +58,7 @@ public class ClassRepresentationsExtension implements Extension {
         if (annotatedType.isAnnotationPresent(Entity.class)) {
             Class<T> javaClass = target.getAnnotatedType().getJavaClass();
             ClassMapping classMapping = classConverter.create(javaClass);
-            representations.put(classMapping.getName(), classMapping);
+            mappings.put(classMapping.getName(), classMapping);
             classes.put(javaClass, classMapping);
         } else if (isSubElement(annotatedType)) {
             Class<T> javaClass = target.getAnnotatedType().getJavaClass();
@@ -74,12 +74,12 @@ public class ClassRepresentationsExtension implements Extension {
 
 
     /**
-     * Returns the representations loaded in CDI startup
+     * Returns the mappings loaded in CDI startup
      *
      * @return the class loaded
      */
-    public Map<String, ClassMapping> getRepresentations() {
-        return representations;
+    public Map<String, ClassMapping> getMappings() {
+        return mappings;
     }
 
     /**
@@ -95,7 +95,7 @@ public class ClassRepresentationsExtension implements Extension {
     public String toString() {
         final StringBuilder sb = new StringBuilder("ClassRepresentationsExtension{");
         sb.append("classConverter=").append(classConverter);
-        sb.append(", representations-size=").append(representations.size());
+        sb.append(", mappings-size=").append(mappings.size());
         sb.append(", classes=").append(classes);
         sb.append('}');
         return sb.toString();

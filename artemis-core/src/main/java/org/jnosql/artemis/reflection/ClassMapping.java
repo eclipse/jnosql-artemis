@@ -69,7 +69,7 @@ public interface ClassMapping {
      * @return the field representation otherwise {@link Optional#EMPTY}
      * @throws NullPointerException when the javaField is null
      */
-    Optional<FieldMapping> getFieldRepresentation(String javaField);
+    Optional<FieldMapping> getFieldMapping(String javaField);
 
     /**
      * Returns a Fields grouped by the name

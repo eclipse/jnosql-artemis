@@ -90,7 +90,7 @@ class DefaultClassMapping implements ClassMapping {
     }
 
     @Override
-    public Optional<FieldMapping> getFieldRepresentation(String javaField) {
+    public Optional<FieldMapping> getFieldMapping(String javaField) {
         requireNonNull(javaField, "javaField is required");
         return ofNullable(javaFieldGroupedByColumn.get(javaField))
                 .map(NativeMapping::getFieldMapping);

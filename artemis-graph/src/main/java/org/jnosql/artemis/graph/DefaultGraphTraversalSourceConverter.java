@@ -78,10 +78,10 @@ class DefaultGraphTraversalSourceConverter extends AbstractGraphConverter {
     public <T> Vertex toVertex(T entity) {
         requireNonNull(entity, "entity is required");
 
-        ClassMapping representation = getClassMappings().get(entity.getClass());
-        String label = representation.getName();
+        ClassMapping mapping = getClassMappings().get(entity.getClass());
+        String label = mapping.getName();
 
-        List<FieldGraph> fields = representation.getFields().stream()
+        List<FieldGraph> fields = mapping.getFields().stream()
                 .map(f -> to(f, entity))
                 .filter(FieldGraph::isNotEmpty).collect(toList());
 

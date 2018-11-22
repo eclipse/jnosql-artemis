@@ -38,9 +38,9 @@ public abstract class AbstractKeyValueEntityConverter implements KeyValueEntityC
     public KeyValueEntity<?> toKeyValue(Object entityInstance) {
         requireNonNull(entityInstance, "Object is required");
         Class<?> clazz = entityInstance.getClass();
-        ClassMapping representation = getClassMappings().get(clazz);
+        ClassMapping mapping = getClassMappings().get(clazz);
 
-        FieldMapping key = getId(clazz, representation);
+        FieldMapping key = getId(clazz, mapping);
 
         Object value = key.read(entityInstance);
         requireNonNull(value, String.format("The key field %s is required", key.getName()));
@@ -74,8 +74,8 @@ public abstract class AbstractKeyValueEntityConverter implements KeyValueEntityC
         return t;
     }
 
-    private FieldMapping getId(Class<?> clazz, ClassMapping representation) {
-        List<FieldMapping> fields = representation.getFields();
+    private FieldMapping getId(Class<?> clazz, ClassMapping mapping) {
+        List<FieldMapping> fields = mapping.getFields();
         return fields.stream().filter(FieldMapping::isId)
                 .findFirst().orElseThrow(() -> IdNotFoundException.newInstance(clazz));
     }

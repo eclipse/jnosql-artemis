@@ -55,10 +55,10 @@ abstract class AbstractGraphConverter implements GraphConverter {
     public <T> Vertex toVertex(T entity) {
         requireNonNull(entity, "entity is required");
 
-        ClassMapping representation = getClassMappings().get(entity.getClass());
-        String label = representation.getName();
+        ClassMapping mapping = getClassMappings().get(entity.getClass());
+        String label = mapping.getName();
 
-        List<FieldGraph> fields = representation.getFields().stream()
+        List<FieldGraph> fields = mapping.getFields().stream()
                 .map(f -> to(f, entity))
                 .filter(FieldGraph::isNotEmpty).collect(toList());
 
@@ -84,8 +84,8 @@ abstract class AbstractGraphConverter implements GraphConverter {
     @Override
     public <T> List<Property<?>> getProperties(T entity) {
         Objects.requireNonNull(entity, "entity is required");
-        ClassMapping representation = getClassMappings().get(entity.getClass());
-        List<FieldGraph> fields = representation.getFields().stream()
+        ClassMapping mapping = getClassMappings().get(entity.getClass());
+        List<FieldGraph> fields = mapping.getFields().stream()
                 .map(f -> to(f, entity))
                 .filter(FieldGraph::isNotEmpty).collect(toList());
 
@@ -97,10 +97,10 @@ abstract class AbstractGraphConverter implements GraphConverter {
     @Override
     public <T> T toEntity(Vertex vertex) {
         requireNonNull(vertex, "vertex is required");
-        ClassMapping representation = getClassMappings().findByName(vertex.label());
+        ClassMapping mapping = getClassMappings().findByName(vertex.label());
 
         List<Property> properties = vertex.keys().stream().map(k -> DefaultProperty.of(k, vertex.value(k))).collect(toList());
-        T entity = toEntity((Class<T>) representation.getClassInstance(), properties);
+        T entity = toEntity((Class<T>) mapping.getClassInstance(), properties);
         feedId(vertex, entity);
         return entity;
     }
@@ -123,8 +123,8 @@ abstract class AbstractGraphConverter implements GraphConverter {
 
         List<Property> properties = vertex.keys().stream().map(k -> DefaultProperty.of(k, vertex.value(k))).collect(toList());
 
-        ClassMapping representation = getClassMappings().get(entityInstance.getClass());
-        convertEntity(properties, representation, entityInstance);
+        ClassMapping mapping = getClassMappings().get(entityInstance.getClass());
+        convertEntity(properties, mapping, entityInstance);
         feedId(vertex, entityInstance);
         return entityInstance;
 
@@ -150,8 +150,8 @@ abstract class AbstractGraphConverter implements GraphConverter {
     }
 
     private <T> void feedId(Vertex vertex, T entity) {
-        ClassMapping representation = getClassMappings().get(entity.getClass());
-        Optional<FieldMapping> id = representation.getId();
+        ClassMapping mapping = getClassMappings().get(entity.getClass());
+        Optional<FieldMapping> id = mapping.getId();
 
 
         Object vertexId = vertex.id();
@@ -171,14 +171,14 @@ abstract class AbstractGraphConverter implements GraphConverter {
     }
 
     private <T> T toEntity(Class<T> entityClass, List<Property> properties) {
-        ClassMapping representation = getClassMappings().get(entityClass);
-        T instance = representation.newInstance();
-        return convertEntity(properties, representation, instance);
+        ClassMapping mapping = getClassMappings().get(entityClass);
+        T instance = mapping.newInstance();
+        return convertEntity(properties, mapping, instance);
     }
 
-    private <T> T convertEntity(List<Property> elements, ClassMapping representation, T instance) {
+    private <T> T convertEntity(List<Property> elements, ClassMapping mapping, T instance) {
 
-        Map<String, FieldMapping> fieldsGroupByName = representation.getFieldsGroupByName();
+        Map<String, FieldMapping> fieldsGroupByName = mapping.getFieldsGroupByName();
         List<String> names = elements.stream()
                 .map(Property::key)
                 .sorted()

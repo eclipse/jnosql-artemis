@@ -31,19 +31,19 @@ import java.util.Optional;
 public class ParamsBinder {
 
 
-    private final ClassMapping representation;
+    private final ClassMapping mapping;
 
     private final Converters converters;
 
 
     /**
      * Creates a ParamsBinder instance
-     * @param representation the representation of the used class
+     * @param mapping the mapping of the used class
      * @param converters the converts
      * @throws NullPointerException when there is null parameter
      */
-    public ParamsBinder(ClassMapping representation, Converters converters) {
-        this.representation = Objects.requireNonNull(representation, "representation is required");
+    public ParamsBinder(ClassMapping mapping, Converters converters) {
+        this.mapping = Objects.requireNonNull(mapping, "mapping is required");
         this.converters = Objects.requireNonNull(converters, "converters is required");
     }
 
@@ -68,7 +68,7 @@ public class ParamsBinder {
         for (int index = 0; index < names.size(); index++) {
             String name = names.get(index);
             String fieldName = name.substring(0, name.lastIndexOf("_"));
-            Optional<FieldMapping> field = this.representation.getFields().stream()
+            Optional<FieldMapping> field = this.mapping.getFields().stream()
                     .filter(f -> f.getName().equals(fieldName)).findFirst();
 
             Object value;

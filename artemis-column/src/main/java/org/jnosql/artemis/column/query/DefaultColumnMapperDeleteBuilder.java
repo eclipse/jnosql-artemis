@@ -28,8 +28,8 @@ class DefaultColumnMapperDeleteBuilder extends AbstractMapperQuery implements Co
         ColumnMapperDeleteWhere, ColumnMapperDeleteNameCondition, ColumnMapperDeleteNotCondition {
 
 
-    DefaultColumnMapperDeleteBuilder(ClassMapping representation, Converters converters) {
-        super(representation, converters);
+    DefaultColumnMapperDeleteBuilder(ClassMapping mapping, Converters converters) {
+        super(mapping, converters);
     }
 
     @Override

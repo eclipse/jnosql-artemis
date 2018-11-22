@@ -46,7 +46,7 @@ class ParamsBinderTest {
 
 
     @Inject
-    private ClassMappings representations;
+    private ClassMappings mappings;
 
     @Inject
     private Converters converters;
@@ -58,7 +58,7 @@ class ParamsBinderTest {
 
         Method method = Stream.of(PersonRepository.class.getMethods())
                 .filter(m -> m.getName().equals("findByAge")).findFirst().get();
-        ClassMapping classMapping = representations.get(Person.class);
+        ClassMapping classMapping = mappings.get(Person.class);
         RepositoryColumnObserverParser parser = new RepositoryColumnObserverParser(classMapping);
         paramsBinder = new ParamsBinder(classMapping, converters);
 
@@ -81,7 +81,7 @@ class ParamsBinderTest {
 
         Method method = Stream.of(PersonRepository.class.getMethods())
                 .filter(m -> m.getName().equals("findByAgeAndName")).findFirst().get();
-        ClassMapping classMapping = representations.get(Person.class);
+        ClassMapping classMapping = mappings.get(Person.class);
         RepositoryColumnObserverParser parser = new RepositoryColumnObserverParser(classMapping);
         paramsBinder = new ParamsBinder(classMapping, converters);
 

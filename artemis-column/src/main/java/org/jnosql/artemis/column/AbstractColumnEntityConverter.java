@@ -51,9 +51,9 @@ public abstract class AbstractColumnEntityConverter implements ColumnEntityConve
     @Override
     public ColumnEntity toColumn(Object entityInstance) {
         requireNonNull(entityInstance, "Object is required");
-        ClassMapping representation = getClassMappings().get(entityInstance.getClass());
-        ColumnEntity entity = ColumnEntity.of(representation.getName());
-        representation.getFields().stream()
+        ClassMapping mapping = getClassMappings().get(entityInstance.getClass());
+        ColumnEntity entity = ColumnEntity.of(mapping.getName());
+        mapping.getFields().stream()
                 .map(f -> to(f, entityInstance))
                 .filter(FieldValue::isNotEmpty)
                 .map(f -> f.toColumn(this, getConverters()))
@@ -73,16 +73,16 @@ public abstract class AbstractColumnEntityConverter implements ColumnEntityConve
     public <T> T toEntity(T entityInstance, ColumnEntity entity) {
         requireNonNull(entity, "entity is required");
         requireNonNull(entityInstance, "entityInstance is required");
-        ClassMapping representation = getClassMappings().get(entityInstance.getClass());
-        return convertEntity(entity.getColumns(), representation, entityInstance);
+        ClassMapping mapping = getClassMappings().get(entityInstance.getClass());
+        return convertEntity(entity.getColumns(), mapping, entityInstance);
     }
 
     @Override
     public <T> T toEntity(ColumnEntity entity) {
         requireNonNull(entity, "entity is required");
-        ClassMapping representation = getClassMappings().findByName(entity.getName());
-        T instance = representation.newInstance();
-        return convertEntity(entity.getColumns(), representation, instance);
+        ClassMapping mapping = getClassMappings().findByName(entity.getName());
+        T instance = mapping.newInstance();
+        return convertEntity(entity.getColumns(), mapping, instance);
     }
 
     protected ColumnFieldValue to(FieldMapping field, Object entityInstance) {
@@ -100,13 +100,13 @@ public abstract class AbstractColumnEntityConverter implements ColumnEntityConve
     }
 
     protected <T> T toEntity(Class<T> entityClass, List<Column> columns) {
-        ClassMapping representation = getClassMappings().get(entityClass);
-        T instance = representation.newInstance();
-        return convertEntity(columns, representation, instance);
+        ClassMapping mapping = getClassMappings().get(entityClass);
+        T instance = mapping.newInstance();
+        return convertEntity(columns, mapping, instance);
     }
 
-    private <T> T convertEntity(List<Column> columns, ClassMapping representation, T instance) {
-        final Map<String, FieldMapping> fieldsGroupByName = representation.getFieldsGroupByName();
+    private <T> T convertEntity(List<Column> columns, ClassMapping mapping, T instance) {
+        final Map<String, FieldMapping> fieldsGroupByName = mapping.getFieldsGroupByName();
         final List<String> names = columns.stream().map(Column::getName).sorted().collect(Collectors.toList());
         final Predicate<String> existField = k -> Collections.binarySearch(names, k) >= 0;
         final Predicate<String> isElementType = k -> {

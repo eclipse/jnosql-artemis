@@ -101,10 +101,10 @@ public class FieldMappingTest {
 
         ClassMapping classMapping = classConverter.create(ForClass.class);
 
-        FieldMapping string = classMapping.getFieldRepresentation("string").get();
-        FieldMapping list = classMapping.getFieldRepresentation("list").get();
-        FieldMapping map = classMapping.getFieldRepresentation("map").get();
-        FieldMapping barClass = classMapping.getFieldRepresentation("barClass").get();
+        FieldMapping string = classMapping.getFieldMapping("string").get();
+        FieldMapping list = classMapping.getFieldMapping("list").get();
+        FieldMapping map = classMapping.getFieldMapping("map").get();
+        FieldMapping barClass = classMapping.getFieldMapping("barClass").get();
 
         assertEquals("text", string.read(forClass));
         assertEquals(forClass.list, list.read(forClass));
@@ -121,10 +121,10 @@ public class FieldMappingTest {
 
         ClassMapping classMapping = classConverter.create(ForClass.class);
 
-        FieldMapping string = classMapping.getFieldRepresentation("string").get();
-        FieldMapping list = classMapping.getFieldRepresentation("list").get();
-        FieldMapping map = classMapping.getFieldRepresentation("map").get();
-        FieldMapping barClass = classMapping.getFieldRepresentation("barClass").get();
+        FieldMapping string = classMapping.getFieldMapping("string").get();
+        FieldMapping list = classMapping.getFieldMapping("list").get();
+        FieldMapping map = classMapping.getFieldMapping("map").get();
+        FieldMapping barClass = classMapping.getFieldMapping("barClass").get();
 
         string.write(forClass, "text");
         list.write(forClass, Collections.singletonList("text"));

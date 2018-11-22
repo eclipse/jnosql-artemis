@@ -24,6 +24,6 @@ interface DocumentTokenProcessor {
                               int index,
                               Object[] args,
                               String methodName,
-                              ClassMapping representation,
+                              ClassMapping mapping,
                               Converters converters);
 }

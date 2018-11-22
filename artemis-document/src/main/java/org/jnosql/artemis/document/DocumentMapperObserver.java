@@ -23,31 +23,31 @@ import java.util.Optional;
 final class DocumentMapperObserver  implements DocumentObserverParser {
 
 
-    private final ClassMappings representations;
+    private final ClassMappings mappings;
 
-    DocumentMapperObserver(ClassMappings representations) {
-        this.representations = representations;
+    DocumentMapperObserver(ClassMappings mappings) {
+        this.mappings = mappings;
     }
 
 
     @Override
     public String fireEntity(String entity) {
-        Optional<ClassMapping> classRepresentation = getClassRepresentation(entity);
-        return classRepresentation.map(ClassMapping::getName).orElse(entity);
+        Optional<ClassMapping> mapping = getClassMapping(entity);
+        return mapping.map(ClassMapping::getName).orElse(entity);
     }
 
     @Override
     public String fireField(String entity, String field) {
-        Optional<ClassMapping> classRepresentation = getClassRepresentation(entity);
-        return classRepresentation.map(c -> c.getColumnField(field)).orElse(field);
+        Optional<ClassMapping> mapping = getClassMapping(entity);
+        return mapping.map(c -> c.getColumnField(field)).orElse(field);
     }
 
-    private Optional<ClassMapping> getClassRepresentation(String entity) {
-        Optional<ClassMapping> bySimpleName = representations.findBySimpleName(entity);
+    private Optional<ClassMapping> getClassMapping(String entity) {
+        Optional<ClassMapping> bySimpleName = mappings.findBySimpleName(entity);
         if (bySimpleName.isPresent()) {
             return bySimpleName;
         }
-        return representations.findByClassName(entity);
+        return mappings.findByClassName(entity);
     }
 
 }

@@ -28,7 +28,7 @@ import static java.util.Objects.requireNonNull;
 class DefaultColumnQueryMapperBuilder implements ColumnQueryMapperBuilder {
 
     @Inject
-    private Instance<ClassMappings> classRepresentations;
+    private Instance<ClassMappings> mappings;
 
     @Inject
     private Instance<Converters> converters;
@@ -36,14 +36,14 @@ class DefaultColumnQueryMapperBuilder implements ColumnQueryMapperBuilder {
     @Override
     public <T> ColumnMapperFrom selectFrom(Class<T> entityClass) {
         requireNonNull(entityClass, "entity is required");
-        ClassMapping representation = classRepresentations.get().get(entityClass);
-        return new DefaultColumnMapperSelectBuilder(representation, converters.get());
+        ClassMapping mapping = mappings.get().get(entityClass);
+        return new DefaultColumnMapperSelectBuilder(mapping, converters.get());
     }
 
     @Override
     public <T> ColumnMapperDeleteFrom deleteFrom(Class<T> entityClass) {
         requireNonNull(entityClass, "entity is required");
-        ClassMapping representation = classRepresentations.get().get(entityClass);
-        return new DefaultColumnMapperDeleteBuilder(representation, converters.get());
+        ClassMapping mapping = mappings.get().get(entityClass);
+        return new DefaultColumnMapperDeleteBuilder(mapping, converters.get());
     }
 }

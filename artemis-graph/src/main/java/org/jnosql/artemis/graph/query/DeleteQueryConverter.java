@@ -31,16 +31,16 @@ final class DeleteQueryConverter extends AbstractQueryConvert implements Functio
     public List<Vertex> apply(GraphQueryMethod graphQuery) {
         DeleteMethodFactory factory = DeleteMethodFactory.get();
         DeleteQuery deleteQuery = factory.apply(graphQuery.getMethod(), graphQuery.getEntityName());
-        ClassMapping representation = graphQuery.getRepresentation();
+        ClassMapping mapping = graphQuery.getMapping();
         GraphTraversal<Vertex, Vertex> traversal = graphQuery.getTraversal();
         if (deleteQuery.getWhere().isPresent()) {
             Where where = deleteQuery.getWhere().get();
 
             Condition condition = where.getCondition();
-            traversal.filter(getPredicate(graphQuery, condition, representation));
+            traversal.filter(getPredicate(graphQuery, condition, mapping));
         }
 
-        traversal.hasLabel(representation.getName());
+        traversal.hasLabel(mapping.getName());
         return traversal.toList();
     }
 }

@@ -30,17 +30,17 @@ import static java.util.Collections.singletonList;
 
 final class GraphQueryMethod {
 
-    private final ClassMapping representation;
+    private final ClassMapping mapping;
     private final GraphTraversal<Vertex, Vertex> traversal;
     private final Object[] args;
     private final Converters converters;
     private final Method method;
     private int counter = 0;
 
-    GraphQueryMethod(ClassMapping representation,
+    GraphQueryMethod(ClassMapping mapping,
                      GraphTraversal<Vertex, Vertex> traversal,
                      Converters converters, Method method, Object[] args) {
-        this.representation = representation;
+        this.mapping = mapping;
         this.traversal = traversal;
         this.args = args;
         this.converters = converters;
@@ -52,11 +52,11 @@ final class GraphQueryMethod {
     }
 
     public String getEntityName() {
-        return representation.getName();
+        return mapping.getName();
     }
 
-    public ClassMapping getRepresentation() {
-        return representation;
+    public ClassMapping getMapping() {
+        return mapping;
     }
 
     public GraphTraversal<Vertex, Vertex> getTraversal() {
@@ -65,17 +65,17 @@ final class GraphQueryMethod {
 
     public Object getValue(String name) {
         Object value = getValue();
-        return ConverterUtil.getValue(value, representation, name, converters);
+        return ConverterUtil.getValue(value, mapping, name, converters);
     }
 
     public  Collection<?> getInValue(String name) {
         Object value = getValue();
         if(value instanceof Iterable<?>) {
             return (Collection<?>) StreamSupport.stream(Iterable.class.cast(value).spliterator(), false)
-                    .map(v -> ConverterUtil.getValue(v, representation, name, converters))
+                    .map(v -> ConverterUtil.getValue(v, mapping, name, converters))
                     .collect(Collectors.toList());
         }
-        return singletonList(ConverterUtil.getValue(value, representation, name, converters));
+        return singletonList(ConverterUtil.getValue(value, mapping, name, converters));
     }
 
     private Object getValue() {

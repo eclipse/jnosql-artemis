@@ -47,7 +47,7 @@ class DeleteQueryConverterTest {
     private DeleteQueryConverter converter;
 
     @Inject
-    private ClassMappings representations;
+    private ClassMappings mappings;
 
     @Inject
     private Converters converters;
@@ -82,8 +82,8 @@ class DeleteQueryConverterTest {
         graph.addVertex("Person").property("name", "Otavio");
         graph.addVertex("Person").property("name", "Ada");
         graph.addVertex("Person").property("name", "Poliana");
-        ClassMapping representation = representations.get(Person.class);
-        GraphQueryMethod queryMethod = new GraphQueryMethod(representation, graph.traversal().V(),
+        ClassMapping mapping = mappings.get(Person.class);
+        GraphQueryMethod queryMethod = new GraphQueryMethod(mapping, graph.traversal().V(),
                 converters, method, new Object[]{"Ada"});
 
         List<Vertex> vertices = converter.apply(queryMethod);
@@ -101,8 +101,8 @@ class DeleteQueryConverterTest {
         graph.addVertex(T.label, "Person", "name", "Otavio", "age", 30);
         graph.addVertex(T.label, "Person", "name", "Ada", "age", 40);
         graph.addVertex(T.label, "Person", "name", "Poliana", "age", 25);
-        ClassMapping representation = representations.get(Person.class);
-        GraphQueryMethod queryMethod = new GraphQueryMethod(representation, graph.traversal().V(),
+        ClassMapping mapping = mappings.get(Person.class);
+        GraphQueryMethod queryMethod = new GraphQueryMethod(mapping, graph.traversal().V(),
                 converters, method, new Object[]{30});
 
         List<Vertex> vertices = converter.apply(queryMethod);
@@ -119,8 +119,8 @@ class DeleteQueryConverterTest {
         graph.addVertex(T.label, "Person", "name", "Otavio", "age", 30);
         graph.addVertex(T.label, "Person", "name", "Ada", "age", 40);
         graph.addVertex(T.label, "Person", "name", "Poliana", "age", 25);
-        ClassMapping representation = representations.get(Person.class);
-        GraphQueryMethod queryMethod = new GraphQueryMethod(representation, graph.traversal().V(),
+        ClassMapping mapping = mappings.get(Person.class);
+        GraphQueryMethod queryMethod = new GraphQueryMethod(mapping, graph.traversal().V(),
                 converters, method, new Object[]{30});
 
         List<Vertex> vertices = converter.apply(queryMethod);
@@ -139,8 +139,8 @@ class DeleteQueryConverterTest {
         graph.addVertex(T.label, "Person", "name", "Otavio", "age", 30);
         graph.addVertex(T.label, "Person", "name", "Ada", "age", 40);
         graph.addVertex(T.label, "Person", "name", "Poliana", "age", 25);
-        ClassMapping representation = representations.get(Person.class);
-        GraphQueryMethod queryMethod = new GraphQueryMethod(representation, graph.traversal().V(),
+        ClassMapping mapping = mappings.get(Person.class);
+        GraphQueryMethod queryMethod = new GraphQueryMethod(mapping, graph.traversal().V(),
                 converters, method, new Object[]{30});
 
         List<Vertex> vertices = converter.apply(queryMethod);
@@ -157,8 +157,8 @@ class DeleteQueryConverterTest {
         graph.addVertex(T.label, "Person", "name", "Otavio", "age", 30);
         graph.addVertex(T.label, "Person", "name", "Ada", "age", 40);
         graph.addVertex(T.label, "Person", "name", "Poliana", "age", 25);
-        ClassMapping representation = representations.get(Person.class);
-        GraphQueryMethod queryMethod = new GraphQueryMethod(representation, graph.traversal().V(),
+        ClassMapping mapping = mappings.get(Person.class);
+        GraphQueryMethod queryMethod = new GraphQueryMethod(mapping, graph.traversal().V(),
                 converters, method, new Object[]{30});
 
         List<Vertex> vertices = converter.apply(queryMethod);
@@ -176,8 +176,8 @@ class DeleteQueryConverterTest {
         graph.addVertex(T.label, "Person", "name", "Otavio", "age", 30);
         graph.addVertex(T.label, "Person", "name", "Ada", "age", 40);
         graph.addVertex(T.label, "Person", "name", "Poliana", "age", 25);
-        ClassMapping representation = representations.get(Person.class);
-        GraphQueryMethod queryMethod = new GraphQueryMethod(representation, graph.traversal().V(),
+        ClassMapping mapping = mappings.get(Person.class);
+        GraphQueryMethod queryMethod = new GraphQueryMethod(mapping, graph.traversal().V(),
                 converters, method, new Object[]{29, 41});
 
         List<Vertex> vertices = converter.apply(queryMethod);
@@ -196,8 +196,8 @@ class DeleteQueryConverterTest {
         graph.addVertex(T.label, "Person", "name", "Otavio", "age", 30);
         graph.addVertex(T.label, "Person", "name", "Ada", "age", 40);
         graph.addVertex(T.label, "Person", "name", "Poliana", "age", 25);
-        ClassMapping representation = representations.get(Person.class);
-        GraphQueryMethod queryMethod = new GraphQueryMethod(representation, graph.traversal().V(),
+        ClassMapping mapping = mappings.get(Person.class);
+        GraphQueryMethod queryMethod = new GraphQueryMethod(mapping, graph.traversal().V(),
                 converters, method, new Object[]{Arrays.asList(25,40,30)});
 
         List<Vertex> vertices = converter.apply(queryMethod);
@@ -217,8 +217,8 @@ class DeleteQueryConverterTest {
         graph.addVertex(T.label, "Person", "name", "Otavio", "age", 30);
         graph.addVertex(T.label, "Person", "name", "Ada", "age", 40);
         graph.addVertex(T.label, "Person", "name", "Poliana", "age", 25);
-        ClassMapping representation = representations.get(Person.class);
-        GraphQueryMethod queryMethod = new GraphQueryMethod(representation, graph.traversal().V(),
+        ClassMapping mapping = mappings.get(Person.class);
+        GraphQueryMethod queryMethod = new GraphQueryMethod(mapping, graph.traversal().V(),
                 converters, method, new Object[]{Arrays.asList("Otavio", "Ada", "Poliana")});
 
         List<Vertex> vertices = converter.apply(queryMethod);
@@ -237,8 +237,8 @@ class DeleteQueryConverterTest {
         graph.addVertex("Person").property("name", "Otavio");
         graph.addVertex("Person").property("name", "Ada");
         graph.addVertex("Person").property("name", "Poliana");
-        ClassMapping representation = representations.get(Person.class);
-        GraphQueryMethod queryMethod = new GraphQueryMethod(representation, graph.traversal().V(),
+        ClassMapping mapping = mappings.get(Person.class);
+        GraphQueryMethod queryMethod = new GraphQueryMethod(mapping, graph.traversal().V(),
                 converters, method, new Object[]{"Ada"});
 
         List<Vertex> vertices = converter.apply(queryMethod);

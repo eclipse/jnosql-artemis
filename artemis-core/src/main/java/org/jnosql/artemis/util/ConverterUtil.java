@@ -38,13 +38,13 @@ public class ConverterUtil {
      * Converts the value to database format
      *
      * @param value          the value
-     * @param representation the class representation
+     * @param mapping the class mapped
      * @param name           the java fieldName
      * @param converters     the collection of converter
      * @return the value converted
      */
-    public static Object getValue(Object value, ClassMapping representation, String name, Converters converters) {
-        Optional<FieldMapping> fieldOptional = representation.getFieldRepresentation(name);
+    public static Object getValue(Object value, ClassMapping mapping, String name, Converters converters) {
+        Optional<FieldMapping> fieldOptional = mapping.getFieldMapping(name);
         if (fieldOptional.isPresent()) {
             FieldMapping field = fieldOptional.get();
             return getValue(value, converters, field);

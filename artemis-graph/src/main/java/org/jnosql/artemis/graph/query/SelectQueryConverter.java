@@ -38,14 +38,14 @@ final class SelectQueryConverter extends AbstractQueryConvert implements Functio
 
         SelectMethodFactory selectMethodFactory = SelectMethodFactory.get();
         SelectQuery query = selectMethodFactory.apply(graphQuery.getMethod(), graphQuery.getEntityName());
-        ClassMapping representation = graphQuery.getRepresentation();
+        ClassMapping mapping = graphQuery.getMapping();
 
         GraphTraversal<Vertex, Vertex> traversal = graphQuery.getTraversal();
         if (query.getWhere().isPresent()) {
             Where where = query.getWhere().get();
 
             Condition condition = where.getCondition();
-            traversal.filter(getPredicate(graphQuery, condition, representation));
+            traversal.filter(getPredicate(graphQuery, condition, mapping));
         }
 
         if (query.getSkip() > 0) {
@@ -55,17 +55,17 @@ final class SelectQueryConverter extends AbstractQueryConvert implements Functio
         if (query.getLimit() > 0) {
             return traversal.next((int) query.getLimit());
         }
-        query.getOrderBy().forEach(getSort(traversal, representation));
-        traversal.hasLabel(representation.getName());
+        query.getOrderBy().forEach(getSort(traversal, mapping));
+        traversal.hasLabel(mapping.getName());
         return traversal.toList();
     }
 
-    private Consumer<Sort> getSort(GraphTraversal<Vertex, Vertex> traversal, ClassMapping representation) {
+    private Consumer<Sort> getSort(GraphTraversal<Vertex, Vertex> traversal, ClassMapping mapping) {
         return o -> {
             if (Sort.SortType.ASC.equals(o.getType())) {
-                traversal.order().by(representation.getColumnField(o.getName()), incr);
+                traversal.order().by(mapping.getColumnField(o.getName()), incr);
             } else {
-                traversal.order().by(representation.getColumnField(o.getName()), decr);
+                traversal.order().by(mapping.getColumnField(o.getName()), decr);
             }
         };
     }
