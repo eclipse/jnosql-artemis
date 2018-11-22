@@ -51,7 +51,7 @@ class GraphProducer {
 
         ConfigurationSettingsUnit unit = configurationReader.get().read(annotation, GraphFactory.class);
         Class<GraphFactory> configurationClass = unit.<GraphFactory>getProvider()
-                .orElseThrow(() -> new IllegalStateException("The ColumnConfiguration provider is required in the configuration"));
+                .orElseThrow(() -> new IllegalStateException("The GraphFactory provider is required in the configuration"));
 
         GraphFactory factory = reflections.newInstance(configurationClass);
 
