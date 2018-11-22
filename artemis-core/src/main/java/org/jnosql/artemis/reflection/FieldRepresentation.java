@@ -15,18 +15,17 @@
 package org.jnosql.artemis.reflection;
 
 
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.util.Optional;
-
 import org.jnosql.artemis.AttributeConverter;
 import org.jnosql.diana.api.Value;
+
+import java.lang.reflect.Field;
+import java.util.Optional;
 
 /**
  * This class represents the information from {@link Field}.
  * The strategy is do cache in all fields in a class to either read and writer faster from Field
  */
-public interface FieldRepresentation extends Serializable {
+public interface FieldRepresentation  {
 
     /**
      * Return the type of the field
