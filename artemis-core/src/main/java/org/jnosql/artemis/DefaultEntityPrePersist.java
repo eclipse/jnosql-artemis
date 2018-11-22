@@ -18,7 +18,7 @@ package org.jnosql.artemis;
 import java.util.Objects;
 
 /**
- * The default representation to {@link EntityPrePersist}
+ * The default implementation to {@link EntityPrePersist}
  */
 class DefaultEntityPrePersist implements EntityPrePersist {
 

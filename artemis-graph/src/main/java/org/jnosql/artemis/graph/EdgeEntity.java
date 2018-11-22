@@ -24,7 +24,7 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 /**
- * The representation of {@link org.apache.tinkerpop.gremlin.structure.Edge} that links two Entity.
+ * It is a wrapper of {@link org.apache.tinkerpop.gremlin.structure.Edge} that links two Entity.
  * Along with its Property objects, an Edge has both a Direction and a label.
  * Any Change at the Edge is automatically continued in the database. However, any, change in the Entity will be ignored.
  * {@link GraphTemplate#update(Object)}
@@ -131,7 +131,7 @@ public interface EdgeEntity {
      * Creates a new {@link EdgeEntity} instance
      *
      * @param outgoing the outgoing
-     * @param edge     the Tinkerpop edge representation
+     * @param edge     the Tinkerpop edge
      * @param incoming the incoming object
      * @param <OUT>    the outgoing type
      * @param <IN>     the incoming type

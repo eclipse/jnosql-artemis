@@ -23,7 +23,7 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 
-class DefaultClassRepresentation implements ClassRepresentation {
+class DefaultClassMapping implements ClassMapping {
 
 
     private final String name;
@@ -32,20 +32,20 @@ class DefaultClassRepresentation implements ClassRepresentation {
 
     private final Class<?> classInstance;
 
-    private final List<FieldRepresentation> fields;
+    private final List<FieldMapping> fields;
 
     private final InstanceSupplier instanceSupplier;
 
     private final Map<String, NativeMapping> javaFieldGroupedByColumn;
 
-    private final Map<String, FieldRepresentation> fieldsGroupedByName;
+    private final Map<String, FieldMapping> fieldsGroupedByName;
 
-    private final FieldRepresentation id;
+    private final FieldMapping id;
 
-    DefaultClassRepresentation(String name, List<String> fieldsName, Class<?> classInstance,
-                               List<FieldRepresentation> fields,
-                               Map<String, NativeMapping> javaFieldGroupedByColumn,
-                               Map<String, FieldRepresentation> fieldsGroupedByName, InstanceSupplier instanceSupplier) {
+    DefaultClassMapping(String name, List<String> fieldsName, Class<?> classInstance,
+                        List<FieldMapping> fields,
+                        Map<String, NativeMapping> javaFieldGroupedByColumn,
+                        Map<String, FieldMapping> fieldsGroupedByName, InstanceSupplier instanceSupplier) {
         this.name = name;
         this.fieldsName = fieldsName;
         this.classInstance = classInstance;
@@ -53,7 +53,7 @@ class DefaultClassRepresentation implements ClassRepresentation {
         this.fieldsGroupedByName = fieldsGroupedByName;
         this.javaFieldGroupedByColumn = javaFieldGroupedByColumn;
         this.instanceSupplier = instanceSupplier;
-        this.id = fields.stream().filter(FieldRepresentation::isId).findFirst().orElse(null);
+        this.id = fields.stream().filter(FieldMapping::isId).findFirst().orElse(null);
     }
 
     @Override
@@ -72,7 +72,7 @@ class DefaultClassRepresentation implements ClassRepresentation {
     }
 
     @Override
-    public List<FieldRepresentation> getFields() {
+    public List<FieldMapping> getFields() {
         return fields;
     }
 
@@ -90,19 +90,19 @@ class DefaultClassRepresentation implements ClassRepresentation {
     }
 
     @Override
-    public Optional<FieldRepresentation> getFieldRepresentation(String javaField) {
+    public Optional<FieldMapping> getFieldMapping(String javaField) {
         requireNonNull(javaField, "javaField is required");
         return ofNullable(javaFieldGroupedByColumn.get(javaField))
-                .map(NativeMapping::getFieldRepresentation);
+                .map(NativeMapping::getFieldMapping);
     }
 
     @Override
-    public Map<String, FieldRepresentation> getFieldsGroupByName() {
+    public Map<String, FieldMapping> getFieldsGroupByName() {
         return fieldsGroupedByName;
     }
 
     @Override
-    public Optional<FieldRepresentation> getId() {
+    public Optional<FieldMapping> getId() {
         return Optional.ofNullable(id);
     }
 
@@ -111,10 +111,10 @@ class DefaultClassRepresentation implements ClassRepresentation {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof DefaultClassRepresentation)) {
+        if (!(o instanceof DefaultClassMapping)) {
             return false;
         }
-        DefaultClassRepresentation that = (DefaultClassRepresentation) o;
+        DefaultClassMapping that = (DefaultClassMapping) o;
         return Objects.equals(classInstance, that.classInstance);
     }
 
@@ -125,7 +125,7 @@ class DefaultClassRepresentation implements ClassRepresentation {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("DefaultClassRepresentation{");
+        final StringBuilder sb = new StringBuilder("DefaultClassMapping{");
         sb.append("name='").append(name).append('\'');
         sb.append(", fieldsName=").append(fieldsName);
         sb.append(", classInstance=").append(classInstance);
@@ -140,10 +140,10 @@ class DefaultClassRepresentation implements ClassRepresentation {
     /**
      * Creates a builder
      *
-     * @return {@link ClassRepresentationBuilder}
+     * @return {@link ClassMappingBuilder}
      */
-    static ClassRepresentationBuilder builder() {
-        return new ClassRepresentationBuilder();
+    static ClassMappingBuilder builder() {
+        return new ClassMappingBuilder();
     }
 
 

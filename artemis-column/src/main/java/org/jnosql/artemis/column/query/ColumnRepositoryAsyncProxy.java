@@ -18,8 +18,8 @@ package org.jnosql.artemis.column.query;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.column.ColumnTemplateAsync;
-import org.jnosql.artemis.reflection.ClassRepresentation;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMapping;
+import org.jnosql.artemis.reflection.ClassMappings;
 
 import java.lang.reflect.ParameterizedType;
 
@@ -34,19 +34,19 @@ class ColumnRepositoryAsyncProxy<T> extends AbstractColumnRepositoryAsyncProxy<T
 
     private final ColumnRepositoryAsync repository;
 
-    private final ClassRepresentation classRepresentation;
+    private final ClassMapping classMapping;
 
     private final Converters converters;
 
 
-    ColumnRepositoryAsyncProxy(ColumnTemplateAsync template, ClassRepresentations classRepresentations,
+    ColumnRepositoryAsyncProxy(ColumnTemplateAsync template, ClassMappings classMappings,
                                Class<?> repositoryType, Converters converters) {
 
         this.template = template;
         Class<T> typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
-        this.classRepresentation = classRepresentations.get(typeClass);
-        this.repository = new ColumnRepositoryAsync(template, classRepresentation);
+        this.classMapping = classMappings.get(typeClass);
+        this.repository = new ColumnRepositoryAsync(template, classMapping);
         this.converters = converters;
     }
 
@@ -56,8 +56,8 @@ class ColumnRepositoryAsyncProxy<T> extends AbstractColumnRepositoryAsyncProxy<T
     }
 
     @Override
-    protected ClassRepresentation getClassRepresentation() {
-        return classRepresentation;
+    protected ClassMapping getClassMapping() {
+        return classMapping;
     }
 
     @Override
@@ -77,11 +77,11 @@ class ColumnRepositoryAsyncProxy<T> extends AbstractColumnRepositoryAsyncProxy<T
         private final ColumnTemplateAsync template;
 
 
-        private final ClassRepresentation classRepresentation;
+        private final ClassMapping classMapping;
 
-        ColumnRepositoryAsync(ColumnTemplateAsync repository,  ClassRepresentation classRepresentation) {
+        ColumnRepositoryAsync(ColumnTemplateAsync repository,  ClassMapping classMapping) {
             this.template = repository;
-            this.classRepresentation = classRepresentation;
+            this.classMapping = classMapping;
         }
 
         @Override
@@ -91,8 +91,8 @@ class ColumnRepositoryAsyncProxy<T> extends AbstractColumnRepositoryAsyncProxy<T
 
 
         @Override
-        protected ClassRepresentation getClassRepresentation() {
-            return classRepresentation;
+        protected ClassMapping getClassMapping() {
+            return classMapping;
         }
 
     }

@@ -21,7 +21,7 @@ import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.graph.GraphConverter;
 import org.jnosql.artemis.graph.GraphTemplate;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
@@ -89,7 +89,7 @@ public class RepositoryGraphBean implements Bean<Repository>, PassivationCapable
     @Override
     public Repository create(CreationalContext<Repository> creationalContext) {
 
-        ClassRepresentations classRepresentations = getInstance(ClassRepresentations.class);
+        ClassMappings classMappings = getInstance(ClassMappings.class);
         GraphTemplate repository = provider.isEmpty() ? getInstance(GraphTemplate.class) :
                 getInstance(GraphTemplate.class, provider);
         GraphConverter converter = getInstance(GraphConverter.class);
@@ -98,7 +98,7 @@ public class RepositoryGraphBean implements Bean<Repository>, PassivationCapable
         Converters converters = getInstance(Converters.class);
 
         GraphRepositoryProxy handler = new GraphRepositoryProxy(repository,
-                classRepresentations, type, graph, converter, converters);
+                classMappings, type, graph, converter, converters);
         return (Repository) Proxy.newProxyInstance(type.getClassLoader(),
                 new Class[]{type},
                 handler);

@@ -16,7 +16,7 @@ package org.jnosql.artemis.reflection;
 
 
 /**
- * The tuple between the instance value and {@link FieldRepresentation}
+ * The tuple between the instance value and {@link FieldMapping}
  */
 public interface FieldValue {
 
@@ -28,7 +28,7 @@ public interface FieldValue {
      * @param field the field
      * @return the {@link FieldValue} instance
      */
-    static FieldValue of(Object value, FieldRepresentation field) {
+    static FieldValue of(Object value, FieldMapping field) {
         return new DefaultFieldValue(value, field);
     }
 
@@ -40,11 +40,11 @@ public interface FieldValue {
     Object getValue();
 
     /**
-     * returns the Field representation
+     * returns the {@link FieldMapping}
      *
-     * @return the {@link FieldRepresentation} instance
+     * @return the {@link FieldMapping} instance
      */
-    FieldRepresentation getField();
+    FieldMapping getField();
 
     /**
      * Returns true if {@link FieldValue#getValue()} is different of null

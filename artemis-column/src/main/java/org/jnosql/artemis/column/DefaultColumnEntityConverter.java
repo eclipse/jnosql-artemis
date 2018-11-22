@@ -16,7 +16,7 @@ package org.jnosql.artemis.column;
 
 
 import org.jnosql.artemis.Converters;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -28,14 +28,14 @@ import javax.inject.Inject;
 class DefaultColumnEntityConverter extends AbstractColumnEntityConverter implements ColumnEntityConverter {
 
     @Inject
-    private ClassRepresentations classRepresentations;
+    private ClassMappings classMappings;
 
     @Inject
     private Converters converters;
 
     @Override
-    protected ClassRepresentations getClassRepresentations() {
-        return classRepresentations;
+    protected ClassMappings getClassMappings() {
+        return classMappings;
     }
 
     @Override

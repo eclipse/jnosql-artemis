@@ -21,8 +21,8 @@ import org.apache.tinkerpop.gremlin.structure.Property;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.EntityNotFoundException;
-import org.jnosql.artemis.reflection.ClassRepresentation;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMapping;
+import org.jnosql.artemis.reflection.ClassMappings;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -41,7 +41,7 @@ import static java.util.stream.Collectors.toList;
 class DefaultGraphTraversalSourceConverter extends AbstractGraphConverter {
 
 
-    private ClassRepresentations classRepresentations;
+    private ClassMappings classMappings;
 
     private Converters converters;
 
@@ -49,9 +49,9 @@ class DefaultGraphTraversalSourceConverter extends AbstractGraphConverter {
 
 
     @Inject
-    DefaultGraphTraversalSourceConverter(ClassRepresentations classRepresentations, Converters converters,
+    DefaultGraphTraversalSourceConverter(ClassMappings classMappings, Converters converters,
                                          Instance<GraphTraversalSourceSupplier> suppliers) {
-        this.classRepresentations = classRepresentations;
+        this.classMappings = classMappings;
         this.converters = converters;
         this.suppliers = suppliers;
     }
@@ -60,8 +60,8 @@ class DefaultGraphTraversalSourceConverter extends AbstractGraphConverter {
     }
 
     @Override
-    protected ClassRepresentations getClassRepresentations() {
-        return classRepresentations;
+    protected ClassMappings getClassMappings() {
+        return classMappings;
     }
 
     @Override
@@ -78,10 +78,10 @@ class DefaultGraphTraversalSourceConverter extends AbstractGraphConverter {
     public <T> Vertex toVertex(T entity) {
         requireNonNull(entity, "entity is required");
 
-        ClassRepresentation representation = getClassRepresentations().get(entity.getClass());
-        String label = representation.getName();
+        ClassMapping mapping = getClassMappings().get(entity.getClass());
+        String label = mapping.getName();
 
-        List<FieldGraph> fields = representation.getFields().stream()
+        List<FieldGraph> fields = mapping.getFields().stream()
                 .map(f -> to(f, entity))
                 .filter(FieldGraph::isNotEmpty).collect(toList());
 

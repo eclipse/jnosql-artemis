@@ -15,7 +15,7 @@
 package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.Converters;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.artemis.util.ConverterUtil;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnCondition;
@@ -40,7 +40,7 @@ abstract class AbstractMapperQuery {
 
     protected String name;
 
-    protected final ClassRepresentation representation;
+    protected final ClassMapping mapping;
 
     protected final Converters converters;
 
@@ -49,10 +49,10 @@ abstract class AbstractMapperQuery {
     protected long limit;
 
 
-    AbstractMapperQuery(ClassRepresentation representation, Converters converters) {
-        this.representation = representation;
+    AbstractMapperQuery(ClassMapping mapping, Converters converters) {
+        this.mapping = mapping;
         this.converters = converters;
-        this.columnFamily = representation.getName();
+        this.columnFamily = mapping.getName();
     }
 
     protected void appendCondition(ColumnCondition newCondition) {
@@ -76,7 +76,7 @@ abstract class AbstractMapperQuery {
         requireNonNull(valueA, "valueA is required");
         requireNonNull(valueB, "valueB is required");
         ColumnCondition newCondition = ColumnCondition
-                .between(Column.of(representation.getColumnField(name), asList(getValue(valueA), getValue(valueB))));
+                .between(Column.of(mapping.getColumnField(name), asList(getValue(valueA), getValue(valueB))));
         appendCondition(newCondition);
     }
 
@@ -87,7 +87,7 @@ abstract class AbstractMapperQuery {
         List<Object> convertedValues = StreamSupport.stream(values.spliterator(), false)
                 .map(this::getValue).collect(toList());
         ColumnCondition newCondition = ColumnCondition
-                .in(Column.of(representation.getColumnField(name), convertedValues));
+                .in(Column.of(mapping.getColumnField(name), convertedValues));
         appendCondition(newCondition);
     }
 
@@ -95,46 +95,46 @@ abstract class AbstractMapperQuery {
         requireNonNull(value, "value is required");
 
         ColumnCondition newCondition = ColumnCondition
-                .eq(Column.of(representation.getColumnField(name), getValue(value)));
+                .eq(Column.of(mapping.getColumnField(name), getValue(value)));
         appendCondition(newCondition);
     }
 
     protected void likeImpl(String value) {
         requireNonNull(value, "value is required");
         ColumnCondition newCondition = ColumnCondition
-                .like(Column.of(representation.getColumnField(name), getValue(value)));
+                .like(Column.of(mapping.getColumnField(name), getValue(value)));
         appendCondition(newCondition);
     }
 
     protected <T> void gteImpl(T value) {
         requireNonNull(value, "value is required");
         ColumnCondition newCondition = ColumnCondition
-                .gte(Column.of(representation.getColumnField(name), getValue(value)));
+                .gte(Column.of(mapping.getColumnField(name), getValue(value)));
         appendCondition(newCondition);
     }
 
     protected <T> void gtImpl(T value) {
         requireNonNull(value, "value is required");
         ColumnCondition newCondition = ColumnCondition
-                .gt(Column.of(representation.getColumnField(name), getValue(value)));
+                .gt(Column.of(mapping.getColumnField(name), getValue(value)));
         appendCondition(newCondition);
     }
 
     protected <T> void ltImpl(T value) {
         requireNonNull(value, "value is required");
         ColumnCondition newCondition = ColumnCondition
-                .lt(Column.of(representation.getColumnField(name), getValue(value)));
+                .lt(Column.of(mapping.getColumnField(name), getValue(value)));
         appendCondition(newCondition);
     }
 
     protected <T> void lteImpl(T value) {
         requireNonNull(value, "value is required");
         ColumnCondition newCondition = ColumnCondition
-                .lte(Column.of(representation.getColumnField(name), getValue(value)));
+                .lte(Column.of(mapping.getColumnField(name), getValue(value)));
         appendCondition(newCondition);
     }
 
     protected Object getValue(Object value) {
-        return ConverterUtil.getValue(value, representation, name, converters);
+        return ConverterUtil.getValue(value, mapping, name, converters);
     }
 }

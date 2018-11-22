@@ -16,8 +16,8 @@ package org.jnosql.artemis.util;
 
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.DynamicQueryException;
-import org.jnosql.artemis.reflection.ClassRepresentation;
-import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
+import org.jnosql.artemis.reflection.FieldMapping;
 import org.jnosql.query.Params;
 
 import java.lang.reflect.Method;
@@ -31,19 +31,19 @@ import java.util.Optional;
 public class ParamsBinder {
 
 
-    private final ClassRepresentation representation;
+    private final ClassMapping mapping;
 
     private final Converters converters;
 
 
     /**
      * Creates a ParamsBinder instance
-     * @param representation the representation of the used class
+     * @param mapping the mapping of the used class
      * @param converters the converts
      * @throws NullPointerException when there is null parameter
      */
-    public ParamsBinder(ClassRepresentation representation, Converters converters) {
-        this.representation = Objects.requireNonNull(representation, "representation is required");
+    public ParamsBinder(ClassMapping mapping, Converters converters) {
+        this.mapping = Objects.requireNonNull(mapping, "mapping is required");
         this.converters = Objects.requireNonNull(converters, "converters is required");
     }
 
@@ -68,7 +68,7 @@ public class ParamsBinder {
         for (int index = 0; index < names.size(); index++) {
             String name = names.get(index);
             String fieldName = name.substring(0, name.lastIndexOf("_"));
-            Optional<FieldRepresentation> field = this.representation.getFields().stream()
+            Optional<FieldMapping> field = this.mapping.getFields().stream()
                     .filter(f -> f.getName().equals(fieldName)).findFirst();
 
             Object value;

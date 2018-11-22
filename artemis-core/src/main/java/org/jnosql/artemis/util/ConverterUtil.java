@@ -16,8 +16,8 @@ package org.jnosql.artemis.util;
 
 import org.jnosql.artemis.AttributeConverter;
 import org.jnosql.artemis.Converters;
-import org.jnosql.artemis.reflection.ClassRepresentation;
-import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
+import org.jnosql.artemis.reflection.FieldMapping;
 import org.jnosql.diana.api.Value;
 
 import java.lang.reflect.Field;
@@ -38,29 +38,29 @@ public class ConverterUtil {
      * Converts the value to database format
      *
      * @param value          the value
-     * @param representation the class representation
+     * @param mapping the class mapped
      * @param name           the java fieldName
      * @param converters     the collection of converter
      * @return the value converted
      */
-    public static Object getValue(Object value, ClassRepresentation representation, String name, Converters converters) {
-        Optional<FieldRepresentation> fieldOptional = representation.getFieldRepresentation(name);
+    public static Object getValue(Object value, ClassMapping mapping, String name, Converters converters) {
+        Optional<FieldMapping> fieldOptional = mapping.getFieldMapping(name);
         if (fieldOptional.isPresent()) {
-            FieldRepresentation field = fieldOptional.get();
+            FieldMapping field = fieldOptional.get();
             return getValue(value, converters, field);
         }
         return value;
     }
 
     /**
-     * Converts the value from the field with {@link FieldRepresentation} to database format
+     * Converts the value from the field with {@link FieldMapping} to database format
      *
      * @param value      the value to be converted
      * @param converters the converter
      * @param field      the field
      * @return tje value converted
      */
-    public static Object getValue(Object value, Converters converters, FieldRepresentation field) {
+    public static Object getValue(Object value, Converters converters, FieldMapping field) {
         Field nativeField = field.getNativeField();
         if (!nativeField.getType().equals(value.getClass())) {
             return field.getConverter()

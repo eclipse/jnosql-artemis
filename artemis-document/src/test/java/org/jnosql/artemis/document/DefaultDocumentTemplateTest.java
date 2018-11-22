@@ -21,7 +21,7 @@ import org.jnosql.artemis.PreparedStatement;
 import org.jnosql.artemis.model.Job;
 import org.jnosql.artemis.model.Movie;
 import org.jnosql.artemis.model.Person;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
@@ -80,7 +80,7 @@ public class DefaultDocumentTemplateTest {
     private DocumentEntityConverter converter;
 
     @Inject
-    private ClassRepresentations classRepresentations;
+    private ClassMappings classMappings;
 
     @Inject
     private Converters converters;
@@ -103,7 +103,7 @@ public class DefaultDocumentTemplateTest {
         when(instance.get()).thenReturn(managerMock);
         DefaultDocumentWorkflow workflow = new DefaultDocumentWorkflow(documentEventPersistManager, converter);
         this.subject = new DefaultDocumentTemplate(converter, instance, workflow,
-                documentEventPersistManager, classRepresentations, converters);
+                documentEventPersistManager, classMappings, converters);
     }
 
     @Test

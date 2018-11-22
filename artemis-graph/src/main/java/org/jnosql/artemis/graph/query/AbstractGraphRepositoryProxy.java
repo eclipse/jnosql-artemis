@@ -25,7 +25,7 @@ import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.graph.GraphConverter;
 import org.jnosql.artemis.graph.GraphTemplate;
 import org.jnosql.artemis.query.RepositoryType;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -50,7 +50,7 @@ abstract class AbstractGraphRepositoryProxy<T, ID> implements InvocationHandler 
     private final SelectQueryConverter converter = new SelectQueryConverter();
     private final DeleteQueryConverter deleteConverter = new DeleteQueryConverter();
 
-    protected abstract ClassRepresentation getClassRepresentation();
+    protected abstract ClassMapping getClassMapping();
 
     protected abstract Repository getRepository();
 
@@ -67,7 +67,7 @@ abstract class AbstractGraphRepositoryProxy<T, ID> implements InvocationHandler 
     public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
         String methodName = method.getName();
         RepositoryType type = RepositoryType.of(method);
-        Class<?> typeClass = getClassRepresentation().getClassInstance();
+        Class<?> typeClass = getClassMapping().getClassInstance();
 
         switch (type) {
             case DEFAULT:
@@ -91,7 +91,7 @@ abstract class AbstractGraphRepositoryProxy<T, ID> implements InvocationHandler 
 
     private Object executeDeleteMethod(Method method, Object[] args) {
 
-        GraphQueryMethod queryMethod = new GraphQueryMethod(getClassRepresentation(),
+        GraphQueryMethod queryMethod = new GraphQueryMethod(getClassMapping(),
                 getGraph().traversal().V(),
                 getConverters(), method, args);
 
@@ -101,8 +101,8 @@ abstract class AbstractGraphRepositoryProxy<T, ID> implements InvocationHandler 
     }
 
     private Object executeFindByMethod(Method method, Object[] args) {
-        Class<?> classInstance = getClassRepresentation().getClassInstance();
-        GraphQueryMethod queryMethod = new GraphQueryMethod(getClassRepresentation(),
+        Class<?> classInstance = getClassMapping().getClassInstance();
+        GraphQueryMethod queryMethod = new GraphQueryMethod(getClassMapping(),
                 getGraph().traversal().V(),
                 getConverters(), method, args);
 
@@ -113,9 +113,9 @@ abstract class AbstractGraphRepositoryProxy<T, ID> implements InvocationHandler 
     }
 
     private Object executeFindAll(Method method, Object[] args) {
-        Class<?> classInstance = getClassRepresentation().getClassInstance();
+        Class<?> classInstance = getClassMapping().getClassInstance();
         GraphTraversal<Vertex, Vertex> traversal = getGraph().traversal().V();
-        List<Vertex> vertices = traversal.hasLabel(getClassRepresentation().getName()).toList();
+        List<Vertex> vertices = traversal.hasLabel(getClassMapping().getName()).toList();
         Stream<T> stream = vertices.stream().map(getConverter()::toEntity);
         return returnObject(stream, classInstance, method);
     }

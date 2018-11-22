@@ -18,12 +18,12 @@ package org.jnosql.artemis.reflection;
 import java.lang.reflect.Field;
 import java.util.Objects;
 
-public final class EmbeddedFieldRepresentation extends AbstractFieldRepresentation {
+public final class EmbeddedFieldMapping extends AbstractFieldMapping {
 
     private final String entityName;
 
-    public EmbeddedFieldRepresentation(FieldType type, Field field, String name, String entityName,
-                                       FieldReader reader, FieldWriter writer) {
+    public EmbeddedFieldMapping(FieldType type, Field field, String name, String entityName,
+                                FieldReader reader, FieldWriter writer) {
         super(type, field, name, null, reader, writer);
         this.entityName = entityName;
     }
@@ -45,7 +45,7 @@ public final class EmbeddedFieldRepresentation extends AbstractFieldRepresentati
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        EmbeddedFieldRepresentation that = (EmbeddedFieldRepresentation) o;
+        EmbeddedFieldMapping that = (EmbeddedFieldMapping) o;
         return type == that.type &&
                 Objects.equals(field, that.field) &&
                 Objects.equals(entityName, that.entityName) &&
@@ -59,7 +59,7 @@ public final class EmbeddedFieldRepresentation extends AbstractFieldRepresentati
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("EmbeddedFieldRepresentation{");
+        final StringBuilder sb = new StringBuilder("EmbeddedFieldMapping{");
         sb.append("entityName='").append(entityName).append('\'');
         sb.append(", type=").append(type);
         sb.append(", field=").append(field);

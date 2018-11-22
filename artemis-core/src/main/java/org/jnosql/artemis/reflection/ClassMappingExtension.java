@@ -31,14 +31,14 @@ import static org.jnosql.artemis.reflection.ClassOperationFactory.INSTANCE;
 /**
  * This class is a CDI extension to load all class that has {@link Entity} annotation.
  * This extension will load all Classes and put in a map.
- * Where the key is {@link Class#getName()} and the value is {@link ClassRepresentation}
+ * Where the key is {@link Class#getName()} and the value is {@link ClassMapping}
  */
 @ApplicationScoped
-public class ClassRepresentationsExtension implements Extension {
+public class ClassMappingExtension implements Extension {
 
-    private final Map<String, ClassRepresentation> representations = new ConcurrentHashMap<>();
+    private final Map<String, ClassMapping> mappings = new ConcurrentHashMap<>();
 
-    private final Map<Class<?>, ClassRepresentation> classes = new ConcurrentHashMap<>();
+    private final Map<Class<?>, ClassMapping> classes = new ConcurrentHashMap<>();
 
     private final ClassConverter classConverter;
 
@@ -57,13 +57,13 @@ public class ClassRepresentationsExtension implements Extension {
         AnnotatedType<T> annotatedType = target.getAnnotatedType();
         if (annotatedType.isAnnotationPresent(Entity.class)) {
             Class<T> javaClass = target.getAnnotatedType().getJavaClass();
-            ClassRepresentation classRepresentation = classConverter.create(javaClass);
-            representations.put(classRepresentation.getName(), classRepresentation);
-            classes.put(javaClass, classRepresentation);
+            ClassMapping classMapping = classConverter.create(javaClass);
+            mappings.put(classMapping.getName(), classMapping);
+            classes.put(javaClass, classMapping);
         } else if (isSubElement(annotatedType)) {
             Class<T> javaClass = target.getAnnotatedType().getJavaClass();
-            ClassRepresentation classRepresentation = classConverter.create(javaClass);
-            classes.put(javaClass, classRepresentation);
+            ClassMapping classMapping = classConverter.create(javaClass);
+            classes.put(javaClass, classMapping);
         }
 
     }
@@ -74,12 +74,12 @@ public class ClassRepresentationsExtension implements Extension {
 
 
     /**
-     * Returns the representations loaded in CDI startup
+     * Returns the mappings loaded in CDI startup
      *
      * @return the class loaded
      */
-    public Map<String, ClassRepresentation> getRepresentations() {
-        return representations;
+    public Map<String, ClassMapping> getMappings() {
+        return mappings;
     }
 
     /**
@@ -87,15 +87,15 @@ public class ClassRepresentationsExtension implements Extension {
      *
      * @return the map instance
      */
-    public Map<Class<?>, ClassRepresentation> getClasses() {
+    public Map<Class<?>, ClassMapping> getClasses() {
         return classes;
     }
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("ClassRepresentationsExtension{");
+        final StringBuilder sb = new StringBuilder("ClassMappingExtension{");
         sb.append("classConverter=").append(classConverter);
-        sb.append(", representations-size=").append(representations.size());
+        sb.append(", mappings-size=").append(mappings.size());
         sb.append(", classes=").append(classes);
         sb.append('}');
         return sb.toString();

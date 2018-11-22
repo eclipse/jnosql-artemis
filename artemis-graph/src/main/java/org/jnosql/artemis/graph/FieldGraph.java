@@ -17,7 +17,7 @@ package org.jnosql.artemis.graph;
 import org.apache.tinkerpop.gremlin.structure.Property;
 import org.jnosql.artemis.AttributeConverter;
 import org.jnosql.artemis.Converters;
-import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.FieldMapping;
 
 import java.util.List;
 import java.util.Objects;
@@ -30,9 +30,9 @@ final class FieldGraph {
 
     private final Object value;
 
-    private final FieldRepresentation field;
+    private final FieldMapping field;
 
-    private FieldGraph(Object value, FieldRepresentation field) {
+    private FieldGraph(Object value, FieldMapping field) {
         this.value = value;
         this.field = field;
     }
@@ -41,7 +41,7 @@ final class FieldGraph {
         return value;
     }
 
-    public FieldRepresentation getField() {
+    public FieldMapping getField() {
         return field;
     }
 
@@ -84,7 +84,7 @@ final class FieldGraph {
         return sb.toString();
     }
 
-    public static FieldGraph of(Object value, FieldRepresentation field) {
+    public static FieldGraph of(Object value, FieldMapping field) {
         return new FieldGraph(value, field);
     }
 

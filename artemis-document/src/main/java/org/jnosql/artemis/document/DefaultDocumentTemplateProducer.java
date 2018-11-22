@@ -16,7 +16,7 @@ package org.jnosql.artemis.document;
 
 
 import org.jnosql.artemis.Converters;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -41,7 +41,7 @@ class DefaultDocumentTemplateProducer implements DocumentTemplateProducer {
     private DocumentEventPersistManager persistManager;
 
     @Inject
-    private ClassRepresentations classRepresentations;
+    private ClassMappings classMappings;
 
     @Inject
     private Converters converters;
@@ -51,7 +51,7 @@ class DefaultDocumentTemplateProducer implements DocumentTemplateProducer {
     public DocumentTemplate get(DocumentCollectionManager collectionManager) {
         Objects.requireNonNull(collectionManager, "collectionManager is required");
         return new ProducerDocumentTemplate(converter, collectionManager, workflow,
-                persistManager, classRepresentations, converters);
+                persistManager, classMappings, converters);
     }
 
     @Vetoed
@@ -67,16 +67,16 @@ class DefaultDocumentTemplateProducer implements DocumentTemplateProducer {
 
         private Converters converters;
 
-        private ClassRepresentations classRepresentations;
+        private ClassMappings classMappings;
         ProducerDocumentTemplate(DocumentEntityConverter converter, DocumentCollectionManager manager,
                                  DocumentWorkflow workflow,
                                  DocumentEventPersistManager persistManager,
-                                 ClassRepresentations classRepresentations, Converters converters) {
+                                 ClassMappings classMappings, Converters converters) {
             this.converter = converter;
             this.manager = manager;
             this.workflow = workflow;
             this.persistManager = persistManager;
-            this.classRepresentations = classRepresentations;
+            this.classMappings = classMappings;
             this.converters = converters;
         }
 
@@ -104,8 +104,8 @@ class DefaultDocumentTemplateProducer implements DocumentTemplateProducer {
         }
 
         @Override
-        protected ClassRepresentations getClassRepresentations() {
-            return classRepresentations;
+        protected ClassMappings getClassMappings() {
+            return classMappings;
         }
 
         @Override

@@ -14,8 +14,8 @@
  */
 package org.jnosql.artemis.column;
 
-import org.jnosql.artemis.reflection.ClassRepresentation;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMapping;
+import org.jnosql.artemis.reflection.ClassMappings;
 import org.jnosql.diana.api.column.ColumnObserverParser;
 
 import java.util.Optional;
@@ -23,31 +23,31 @@ import java.util.Optional;
 final class ColumnMapperObserver implements ColumnObserverParser {
 
 
-    private final ClassRepresentations representations;
+    private final ClassMappings mappings;
 
-    ColumnMapperObserver(ClassRepresentations representations) {
-        this.representations = representations;
+    ColumnMapperObserver(ClassMappings mappings) {
+        this.mappings = mappings;
     }
 
 
     @Override
     public String fireEntity(String entity) {
-        Optional<ClassRepresentation> classRepresentation = getClassRepresentation(entity);
-        return classRepresentation.map(ClassRepresentation::getName).orElse(entity);
+        Optional<ClassMapping> mapping = getClassMapping(entity);
+        return mapping.map(ClassMapping::getName).orElse(entity);
     }
 
     @Override
     public String fireField(String entity, String field) {
-        Optional<ClassRepresentation> classRepresentation = getClassRepresentation(entity);
-        return classRepresentation.map(c -> c.getColumnField(field)).orElse(field);
+        Optional<ClassMapping> mapping = getClassMapping(entity);
+        return mapping.map(c -> c.getColumnField(field)).orElse(field);
     }
 
-    private Optional<ClassRepresentation> getClassRepresentation(String entity) {
-        Optional<ClassRepresentation> bySimpleName = representations.findBySimpleName(entity);
+    private Optional<ClassMapping> getClassMapping(String entity) {
+        Optional<ClassMapping> bySimpleName = mappings.findBySimpleName(entity);
         if (bySimpleName.isPresent()) {
             return bySimpleName;
         }
-        return representations.findByClassName(entity);
+        return mappings.findByClassName(entity);
     }
 
 }

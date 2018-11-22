@@ -18,8 +18,8 @@ import org.jnosql.aphrodite.antlr.method.SelectMethodFactory;
 import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.model.Person;
-import org.jnosql.artemis.reflection.ClassRepresentation;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMapping;
+import org.jnosql.artemis.reflection.ClassMappings;
 import org.jnosql.artemis.util.ParamsBinder;
 import org.jnosql.diana.api.TypeReference;
 import org.jnosql.diana.api.Value;
@@ -46,7 +46,7 @@ class ParamsBinderTest {
 
 
     @Inject
-    private ClassRepresentations representations;
+    private ClassMappings mappings;
 
     @Inject
     private Converters converters;
@@ -58,12 +58,12 @@ class ParamsBinderTest {
 
         Method method = Stream.of(PersonRepository.class.getMethods())
                 .filter(m -> m.getName().equals("findByAge")).findFirst().get();
-        ClassRepresentation classRepresentation = representations.get(Person.class);
-        RepositoryColumnObserverParser parser = new RepositoryColumnObserverParser(classRepresentation);
-        paramsBinder = new ParamsBinder(classRepresentation, converters);
+        ClassMapping classMapping = mappings.get(Person.class);
+        RepositoryColumnObserverParser parser = new RepositoryColumnObserverParser(classMapping);
+        paramsBinder = new ParamsBinder(classMapping, converters);
 
         SelectMethodFactory selectMethodFactory = SelectMethodFactory.get();
-        SelectQuery selectQuery = selectMethodFactory.apply(method, classRepresentation.getName());
+        SelectQuery selectQuery = selectMethodFactory.apply(method, classMapping.getName());
         SelectQueryConverter converter = SelectQueryConverter.get();
         ColumnQueryParams columnQueryParams = converter.apply(selectQuery, parser);
         Params params = columnQueryParams.getParams();
@@ -81,12 +81,12 @@ class ParamsBinderTest {
 
         Method method = Stream.of(PersonRepository.class.getMethods())
                 .filter(m -> m.getName().equals("findByAgeAndName")).findFirst().get();
-        ClassRepresentation classRepresentation = representations.get(Person.class);
-        RepositoryColumnObserverParser parser = new RepositoryColumnObserverParser(classRepresentation);
-        paramsBinder = new ParamsBinder(classRepresentation, converters);
+        ClassMapping classMapping = mappings.get(Person.class);
+        RepositoryColumnObserverParser parser = new RepositoryColumnObserverParser(classMapping);
+        paramsBinder = new ParamsBinder(classMapping, converters);
 
         SelectMethodFactory selectMethodFactory = SelectMethodFactory.get();
-        SelectQuery selectQuery = selectMethodFactory.apply(method, classRepresentation.getName());
+        SelectQuery selectQuery = selectMethodFactory.apply(method, classMapping.getName());
         SelectQueryConverter converter = SelectQueryConverter.get();
         ColumnQueryParams queryParams = converter.apply(selectQuery, parser);
         Params params = queryParams.getParams();

@@ -39,37 +39,37 @@ public class ClassConverterJavaFieldParserTest {
     @Test
     public void shouldReturnErrorWhenParameterIsNull() {
         Assertions.assertThrows(NullPointerException.class, () -> {
-            ClassRepresentation classRepresentation = classConverter.create(Person.class);
-            classRepresentation.getColumnField(null);
+            ClassMapping classMapping = classConverter.create(Person.class);
+            classMapping.getColumnField(null);
         });
     }
 
     @Test
     public void shouldReturnTheNativeName() {
-        ClassRepresentation classRepresentation = classConverter.create(Worker.class);
-        String notFound = classRepresentation.getColumnField("salary");
+        ClassMapping classMapping = classConverter.create(Worker.class);
+        String notFound = classMapping.getColumnField("salary");
         assertEquals("money", notFound);
 
     }
 
     @Test
-    public void shouldReturnTheSameValueWhenTheFieldDoesNotExistInTheClassRepresentation() {
-        ClassRepresentation classRepresentation = classConverter.create(Person.class);
-        String notFound = classRepresentation.getColumnField("notFound");
+    public void shouldReturnTheSameValueWhenTheFieldDoesNotExistInTheClassMapping() {
+        ClassMapping classMapping = classConverter.create(Person.class);
+        String notFound = classMapping.getColumnField("notFound");
         assertEquals("notFound", notFound);
     }
 
     @Test
     public void shouldReadFieldWhenFieldIsSubEntity() {
-        ClassRepresentation classRepresentation = classConverter.create(Address.class);
-        String result = classRepresentation.getColumnField("zipcode.plusFour");
+        ClassMapping classMapping = classConverter.create(Address.class);
+        String result = classMapping.getColumnField("zipcode.plusFour");
         assertEquals("zipcode.plusFour", result);
     }
 
     @Test
     public void shouldReturnAllFieldWhenSelectTheSubEntityField() {
-        ClassRepresentation classRepresentation = classConverter.create(Address.class);
-        String result = classRepresentation.getColumnField("zipcode");
+        ClassMapping classMapping = classConverter.create(Address.class);
+        String result = classMapping.getColumnField("zipcode");
         List<String> resultList = Stream.of(result.split(",")).sorted().collect(toList());
         List<String> expected = Stream.of("zipcode.plusFour", "zipcode.zip").sorted().collect(toList());
         assertEquals(expected, resultList);
@@ -77,15 +77,15 @@ public class ClassConverterJavaFieldParserTest {
 
     @Test
     public void shouldReadFieldWhenFieldIsEmbedded() {
-        ClassRepresentation classRepresentation = classConverter.create(Worker.class);
-        String result = classRepresentation.getColumnField("job.city");
+        ClassMapping classMapping = classConverter.create(Worker.class);
+        String result = classMapping.getColumnField("job.city");
         assertEquals("city", result);
     }
 
     @Test
     public void shouldReturnAllFieldWhenSelectTheEmbeddedField() {
-        ClassRepresentation classRepresentation = classConverter.create(Worker.class);
-        String result = classRepresentation.getColumnField("job");
+        ClassMapping classMapping = classConverter.create(Worker.class);
+        String result = classMapping.getColumnField("job");
         List<String> resultList = Stream.of(result.split(",")).sorted().collect(toList());
         List<String> expected = Stream.of("description", "city").sorted().collect(toList());
         assertEquals(expected, resultList);
@@ -94,8 +94,8 @@ public class ClassConverterJavaFieldParserTest {
 
     @Test
     public void shouldReturnEmbeddedFieldInCollection() {
-        ClassRepresentation classRepresentation = classConverter.create(AppointmentBook.class);
-        String result = classRepresentation.getColumnField("contacts.name");
+        ClassMapping classMapping = classConverter.create(AppointmentBook.class);
+        String result = classMapping.getColumnField("contacts.name");
         assertEquals("contacts.contact_name", result);
     }
 

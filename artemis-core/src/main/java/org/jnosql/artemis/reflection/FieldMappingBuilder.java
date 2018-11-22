@@ -19,7 +19,7 @@ import org.jnosql.diana.api.TypeSupplier;
 
 import java.lang.reflect.Field;
 
-class FieldRepresentationBuilder {
+class FieldMappingBuilder {
 
     private FieldType type;
 
@@ -40,61 +40,61 @@ class FieldRepresentationBuilder {
     private FieldWriter writer;
 
 
-    public FieldRepresentationBuilder withType(FieldType type) {
+    public FieldMappingBuilder withType(FieldType type) {
         this.type = type;
         return this;
     }
 
-    public FieldRepresentationBuilder withField(Field field) {
+    public FieldMappingBuilder withField(Field field) {
         this.field = field;
         return this;
     }
 
-    public FieldRepresentationBuilder withName(String name) {
+    public FieldMappingBuilder withName(String name) {
         this.name = name;
         return this;
     }
 
-    public FieldRepresentationBuilder withTypeSupplier(TypeSupplier<?> typeSupplier) {
+    public FieldMappingBuilder withTypeSupplier(TypeSupplier<?> typeSupplier) {
         this.typeSupplier = typeSupplier;
         return this;
     }
 
-    public FieldRepresentationBuilder withEntityName(String entityName) {
+    public FieldMappingBuilder withEntityName(String entityName) {
         this.entityName = entityName;
         return this;
     }
 
-    public FieldRepresentationBuilder withConverter(Class<? extends AttributeConverter> converter) {
+    public FieldMappingBuilder withConverter(Class<? extends AttributeConverter> converter) {
         this.converter = converter;
         return this;
     }
 
-    public FieldRepresentationBuilder withId(boolean id) {
+    public FieldMappingBuilder withId(boolean id) {
         this.id = id;
         return this;
     }
 
-    public FieldRepresentationBuilder withWriter(FieldWriter writer) {
+    public FieldMappingBuilder withWriter(FieldWriter writer) {
         this.writer = writer;
         return this;
     }
 
-    public FieldRepresentationBuilder withReader(FieldReader reader) {
+    public FieldMappingBuilder withReader(FieldReader reader) {
         this.reader = reader;
         return this;
     }
 
-    public DefaultFieldRepresentation buildDefault() {
-        return new DefaultFieldRepresentation(type, field, name, converter, id, reader, writer);
+    public DefaultFieldMapping buildDefault() {
+        return new DefaultFieldMapping(type, field, name, converter, id, reader, writer);
     }
 
-    public GenericFieldRepresentation buildGeneric() {
-        return new GenericFieldRepresentation(type, field, name, typeSupplier, converter, reader, writer);
+    public GenericFieldMapping buildGeneric() {
+        return new GenericFieldMapping(type, field, name, typeSupplier, converter, reader, writer);
     }
 
-    public EmbeddedFieldRepresentation buildEmedded() {
-        return new EmbeddedFieldRepresentation(type, field, name, entityName, reader, writer);
+    public EmbeddedFieldMapping buildEmedded() {
+        return new EmbeddedFieldMapping(type, field, name, entityName, reader, writer);
     }
 
 }

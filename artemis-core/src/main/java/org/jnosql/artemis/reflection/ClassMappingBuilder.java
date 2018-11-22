@@ -20,7 +20,7 @@ import java.util.Map;
 
 import static java.util.Collections.emptyMap;
 
-class ClassRepresentationBuilder {
+class ClassMappingBuilder {
 
     private String name;
 
@@ -28,51 +28,51 @@ class ClassRepresentationBuilder {
 
     private Class<?> classInstance;
 
-    private List<FieldRepresentation> fields = Collections.emptyList();
+    private List<FieldMapping> fields = Collections.emptyList();
 
     private Map<String, NativeMapping> javaFieldGroupedByColumn = emptyMap();
 
-    private Map<String, FieldRepresentation> fieldsGroupedByName = emptyMap();
+    private Map<String, FieldMapping> fieldsGroupedByName = emptyMap();
 
     private InstanceSupplier instanceSupplier;
 
-    public ClassRepresentationBuilder withName(String name) {
+    public ClassMappingBuilder withName(String name) {
         this.name = name;
         return this;
     }
 
-    public ClassRepresentationBuilder withFieldsName(List<String> fieldsName) {
+    public ClassMappingBuilder withFieldsName(List<String> fieldsName) {
         this.fieldsName = fieldsName;
         return this;
     }
 
-    public ClassRepresentationBuilder withClassInstance(Class<?> classInstance) {
+    public ClassMappingBuilder withClassInstance(Class<?> classInstance) {
         this.classInstance = classInstance;
         return this;
     }
 
-    public ClassRepresentationBuilder withFields(List<FieldRepresentation> fields) {
+    public ClassMappingBuilder withFields(List<FieldMapping> fields) {
         this.fields = fields;
         return this;
     }
 
-    public ClassRepresentationBuilder withJavaFieldGroupedByColumn(Map<String, NativeMapping> javaFieldGroupedByColumn) {
+    public ClassMappingBuilder withJavaFieldGroupedByColumn(Map<String, NativeMapping> javaFieldGroupedByColumn) {
         this.javaFieldGroupedByColumn = javaFieldGroupedByColumn;
         return this;
     }
 
-    public ClassRepresentationBuilder withFieldsGroupedByName(Map<String, FieldRepresentation> fieldsGroupedByName) {
+    public ClassMappingBuilder withFieldsGroupedByName(Map<String, FieldMapping> fieldsGroupedByName) {
         this.fieldsGroupedByName = fieldsGroupedByName;
         return this;
     }
 
-    public ClassRepresentationBuilder withInstanceSupplier(InstanceSupplier instanceSupplier) {
+    public ClassMappingBuilder withInstanceSupplier(InstanceSupplier instanceSupplier) {
         this.instanceSupplier = instanceSupplier;
         return this;
     }
 
-    public ClassRepresentation build() {
-        return new DefaultClassRepresentation(name, fieldsName, classInstance, fields,
+    public ClassMapping build() {
+        return new DefaultClassMapping(name, fieldsName, classInstance, fields,
                  javaFieldGroupedByColumn, fieldsGroupedByName, instanceSupplier);
     }
 }

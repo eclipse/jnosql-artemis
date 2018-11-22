@@ -16,10 +16,10 @@ package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.AttributeConverter;
 import org.jnosql.artemis.Converters;
-import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.FieldMapping;
 import org.jnosql.artemis.reflection.FieldType;
 import org.jnosql.artemis.reflection.FieldValue;
-import org.jnosql.artemis.reflection.GenericFieldRepresentation;
+import org.jnosql.artemis.reflection.GenericFieldMapping;
 import org.jnosql.diana.api.document.Document;
 
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ final class DefaultDocumentFieldValue implements DocumentFieldValue {
     }
 
     @Override
-    public FieldRepresentation getField() {
+    public FieldMapping getField() {
         return fieldValue.getField();
     }
 
@@ -88,14 +88,14 @@ final class DefaultDocumentFieldValue implements DocumentFieldValue {
     }
 
     private boolean isEmbeddableElement() {
-        return GenericFieldRepresentation.class.cast(getField()).isEmbeddable();
+        return GenericFieldMapping.class.cast(getField()).isEmbeddable();
     }
 
     private String getName() {
         return getField().getName();
     }
 
-    static DocumentFieldValue of(Object value, FieldRepresentation field) {
+    static DocumentFieldValue of(Object value, FieldMapping field) {
         return new DefaultDocumentFieldValue(FieldValue.of(value, field));
     }
 

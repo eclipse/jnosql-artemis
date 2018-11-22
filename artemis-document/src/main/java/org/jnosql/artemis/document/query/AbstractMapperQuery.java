@@ -15,7 +15,7 @@
 package org.jnosql.artemis.document.query;
 
 import org.jnosql.artemis.Converters;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.artemis.util.ConverterUtil;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCondition;
@@ -41,7 +41,7 @@ abstract class AbstractMapperQuery {
 
     protected String name;
 
-    protected final ClassRepresentation representation;
+    protected final ClassMapping mapping;
 
     protected final Converters converters;
 
@@ -50,10 +50,10 @@ abstract class AbstractMapperQuery {
     protected long limit;
 
 
-    AbstractMapperQuery(ClassRepresentation representation, Converters converters) {
-        this.representation = representation;
+    AbstractMapperQuery(ClassMapping mapping, Converters converters) {
+        this.mapping = mapping;
         this.converters = converters;
-        this.documentCollection = representation.getName();
+        this.documentCollection = mapping.getName();
     }
 
     protected void appendCondition(DocumentCondition newCondition) {
@@ -77,7 +77,7 @@ abstract class AbstractMapperQuery {
         requireNonNull(valueA, "valueA is required");
         requireNonNull(valueB, "valueB is required");
         DocumentCondition newCondition = DocumentCondition
-                .between(Document.of(representation.getColumnField(name), asList(getValue(valueA), getValue(valueB))));
+                .between(Document.of(mapping.getColumnField(name), asList(getValue(valueA), getValue(valueB))));
         appendCondition(newCondition);
     }
 
@@ -88,7 +88,7 @@ abstract class AbstractMapperQuery {
         List<Object> convertedValues = StreamSupport.stream(values.spliterator(), false)
                 .map(this::getValue).collect(toList());
         DocumentCondition newCondition = DocumentCondition
-                .in(Document.of(representation.getColumnField(name), convertedValues));
+                .in(Document.of(mapping.getColumnField(name), convertedValues));
         appendCondition(newCondition);
     }
 
@@ -96,47 +96,47 @@ abstract class AbstractMapperQuery {
         requireNonNull(value, "value is required");
 
         DocumentCondition newCondition = DocumentCondition
-                .eq(Document.of(representation.getColumnField(name), getValue(value)));
+                .eq(Document.of(mapping.getColumnField(name), getValue(value)));
         appendCondition(newCondition);
     }
 
     protected void likeImpl(String value) {
         requireNonNull(value, "value is required");
         DocumentCondition newCondition = DocumentCondition
-                .like(Document.of(representation.getColumnField(name), getValue(value)));
+                .like(Document.of(mapping.getColumnField(name), getValue(value)));
         appendCondition(newCondition);
     }
 
     protected <T> void gteImpl(T value) {
         requireNonNull(value, "value is required");
         DocumentCondition newCondition = DocumentCondition
-                .gte(Document.of(representation.getColumnField(name), getValue(value)));
+                .gte(Document.of(mapping.getColumnField(name), getValue(value)));
         appendCondition(newCondition);
     }
 
     protected <T> void gtImpl(T value) {
         requireNonNull(value, "value is required");
         DocumentCondition newCondition = DocumentCondition
-                .gt(Document.of(representation.getColumnField(name), getValue(value)));
+                .gt(Document.of(mapping.getColumnField(name), getValue(value)));
         appendCondition(newCondition);
     }
 
     protected <T> void ltImpl(T value) {
         requireNonNull(value, "value is required");
         DocumentCondition newCondition = DocumentCondition
-                .lt(Document.of(representation.getColumnField(name), getValue(value)));
+                .lt(Document.of(mapping.getColumnField(name), getValue(value)));
         appendCondition(newCondition);
     }
 
     protected <T> void lteImpl(T value) {
         requireNonNull(value, "value is required");
         DocumentCondition newCondition = DocumentCondition
-                .lte(Document.of(representation.getColumnField(name), getValue(value)));
+                .lte(Document.of(mapping.getColumnField(name), getValue(value)));
         appendCondition(newCondition);
     }
 
 
     protected Object getValue(Object value) {
-        return ConverterUtil.getValue(value, representation, name, converters);
+        return ConverterUtil.getValue(value, mapping, name, converters);
     }
 }

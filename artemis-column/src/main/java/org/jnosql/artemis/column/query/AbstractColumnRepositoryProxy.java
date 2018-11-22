@@ -49,7 +49,7 @@ public abstract class AbstractColumnRepositoryProxy<T, ID> extends  BaseColumnRe
     @Override
     public Object invoke(Object instance, Method method, Object[] args) throws Throwable {
         RepositoryType type = RepositoryType.of(method);
-        Class<?> typeClass = getClassRepresentation().getClassInstance();
+        Class<?> typeClass = getClassMapping().getClassInstance();
 
         switch (type) {
             case DEFAULT:
@@ -58,7 +58,7 @@ public abstract class AbstractColumnRepositoryProxy<T, ID> extends  BaseColumnRe
                 ColumnQuery query = getQuery(method, args);
                 return returnObject(query, getTemplate(), typeClass, method);
             case FIND_ALL:
-                return returnObject(select().from(getClassRepresentation().getName()).build(),
+                return returnObject(select().from(getClassMapping().getName()).build(),
                         getTemplate(), typeClass, method);
             case DELETE_BY:
                 ColumnDeleteQuery deleteQuery = getDeleteQuery(method, args);

@@ -14,26 +14,26 @@
  */
 package org.jnosql.artemis.column.query;
 
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.diana.api.column.ColumnObserverParser;
 
 import java.util.Optional;
 
 final class RepositoryColumnObserverParser implements ColumnObserverParser {
 
-    private final ClassRepresentation classRepresentation;
+    private final ClassMapping classMapping;
 
-    RepositoryColumnObserverParser(ClassRepresentation classRepresentation) {
-        this.classRepresentation = classRepresentation;
+    RepositoryColumnObserverParser(ClassMapping classMapping) {
+        this.classMapping = classMapping;
     }
 
     @Override
     public String fireEntity(String entity) {
-        return classRepresentation.getName();
+        return classMapping.getName();
     }
 
     @Override
     public String fireField(String entity, String field) {
-        return Optional.ofNullable(classRepresentation.getColumnField(field)).orElse(field);
+        return Optional.ofNullable(classMapping.getColumnField(field)).orElse(field);
     }
 }

@@ -16,9 +16,9 @@ package org.jnosql.artemis.column;
 
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.column.ColumnFieldConverters.ColumnFieldConverterFactory;
-import org.jnosql.artemis.reflection.ClassRepresentation;
-import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
+import org.jnosql.artemis.reflection.ClassMappings;
+import org.jnosql.artemis.reflection.FieldMapping;
 import org.jnosql.artemis.reflection.FieldType;
 import org.jnosql.artemis.reflection.FieldValue;
 import org.jnosql.diana.api.column.Column;
@@ -44,16 +44,16 @@ public abstract class AbstractColumnEntityConverter implements ColumnEntityConve
     private final ColumnFieldConverterFactory converterFactory = new ColumnFieldConverterFactory();
 
 
-    protected abstract ClassRepresentations getClassRepresentations();
+    protected abstract ClassMappings getClassMappings();
 
     protected abstract Converters getConverters();
 
     @Override
     public ColumnEntity toColumn(Object entityInstance) {
         requireNonNull(entityInstance, "Object is required");
-        ClassRepresentation representation = getClassRepresentations().get(entityInstance.getClass());
-        ColumnEntity entity = ColumnEntity.of(representation.getName());
-        representation.getFields().stream()
+        ClassMapping mapping = getClassMappings().get(entityInstance.getClass());
+        ColumnEntity entity = ColumnEntity.of(mapping.getName());
+        mapping.getFields().stream()
                 .map(f -> to(f, entityInstance))
                 .filter(FieldValue::isNotEmpty)
                 .map(f -> f.toColumn(this, getConverters()))
@@ -73,40 +73,40 @@ public abstract class AbstractColumnEntityConverter implements ColumnEntityConve
     public <T> T toEntity(T entityInstance, ColumnEntity entity) {
         requireNonNull(entity, "entity is required");
         requireNonNull(entityInstance, "entityInstance is required");
-        ClassRepresentation representation = getClassRepresentations().get(entityInstance.getClass());
-        return convertEntity(entity.getColumns(), representation, entityInstance);
+        ClassMapping mapping = getClassMappings().get(entityInstance.getClass());
+        return convertEntity(entity.getColumns(), mapping, entityInstance);
     }
 
     @Override
     public <T> T toEntity(ColumnEntity entity) {
         requireNonNull(entity, "entity is required");
-        ClassRepresentation representation = getClassRepresentations().findByName(entity.getName());
-        T instance = representation.newInstance();
-        return convertEntity(entity.getColumns(), representation, instance);
+        ClassMapping mapping = getClassMappings().findByName(entity.getName());
+        T instance = mapping.newInstance();
+        return convertEntity(entity.getColumns(), mapping, instance);
     }
 
-    protected ColumnFieldValue to(FieldRepresentation field, Object entityInstance) {
+    protected ColumnFieldValue to(FieldMapping field, Object entityInstance) {
         Object value = field.read(entityInstance);
         return DefaultColumnFieldValue.of(value, field);
     }
 
-    protected <T> Consumer<String> feedObject(T instance, List<Column> columns, Map<String, FieldRepresentation> fieldsGroupByName) {
+    protected <T> Consumer<String> feedObject(T instance, List<Column> columns, Map<String, FieldMapping> fieldsGroupByName) {
         return (String k) -> {
             Optional<Column> column = columns.stream().filter(c -> c.getName().equals(k)).findFirst();
-            FieldRepresentation field = fieldsGroupByName.get(k);
+            FieldMapping field = fieldsGroupByName.get(k);
             ColumnFieldConverter fieldConverter = converterFactory.get(field);
             fieldConverter.convert(instance, columns, column, field, this);
         };
     }
 
     protected <T> T toEntity(Class<T> entityClass, List<Column> columns) {
-        ClassRepresentation representation = getClassRepresentations().get(entityClass);
-        T instance = representation.newInstance();
-        return convertEntity(columns, representation, instance);
+        ClassMapping mapping = getClassMappings().get(entityClass);
+        T instance = mapping.newInstance();
+        return convertEntity(columns, mapping, instance);
     }
 
-    private <T> T convertEntity(List<Column> columns, ClassRepresentation representation, T instance) {
-        final Map<String, FieldRepresentation> fieldsGroupByName = representation.getFieldsGroupByName();
+    private <T> T convertEntity(List<Column> columns, ClassMapping mapping, T instance) {
+        final Map<String, FieldMapping> fieldsGroupByName = mapping.getFieldsGroupByName();
         final List<String> names = columns.stream().map(Column::getName).sorted().collect(Collectors.toList());
         final Predicate<String> existField = k -> Collections.binarySearch(names, k) >= 0;
         final Predicate<String> isElementType = k -> {

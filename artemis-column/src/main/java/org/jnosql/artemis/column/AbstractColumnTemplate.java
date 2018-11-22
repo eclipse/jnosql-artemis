@@ -18,9 +18,9 @@ package org.jnosql.artemis.column;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.artemis.PreparedStatement;
-import org.jnosql.artemis.reflection.ClassRepresentation;
-import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
+import org.jnosql.artemis.reflection.ClassMappings;
+import org.jnosql.artemis.reflection.FieldMapping;
 import org.jnosql.artemis.util.ConverterUtil;
 import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.column.ColumnDeleteQuery;
@@ -57,7 +57,7 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
 
     protected abstract ColumnEventPersistManager getEventManager();
 
-    protected abstract ClassRepresentations getClassRepresentations();
+    protected abstract ClassMappings getClassMappings();
 
     protected abstract Converters getConverters();
 
@@ -70,7 +70,7 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
 
     private ColumnObserverParser getObserver() {
         if (Objects.isNull(observer)) {
-            observer = new ColumnMapperObserver(getClassRepresentations());
+            observer = new ColumnMapperObserver(getClassMappings());
         }
         return observer;
     }
@@ -119,12 +119,12 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
     public <T, ID> Optional<T> find(Class<T> entityClass, ID id) {
         requireNonNull(entityClass, "entityClass is required");
         requireNonNull(id, "id is required");
-        ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
-        FieldRepresentation idField = classRepresentation.getId()
+        ClassMapping classMapping = getClassMappings().get(entityClass);
+        FieldMapping idField = classMapping.getId()
                 .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
 
-        Object value = ConverterUtil.getValue(id, classRepresentation, idField.getFieldName(), getConverters());
-        ColumnQuery query = ColumnQueryBuilder.select().from(classRepresentation.getName())
+        Object value = ConverterUtil.getValue(id, classMapping, idField.getFieldName(), getConverters());
+        ColumnQuery query = ColumnQueryBuilder.select().from(classMapping.getName())
                 .where(idField.getName()).eq(value).build();
 
         return singleResult(query);
@@ -135,12 +135,12 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
         requireNonNull(entityClass, "entityClass is required");
         requireNonNull(id, "id is required");
 
-        ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
-        FieldRepresentation idField = classRepresentation.getId()
+        ClassMapping classMapping = getClassMappings().get(entityClass);
+        FieldMapping idField = classMapping.getId()
                 .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
-        Object value = ConverterUtil.getValue(id, classRepresentation, idField.getFieldName(), getConverters());
+        Object value = ConverterUtil.getValue(id, classMapping, idField.getFieldName(), getConverters());
 
-        ColumnDeleteQuery query = ColumnQueryBuilder.delete().from(classRepresentation.getName())
+        ColumnDeleteQuery query = ColumnQueryBuilder.delete().from(classMapping.getName())
                 .where(idField.getName()).eq(value).build();
         getManager().delete(query);
     }
@@ -180,7 +180,7 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
     @Override
     public <T> long count(Class<T> entityClass){
         requireNonNull(entityClass, "entity class is required");
-        ClassRepresentation classRepresentation = getClassRepresentations().get(entityClass);
-        return getManager().count(classRepresentation.getName());
+        ClassMapping classMapping = getClassMappings().get(entityClass);
+        return getManager().count(classMapping.getName());
     }
 }

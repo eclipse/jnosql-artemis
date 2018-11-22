@@ -19,7 +19,7 @@ import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.document.DocumentRepositoryAsyncProducer;
 import org.jnosql.artemis.document.DocumentTemplateAsync;
 import org.jnosql.artemis.document.DocumentTemplateAsyncProducer;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -31,7 +31,7 @@ import java.util.Objects;
 class DefaultDocumentRepositoryAsyncProducer implements DocumentRepositoryAsyncProducer {
 
     @Inject
-    private ClassRepresentations classRepresentations;
+    private ClassMappings classMappings;
     @Inject
     private Converters converters;
     @Inject
@@ -51,7 +51,7 @@ class DefaultDocumentRepositoryAsyncProducer implements DocumentRepositoryAsyncP
         Objects.requireNonNull(template, "template class is required");
 
         DocumentRepositoryAsyncProxy<T> handler = new DocumentRepositoryAsyncProxy<>(template,
-                classRepresentations, repositoryClass, converters);
+                classMappings, repositoryClass, converters);
         return (T) Proxy.newProxyInstance(repositoryClass.getClassLoader(),
                 new Class[]{repositoryClass},
                 handler);

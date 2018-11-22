@@ -18,7 +18,7 @@ import org.apache.tinkerpop.gremlin.process.traversal.P;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
-import org.jnosql.artemis.reflection.ClassRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
 import org.jnosql.query.Condition;
 import org.jnosql.query.ConditionValue;
 import org.jnosql.query.Operator;
@@ -27,10 +27,10 @@ abstract class AbstractQueryConvert {
 
 
     protected GraphTraversal<Vertex, Vertex> getPredicate(GraphQueryMethod graphQuery, Condition condition,
-                                                        ClassRepresentation representation) {
+                                                        ClassMapping mapping) {
         Operator operator = condition.getOperator();
         String name = condition.getName();
-        String nativeName = representation.getColumnField(name);
+        String nativeName = mapping.getColumnField(name);
         switch (operator) {
             case EQUALS:
                 return __.has(nativeName, P.eq(graphQuery.getValue(name)));
@@ -48,14 +48,14 @@ abstract class AbstractQueryConvert {
                 return __.has(nativeName, P.within(graphQuery.getInValue(name)));
             case NOT:
                 Condition notCondition = ConditionValue.class.cast(condition.getValue()).get().get(0);
-                return __.not(getPredicate(graphQuery, notCondition, representation));
+                return __.not(getPredicate(graphQuery, notCondition, mapping));
             case AND:
                 return ConditionValue.class.cast(condition.getValue()).get().stream()
-                        .map(c -> getPredicate(graphQuery, c, representation)).reduce(GraphTraversal::and)
+                        .map(c -> getPredicate(graphQuery, c, mapping)).reduce(GraphTraversal::and)
                         .orElseThrow(() -> new UnsupportedOperationException("There is an inconsistency at the AND operator"));
             case OR:
                 return ConditionValue.class.cast(condition.getValue()).get().stream()
-                        .map(c -> getPredicate(graphQuery, c, representation)).reduce(GraphTraversal::or)
+                        .map(c -> getPredicate(graphQuery, c, mapping)).reduce(GraphTraversal::or)
                         .orElseThrow(() -> new UnsupportedOperationException("There is an inconsistency at the OR operator"));
             default:
                 throw new UnsupportedOperationException("There is not support to the type " + operator + " in graph");

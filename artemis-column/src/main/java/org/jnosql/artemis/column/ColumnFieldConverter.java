@@ -14,13 +14,13 @@
  */
 package org.jnosql.artemis.column;
 
-import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.FieldMapping;
 import org.jnosql.diana.api.column.Column;
 
 import java.util.List;
 import java.util.Optional;
 
 interface ColumnFieldConverter {
-    <T> void convert(T instance, List<Column> columns, Optional<Column> column, FieldRepresentation field,
+    <T> void convert(T instance, List<Column> columns, Optional<Column> column, FieldMapping field,
                      AbstractColumnEntityConverter converter);
 }

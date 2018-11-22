@@ -14,7 +14,7 @@
  */
 package org.jnosql.artemis.document;
 
-import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.FieldMapping;
 import org.jnosql.diana.api.document.Document;
 
 import java.util.List;
@@ -22,6 +22,6 @@ import java.util.Optional;
 
 interface DocumentFieldConverter {
 
-    <T> void convert(T instance, List<Document> documents, Optional<Document> document, FieldRepresentation field,
+    <T> void convert(T instance, List<Document> documents, Optional<Document> document, FieldMapping field,
                      AbstractDocumentEntityConverter converter);
 }

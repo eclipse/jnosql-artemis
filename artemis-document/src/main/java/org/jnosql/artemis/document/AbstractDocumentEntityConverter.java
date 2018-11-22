@@ -16,9 +16,9 @@ package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.document.DocumentFieldConverters.DocumentFieldConverterFactory;
-import org.jnosql.artemis.reflection.ClassRepresentation;
-import org.jnosql.artemis.reflection.ClassRepresentations;
-import org.jnosql.artemis.reflection.FieldRepresentation;
+import org.jnosql.artemis.reflection.ClassMapping;
+import org.jnosql.artemis.reflection.ClassMappings;
+import org.jnosql.artemis.reflection.FieldMapping;
 import org.jnosql.artemis.reflection.FieldType;
 import org.jnosql.artemis.reflection.FieldValue;
 import org.jnosql.diana.api.document.Document;
@@ -41,7 +41,7 @@ import static org.jnosql.artemis.reflection.FieldType.SUBENTITY;
  */
 public abstract class AbstractDocumentEntityConverter implements DocumentEntityConverter {
 
-    protected abstract ClassRepresentations getClassRepresentations();
+    protected abstract ClassMappings getClassMappings();
 
     protected abstract Converters getConverters();
 
@@ -51,9 +51,9 @@ public abstract class AbstractDocumentEntityConverter implements DocumentEntityC
     @Override
     public DocumentEntity toDocument(Object entityInstance) {
         requireNonNull(entityInstance, "Object is required");
-        ClassRepresentation representation = getClassRepresentations().get(entityInstance.getClass());
-        DocumentEntity entity = DocumentEntity.of(representation.getName());
-        representation.getFields().stream()
+        ClassMapping mapping = getClassMappings().get(entityInstance.getClass());
+        DocumentEntity entity = DocumentEntity.of(mapping.getName());
+        mapping.getFields().stream()
                 .map(f -> to(f, entityInstance))
                 .filter(FieldValue::isNotEmpty)
                 .map(f -> f.toDocument(this, getConverters()))
@@ -75,14 +75,14 @@ public abstract class AbstractDocumentEntityConverter implements DocumentEntityC
     public <T> T toEntity(T entityInstance, DocumentEntity entity) {
         requireNonNull(entity, "entity is required");
         requireNonNull(entityInstance, "entityInstance is required");
-        ClassRepresentation representation = getClassRepresentations().get(entityInstance.getClass());
-        return convertEntity(entity.getDocuments(), representation, entityInstance);
+        ClassMapping mapping = getClassMappings().get(entityInstance.getClass());
+        return convertEntity(entity.getDocuments(), mapping, entityInstance);
     }
 
     protected <T> T toEntity(Class<T> entityClass, List<Document> documents) {
-        ClassRepresentation representation = getClassRepresentations().get(entityClass);
-        T instance = representation.newInstance();
-        return convertEntity(documents, representation, instance);
+        ClassMapping mapping = getClassMappings().get(entityClass);
+        T instance = mapping.newInstance();
+        return convertEntity(documents, mapping, instance);
     }
 
 
@@ -90,13 +90,13 @@ public abstract class AbstractDocumentEntityConverter implements DocumentEntityC
     @Override
     public <T> T toEntity(DocumentEntity entity) {
         requireNonNull(entity, "entity is required");
-        ClassRepresentation representation = getClassRepresentations().findByName(entity.getName());
-        T instance = representation.newInstance();
-        return convertEntity(entity.getDocuments(), representation, instance);
+        ClassMapping mapping = getClassMappings().findByName(entity.getName());
+        T instance = mapping.newInstance();
+        return convertEntity(entity.getDocuments(), mapping, instance);
     }
 
-    private <T> T convertEntity(List<Document> documents, ClassRepresentation representation, T instance) {
-        final Map<String, FieldRepresentation> fieldsGroupByName = representation.getFieldsGroupByName();
+    private <T> T convertEntity(List<Document> documents, ClassMapping mapping, T instance) {
+        final Map<String, FieldMapping> fieldsGroupByName = mapping.getFieldsGroupByName();
         final List<String> names = documents.stream().map(Document::getName).sorted().collect(Collectors.toList());
         final Predicate<String> existField = k -> Collections.binarySearch(names, k) >= 0;
         final Predicate<String> isElementType = k -> {
@@ -111,18 +111,18 @@ public abstract class AbstractDocumentEntityConverter implements DocumentEntityC
         return instance;
     }
 
-    protected <T> Consumer<String> feedObject(T instance, List<Document> documents, Map<String, FieldRepresentation> fieldsGroupByName) {
+    protected <T> Consumer<String> feedObject(T instance, List<Document> documents, Map<String, FieldMapping> fieldsGroupByName) {
         return k -> {
             Optional<Document> document = documents.stream().filter(c -> c.getName().equals(k)).findFirst();
 
-            FieldRepresentation field = fieldsGroupByName.get(k);
+            FieldMapping field = fieldsGroupByName.get(k);
             DocumentFieldConverter fieldConverter = converterFactory.get(field);
             fieldConverter.convert(instance, documents, document, field, this);
         };
     }
 
 
-    private DocumentFieldValue to(FieldRepresentation field, Object entityInstance) {
+    private DocumentFieldValue to(FieldMapping field, Object entityInstance) {
         Object value = field.read(entityInstance);
         return DefaultDocumentFieldValue.of(value, field);
     }

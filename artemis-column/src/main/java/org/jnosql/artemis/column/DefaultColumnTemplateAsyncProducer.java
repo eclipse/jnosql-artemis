@@ -16,7 +16,7 @@ package org.jnosql.artemis.column;
 
 
 import org.jnosql.artemis.Converters;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -34,7 +34,7 @@ class DefaultColumnTemplateAsyncProducer implements ColumnTemplateAsyncProducer 
     private ColumnEntityConverter converter;
 
     @Inject
-    private ClassRepresentations classRepresentations;
+    private ClassMappings classMappings;
 
     @Inject
     private Converters converters;
@@ -42,7 +42,7 @@ class DefaultColumnTemplateAsyncProducer implements ColumnTemplateAsyncProducer 
     @Override
     public ColumnTemplateAsync get(ColumnFamilyManagerAsync columnFamilyManager) {
         Objects.requireNonNull(columnFamilyManager, "columnFamilyManager is required");
-        return new ProducerColumnTemplateAsync(converter, columnFamilyManager, classRepresentations, converters);
+        return new ProducerColumnTemplateAsync(converter, columnFamilyManager, classMappings, converters);
     }
 
     @Vetoed
@@ -52,15 +52,15 @@ class DefaultColumnTemplateAsyncProducer implements ColumnTemplateAsyncProducer 
 
         private ColumnFamilyManagerAsync columnFamilyManager;
 
-        private ClassRepresentations classRepresentations;
+        private ClassMappings classMappings;
 
         private Converters converters;
 
         ProducerColumnTemplateAsync(ColumnEntityConverter converter, ColumnFamilyManagerAsync columnFamilyManager
-        ,ClassRepresentations classRepresentations, Converters converters) {
+        , ClassMappings classMappings, Converters converters) {
             this.converter = converter;
             this.columnFamilyManager = columnFamilyManager;
-            this.classRepresentations = classRepresentations;
+            this.classMappings = classMappings;
             this.converters = converters;
         }
 
@@ -78,8 +78,8 @@ class DefaultColumnTemplateAsyncProducer implements ColumnTemplateAsyncProducer 
         }
 
         @Override
-        protected ClassRepresentations getClassRepresentations() {
-            return classRepresentations;
+        protected ClassMappings getClassMappings() {
+            return classMappings;
         }
 
         @Override

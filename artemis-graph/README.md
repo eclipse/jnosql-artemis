@@ -27,7 +27,7 @@ graphTemplate.delete(person.getId());
 
 ### EdgeEntity<OUT, IN>
 
-The representation of Edge that links two Entity. Along with its Property objects, an Edge has both a Direction and a label.
+The mapping of Edge that links two Entity. Along with its Property objects, an Edge has both a Direction and a label.
 
 ```java
 Person poliana = graphTemplate.insert(Person.builder().withName("Poliana").withAge(25).build());
