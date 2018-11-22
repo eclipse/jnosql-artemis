@@ -101,5 +101,11 @@
             <version>${neo4j.connector.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jnosql.artemis</groupId>
+            <artifactId>artemis-configuration</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>
