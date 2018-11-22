@@ -18,11 +18,11 @@ import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.jnosql.artemis.graph.GraphFactory;
 import org.jnosql.diana.api.Settings;
 
-public class GraphFactoryA implements GraphFactory {
+public class GraphFactoryB implements GraphFactory {
 
 
     @Override
     public Graph apply(Settings settings) {
-        return new GraphMockA(settings);
+        return new GraphMockB(settings);
     }
 }
