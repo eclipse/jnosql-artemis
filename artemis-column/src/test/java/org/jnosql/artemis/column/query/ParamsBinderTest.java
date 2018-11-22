@@ -19,7 +19,7 @@ import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.reflection.ClassMapping;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 import org.jnosql.artemis.util.ParamsBinder;
 import org.jnosql.diana.api.TypeReference;
 import org.jnosql.diana.api.Value;
@@ -46,7 +46,7 @@ class ParamsBinderTest {
 
 
     @Inject
-    private ClassRepresentations representations;
+    private ClassMappings representations;
 
     @Inject
     private Converters converters;

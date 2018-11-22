@@ -15,7 +15,7 @@
 package org.jnosql.artemis.column;
 
 import org.jnosql.artemis.reflection.ClassMapping;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 import org.jnosql.diana.api.column.ColumnObserverParser;
 
 import java.util.Optional;
@@ -23,9 +23,9 @@ import java.util.Optional;
 final class ColumnMapperObserver implements ColumnObserverParser {
 
 
-    private final ClassRepresentations representations;
+    private final ClassMappings representations;
 
-    ColumnMapperObserver(ClassRepresentations representations) {
+    ColumnMapperObserver(ClassMappings representations) {
         this.representations = representations;
     }
 

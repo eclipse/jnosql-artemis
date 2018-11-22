@@ -20,7 +20,7 @@ import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.graph.GraphConverter;
 import org.jnosql.artemis.graph.GraphTemplate;
 import org.jnosql.artemis.reflection.ClassMapping;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 
 import java.lang.reflect.ParameterizedType;
 
@@ -46,7 +46,7 @@ class GraphRepositoryProxy<T, ID> extends AbstractGraphRepositoryProxy<T, ID> {
     private final Converters converters;
 
 
-    GraphRepositoryProxy(GraphTemplate template, ClassRepresentations classRepresentations,
+    GraphRepositoryProxy(GraphTemplate template, ClassMappings classMappings,
                          Class<?> repositoryType,
                          Graph graph, GraphConverter converter,
                          Converters converters) {
@@ -56,7 +56,7 @@ class GraphRepositoryProxy<T, ID> extends AbstractGraphRepositoryProxy<T, ID> {
 
         this.graph = graph;
         this.converter = converter;
-        this.classMapping = classRepresentations.get(typeClass);
+        this.classMapping = classMappings.get(typeClass);
         this.repository = new GraphRepository(template, classMapping);
         this.template = template;
         this.converters = converters;

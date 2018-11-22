@@ -21,7 +21,7 @@ import org.jnosql.artemis.PreparedStatement;
 import org.jnosql.artemis.model.Job;
 import org.jnosql.artemis.model.Movie;
 import org.jnosql.artemis.model.Person;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnCondition;
@@ -78,7 +78,7 @@ public class DefaultColumnTemplateTest {
     private ColumnEntityConverter converter;
 
     @Inject
-    private ClassRepresentations classRepresentations;
+    private ClassMappings classMappings;
 
     @Inject
     private Converters converters;
@@ -100,7 +100,7 @@ public class DefaultColumnTemplateTest {
         Instance<ColumnFamilyManager> instance = Mockito.mock(Instance.class);
         Mockito.when(instance.get()).thenReturn(managerMock);
         this.subject = new DefaultColumnTemplate(converter, instance, new DefaultColumnWorkflow(columnEventPersistManager, converter),
-                columnEventPersistManager, classRepresentations, converters);
+                columnEventPersistManager, classMappings, converters);
     }
 
     @Test

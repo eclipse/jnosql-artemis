@@ -16,7 +16,7 @@ package org.jnosql.artemis.document;
 
 
 import org.jnosql.artemis.Converters;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -35,7 +35,7 @@ class DefaultDocumentTemplateAsyncProducer implements DocumentTemplateAsyncProdu
     private DocumentEntityConverter converter;
 
     @Inject
-    private ClassRepresentations classRepresentations;
+    private ClassMappings classMappings;
 
     @Inject
     private Converters converters;
@@ -43,7 +43,7 @@ class DefaultDocumentTemplateAsyncProducer implements DocumentTemplateAsyncProdu
     @Override
     public DocumentTemplateAsync get(DocumentCollectionManagerAsync collectionManager) {
         Objects.requireNonNull(collectionManager, "collectionManager is required");
-        return new ProducerAbstractDocumentTemplateAsync(converter, collectionManager, classRepresentations, converters);
+        return new ProducerAbstractDocumentTemplateAsync(converter, collectionManager, classMappings, converters);
     }
 
     @Vetoed
@@ -53,17 +53,17 @@ class DefaultDocumentTemplateAsyncProducer implements DocumentTemplateAsyncProdu
 
         private DocumentCollectionManagerAsync manager;
 
-        private ClassRepresentations classRepresentations;
+        private ClassMappings classMappings;
 
         private Converters converters;
 
         ProducerAbstractDocumentTemplateAsync(DocumentEntityConverter converter,
                                               DocumentCollectionManagerAsync manager,
-                                              ClassRepresentations classRepresentations,
+                                              ClassMappings classMappings,
                                               Converters converters) {
             this.converter = converter;
             this.manager = manager;
-            this.classRepresentations = classRepresentations;
+            this.classMappings = classMappings;
             this.converters = converters;
         }
 
@@ -81,8 +81,8 @@ class DefaultDocumentTemplateAsyncProducer implements DocumentTemplateAsyncProdu
         }
 
         @Override
-        protected ClassRepresentations getClassRepresentations() {
-            return classRepresentations;
+        protected ClassMappings getClassMappings() {
+            return classMappings;
         }
 
         @Override

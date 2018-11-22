@@ -19,7 +19,7 @@ import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.artemis.PreparedStatement;
 import org.jnosql.artemis.reflection.ClassMapping;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 import org.jnosql.artemis.reflection.FieldMapping;
 import org.jnosql.artemis.util.ConverterUtil;
 import org.jnosql.diana.api.NonUniqueResultException;
@@ -59,7 +59,7 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
 
     protected abstract DocumentEventPersistManager getPersistManager();
 
-    protected abstract ClassRepresentations getClassRepresentations();
+    protected abstract ClassMappings getClassMappings();
 
     protected abstract Converters getConverters();
 
@@ -72,7 +72,7 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
 
     private DocumentObserverParser getObserver() {
         if (Objects.isNull(columnQueryParser)) {
-            columnQueryParser = new DocumentMapperObserver(getClassRepresentations());
+            columnQueryParser = new DocumentMapperObserver(getClassMappings());
         }
         return columnQueryParser;
     }
@@ -120,7 +120,7 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
     public <T, ID> Optional<T> find(Class<T> entityClass, ID id) {
         requireNonNull(entityClass, "entityClass is required");
         requireNonNull(id, "id is required");
-        ClassMapping classMapping = getClassRepresentations().get(entityClass);
+        ClassMapping classMapping = getClassMappings().get(entityClass);
         FieldMapping idField = classMapping.getId()
                 .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
 
@@ -136,7 +136,7 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
         requireNonNull(entityClass, "entityClass is required");
         requireNonNull(id, "id is required");
 
-        ClassMapping classMapping = getClassRepresentations().get(entityClass);
+        ClassMapping classMapping = getClassMappings().get(entityClass);
         FieldMapping idField = classMapping.getId()
                 .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
 
@@ -179,7 +179,7 @@ public abstract class AbstractDocumentTemplate implements DocumentTemplate {
 
     public <T> long count(Class<T> entityClass) {
         Objects.requireNonNull(entityClass, "entityClass is required");
-        ClassMapping classMapping = getClassRepresentations().get(entityClass);
+        ClassMapping classMapping = getClassMappings().get(entityClass);
         return getManager().count(classMapping.getName());
     }
 

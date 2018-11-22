@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * It's storage the class information in a {@link ConcurrentHashMap}
  */
 @ApplicationScoped
-class DefaultClassRepresentations implements ClassRepresentations {
+class DefaultClassMappings implements ClassMappings {
 
     private Map<String, ClassMapping> representations;
 
@@ -101,7 +101,7 @@ class DefaultClassRepresentations implements ClassRepresentations {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("DefaultClassRepresentations{");
+        final StringBuilder sb = new StringBuilder("DefaultClassMappings{");
         sb.append("representations-size=").append(representations.size());
         sb.append(", classes=").append(classes);
         sb.append(", classConverter=").append(classConverter);

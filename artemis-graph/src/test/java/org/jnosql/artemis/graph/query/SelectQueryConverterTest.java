@@ -25,7 +25,7 @@ import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.graph.cdi.CDIExtension;
 import org.jnosql.artemis.graph.model.Person;
 import org.jnosql.artemis.reflection.ClassMapping;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -48,7 +48,7 @@ class SelectQueryConverterTest {
     private SelectQueryConverter converter;
 
     @Inject
-    private ClassRepresentations representations;
+    private ClassMappings representations;
 
     @Inject
     private Converters converters;

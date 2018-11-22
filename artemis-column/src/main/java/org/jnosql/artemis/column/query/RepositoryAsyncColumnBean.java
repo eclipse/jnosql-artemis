@@ -19,7 +19,7 @@ import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.column.ColumnTemplateAsync;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 import org.jnosql.artemis.util.AnnotationLiteralUtil;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -88,13 +88,13 @@ public class RepositoryAsyncColumnBean implements Bean<RepositoryAsync>, Passiva
 
     @Override
     public RepositoryAsync create(CreationalContext<RepositoryAsync> creationalContext) {
-        ClassRepresentations classRepresentations = getInstance(ClassRepresentations.class);
+        ClassMappings classMappings = getInstance(ClassMappings.class);
         ColumnTemplateAsync repository = provider.isEmpty() ? getInstance(ColumnTemplateAsync.class) :
                 getInstance(ColumnTemplateAsync.class, provider);
         Converters converters = getInstance(Converters.class);
 
         ColumnRepositoryAsyncProxy handler = new ColumnRepositoryAsyncProxy(repository,
-                classRepresentations, type, converters);
+                classMappings, type, converters);
         return (RepositoryAsync) Proxy.newProxyInstance(type.getClassLoader(),
                 new Class[]{type},
                 handler);

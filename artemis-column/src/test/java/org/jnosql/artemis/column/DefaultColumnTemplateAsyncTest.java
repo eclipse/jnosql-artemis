@@ -19,7 +19,7 @@ import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.PreparedStatementAsync;
 import org.jnosql.artemis.model.Movie;
 import org.jnosql.artemis.model.Person;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.column.Column;
 import org.jnosql.diana.api.column.ColumnCondition;
@@ -79,7 +79,7 @@ public class DefaultColumnTemplateAsyncTest {
     private ColumnEntityConverter converter;
 
     @Inject
-    private ClassRepresentations classRepresentations;
+    private ClassMappings classMappings;
 
     @Inject
     private Converters converters;
@@ -98,7 +98,7 @@ public class DefaultColumnTemplateAsyncTest {
         captor = ArgumentCaptor.forClass(ColumnEntity.class);
         Instance<ColumnFamilyManagerAsync> instance = Mockito.mock(Instance.class);
         Mockito.when(instance.get()).thenReturn(managerMock);
-        this.subject = new DefaultColumnTemplateAsync(converter, instance, classRepresentations, converters);
+        this.subject = new DefaultColumnTemplateAsync(converter, instance, classMappings, converters);
     }
 
 

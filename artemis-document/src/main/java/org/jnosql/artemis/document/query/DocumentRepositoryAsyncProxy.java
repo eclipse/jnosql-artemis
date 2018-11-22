@@ -19,7 +19,7 @@ import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.document.DocumentTemplateAsync;
 import org.jnosql.artemis.reflection.ClassMapping;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 
 import java.lang.reflect.ParameterizedType;
 
@@ -42,12 +42,12 @@ class DocumentRepositoryAsyncProxy<T> extends AbstractDocumentRepositoryAsyncPro
 
 
 
-    DocumentRepositoryAsyncProxy(DocumentTemplateAsync template, ClassRepresentations classRepresentations,
+    DocumentRepositoryAsyncProxy(DocumentTemplateAsync template, ClassMappings classMappings,
                                  Class<?> repositoryType, Converters converters) {
         this.template = template;
         Class<T> typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
-        this.classMapping = classRepresentations.get(typeClass);
+        this.classMapping = classMappings.get(typeClass);
         this.repository = new DocumentRepositoryAsync(template, classMapping);
         this.converters = converters;
     }

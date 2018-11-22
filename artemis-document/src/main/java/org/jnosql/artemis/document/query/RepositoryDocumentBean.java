@@ -19,7 +19,7 @@ import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.document.DocumentTemplate;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 import org.jnosql.artemis.util.AnnotationLiteralUtil;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -88,14 +88,14 @@ public class RepositoryDocumentBean implements Bean<Repository>, PassivationCapa
 
     @Override
     public Repository create(CreationalContext<Repository> creationalContext) {
-        ClassRepresentations classRepresentations = getInstance(ClassRepresentations.class);
+        ClassMappings classMappings = getInstance(ClassMappings.class);
         DocumentTemplate repository = provider.isEmpty() ? getInstance(DocumentTemplate.class) :
                 getInstance(DocumentTemplate.class, provider);
 
         Converters converters = getInstance(Converters.class);
 
         DocumentRepositoryProxy handler = new DocumentRepositoryProxy(repository,
-                classRepresentations, type, converters);
+                classMappings, type, converters);
         return (Repository) Proxy.newProxyInstance(type.getClassLoader(),
                 new Class[]{type},
                 handler);

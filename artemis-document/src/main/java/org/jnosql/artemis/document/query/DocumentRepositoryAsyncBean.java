@@ -19,7 +19,7 @@ import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.document.DocumentTemplateAsync;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 import org.jnosql.artemis.util.AnnotationLiteralUtil;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -89,13 +89,13 @@ public class DocumentRepositoryAsyncBean implements Bean<RepositoryAsync>, Passi
 
     @Override
     public RepositoryAsync create(CreationalContext<RepositoryAsync> creationalContext) {
-        ClassRepresentations classRepresentations = getInstance(ClassRepresentations.class);
+        ClassMappings classMappings = getInstance(ClassMappings.class);
         DocumentTemplateAsync repository = provider.isEmpty() ? getInstance(DocumentTemplateAsync.class) :
                 getInstance(DocumentTemplateAsync.class, provider);
         Converters converters = getInstance(Converters.class);
 
         DocumentRepositoryAsyncProxy handler = new DocumentRepositoryAsyncProxy(repository,
-                classRepresentations, type, converters);
+                classMappings, type, converters);
         return (RepositoryAsync) Proxy.newProxyInstance(type.getClassLoader(),
                 new Class[]{type},
                 handler);

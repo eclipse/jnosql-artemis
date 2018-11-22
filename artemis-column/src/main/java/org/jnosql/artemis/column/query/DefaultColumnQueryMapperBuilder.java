@@ -16,7 +16,7 @@ package org.jnosql.artemis.column.query;
 
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.reflection.ClassMapping;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
@@ -28,7 +28,7 @@ import static java.util.Objects.requireNonNull;
 class DefaultColumnQueryMapperBuilder implements ColumnQueryMapperBuilder {
 
     @Inject
-    private Instance<ClassRepresentations> classRepresentations;
+    private Instance<ClassMappings> classRepresentations;
 
     @Inject
     private Instance<Converters> converters;

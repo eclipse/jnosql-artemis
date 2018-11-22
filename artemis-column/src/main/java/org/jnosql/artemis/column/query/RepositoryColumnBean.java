@@ -19,7 +19,7 @@ import org.jnosql.artemis.DatabaseQualifier;
 import org.jnosql.artemis.DatabaseType;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.column.ColumnTemplate;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 import org.jnosql.artemis.util.AnnotationLiteralUtil;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -88,13 +88,13 @@ public class RepositoryColumnBean implements Bean<Repository>, PassivationCapabl
 
     @Override
     public Repository create(CreationalContext<Repository> creationalContext) {
-        ClassRepresentations classRepresentations = getInstance(ClassRepresentations.class);
+        ClassMappings classMappings = getInstance(ClassMappings.class);
         ColumnTemplate template = provider.isEmpty() ? getInstance(ColumnTemplate.class) :
                 getInstance(ColumnTemplate.class, provider);
         Converters converters = getInstance(Converters.class);
 
         ColumnRepositoryProxy handler = new ColumnRepositoryProxy(template,
-                classRepresentations, type, converters);
+                classMappings, type, converters);
         return (Repository) Proxy.newProxyInstance(type.getClassLoader(),
                 new Class[]{type},
                 handler);

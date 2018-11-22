@@ -19,7 +19,7 @@ import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.PreparedStatementAsync;
 import org.jnosql.artemis.model.Movie;
 import org.jnosql.artemis.model.Person;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 import org.jnosql.diana.api.NonUniqueResultException;
 import org.jnosql.diana.api.document.Document;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
@@ -80,7 +80,7 @@ public class DefaultDocumentTemplateAsyncTest {
     private DocumentEntityConverter converter;
 
     @Inject
-    private ClassRepresentations classRepresentations;
+    private ClassMappings classMappings;
 
     @Inject
     private Converters converters;
@@ -99,7 +99,7 @@ public class DefaultDocumentTemplateAsyncTest {
         captor = ArgumentCaptor.forClass(DocumentEntity.class);
         Instance<DocumentCollectionManagerAsync> instance = Mockito.mock(Instance.class);
         when(instance.get()).thenReturn(managerMock);
-        this.subject = new DefaultDocumentTemplateAsync(converter, instance, classRepresentations, converters);
+        this.subject = new DefaultDocumentTemplateAsync(converter, instance, classMappings, converters);
     }
 
     @Test

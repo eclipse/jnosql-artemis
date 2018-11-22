@@ -26,7 +26,7 @@ import org.jnosql.artemis.EntityNotFoundException;
 import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.artemis.PreparedStatement;
 import org.jnosql.artemis.reflection.ClassMapping;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 import org.jnosql.artemis.reflection.FieldMapping;
 import org.jnosql.diana.api.NonUniqueResultException;
 
@@ -58,7 +58,7 @@ public abstract class AbstractGraphTemplate implements GraphTemplate {
 
     protected abstract Graph getGraph();
 
-    protected abstract ClassRepresentations getClassRepresentations();
+    protected abstract ClassMappings getClassMappings();
 
     protected abstract GraphConverter getConverter();
 
@@ -272,7 +272,7 @@ public abstract class AbstractGraphTemplate implements GraphTemplate {
     @Override
     public <T> long count(Class<T> entityClass) {
         Objects.requireNonNull(entityClass, "entity class is required");
-        return count(getClassRepresentations().get(entityClass).getName());
+        return count(getClassMappings().get(entityClass).getName());
     }
 
 
@@ -291,7 +291,7 @@ public abstract class AbstractGraphTemplate implements GraphTemplate {
     }
 
     private <T> Optional<Vertex> getVertex(T entity) {
-        ClassMapping classMapping = getClassRepresentations().get(entity.getClass());
+        ClassMapping classMapping = getClassMappings().get(entity.getClass());
         FieldMapping field = classMapping.getId().get();
         Object id = field.read(entity);
         Iterator<Vertex> vertices = getVertices(id);
@@ -323,7 +323,7 @@ public abstract class AbstractGraphTemplate implements GraphTemplate {
     }
 
     private <T> boolean isIdNull(T entity) {
-        ClassMapping classMapping = getClassRepresentations().get(entity.getClass());
+        ClassMapping classMapping = getClassMappings().get(entity.getClass());
         FieldMapping field = classMapping.getId().get();
         return isNull(field.read(entity));
 
@@ -331,7 +331,7 @@ public abstract class AbstractGraphTemplate implements GraphTemplate {
 
 
     private <T> void checkId(T entity) {
-        ClassMapping classMapping = getClassRepresentations().get(entity.getClass());
+        ClassMapping classMapping = getClassMappings().get(entity.getClass());
         classMapping.getId().orElseThrow(() -> IdNotFoundException.newInstance(entity.getClass()));
     }
 }

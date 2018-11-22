@@ -19,7 +19,7 @@ import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.IdNotFoundException;
 import org.jnosql.artemis.PreparedStatement;
 import org.jnosql.artemis.reflection.ClassMapping;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 import org.jnosql.artemis.reflection.FieldMapping;
 import org.jnosql.artemis.util.ConverterUtil;
 import org.jnosql.diana.api.NonUniqueResultException;
@@ -57,7 +57,7 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
 
     protected abstract ColumnEventPersistManager getEventManager();
 
-    protected abstract ClassRepresentations getClassRepresentations();
+    protected abstract ClassMappings getClassMappings();
 
     protected abstract Converters getConverters();
 
@@ -70,7 +70,7 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
 
     private ColumnObserverParser getObserver() {
         if (Objects.isNull(observer)) {
-            observer = new ColumnMapperObserver(getClassRepresentations());
+            observer = new ColumnMapperObserver(getClassMappings());
         }
         return observer;
     }
@@ -119,7 +119,7 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
     public <T, ID> Optional<T> find(Class<T> entityClass, ID id) {
         requireNonNull(entityClass, "entityClass is required");
         requireNonNull(id, "id is required");
-        ClassMapping classMapping = getClassRepresentations().get(entityClass);
+        ClassMapping classMapping = getClassMappings().get(entityClass);
         FieldMapping idField = classMapping.getId()
                 .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
 
@@ -135,7 +135,7 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
         requireNonNull(entityClass, "entityClass is required");
         requireNonNull(id, "id is required");
 
-        ClassMapping classMapping = getClassRepresentations().get(entityClass);
+        ClassMapping classMapping = getClassMappings().get(entityClass);
         FieldMapping idField = classMapping.getId()
                 .orElseThrow(() -> IdNotFoundException.newInstance(entityClass));
         Object value = ConverterUtil.getValue(id, classMapping, idField.getFieldName(), getConverters());
@@ -180,7 +180,7 @@ public abstract class AbstractColumnTemplate implements ColumnTemplate {
     @Override
     public <T> long count(Class<T> entityClass){
         requireNonNull(entityClass, "entity class is required");
-        ClassMapping classMapping = getClassRepresentations().get(entityClass);
+        ClassMapping classMapping = getClassMappings().get(entityClass);
         return getManager().count(classMapping.getName());
     }
 }

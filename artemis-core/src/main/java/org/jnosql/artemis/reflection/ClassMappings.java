@@ -20,7 +20,7 @@ import java.util.Optional;
 /**
  * This class contains all the class in cached way to be used inside artemis.
  */
-public interface ClassRepresentations {
+public interface ClassMappings {
 
     /**
      * Find a class in the cached way and return in a class representation,

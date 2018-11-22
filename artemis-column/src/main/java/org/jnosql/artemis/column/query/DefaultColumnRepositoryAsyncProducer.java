@@ -19,7 +19,7 @@ import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.column.ColumnRepositoryAsyncProducer;
 import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.column.ColumnTemplateAsyncProducer;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -31,7 +31,7 @@ import java.util.Objects;
 class DefaultColumnRepositoryAsyncProducer implements ColumnRepositoryAsyncProducer {
 
     @Inject
-    private ClassRepresentations classRepresentations;
+    private ClassMappings classMappings;
 
     @Inject
     private Converters converters;
@@ -52,7 +52,7 @@ class DefaultColumnRepositoryAsyncProducer implements ColumnRepositoryAsyncProdu
         Objects.requireNonNull(template, "template class is required");
 
         ColumnRepositoryAsyncProxy<T> handler = new ColumnRepositoryAsyncProxy<>(template,
-                classRepresentations, repositoryClass, converters);
+                classMappings, repositoryClass, converters);
         return (T) Proxy.newProxyInstance(repositoryClass.getClassLoader(),
                 new Class[]{repositoryClass},
                 handler);

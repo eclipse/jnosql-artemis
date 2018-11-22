@@ -15,7 +15,7 @@
 package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.reflection.ClassMapping;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 import org.jnosql.diana.api.document.DocumentObserverParser;
 
 import java.util.Optional;
@@ -23,9 +23,9 @@ import java.util.Optional;
 final class DocumentMapperObserver  implements DocumentObserverParser {
 
 
-    private final ClassRepresentations representations;
+    private final ClassMappings representations;
 
-    DocumentMapperObserver(ClassRepresentations representations) {
+    DocumentMapperObserver(ClassMappings representations) {
         this.representations = representations;
     }
 

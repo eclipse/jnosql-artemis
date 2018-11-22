@@ -19,7 +19,7 @@ import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.RepositoryAsync;
 import org.jnosql.artemis.column.ColumnTemplateAsync;
 import org.jnosql.artemis.reflection.ClassMapping;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 
 import java.lang.reflect.ParameterizedType;
 
@@ -39,13 +39,13 @@ class ColumnRepositoryAsyncProxy<T> extends AbstractColumnRepositoryAsyncProxy<T
     private final Converters converters;
 
 
-    ColumnRepositoryAsyncProxy(ColumnTemplateAsync template, ClassRepresentations classRepresentations,
+    ColumnRepositoryAsyncProxy(ColumnTemplateAsync template, ClassMappings classMappings,
                                Class<?> repositoryType, Converters converters) {
 
         this.template = template;
         Class<T> typeClass = Class.class.cast(ParameterizedType.class.cast(repositoryType.getGenericInterfaces()[0])
                 .getActualTypeArguments()[0]);
-        this.classMapping = classRepresentations.get(typeClass);
+        this.classMapping = classMappings.get(typeClass);
         this.repository = new ColumnRepositoryAsync(template, classMapping);
         this.converters = converters;
     }

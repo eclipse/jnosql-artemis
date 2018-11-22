@@ -16,7 +16,7 @@ package org.jnosql.artemis.column;
 
 
 import org.jnosql.artemis.Converters;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 import org.jnosql.diana.api.column.ColumnFamilyManager;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -41,7 +41,7 @@ class DefaultColumnTemplateProducer implements ColumnTemplateProducer {
     private ColumnEventPersistManager eventManager;
 
     @Inject
-    private ClassRepresentations classRepresentations;
+    private ClassMappings classMappings;
 
     @Inject
     private Converters converters;
@@ -50,7 +50,7 @@ class DefaultColumnTemplateProducer implements ColumnTemplateProducer {
     public ColumnTemplate get(ColumnFamilyManager columnFamilyManager) {
         Objects.requireNonNull(columnFamilyManager, "columnFamilyManager is required");
         return new ProducerColumnTemplate(converter, columnWorkflow, columnFamilyManager,
-                eventManager, classRepresentations, converters);
+                eventManager, classMappings, converters);
     }
 
 
@@ -65,20 +65,20 @@ class DefaultColumnTemplateProducer implements ColumnTemplateProducer {
 
         private ColumnEventPersistManager eventManager;
 
-        private ClassRepresentations classRepresentations;
+        private ClassMappings classMappings;
 
         private Converters converters;
 
         ProducerColumnTemplate(ColumnEntityConverter converter, ColumnWorkflow columnWorkflow,
                                ColumnFamilyManager columnFamilyManager,
                                ColumnEventPersistManager eventManager,
-                               ClassRepresentations classRepresentations,
+                               ClassMappings classMappings,
                                Converters converters) {
             this.converter = converter;
             this.columnWorkflow = columnWorkflow;
             this.columnFamilyManager = columnFamilyManager;
             this.eventManager = eventManager;
-            this.classRepresentations = classRepresentations;
+            this.classMappings = classMappings;
             this.converters = converters;
         }
 
@@ -106,8 +106,8 @@ class DefaultColumnTemplateProducer implements ColumnTemplateProducer {
         }
 
         @Override
-        protected ClassRepresentations getClassRepresentations() {
-            return classRepresentations;
+        protected ClassMappings getClassMappings() {
+            return classMappings;
         }
 
         @Override

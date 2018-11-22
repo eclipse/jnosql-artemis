@@ -20,7 +20,7 @@ import org.jnosql.artemis.model.Money;
 import org.jnosql.artemis.model.Person;
 import org.jnosql.artemis.model.Worker;
 import org.jnosql.artemis.reflection.ClassMapping;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -38,7 +38,7 @@ public class ConverterUtilTest {
     private Converters converters;
 
     @Inject
-    private ClassRepresentations representations;
+    private ClassMappings representations;
 
     @Test
     public void shouldNotConvert() {

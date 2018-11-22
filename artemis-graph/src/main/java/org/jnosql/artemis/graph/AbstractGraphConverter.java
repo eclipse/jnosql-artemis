@@ -22,7 +22,7 @@ import org.jnosql.artemis.AttributeConverter;
 import org.jnosql.artemis.Converters;
 import org.jnosql.artemis.EntityNotFoundException;
 import org.jnosql.artemis.reflection.ClassMapping;
-import org.jnosql.artemis.reflection.ClassRepresentations;
+import org.jnosql.artemis.reflection.ClassMappings;
 import org.jnosql.artemis.reflection.FieldMapping;
 import org.jnosql.diana.api.Value;
 
@@ -45,7 +45,7 @@ import static org.jnosql.artemis.reflection.FieldType.EMBEDDED;
 abstract class AbstractGraphConverter implements GraphConverter {
 
 
-    protected abstract ClassRepresentations getClassRepresentations();
+    protected abstract ClassMappings getClassMappings();
 
     protected abstract Converters getConverters();
 
@@ -55,7 +55,7 @@ abstract class AbstractGraphConverter implements GraphConverter {
     public <T> Vertex toVertex(T entity) {
         requireNonNull(entity, "entity is required");
 
-        ClassMapping representation = getClassRepresentations().get(entity.getClass());
+        ClassMapping representation = getClassMappings().get(entity.getClass());
         String label = representation.getName();
 
         List<FieldGraph> fields = representation.getFields().stream()
@@ -84,7 +84,7 @@ abstract class AbstractGraphConverter implements GraphConverter {
     @Override
     public <T> List<Property<?>> getProperties(T entity) {
         Objects.requireNonNull(entity, "entity is required");
-        ClassMapping representation = getClassRepresentations().get(entity.getClass());
+        ClassMapping representation = getClassMappings().get(entity.getClass());
         List<FieldGraph> fields = representation.getFields().stream()
                 .map(f -> to(f, entity))
                 .filter(FieldGraph::isNotEmpty).collect(toList());
@@ -97,7 +97,7 @@ abstract class AbstractGraphConverter implements GraphConverter {
     @Override
     public <T> T toEntity(Vertex vertex) {
         requireNonNull(vertex, "vertex is required");
-        ClassMapping representation = getClassRepresentations().findByName(vertex.label());
+        ClassMapping representation = getClassMappings().findByName(vertex.label());
 
         List<Property> properties = vertex.keys().stream().map(k -> DefaultProperty.of(k, vertex.value(k))).collect(toList());
         T entity = toEntity((Class<T>) representation.getClassInstance(), properties);
@@ -123,7 +123,7 @@ abstract class AbstractGraphConverter implements GraphConverter {
 
         List<Property> properties = vertex.keys().stream().map(k -> DefaultProperty.of(k, vertex.value(k))).collect(toList());
 
-        ClassMapping representation = getClassRepresentations().get(entityInstance.getClass());
+        ClassMapping representation = getClassMappings().get(entityInstance.getClass());
         convertEntity(properties, representation, entityInstance);
         feedId(vertex, entityInstance);
         return entityInstance;
@@ -150,7 +150,7 @@ abstract class AbstractGraphConverter implements GraphConverter {
     }
 
     private <T> void feedId(Vertex vertex, T entity) {
-        ClassMapping representation = getClassRepresentations().get(entity.getClass());
+        ClassMapping representation = getClassMappings().get(entity.getClass());
         Optional<FieldMapping> id = representation.getId();
 
 
@@ -171,7 +171,7 @@ abstract class AbstractGraphConverter implements GraphConverter {
     }
 
     private <T> T toEntity(Class<T> entityClass, List<Property> properties) {
-        ClassMapping representation = getClassRepresentations().get(entityClass);
+        ClassMapping representation = getClassMappings().get(entityClass);
         T instance = representation.newInstance();
         return convertEntity(properties, representation, instance);
     }
