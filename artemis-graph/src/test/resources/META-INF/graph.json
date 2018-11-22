@@ -1,0 +1,22 @@
+[
+  {
+    "description":"that is the description",
+    "name":"graphA",
+    "provider":"org.jnosql.artemis.graph.producer.GraphFactoryA",
+    "settings":{
+      "key":"value",
+      "key2":"value2"
+
+    }
+  },
+  {
+    "description":"that is the description",
+    "name":"graphB",
+    "provider":"org.jnosql.artemis.graph.producer.GraphFactoryB",
+    "settings":{
+      "key":"value",
+      "key2":"value2",
+      "key3":"value3"
+    }
+  }
+]
