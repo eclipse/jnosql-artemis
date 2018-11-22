@@ -100,8 +100,8 @@ class ColumnFamilyManagerFactoryProducer {
         Class<ColumnConfiguration> configurationClass = unit.<ColumnConfiguration>getProvider()
                 .orElseThrow(() -> new IllegalStateException("The ColumnConfiguration provider is required in the configuration"));
 
-        ColumnConfiguration columnConfiguration = reflections.newInstance(configurationClass);
+        ColumnConfiguration configuration = reflections.newInstance(configurationClass);
 
-        return columnConfiguration.get(unit.getSettings());
+        return configuration.get(unit.getSettings());
     }
 }

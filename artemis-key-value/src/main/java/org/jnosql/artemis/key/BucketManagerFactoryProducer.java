@@ -65,9 +65,9 @@ class BucketManagerFactoryProducer {
         Class<KeyValueConfiguration> configurationClass = unit.<KeyValueConfiguration>getProvider()
                 .orElseThrow(() -> new IllegalStateException("The KeyValueConfiguration provider is required in the configuration"));
 
-        KeyValueConfiguration columnConfiguration = reflections.newInstance(configurationClass);
+        KeyValueConfiguration configuration = reflections.newInstance(configurationClass);
 
-        return columnConfiguration.get(unit.getSettings());
+        return configuration.get(unit.getSettings());
     }
 
 }
