@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2017 Otávio Santana and others
+ *  Copyright (c) 2018 Otávio Santana and others
  *   All rights reserved. This program and the accompanying materials
  *   are made available under the terms of the Eclipse Public License v1.0
  *   and Apache License v2.0 which accompanies this distribution.
@@ -12,15 +12,13 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis.key;
+package org.jnosql.artemis.graph;
 
+import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.jnosql.artemis.ConfigurationReader;
 import org.jnosql.artemis.ConfigurationSettingsUnit;
 import org.jnosql.artemis.ConfigurationUnit;
 import org.jnosql.artemis.reflection.Reflections;
-import org.jnosql.diana.api.key.BucketManager;
-import org.jnosql.diana.api.key.BucketManagerFactory;
-import org.jnosql.diana.api.key.KeyValueConfiguration;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
@@ -31,12 +29,8 @@ import javax.inject.Inject;
 
 import static org.jnosql.artemis.util.ConfigurationUnitUtils.getConfigurationUnit;
 
-/**
- * The class that creates {@link BucketManagerFactory} from the {@link ConfigurationUnit}
- */
 @ApplicationScoped
-class BucketManagerFactoryProducer {
-
+class GraphProducer {
 
     @Inject
     private Reflections reflections;
@@ -46,28 +40,21 @@ class BucketManagerFactoryProducer {
 
     @ConfigurationUnit
     @Produces
-    public <T extends BucketManager> BucketManagerFactory<T> getBucketManagerGenerics(InjectionPoint injectionPoint) {
+    public Graph getBucketManagerGenerics(InjectionPoint injectionPoint) {
         return getBuckerManagerFactocy(injectionPoint);
     }
 
-    @ConfigurationUnit
-    @Produces
-    public BucketManagerFactory getBucketManager(InjectionPoint injectionPoint) {
-        return getBuckerManagerFactocy(injectionPoint);
-    }
-
-    private <T extends BucketManager> BucketManagerFactory<T> getBuckerManagerFactocy(InjectionPoint injectionPoint) {
+    private Graph getBuckerManagerFactocy(InjectionPoint injectionPoint) {
         Annotated annotated = injectionPoint.getAnnotated();
         ConfigurationUnit annotation = getConfigurationUnit(injectionPoint, annotated)
                 .orElseThrow(() -> new IllegalStateException("The @ConfigurationUnit does not found"));
 
-        ConfigurationSettingsUnit unit = configurationReader.get().read(annotation, KeyValueConfiguration.class);
-        Class<KeyValueConfiguration> configurationClass = unit.<KeyValueConfiguration>getProvider()
-                .orElseThrow(() -> new IllegalStateException("The KeyValueConfiguration provider is required in the configuration"));
+        ConfigurationSettingsUnit unit = configurationReader.get().read(annotation, GraphFactory.class);
+        Class<GraphFactory> configurationClass = unit.<GraphFactory>getProvider()
+                .orElseThrow(() -> new IllegalStateException("The GraphFactory provider is required in the configuration"));
 
-        KeyValueConfiguration configuration = reflections.newInstance(configurationClass);
+        GraphFactory factory = reflections.newInstance(configurationClass);
 
-        return configuration.get(unit.getSettings());
+        return factory.apply(unit.getSettings());
     }
-
 }

@@ -31,9 +31,8 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
-import java.util.Optional;
 
-import static java.util.Optional.ofNullable;
+import static org.jnosql.artemis.util.ConfigurationUnitUtils.getConfigurationUnit;
 
 /**
  * The class that creates {@link ColumnFamilyManagerFactory} and {@link ColumnFamilyManagerAsyncFactory}
@@ -101,19 +100,8 @@ class ColumnFamilyManagerFactoryProducer {
         Class<ColumnConfiguration> configurationClass = unit.<ColumnConfiguration>getProvider()
                 .orElseThrow(() -> new IllegalStateException("The ColumnConfiguration provider is required in the configuration"));
 
-        ColumnConfiguration columnConfiguration = reflections.newInstance(configurationClass);
+        ColumnConfiguration configuration = reflections.newInstance(configurationClass);
 
-        return columnConfiguration.get(unit.getSettings());
-    }
-
-    private Optional<ConfigurationUnit> getConfigurationUnit(InjectionPoint injectionPoint, Annotated annotated) {
-
-        if (annotated == null) {
-            return injectionPoint.getQualifiers().stream()
-                    .filter(annotation -> ConfigurationUnit.class.equals(annotation.annotationType()))
-                    .map(ConfigurationUnit.class::cast)
-                    .findFirst();
-        }
-        return ofNullable(annotated.getAnnotation(ConfigurationUnit.class));
+        return configuration.get(unit.getSettings());
     }
 }
