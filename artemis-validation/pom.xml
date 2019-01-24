@@ -66,7 +66,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <hibernate.validator.version>5.4.0.Final</hibernate.validator.version>
+        <hibernate.validator.version>6.1.0.Alpha2</hibernate.validator.version>
         <el.impl.version>2.2.1-b05</el.impl.version>
     </properties>
 
