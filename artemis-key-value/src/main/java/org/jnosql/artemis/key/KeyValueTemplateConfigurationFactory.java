@@ -24,7 +24,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 
 /**
- *
+ * It creates a KeyValueTemplate from a ConfigurationUnit annotation.
  */
 @ApplicationScoped
 class KeyValueTemplateConfigurationFactory {
