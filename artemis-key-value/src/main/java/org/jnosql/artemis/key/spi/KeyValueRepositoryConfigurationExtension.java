@@ -49,7 +49,6 @@ public class KeyValueRepositoryConfigurationExtension implements Extension {
     private final Map<Class<?>, GenericProducer> typesByProducer = new HashMap<>();
 
     public void captureProducerTypes(@Observes final ProcessInjectionPoint<?, ? extends Repository> pip) {
-        System.out.println(pip);
         InjectionPoint injectionPoint = pip.getInjectionPoint();
         Type type = injectionPoint.getType();
         Set<Annotation> qualifiers = injectionPoint.getQualifiers();
