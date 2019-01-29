@@ -17,33 +17,22 @@ import static org.junit.jupiter.api.Assertions.*;
 class KeyValueTemplateConfigurationFactoryTest {
 
     @Inject
-    @ConfigurationUnit(fileName = "key-value.json", name = "name")
-    private BucketManagerFactory<?> factoryA;
+    @ConfigurationUnit(fileName = "key-value.json", name = "name", database = "database")
+    private KeyValueTemplate templateA;
 
     @Inject
-    @ConfigurationUnit(fileName = "key-value.json", name = "name-2")
-    private BucketManagerFactory factoryB;
+    @ConfigurationUnit(fileName = "key-value.json", name = "name-2", database = "database")
+    private KeyValueTemplate templateB;
 
 
     @Test
     public void shouldReadBucketManager() {
-        factoryA.getBucketManager("database");
-        assertTrue(KeyValueConfigurationMock.BucketManagerFactoryMock.class.isInstance(factoryA));
-        KeyValueConfigurationMock.BucketManagerFactoryMock mock = KeyValueConfigurationMock.BucketManagerFactoryMock.class.cast(factoryA);
-        Map<String, Object> settings = mock.getSettings();
-        assertEquals("value", settings.get("key"));
-        assertEquals("value2", settings.get("key2"));
+        System.out.println(templateA);
     }
 
     @Test
     public void shouldReadBucketManagerB() {
-        factoryB.getBucketManager("database");
-        assertTrue(KeyValueConfigurationMock.BucketManagerFactoryMock.class.isInstance(factoryB));
-        KeyValueConfigurationMock.BucketManagerFactoryMock mock = KeyValueConfigurationMock.BucketManagerFactoryMock.class.cast(factoryB);
-        Map<String, Object> settings = mock.getSettings();
-        assertEquals("value", settings.get("key"));
-        assertEquals("value2", settings.get("key2"));
-        assertEquals("value3", settings.get("key3"));
+
     }
 
 }
