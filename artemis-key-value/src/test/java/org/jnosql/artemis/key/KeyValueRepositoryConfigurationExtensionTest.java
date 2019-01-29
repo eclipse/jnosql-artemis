@@ -15,16 +15,8 @@
 package org.jnosql.artemis.key;
 
 import org.jnosql.artemis.CDIExtension;
-import org.jnosql.artemis.ConfigurationUnit;
-import org.jnosql.artemis.PersonRepository;
-import org.jnosql.diana.api.key.BucketManager;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
-import javax.inject.Inject;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(CDIExtension.class)
 class KeyValueRepositoryConfigurationExtensionTest {
