@@ -14,12 +14,19 @@
  */
 package org.jnosql.artemis.key;
 
+import org.jnosql.artemis.ConfigurationException;
 import org.jnosql.artemis.ConfigurationUnit;
+import org.jnosql.artemis.util.StringUtils;
+import org.jnosql.diana.api.key.BucketManager;
+import org.jnosql.diana.api.key.BucketManagerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
+
+import static org.jnosql.artemis.util.ConfigurationUnitUtils.getConfigurationUnit;
 
 /**
  * It creates a KeyValueTemplate from a ConfigurationUnit annotation.
@@ -36,6 +43,13 @@ class KeyValueTemplateConfigurationFactory {
     @ConfigurationUnit
     @Produces
     public <T extends KeyValueTemplate> T getKeyValueTemplate(InjectionPoint injectionPoint) {
-
+        BucketManagerFactory bucketManagerFactory = bucketProducer.getBucketManager(injectionPoint);
+        ConfigurationUnit annotation = getConfigurationUnit(injectionPoint, injectionPoint.getAnnotated());
+        String database = annotation.database();
+        if(StringUtils.isBlank(database)){
+            throw new ConfigurationException("To create a KeyValueTemplate from a ConfigurationUnit the database field is required");
+        }
+        BucketManager bucketManager = bucketManagerFactory.getBucketManager(database);
+        return keyValueTemplateProducer.get(bucketManager);
     }
 }
