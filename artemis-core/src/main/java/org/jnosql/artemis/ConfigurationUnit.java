@@ -47,8 +47,8 @@ public @interface ConfigurationUnit {
     String fileName() default "jnosql.json";
 
     /**
-     * 
-     * @return
+     * It creates both templates and repositories instances using from the respective database.
+     * @return The database to templates and repositories classes.
      */
     @Nonbinding
     String database() default "";
