@@ -42,7 +42,7 @@ class KeyValueTemplateConfigurationFactory {
 
     @ConfigurationUnit
     @Produces
-    public <T extends KeyValueTemplate> T getKeyValueTemplate(InjectionPoint injectionPoint) {
+    public KeyValueTemplate getKeyValueTemplate(InjectionPoint injectionPoint) {
         BucketManagerFactory bucketManagerFactory = bucketProducer.getBucketManager(injectionPoint);
         ConfigurationUnit annotation = getConfigurationUnit(injectionPoint, injectionPoint.getAnnotated());
         String database = annotation.database();
