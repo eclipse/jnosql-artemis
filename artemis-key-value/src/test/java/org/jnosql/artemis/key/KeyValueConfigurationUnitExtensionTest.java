@@ -15,15 +15,19 @@
 package org.jnosql.artemis.key;
 
 import org.jnosql.artemis.CDIExtension;
+import org.jnosql.artemis.ConfigurationUnit;
+import org.jnosql.artemis.PersonRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(CDIExtension.class)
-class KeyValueRepositoryConfigurationExtensionTest {
+import javax.inject.Inject;
 
-//    @Inject
-//    @ConfigurationUnit(fileName = "key-value.json", name = "name", database = "database")
-//    private PersonRepository repository;
+@ExtendWith(CDIExtension.class)
+class KeyValueConfigurationUnitExtensionTest {
+
+    @Inject
+    @ConfigurationUnit(fileName = "key-value.json", name = "name", database = "database")
+    private PersonRepository repository;
 
     @Test
     public void shouldRepository() {

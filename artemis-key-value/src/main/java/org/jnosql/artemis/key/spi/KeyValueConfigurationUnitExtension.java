@@ -19,52 +19,51 @@ import org.jnosql.artemis.Repository;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ProcessInjectionPoint;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static java.util.Collections.singletonList;
-
 /**
- * It creates a KeyValueTemplate from a ConfigurationUnit annotation.
+ * The keyvalue extension to capture any class that has {@link ConfigurationUnit} annotation
  */
-public class KeyValueRepositoryConfigurationExtension implements Extension {
+public class KeyValueConfigurationUnitExtension implements Extension {
 
-    private static final Predicate<? extends Class<? extends Annotation>> CLASS_PREDICATE = a -> a.isAnnotationPresent(ConfigurationUnit.class);
-    private static final Function<Class<?>, GenericProducer> NEW_SET = (k) -> new GenericProducer();
-
-    private final Map<Class<?>, GenericProducer> typesByProducer = new HashMap<>();
+    private static final Predicate<Annotation> IS_CONFIGURATION_UNIT = a -> ConfigurationUnit.class.isInstance(a);
+    private static final List<RepositoryBean> REPOSITORIES = new ArrayList<>();
 
     public void captureProducerTypes(@Observes final ProcessInjectionPoint<?, ? extends Repository> pip) {
         InjectionPoint injectionPoint = pip.getInjectionPoint();
         Type type = injectionPoint.getType();
         Set<Annotation> qualifiers = injectionPoint.getQualifiers();
-        Optional<Annotation> first = qualifiers.stream().filter(a -> ConfigurationUnit.class.isInstance(a)).findFirst();
-        System.out.println(first);
+        qualifiers.stream().filter(IS_CONFIGURATION_UNIT).findFirst()
+                .ifPresent(a -> REPOSITORIES.add(new RepositoryBean(qualifiers, (Class<? extends Repository<?, ?>>) type)));
+
 
     }
 
 
-    public void addProducers(@Observes final AfterBeanDiscovery abd) {
+    public void addProducers(@Observes final AfterBeanDiscovery afterBeanDiscovery, final BeanManager beanManager) {
+        System.out.println(REPOSITORIES);
 
     }
 
 
-    private static class GenericProducer {
-        private final Set<Type> types = new HashSet<>(singletonList(Object.class));
-        private Bean<?> bean;
-    }
+    private static class RepositoryBean {
+        private final Set<Annotation> qualifiers;
+        private final Class<? extends Repository<?, ?>> repository;
 
+        private RepositoryBean(Set<Annotation> qualifiers, Class<? extends Repository<?, ?>> repository) {
+            this.qualifiers = qualifiers;
+            this.repository = repository;
+        }
+    }
 
 
 }
