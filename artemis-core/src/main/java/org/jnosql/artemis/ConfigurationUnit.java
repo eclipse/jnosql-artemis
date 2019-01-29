@@ -45,4 +45,11 @@ public @interface ConfigurationUnit {
      */
     @Nonbinding
     String fileName() default "jnosql.json";
+
+    /**
+     * 
+     * @return
+     */
+    @Nonbinding
+    String database() default "";
 }
