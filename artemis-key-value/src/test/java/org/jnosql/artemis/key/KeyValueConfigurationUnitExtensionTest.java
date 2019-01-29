@@ -15,7 +15,6 @@
 package org.jnosql.artemis.key;
 
 import org.jnosql.artemis.CDIExtension;
-import org.jnosql.artemis.ConfigurationUnit;
 import org.jnosql.artemis.PersonRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,13 +24,24 @@ import javax.inject.Inject;
 @ExtendWith(CDIExtension.class)
 class KeyValueConfigurationUnitExtensionTest {
 
+
+
     @Inject
-    @ConfigurationUnit(fileName = "key-value.json", name = "name", database = "database")
-    private PersonRepository repository;
+    private Amor instance;
 
     @Test
     public void shouldRepository() {
-//        Assertions.assertNotNull(repository);
+        System.out.println(instance);
+        KeyRepositorySupplier<PersonRepository> repository = instance.getRepository();
+        PersonRepository personRepository = repository.get();
+        System.out.println(personRepository);
+        //        Assertions.assertNotNull(repository);
+
+    }
+
+
+    public static class Instance {
+
 
     }
 }
