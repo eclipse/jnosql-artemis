@@ -15,8 +15,6 @@
 package org.jnosql.artemis.key;
 
 import org.jnosql.artemis.ConfigurationUnit;
-import org.jnosql.diana.api.key.BucketManager;
-import org.jnosql.diana.api.key.BucketManagerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
@@ -30,7 +28,7 @@ import javax.inject.Inject;
 class KeyValueTemplateConfigurationFactory {
 
     @Inject
-    private BucketManagerFactoryProducer bucketProducer;
+    private BucketManagerConfigurationFactory bucketProducer;
 
     @Inject
     private KeyValueTemplateProducer keyValueTemplateProducer;
@@ -38,6 +36,6 @@ class KeyValueTemplateConfigurationFactory {
     @ConfigurationUnit
     @Produces
     public <T extends KeyValueTemplate> T getKeyValueTemplate(InjectionPoint injectionPoint) {
-        return getBuckerManagerFactocy(injectionPoint);
+
     }
 }

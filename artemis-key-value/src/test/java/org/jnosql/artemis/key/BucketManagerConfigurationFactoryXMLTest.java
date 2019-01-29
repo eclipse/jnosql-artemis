@@ -18,6 +18,7 @@ import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.ConfigurationUnit;
 import org.jnosql.diana.api.Settings;
 import org.jnosql.diana.api.key.BucketManagerFactory;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,25 +28,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Disabled
 @ExtendWith(CDIExtension.class)
-public class BucketManagerFactoryProducerTest {
+public class BucketManagerConfigurationFactoryXMLTest {
 
     @Inject
-    @ConfigurationUnit(fileName = "key-value.json", name = "name")
+    @ConfigurationUnit(fileName = "key-value.xml", name = "name")
     private BucketManagerFactory<?> factoryA;
 
     @Inject
-    @ConfigurationUnit(fileName = "key-value.json", name = "name-2")
+    @ConfigurationUnit(fileName = "key-value.xml", name = "name-2")
     private BucketManagerFactory factoryB;
 
 
     @Test
     public void shouldReadBucketManager() {
         factoryA.getBucketManager("database");
-        assertTrue(KeyValueConfigurationMock.BucketManagerFactoryMock.class.isInstance(factoryA));
+        Assertions.assertTrue(KeyValueConfigurationMock.BucketManagerFactoryMock.class.isInstance(factoryA));
         KeyValueConfigurationMock.BucketManagerFactoryMock mock = KeyValueConfigurationMock.BucketManagerFactoryMock.class.cast(factoryA);
         Map<String, Object> settings = new HashMap<>();
         settings.put("key","value");
@@ -56,7 +56,7 @@ public class BucketManagerFactoryProducerTest {
     @Test
     public void shouldReadBucketManagerB() {
         factoryB.getBucketManager("database");
-        assertTrue(KeyValueConfigurationMock.BucketManagerFactoryMock.class.isInstance(factoryB));
+        Assertions.assertTrue(KeyValueConfigurationMock.BucketManagerFactoryMock.class.isInstance(factoryB));
         KeyValueConfigurationMock.BucketManagerFactoryMock mock = KeyValueConfigurationMock.BucketManagerFactoryMock.class.cast(factoryB);
         Map<String, Object> settings = new HashMap<>();
         settings.put("key","value");
