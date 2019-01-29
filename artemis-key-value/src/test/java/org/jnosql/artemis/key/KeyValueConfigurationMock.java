@@ -18,6 +18,7 @@ import org.jnosql.diana.api.Settings;
 import org.jnosql.diana.api.key.BucketManager;
 import org.jnosql.diana.api.key.BucketManagerFactory;
 import org.jnosql.diana.api.key.KeyValueConfiguration;
+import org.mockito.Mockito;
 
 import java.util.List;
 import java.util.Map;
@@ -52,7 +53,7 @@ public class KeyValueConfigurationMock implements KeyValueConfiguration {
 
         @Override
         public BucketManager getBucketManager(String bucketName) throws UnsupportedOperationException, NullPointerException {
-            return null;
+            return Mockito.mock(BucketManager.class);
         }
 
         @Override
