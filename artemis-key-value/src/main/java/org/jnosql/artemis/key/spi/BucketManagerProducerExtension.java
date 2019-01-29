@@ -61,7 +61,7 @@ public class BucketManagerProducerExtension implements Extension {
 
         if (Arrays.asList(javaClass.getInterfaces()).contains(Repository.class)
                 && Modifier.isInterface(javaClass.getModifiers())) {
-            LOGGER.info("Adding a new KeyValueRepository as discovered on Column: " + javaClass);
+            LOGGER.info("Adding a new KeyValueRepository as discovered on key-value: " + javaClass);
             crudTypes.add(repo.getAnnotatedType().getJavaClass());
         }
     }
