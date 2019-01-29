@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Disabled
 @ExtendWith(CDIExtension.class)
@@ -45,23 +46,21 @@ public class BucketManagerConfigurationFactoryXMLTest {
     @Test
     public void shouldReadBucketManager() {
         factoryA.getBucketManager("database");
-        Assertions.assertTrue(KeyValueConfigurationMock.BucketManagerFactoryMock.class.isInstance(factoryA));
+        assertTrue(KeyValueConfigurationMock.BucketManagerFactoryMock.class.isInstance(factoryA));
         KeyValueConfigurationMock.BucketManagerFactoryMock mock = KeyValueConfigurationMock.BucketManagerFactoryMock.class.cast(factoryA);
-        Map<String, Object> settings = new HashMap<>();
-        settings.put("key","value");
-        settings.put("key2","value2");
-        assertEquals(Settings.of(settings), mock.getSettings());
+        Map<String, Object> settings = mock.getSettings();
+        assertEquals("value", settings.get("key"));
+        assertEquals("value2", settings.get("key2"));
     }
 
     @Test
     public void shouldReadBucketManagerB() {
         factoryB.getBucketManager("database");
-        Assertions.assertTrue(KeyValueConfigurationMock.BucketManagerFactoryMock.class.isInstance(factoryB));
+        assertTrue(KeyValueConfigurationMock.BucketManagerFactoryMock.class.isInstance(factoryB));
         KeyValueConfigurationMock.BucketManagerFactoryMock mock = KeyValueConfigurationMock.BucketManagerFactoryMock.class.cast(factoryB);
-        Map<String, Object> settings = new HashMap<>();
-        settings.put("key","value");
-        settings.put("key2","value2");
-        settings.put("key3","value3");
-        assertEquals(Settings.of(settings), mock.getSettings());
+        Map<String, Object> settings = mock.getSettings();
+        assertEquals("value", settings.get("key"));
+        assertEquals("value2", settings.get("key2"));
+        assertEquals("value3", settings.get("key3"));
     }
 }

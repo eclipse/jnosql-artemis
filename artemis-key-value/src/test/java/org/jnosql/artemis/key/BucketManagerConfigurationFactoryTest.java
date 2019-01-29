@@ -47,10 +47,9 @@ public class BucketManagerConfigurationFactoryTest {
         factoryA.getBucketManager("database");
         assertTrue(KeyValueConfigurationMock.BucketManagerFactoryMock.class.isInstance(factoryA));
         KeyValueConfigurationMock.BucketManagerFactoryMock mock = KeyValueConfigurationMock.BucketManagerFactoryMock.class.cast(factoryA);
-        Map<String, Object> settings = new HashMap<>();
-        settings.put("key","value");
-        settings.put("key2","value2");
-        assertEquals(Settings.of(settings), mock.getSettings());
+        Map<String, Object> settings = mock.getSettings();
+        assertEquals("value", settings.get("key"));
+        assertEquals("value2", settings.get("key2"));
     }
 
     @Test
@@ -58,10 +57,9 @@ public class BucketManagerConfigurationFactoryTest {
         factoryB.getBucketManager("database");
         assertTrue(KeyValueConfigurationMock.BucketManagerFactoryMock.class.isInstance(factoryB));
         KeyValueConfigurationMock.BucketManagerFactoryMock mock = KeyValueConfigurationMock.BucketManagerFactoryMock.class.cast(factoryB);
-        Map<String, Object> settings = new HashMap<>();
-        settings.put("key","value");
-        settings.put("key2","value2");
-        settings.put("key3","value3");
-        assertEquals(Settings.of(settings), mock.getSettings());
+        Map<String, Object> settings = mock.getSettings();
+        assertEquals("value", settings.get("key"));
+        assertEquals("value2", settings.get("key2"));
+        assertEquals("value3", settings.get("key3"));
     }
 }
