@@ -29,11 +29,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 
 /**
  * The keyvalue extension to capture any class that has {@link ConfigurationUnit} annotation
  */
 public class KeyValueConfigurationUnitExtension implements Extension {
+
+    private static final Logger LOGGER = Logger.getLogger(KeyValueConfigurationUnitExtension.class.getName());
 
     private static final Predicate<Annotation> IS_CONFIGURATION_UNIT = a -> ConfigurationUnit.class.isInstance(a);
     private static final List<RepositoryBean> REPOSITORIES = new ArrayList<>();
@@ -42,8 +45,11 @@ public class KeyValueConfigurationUnitExtension implements Extension {
         InjectionPoint injectionPoint = pip.getInjectionPoint();
         Type type = injectionPoint.getType();
         Set<Annotation> qualifiers = injectionPoint.getQualifiers();
-        qualifiers.stream().filter(IS_CONFIGURATION_UNIT).findFirst()
-                .ifPresent(a -> REPOSITORIES.add(new RepositoryBean(qualifiers, (Class<? extends Repository<?, ?>>) type)));
+        qualifiers.stream().filter(IS_CONFIGURATION_UNIT)
+                .peek(a -> LOGGER.info(String.format("Found a repository %s with the configuration annotation %s", type.toString(), a.toString())))
+                .findFirst()
+                .ifPresent(a -> REPOSITORIES.add(new RepositoryBean(qualifiers, (Class<? extends Repository<?, ?>>) type,
+                        (ConfigurationUnit) a)));
 
 
     }
@@ -58,10 +64,22 @@ public class KeyValueConfigurationUnitExtension implements Extension {
     private static class RepositoryBean {
         private final Set<Annotation> qualifiers;
         private final Class<? extends Repository<?, ?>> repository;
+        private final ConfigurationUnit configurationUnit;
 
-        private RepositoryBean(Set<Annotation> qualifiers, Class<? extends Repository<?, ?>> repository) {
+        private RepositoryBean(Set<Annotation> qualifiers, Class<? extends Repository<?, ?>> repository,
+                               ConfigurationUnit configurationUnit) {
             this.qualifiers = qualifiers;
             this.repository = repository;
+            this.configurationUnit = configurationUnit;
+        }
+
+        @Override
+        public String toString() {
+            final StringBuilder sb = new StringBuilder("RepositoryBean{");
+            sb.append("qualifiers=").append(qualifiers);
+            sb.append(", repository=").append(repository);
+            sb.append('}');
+            return sb.toString();
         }
     }
 
