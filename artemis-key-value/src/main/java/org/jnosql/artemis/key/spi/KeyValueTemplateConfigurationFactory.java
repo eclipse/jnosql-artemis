@@ -53,4 +53,5 @@ class KeyValueTemplateConfigurationFactory {
         BucketManager bucketManager = bucketManagerFactory.getBucketManager(database);
         return keyValueTemplateProducer.get(bucketManager);
     }
+
 }
