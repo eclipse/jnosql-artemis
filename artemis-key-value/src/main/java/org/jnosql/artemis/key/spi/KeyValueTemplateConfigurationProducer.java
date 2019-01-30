@@ -36,22 +36,22 @@ import static org.jnosql.artemis.util.ConfigurationUnitUtils.getConfigurationUni
 class KeyValueTemplateConfigurationProducer {
 
     @Inject
-    private BucketManagerConfigurationProducer bucketProducer;
+    private BucketManagerConfigurationProducer configurationProducer;
 
     @Inject
-    private KeyValueTemplateProducer keyValueTemplateProducer;
+    private KeyValueTemplateProducer producer;
 
     @ConfigurationUnit
     @Produces
     public KeyValueTemplate getKeyValueTemplate(InjectionPoint injectionPoint) {
-        BucketManagerFactory bucketManagerFactory = bucketProducer.getBucketManager(injectionPoint);
+        BucketManagerFactory bucketManagerFactory = configurationProducer.getBucketManager(injectionPoint);
         ConfigurationUnit annotation = getConfigurationUnit(injectionPoint, injectionPoint.getAnnotated());
         String database = annotation.database();
         if(StringUtils.isBlank(database)){
             throw new ConfigurationException("To create a KeyValueTemplate from a ConfigurationUnit the database field is required");
         }
         BucketManager bucketManager = bucketManagerFactory.getBucketManager(database);
-        return keyValueTemplateProducer.get(bucketManager);
+        return producer.get(bucketManager);
     }
 
 }

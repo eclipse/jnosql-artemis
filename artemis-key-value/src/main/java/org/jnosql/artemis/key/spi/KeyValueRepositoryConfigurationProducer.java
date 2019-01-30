@@ -33,14 +33,14 @@ class KeyValueRepositoryConfigurationProducer {
     private KeyValueRepositoryProducer producer;
 
     @Inject
-    private KeyValueTemplateConfigurationProducer factory;
+    private KeyValueTemplateConfigurationProducer configurationProducer;
 
     @ConfigurationUnit
     @Produces
     public <K, V, R extends Repository<?,?>, E extends Repository<K, V>> KeyRepositorySupplier<R> get(InjectionPoint injectionPoint) {
         ParameterizedType type = (ParameterizedType) injectionPoint.getType();
         Class<E> repository = (Class) type.getActualTypeArguments()[0];
-        KeyValueTemplate template = factory.getKeyValueTemplate(injectionPoint);
+        KeyValueTemplate template = configurationProducer.getKeyValueTemplate(injectionPoint);
         return () -> (R) producer.get(repository, template);
     }
 }
