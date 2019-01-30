@@ -35,7 +35,7 @@ class KeyValueConfigurationUnitExtensionTest {
         KeyRepositorySupplier<PersonRepository> supplier = services.getRepository();
         assertNotNull(supplier);
         PersonRepository repository = supplier.get();
-        assertNotNull(supplier);
+        assertNotNull(repository);
 
     }
 

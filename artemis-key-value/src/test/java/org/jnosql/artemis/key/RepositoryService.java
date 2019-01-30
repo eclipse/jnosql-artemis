@@ -27,6 +27,7 @@ public class RepositoryService {
     @ConfigurationUnit(fileName = "key-value.json", name = "name", database = "database")
     private KeyRepositorySupplier<PersonRepository> repository;
 
+
     public KeyRepositorySupplier<PersonRepository> getRepository() {
         return repository;
     }

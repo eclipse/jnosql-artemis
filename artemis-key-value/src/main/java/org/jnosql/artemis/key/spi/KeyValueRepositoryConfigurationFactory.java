@@ -17,27 +17,30 @@ package org.jnosql.artemis.key.spi;
 import org.jnosql.artemis.ConfigurationUnit;
 import org.jnosql.artemis.Repository;
 import org.jnosql.artemis.key.KeyRepositorySupplier;
+import org.jnosql.artemis.key.KeyValueRepositoryProducer;
+import org.jnosql.artemis.key.KeyValueTemplate;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Member;
+import javax.inject.Inject;
 import java.lang.reflect.ParameterizedType;
-import java.util.Set;
 
 @ApplicationScoped
 class KeyValueRepositoryConfigurationFactory {
 
+    @Inject
+    private KeyValueRepositoryProducer producer;
+
+    @Inject
+    private KeyValueTemplateConfigurationFactory factory;
+
     @ConfigurationUnit
     @Produces
-    public <R extends Repository<?,?>> KeyRepositorySupplier<R> get(InjectionPoint injectionPoint) {
-        Member member = injectionPoint.getMember();
-        Bean<?> bean = injectionPoint.getBean();
-        Set<Annotation> qualifiers = injectionPoint.getQualifiers();
-        ParameterizedType type= (ParameterizedType) injectionPoint.getType();
-        Class repository = (Class) type.getActualTypeArguments()[0];
-        return null;
+    public <K, V, R extends Repository<?,?>, E extends Repository<K, V>> KeyRepositorySupplier<R> get(InjectionPoint injectionPoint) {
+        ParameterizedType type = (ParameterizedType) injectionPoint.getType();
+        Class<E> repository = (Class) type.getActualTypeArguments()[0];
+        KeyValueTemplate template = factory.getKeyValueTemplate(injectionPoint);
+        return () -> (R) producer.get(repository, template);
     }
 }
