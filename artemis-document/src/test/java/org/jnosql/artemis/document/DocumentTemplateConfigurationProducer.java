@@ -17,6 +17,7 @@ package org.jnosql.artemis.document;
 import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.ConfigurationUnit;
 import org.jnosql.diana.api.document.DocumentCollectionManager;
+import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +37,16 @@ public class DocumentTemplateConfigurationProducer {
     @ConfigurationUnit(fileName = "document.json", name = "name-2", database = "database")
     private DocumentTemplate templateB;
 
+
+
+    @Inject
+    @ConfigurationUnit(fileName = "document.json", name = "name", database = "database")
+    private DocumentTemplateAsync templateAsyncA;
+
+    @Inject
+    @ConfigurationUnit(fileName = "document.json", name = "name-2", database = "database")
+    private DocumentTemplateAsync templateAsyncB;
+
     @Test
     public void shouldTemplate() {
         Assertions.assertNotNull(templateA);
@@ -47,7 +58,22 @@ public class DocumentTemplateConfigurationProducer {
     @Test
     public void shouldTemplateB() {
         Assertions.assertNotNull(templateB);
-        DocumentCollectionManager manager = AbstractDocumentTemplate.class.cast(templateA).getManager();
+        DocumentCollectionManager manager = AbstractDocumentTemplate.class.cast(templateB).getManager();
+        Assertions.assertNotNull(manager);
+    }
+
+    @Test
+    public void shouldTemplateAsync() {
+        Assertions.assertNotNull(templateA);
+        DocumentCollectionManagerAsync manager = AbstractDocumentTemplateAsync.class.cast(templateAsyncA).getManager();
+        Assertions.assertNotNull(manager);
+
+    }
+
+    @Test
+    public void shouldTemplateAsyncB() {
+        Assertions.assertNotNull(templateB);
+        DocumentCollectionManagerAsync manager = AbstractDocumentTemplateAsync.class.cast(templateAsyncB).getManager();
         Assertions.assertNotNull(manager);
     }
 
