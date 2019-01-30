@@ -12,7 +12,14 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis.key.spi;
+package org.jnosql.artemis.document;
 
-class RepositoryConfigurationBean {
+import org.jnosql.artemis.Repository;
+
+/**
+ * A supplier to Repository that implements document.
+ *
+ * @param <R> a repository type
+ */
+public interface DocumentRepositorySupplier <R extends Repository<?, ?>> {
 }
