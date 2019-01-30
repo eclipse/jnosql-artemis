@@ -14,12 +14,12 @@
  */
 package org.jnosql.artemis.document;
 
-import org.jnosql.artemis.Repository;
+import org.jnosql.artemis.RepositoryAsync;
 
 /**
- * A supplier to Repository that implements document.
+ * A supplier to {@link RepositoryAsync} that implements document.
  *
  * @param <R> a repository type
  */
-public interface DocumentRepositorySupplier <R extends Repository<?, ?>> {
+public interface DocumentRepositoryAsyncSupplier<R extends RepositoryAsync<?, ?>> {
 }
