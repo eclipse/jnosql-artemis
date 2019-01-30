@@ -37,10 +37,10 @@ import static org.jnosql.artemis.util.ConfigurationUnitUtils.getConfigurationUni
  * It creates both a {@link DocumentTemplate} and a {@link DocumentTemplateAsync} from a ConfigurationUnit annotation.
  */
 @ApplicationScoped
-class DocumentTemplateConfigurationFactory {
+class DocumentTemplateConfigurationProducer {
 
     @Inject
-    private DocumentCollectionConfigurationFactory configurationProducer;
+    private DocumentCollectionConfigurationProducer configurationProducer;
 
     @Inject
     private DocumentTemplateProducer producer;

@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(CDIExtension.class)
-public class DocumentCollectionConfigurationFactoryTest {
+public class DocumentCollectionConfigurationProducerTest {
 
     @Inject
     @ConfigurationUnit(fileName = "document.json", name = "name")
