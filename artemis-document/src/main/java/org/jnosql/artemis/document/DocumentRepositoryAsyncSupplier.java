@@ -16,10 +16,12 @@ package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.RepositoryAsync;
 
+import java.util.function.Supplier;
+
 /**
  * A supplier to {@link RepositoryAsync} that implements document.
  *
  * @param <R> a repository type
  */
-public interface DocumentRepositoryAsyncSupplier<R extends RepositoryAsync<?, ?>> {
+public interface DocumentRepositoryAsyncSupplier<R extends RepositoryAsync<?, ?>> extends Supplier<R> {
 }

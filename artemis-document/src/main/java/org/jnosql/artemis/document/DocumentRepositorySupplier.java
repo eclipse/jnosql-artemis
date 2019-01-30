@@ -16,10 +16,12 @@ package org.jnosql.artemis.document;
 
 import org.jnosql.artemis.Repository;
 
+import java.util.function.Supplier;
+
 /**
  * A supplier to Repository that implements document.
  *
  * @param <R> a repository type
  */
-public interface DocumentRepositorySupplier <R extends Repository<?, ?>> {
+public interface DocumentRepositorySupplier <R extends Repository<?, ?>> extends Supplier<R> {
 }
