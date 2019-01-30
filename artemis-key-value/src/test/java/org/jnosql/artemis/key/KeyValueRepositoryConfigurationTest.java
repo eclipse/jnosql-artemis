@@ -24,7 +24,7 @@ import javax.inject.Inject;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(CDIExtension.class)
-class KeyValueConfigurationUnitExtensionTest {
+class KeyValueRepositoryConfigurationTest {
 
 
     @Inject
