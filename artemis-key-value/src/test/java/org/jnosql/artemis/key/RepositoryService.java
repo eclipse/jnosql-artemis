@@ -14,30 +14,20 @@
  */
 package org.jnosql.artemis.key;
 
-import org.jnosql.artemis.CDIExtension;
+import org.jnosql.artemis.ConfigurationUnit;
 import org.jnosql.artemis.PersonRepository;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-@ExtendWith(CDIExtension.class)
-class KeyValueConfigurationUnitExtensionTest {
-
+@ApplicationScoped
+public class RepositoryService {
 
     @Inject
-    private RepositoryService services;
+    @ConfigurationUnit(fileName = "key-value.json", name = "name", database = "database")
+    private KeyRepositorySupplier<PersonRepository> repository;
 
-    @Test
-    public void shouldRepository() {
-        KeyRepositorySupplier<PersonRepository> supplier = services.getRepository();
-        assertNotNull(supplier);
-        PersonRepository repository = supplier.get();
-        assertNotNull(supplier);
-
+    public KeyRepositorySupplier<PersonRepository> getRepository() {
+        return repository;
     }
-
-
 }
