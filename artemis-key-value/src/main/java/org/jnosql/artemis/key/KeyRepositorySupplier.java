@@ -18,5 +18,10 @@ import org.jnosql.artemis.Repository;
 
 import java.util.function.Supplier;
 
+/**
+ * A supplier to Repository that implements key-value.
+ *
+ * @param <R> a repository type
+ */
 public interface KeyRepositorySupplier<R extends Repository<?, ?>> extends Supplier<R> {
 }
