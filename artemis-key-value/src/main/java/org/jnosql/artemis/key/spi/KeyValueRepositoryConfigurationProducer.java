@@ -27,13 +27,13 @@ import javax.inject.Inject;
 import java.lang.reflect.ParameterizedType;
 
 @ApplicationScoped
-class KeyValueRepositoryConfigurationFactory {
+class KeyValueRepositoryConfigurationProducer {
 
     @Inject
     private KeyValueRepositoryProducer producer;
 
     @Inject
-    private KeyValueTemplateConfigurationFactory factory;
+    private KeyValueTemplateConfigurationProducer factory;
 
     @ConfigurationUnit
     @Produces
