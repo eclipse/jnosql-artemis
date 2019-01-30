@@ -12,7 +12,7 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis.document;
+package org.jnosql.artemis.document.spi;
 
 import org.jnosql.artemis.ConfigurationReader;
 import org.jnosql.artemis.ConfigurationSettingsUnit;
