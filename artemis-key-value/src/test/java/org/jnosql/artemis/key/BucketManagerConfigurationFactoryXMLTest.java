@@ -16,21 +16,16 @@ package org.jnosql.artemis.key;
 
 import org.jnosql.artemis.CDIExtension;
 import org.jnosql.artemis.ConfigurationUnit;
-import org.jnosql.diana.api.Settings;
 import org.jnosql.diana.api.key.BucketManagerFactory;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Disabled
 @ExtendWith(CDIExtension.class)
 public class BucketManagerConfigurationFactoryXMLTest {
 
