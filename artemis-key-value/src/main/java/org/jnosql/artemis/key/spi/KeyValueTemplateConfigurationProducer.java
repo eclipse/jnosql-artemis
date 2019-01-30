@@ -30,7 +30,7 @@ import javax.inject.Inject;
 import static org.jnosql.artemis.util.ConfigurationUnitUtils.getConfigurationUnit;
 
 /**
- * It creates a KeyValueTemplate from a ConfigurationUnit annotation.
+ * It creates a {@link KeyValueTemplate} from a ConfigurationUnit annotation.
  */
 @ApplicationScoped
 class KeyValueTemplateConfigurationProducer {
