@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Disabled
 @ExtendWith(CDIExtension.class)
-public class DocumentCollectionFactoryProducerTest {
+public class DocumentCollectionConfigurationFactoryTest {
 
     @Inject
     @ConfigurationUnit(fileName = "document.json", name = "name")

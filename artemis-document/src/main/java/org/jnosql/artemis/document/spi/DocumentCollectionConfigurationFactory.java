@@ -39,7 +39,7 @@ import static org.jnosql.artemis.util.ConfigurationUnitUtils.getConfigurationUni
  * from the {@link ConfigurationUnit}
  */
 @ApplicationScoped
-class DocumentCollectionFactoryProducer {
+class DocumentCollectionConfigurationFactory {
 
     @Inject
     private Reflections reflections;

@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Disabled
 @ExtendWith(CDIExtension.class)
-public class DocumentCollectionFactoryProducerXMLTest {
+public class DocumentCollectionConfigurationFactoryXMLTest {
 
     @Inject
     @ConfigurationUnit(fileName = "document.xml", name = "name")
