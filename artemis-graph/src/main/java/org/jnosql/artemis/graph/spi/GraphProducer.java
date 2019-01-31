@@ -12,12 +12,13 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis.graph;
+package org.jnosql.artemis.graph.spi;
 
 import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.jnosql.artemis.ConfigurationReader;
 import org.jnosql.artemis.ConfigurationSettingsUnit;
 import org.jnosql.artemis.ConfigurationUnit;
+import org.jnosql.artemis.graph.GraphFactory;
 import org.jnosql.artemis.reflection.Reflections;
 
 import javax.enterprise.context.ApplicationScoped;
