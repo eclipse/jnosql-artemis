@@ -26,11 +26,11 @@ public class RepositoryService {
 
 
     @Inject
-    @ConfigurationUnit(fileName = "document.json", name = "name", database = "database")
+    @ConfigurationUnit(fileName = "column.json", name = "name", database = "database")
     private ColumnRepositorySupplier<PersonRepository> repository;
 
     @Inject
-    @ConfigurationUnit(fileName = "document.json", name = "name", database = "database")
+    @ConfigurationUnit(fileName = "column.json", name = "name", database = "database")
     private ColumnRepositoryAsyncSupplier<PersonRepositoryAsync> repositoryAsync;
 
     public ColumnRepositorySupplier<PersonRepository> getRepository() {
