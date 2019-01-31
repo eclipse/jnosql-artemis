@@ -20,6 +20,7 @@ import org.jnosql.diana.api.column.ColumnFamilyManagerAsync;
 import org.jnosql.diana.api.column.ColumnFamilyManagerAsyncFactory;
 import org.jnosql.diana.api.column.ColumnFamilyManagerFactory;
 import org.jnosql.diana.api.column.UnaryColumnConfiguration;
+import org.mockito.Mockito;
 
 public class ColumnFamilyManagerMock implements UnaryColumnConfiguration {
 
@@ -55,12 +56,12 @@ public class ColumnFamilyManagerMock implements UnaryColumnConfiguration {
 
         @Override
         public ColumnFamilyManagerAsync getAsync(String database){
-            return null;
+            return Mockito.mock(ColumnFamilyManagerAsync.class);
         }
 
         @Override
         public ColumnFamilyManager get(String database) {
-            return null;
+            return Mockito.mock(ColumnFamilyManager.class);
         }
 
         public Settings getSettings() {
