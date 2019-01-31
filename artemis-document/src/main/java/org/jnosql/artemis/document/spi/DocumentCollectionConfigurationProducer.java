@@ -12,7 +12,7 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis.document;
+package org.jnosql.artemis.document.spi;
 
 import org.jnosql.artemis.ConfigurationReader;
 import org.jnosql.artemis.ConfigurationSettingsUnit;
@@ -39,7 +39,7 @@ import static org.jnosql.artemis.util.ConfigurationUnitUtils.getConfigurationUni
  * from the {@link ConfigurationUnit}
  */
 @ApplicationScoped
-class DocumentCollectionFactoryProducer {
+class DocumentCollectionConfigurationProducer {
 
     @Inject
     private Reflections reflections;
@@ -80,8 +80,7 @@ class DocumentCollectionFactoryProducer {
 
         Annotated annotated = injectionPoint.getAnnotated();
 
-        ConfigurationUnit annotation = getConfigurationUnit(injectionPoint, annotated)
-                .orElseThrow(() -> new IllegalStateException("The @ConfigurationUnit does not found"));
+        ConfigurationUnit annotation = getConfigurationUnit(injectionPoint, annotated);
 
         ConfigurationSettingsUnit unit = configurationReader.get().read(annotation, DocumentConfigurationAsync.class);
         Class<DocumentConfigurationAsync> configurationClass = unit.<DocumentConfigurationAsync>getProvider()
@@ -94,8 +93,7 @@ class DocumentCollectionFactoryProducer {
     private <T extends DocumentCollectionManager> DocumentCollectionManagerFactory<T> getDocumentCollection(InjectionPoint injectionPoint) {
         Annotated annotated = injectionPoint.getAnnotated();
 
-        ConfigurationUnit annotation = getConfigurationUnit(injectionPoint, annotated)
-                .orElseThrow(() -> new IllegalStateException("The @ConfigurationUnit does not found"));
+        ConfigurationUnit annotation = getConfigurationUnit(injectionPoint, annotated);
 
         ConfigurationSettingsUnit unit = configurationReader.get().read(annotation, DocumentConfiguration.class);
         Class<DocumentConfiguration> configurationClass = unit.<DocumentConfiguration>getProvider()

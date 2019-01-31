@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(CDIExtension.class)
-public class GraphProducerExtensionTest {
+public class GraphConfigurationProducerExtensionTest {
 
     @Inject
     @Database(value = GRAPH, provider = "graphRepositoryMock")

@@ -20,6 +20,7 @@ import org.jnosql.diana.api.document.DocumentCollectionManagerAsync;
 import org.jnosql.diana.api.document.DocumentCollectionManagerAsyncFactory;
 import org.jnosql.diana.api.document.DocumentCollectionManagerFactory;
 import org.jnosql.diana.api.document.UnaryDocumentConfiguration;
+import org.mockito.Mockito;
 
 public class DocumentCollectionManagerMock implements UnaryDocumentConfiguration {
 
@@ -57,12 +58,12 @@ public class DocumentCollectionManagerMock implements UnaryDocumentConfiguration
 
         @Override
         public DocumentCollectionManagerAsync getAsync(String database) {
-            return null;
+            return Mockito.mock(DocumentCollectionManagerAsync.class);
         }
 
         @Override
         public DocumentCollectionManager get(String database) {
-            return null;
+            return Mockito.mock(DocumentCollectionManager.class);
         }
 
         @Override

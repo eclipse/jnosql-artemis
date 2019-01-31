@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2018 Otávio Santana and others
+ *  Copyright (c) 2019 Otávio Santana and others
  *   All rights reserved. This program and the accompanying materials
  *   are made available under the terms of the Eclipse Public License v1.0
  *   and Apache License v2.0 which accompanies this distribution.
@@ -12,15 +12,16 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis.graph;
+package org.jnosql.artemis.column;
 
-import org.apache.tinkerpop.gremlin.structure.Graph;
-import org.jnosql.diana.api.Settings;
+import org.jnosql.artemis.Repository;
 
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
- * The Producer of {@link Graph} that given a {@link Settings} make an  {@link Graph} instance.
+ * A supplier to {@link Repository} that implements document, that injects from {@link org.jnosql.artemis.ConfigurationUnit}
+ *
+ * @param <R> a repository type
  */
-public interface GraphProducer extends Function<Settings, Graph> {
+public interface ColumnRepositorySupplier <R extends Repository<?, ?>> extends Supplier<R> {
 }

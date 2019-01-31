@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2018 Otávio Santana and others
+ *  Copyright (c) 2019 Otávio Santana and others
  *   All rights reserved. This program and the accompanying materials
  *   are made available under the terms of the Eclipse Public License v1.0
  *   and Apache License v2.0 which accompanies this distribution.
@@ -12,17 +12,16 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis.graph.producer;
+package org.jnosql.artemis.graph;
 
-import org.apache.tinkerpop.gremlin.structure.Graph;
-import org.jnosql.artemis.graph.GraphFactory;
-import org.jnosql.diana.api.Settings;
+import org.jnosql.artemis.Repository;
 
-public class GraphFactoryA implements GraphFactory {
+import java.util.function.Supplier;
 
-
-    @Override
-    public Graph apply(Settings settings) {
-        return new GraphMockA(settings);
-    }
+/**
+ * A supplier to {@link Repository} that implements graph, that injects from {@link org.jnosql.artemis.ConfigurationUnit}
+ *
+ * @param <R> a repository type
+ */
+public interface GraphRepositorySupplier <R extends Repository<?, ?>> extends Supplier<R> {
 }

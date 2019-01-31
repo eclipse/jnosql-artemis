@@ -12,7 +12,7 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis.column;
+package org.jnosql.artemis.column.spi;
 
 import org.jnosql.artemis.ConfigurationReader;
 import org.jnosql.artemis.ConfigurationSettingsUnit;
@@ -39,7 +39,7 @@ import static org.jnosql.artemis.util.ConfigurationUnitUtils.getConfigurationUni
  * from the {@link ConfigurationUnit}
  */
 @ApplicationScoped
-class ColumnFamilyManagerFactoryProducer {
+class ColumnFamilyManagerConfigurationProducer {
 
     @Inject
     private Reflections reflections;
@@ -78,8 +78,7 @@ class ColumnFamilyManagerFactoryProducer {
     private <T extends ColumnFamilyManagerAsync> ColumnFamilyManagerAsyncFactory<T> gettColumnFamilyManagerAsyncFactory(InjectionPoint injectionPoint) {
         Annotated annotated = injectionPoint.getAnnotated();
 
-        ConfigurationUnit annotation = getConfigurationUnit(injectionPoint, annotated)
-                .orElseThrow(() -> new IllegalStateException("The @ConfigurationUnit does not found"));
+        ConfigurationUnit annotation = getConfigurationUnit(injectionPoint, annotated);
 
         ConfigurationSettingsUnit unit = configurationReader.get().read(annotation, ColumnConfigurationAsync.class);
         Class<ColumnConfigurationAsync> configurationClass = unit.<ColumnConfigurationAsync>getProvider()
@@ -93,8 +92,7 @@ class ColumnFamilyManagerFactoryProducer {
     private <T extends ColumnFamilyManager> ColumnFamilyManagerFactory<T> gettColumnFamilyManagerFactory(InjectionPoint injectionPoint) {
         Annotated annotated = injectionPoint.getAnnotated();
 
-        ConfigurationUnit annotation = getConfigurationUnit(injectionPoint, annotated)
-                .orElseThrow(() -> new IllegalStateException("The @ConfigurationUnit does not found"));
+        ConfigurationUnit annotation = getConfigurationUnit(injectionPoint, annotated);
 
         ConfigurationSettingsUnit unit = configurationReader.get().read(annotation, ColumnConfiguration.class);
         Class<ColumnConfiguration> configurationClass = unit.<ColumnConfiguration>getProvider()

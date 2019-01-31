@@ -12,7 +12,7 @@
  *
  *   Otavio Santana
  */
-package org.jnosql.artemis.key;
+package org.jnosql.artemis.key.spi;
 
 import org.jnosql.artemis.ConfigurationReader;
 import org.jnosql.artemis.ConfigurationSettingsUnit;
@@ -35,7 +35,7 @@ import static org.jnosql.artemis.util.ConfigurationUnitUtils.getConfigurationUni
  * The class that creates {@link BucketManagerFactory} from the {@link ConfigurationUnit}
  */
 @ApplicationScoped
-class BucketManagerFactoryProducer {
+class BucketManagerConfigurationProducer {
 
 
     @Inject
@@ -58,8 +58,7 @@ class BucketManagerFactoryProducer {
 
     private <T extends BucketManager> BucketManagerFactory<T> getBuckerManagerFactocy(InjectionPoint injectionPoint) {
         Annotated annotated = injectionPoint.getAnnotated();
-        ConfigurationUnit annotation = getConfigurationUnit(injectionPoint, annotated)
-                .orElseThrow(() -> new IllegalStateException("The @ConfigurationUnit does not found"));
+        ConfigurationUnit annotation = getConfigurationUnit(injectionPoint, annotated);
 
         ConfigurationSettingsUnit unit = configurationReader.get().read(annotation, KeyValueConfiguration.class);
         Class<KeyValueConfiguration> configurationClass = unit.<KeyValueConfiguration>getProvider()
