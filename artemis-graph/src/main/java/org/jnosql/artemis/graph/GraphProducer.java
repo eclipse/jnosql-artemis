@@ -20,7 +20,7 @@ import org.jnosql.diana.api.Settings;
 import java.util.function.Function;
 
 /**
- * The factory of {@link Graph} that given a {@link Settings} make an  {@link Graph} instance.
+ * The Producer of {@link Graph} that given a {@link Settings} make an  {@link Graph} instance.
  */
 public interface GraphProducer extends Function<Settings, Graph> {
 }
