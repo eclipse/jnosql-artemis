@@ -19,7 +19,7 @@ import org.jnosql.artemis.RepositoryAsync;
 import java.util.function.Supplier;
 
 /**
- * A supplier to {@link RepositoryAsync} that implements document.
+ * A supplier to {@link RepositoryAsync} that implements document, that injects from {@link org.jnosql.artemis.ConfigurationUnit}
  *
  * @param <R> a repository type
  */
