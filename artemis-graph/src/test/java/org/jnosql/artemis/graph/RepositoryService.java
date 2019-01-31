@@ -23,7 +23,7 @@ import javax.inject.Inject;
 public class RepositoryService {
 
     @Inject
-    @ConfigurationUnit(fileName = "document.json", name = "name", database = "database")
+    @ConfigurationUnit(fileName = "graph.json", name = "graphA", database = "database")
     private GraphRepositorySupplier<BookRepository> repository;
 
     public GraphRepositorySupplier<BookRepository> getRepository() {
