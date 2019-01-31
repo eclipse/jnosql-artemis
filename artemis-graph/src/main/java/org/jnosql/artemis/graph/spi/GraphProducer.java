@@ -47,8 +47,7 @@ class GraphProducer {
 
     private Graph getBuckerManagerFactocy(InjectionPoint injectionPoint) {
         Annotated annotated = injectionPoint.getAnnotated();
-        ConfigurationUnit annotation = getConfigurationUnit(injectionPoint, annotated)
-                .orElseThrow(() -> new IllegalStateException("The @ConfigurationUnit does not found"));
+        ConfigurationUnit annotation = getConfigurationUnit(injectionPoint, annotated);
 
         ConfigurationSettingsUnit unit = configurationReader.get().read(annotation, GraphFactory.class);
         Class<GraphFactory> configurationClass = unit.<GraphFactory>getProvider()
