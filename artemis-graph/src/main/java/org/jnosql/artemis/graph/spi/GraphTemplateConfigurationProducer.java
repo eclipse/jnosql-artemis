@@ -14,19 +14,14 @@
  */
 package org.jnosql.artemis.graph.spi;
 
-import org.apache.tinkerpop.gremlin.structure.Graph;
-import org.jnosql.artemis.ConfigurationException;
 import org.jnosql.artemis.ConfigurationUnit;
 import org.jnosql.artemis.graph.GraphTemplate;
 import org.jnosql.artemis.graph.GraphTemplateProducer;
-import org.jnosql.artemis.util.StringUtils;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
-
-import static org.jnosql.artemis.util.ConfigurationUnitUtils.getConfigurationUnit;
 
 /**
  * It creates a {@link org.jnosql.artemis.graph.GraphTemplate} from a ConfigurationUnit annotation.
