@@ -29,11 +29,11 @@ public class GraphTemplateConfigurationProducer {
 
 
     @Inject
-    @ConfigurationUnit(fileName = "document.json", name = "name", database = "database")
+    @ConfigurationUnit(fileName = "graph.json", name = "graphA", database = "database")
     private GraphTemplate templateA;
 
     @Inject
-    @ConfigurationUnit(fileName = "document.json", name = "name-2", database = "database")
+    @ConfigurationUnit(fileName = "graph.json", name = "graphB", database = "database")
     private GraphTemplate templateB;
 
 
@@ -43,7 +43,6 @@ public class GraphTemplateConfigurationProducer {
         Assertions.assertNotNull(templateA);
         Graph graph = AbstractGraphTemplate.class.cast(templateA).getGraph();
         Assertions.assertNotNull(graph);
-
     }
 
     @Test
