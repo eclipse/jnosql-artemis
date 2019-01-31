@@ -27,7 +27,7 @@ import javax.inject.Inject;
 
 
 @ExtendWith(CDIExtension.class)
-class GraphProducerTest {
+class GraphConfigurationProducerTest {
 
     @Inject
     @ConfigurationUnit(fileName = "graph.json", name = "graphA")

@@ -31,7 +31,7 @@ import javax.inject.Inject;
 import static org.jnosql.artemis.util.ConfigurationUnitUtils.getConfigurationUnit;
 
 @ApplicationScoped
-class GraphProducer {
+class GraphConfigurationProducer {
 
     @Inject
     private Reflections reflections;
