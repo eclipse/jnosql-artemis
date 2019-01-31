@@ -18,7 +18,7 @@ import org.apache.tinkerpop.gremlin.structure.Graph;
 import org.jnosql.artemis.ConfigurationReader;
 import org.jnosql.artemis.ConfigurationSettingsUnit;
 import org.jnosql.artemis.ConfigurationUnit;
-import org.jnosql.artemis.graph.GraphFactory;
+import org.jnosql.artemis.graph.GraphProducer;
 import org.jnosql.artemis.reflection.Reflections;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -49,11 +49,11 @@ class GraphConfigurationProducer {
         Annotated annotated = injectionPoint.getAnnotated();
         ConfigurationUnit annotation = getConfigurationUnit(injectionPoint, annotated);
 
-        ConfigurationSettingsUnit unit = configurationReader.get().read(annotation, GraphFactory.class);
-        Class<GraphFactory> configurationClass = unit.<GraphFactory>getProvider()
-                .orElseThrow(() -> new IllegalStateException("The GraphFactory provider is required in the configuration"));
+        ConfigurationSettingsUnit unit = configurationReader.get().read(annotation, GraphProducer.class);
+        Class<GraphProducer> configurationClass = unit.<GraphProducer>getProvider()
+                .orElseThrow(() -> new IllegalStateException("The GraphProducer provider is required in the configuration"));
 
-        GraphFactory factory = reflections.newInstance(configurationClass);
+        GraphProducer factory = reflections.newInstance(configurationClass);
 
         return factory.apply(unit.getSettings());
     }

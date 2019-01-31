@@ -15,10 +15,10 @@
 package org.jnosql.artemis.graph.producer;
 
 import org.apache.tinkerpop.gremlin.structure.Graph;
-import org.jnosql.artemis.graph.GraphFactory;
+import org.jnosql.artemis.graph.GraphProducer;
 import org.jnosql.diana.api.Settings;
 
-public class GraphFactoryB implements GraphFactory {
+public class GraphProducerB implements GraphProducer {
 
 
     @Override
