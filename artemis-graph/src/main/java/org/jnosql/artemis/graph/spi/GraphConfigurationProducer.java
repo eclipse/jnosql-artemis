@@ -41,11 +41,11 @@ class GraphConfigurationProducer {
 
     @ConfigurationUnit
     @Produces
-    public Graph getBucketManagerGenerics(InjectionPoint injectionPoint) {
-        return getBuckerManagerFactocy(injectionPoint);
+    public Graph getGraph(InjectionPoint injectionPoint) {
+        return getGraphImpl(injectionPoint);
     }
 
-    private Graph getBuckerManagerFactocy(InjectionPoint injectionPoint) {
+    private Graph getGraphImpl(InjectionPoint injectionPoint) {
         Annotated annotated = injectionPoint.getAnnotated();
         ConfigurationUnit annotation = getConfigurationUnit(injectionPoint, annotated);
 
